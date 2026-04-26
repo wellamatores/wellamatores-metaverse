@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>CULTURAL NAVIGATOR · Le Bureau:Jackdaw · Chancellerie · Regent's Office</title>
+  <meta name="description" content="Cultural Navigator of Wellamatores World — 7 perception modes, 36 clans, galactic nomenclature, terminology matrix with sector diffusion. CLASSIFIED ARCHIVE with full lore.">
+  <meta name="keywords" content="Wellamatores, Cultural Navigator, lore, clans, galactic nomenclature, JOG, PLUTONIA, Colonial Administration, CLASSIFIED, Bureau Jackdaw">
+  <meta property="og:title" content="CULTURAL NAVIGATOR · Bureau:Jackdaw">
+  <meta property="og:description" content="Restricted section. Full lore archive. Accessible only with Lord Regent's permission.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,10 90,35 90,65 50,90 10,65 10,35' fill='%23f59e0b'/%3E%3Ccircle cx='50' cy='50' r='20' fill='%23030303'/%3E%3C/svg%3E">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Cinzel:wght@400;600;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #030303;
+      background-image: radial-gradient(circle at 25% 40%, rgba(245, 158, 11, 0.08) 0%, rgba(0,0,0,0) 70%);
+      color: #e8e8e8;
+      overflow-x: hidden;
+    }
+    
+    .glass-panel {
+      background: rgba(10, 10, 12, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+    
+    .glass-panel:hover {
+      border-color: #f59e0b;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+    }
+    
+    .btn-amber {
+      background: linear-gradient(135deg, #f59e0b, #b45309);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-amber:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px #f59e0b;
+    }
+    
+    .nav-link {
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    
+    .nav-link:hover { color: #f59e0b; text-shadow: 0 0 5px #f59e0b; }
+    .view-hidden { display: none !important; }
+    
+    .cultural-selector {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+    
+    .cultural-btn {
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #d4d4d8;
+    }
+    
+    .cultural-btn:hover { transform: translateY(-2px); background: rgba(245, 158, 11, 0.2); border-color: #f59e0b; }
+    .cultural-btn.active { background: #f59e0b; color: #030303; border-color: #fbbf24; box-shadow: 0 0 12px #f59e0b; font-weight: bold; }
+    
+    .mode-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 9px;
+      font-family: monospace;
+    }
+    
+    .sector-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 8px;
+      font-family: monospace;
+      margin-left: 6px;
+    }
+    
+    .sector-admin { background: #1e3a5f; color: #7dd3fc; }
+    .sector-military { background: #5f1e1e; color: #fca5a5; }
+    .sector-research { background: #1e5f3a; color: #86efac; }
+    
+    .achievement-toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #f59e0b, #b45309);
+      color: #030303;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: bold;
+      font-size: 14px;
+      z-index: 1000;
+      animation: slideInRight 0.3s ease-out;
+      font-family: monospace;
+      box-shadow: 0 0 20px rgba(245,158,11,0.5);
+    }
+    
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes floatOrb {
+      0% { transform: translateY(0px) rotate(0deg); opacity: 0.15; }
+      100% { transform: translateY(-20px) rotate(5deg); opacity: 0.35; }
+    }
+    
+    .floating-orb {
+      animation: floatOrb 8s infinite alternate ease-in-out;
+    }
+    
+    .seer-icon-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+      perspective: 600px;
+    }
+    
+    .seer-portrait {
+      width: 140px;
+      height: 140px;
+      border-radius: 20px;
+      background: #0a0a0c;
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.5), 0 10px 25px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease;
+      border: 1px solid #f59e0b;
+    }
+    
+    .seer-portrait:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 45px rgba(245, 158, 11, 0.6);
+    }
+    
+    @media (max-width: 768px) {
+      .glass-panel { padding: 12px; }
+      .btn-amber { padding: 8px 16px; font-size: 12px; }
+      .cultural-btn { padding: 4px 10px; font-size: 10px; }
+      .seer-portrait { width: 100px; height: 100px; }
+      .social-footer { flex-direction: column; align-items: center; }
+    }
+    
+    .font-cinzel { font-family: 'Cinzel', serif; }
+    
+    .clan-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+    
+    .clan-item {
+      background: rgba(0,0,0,0.4);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 11px;
+      font-family: monospace;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    
+    .clan-item:hover {
+      background: rgba(245, 158, 11, 0.2);
+      transform: scale(1.02);
+    }
+    
+    .social-icon {
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .social-icon:hover {
+      transform: translateY(-2px);
+      filter: drop-shadow(0 0 6px #f59e0b);
+    }
+    
+    /* CLASSIFIED ARCHIVE STYLES */
+    .classified-panel {
+      background: linear-gradient(135deg, rgba(30, 20, 20, 0.95), rgba(15, 10, 10, 0.98));
+      border: 2px solid #991b1b;
+      box-shadow: 0 0 30px rgba(153, 27, 27, 0.3), inset 0 0 20px rgba(153, 27, 27, 0.1);
+    }
+    
+    .classified-header {
+      background: linear-gradient(135deg, #7f1d1d, #450a0a);
+      border-bottom: 1px solid #b91c1c;
+    }
+    
+    .classified-btn {
+      background: linear-gradient(135deg, #7f1d1d, #450a0a);
+      border: 1px solid #ef4444;
+      transition: all 0.3s;
+    }
+    
+    .classified-btn:hover {
+      background: linear-gradient(135deg, #991b1b, #7f1d1d);
+      box-shadow: 0 0 15px #ef4444;
+      transform: scale(1.02);
+    }
+    
+    .loyalty-checkbox {
+      accent-color: #b91c1c;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    
+    .archive-content {
+      max-height: 70vh;
+      overflow-y: auto;
+      background: #0a0806;
+      border: 1px solid #991b1b;
+    }
+    
+    .archive-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .archive-content::-webkit-scrollbar-track {
+      background: #1f1a15;
+    }
+    
+    .archive-content::-webkit-scrollbar-thumb {
+      background: #991b1b;
+      border-radius: 3px;
+    }
+    
+    .document-tab {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #991b1b;
+    }
+    
+    .doc-tab-btn {
+      background: linear-gradient(135deg, #2a1a1a, #1a0a0a);
+      border: 1px solid #7f1d1d;
+      padding: 8px 20px;
+      color: #e8e2d0;
+      font-family: monospace;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 6px 6px 0 0;
+    }
+    
+    .doc-tab-btn.active {
+      background: linear-gradient(135deg, #7f1d1d, #4a0a0a);
+      border-bottom-color: #991b1b;
+      color: #fbbf24;
+    }
+    
+    .doc-tab-btn:hover:not(.active) {
+      background: #4a1a1a;
+    }
+    
+    .doc-content {
+      display: none;
+    }
+    
+    .doc-content.active {
+      display: block;
+    }
+    
+    .lore-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(20, 18, 16, 0.8);
+      font-size: 0.75rem;
+      margin: 1rem 0;
+    }
+    
+    .lore-table th, .lore-table td {
+      border: 1px solid #5a4a38;
+      padding: 0.4rem 0.6rem;
+      vertical-align: top;
+    }
+    
+    .lore-table th {
+      background: #2c241e;
+      color: #e8d5ae;
+    }
+    
+    .province-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(20, 18, 16, 0.8);
+      font-size: 0.7rem;
+    }
+    
+    .province-table th, .province-table td {
+      border: 1px solid #5a4a38;
+      padding: 0.3rem 0.5rem;
+    }
+    
+    .endemic {
+      color: #e8c88a;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="fixed top-0 left-0 w-full z-50 py-3 px-6 bg-black/60 backdrop-blur-md border-b border-amber-500/30">
+  <div class="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-3">
+    <div class="flex items-center gap-2">
+      <div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+      <span class="font-black tracking-tighter text-lg font-cinzel text-amber-400" id="navBrand">🏛️ CULTURAL NAVIGATOR</span>
+      <span class="hidden md:inline-block text-[9px] font-mono text-amber-400/70 border-l border-white/20 pl-2 ml-1">LE BUREAU:JACKDAW · CHANCELLERIE · REGENT'S OFFICE</span>
+    </div>
+    <div class="flex gap-2 text-xs font-mono flex-wrap">
+      <button data-view="compass" class="nav-link px-3 py-1.5 rounded-full bg-amber-900/30 hover:bg-amber-700/40 transition active">🧭 NAVIGATOR</button>
+      <button data-view="galaxy" class="nav-link px-3 py-1.5 rounded-full bg-amber-900/20 hover:bg-amber-700/30 transition">🌌 NOMENCLATURE</button>
+      <button data-view="clans" class="nav-link px-3 py-1.5 rounded-full bg-amber-900/20 hover:bg-amber-700/30 transition">🗡️ 36 CLANS</button>
+      <button data-view="suggest" class="nav-link px-3 py-1.5 rounded-full bg-amber-900/20 hover:bg-amber-700/30 transition">📝 SUGGEST</button>
+      <button data-view="classified" class="nav-link px-3 py-1.5 rounded-full bg-red-900/30 hover:bg-red-700/40 transition">🔒 CLASSIFIED</button>
+      <a href="https://wellamatores-metaverse.vercel.app/" class="nav-link px-3 py-1.5 rounded-full bg-blue-900/30 hover:bg-blue-700/40 transition flex items-center gap-1">← BACK TO MAIN SITE</a>
+    </div>
+  </div>
+</nav>
+
+<main class="pt-20 relative z-10">
+
+<!-- ========== MAIN VIEW: CULTURAL NAVIGATOR ========== -->
+<div id="compassView" class="">
+  <section class="relative overflow-hidden px-6 py-12 md:py-16">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-1/4 left-1/3 w-96 h-96 rounded-full bg-amber-500/5 blur-[80px] floating-orb"></div>
+      <div class="absolute bottom-10 right-5 w-80 h-80 rounded-full bg-orange-600/10 blur-[100px] animate-pulse"></div>
+    </div>
+    <div class="max-w-7xl mx-auto relative z-10">
+      
+      <div class="seer-icon-container">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3CradialGradient id='bgGlow' cx='50%25' cy='50%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%231a1208'/%3E%3Cstop offset='60%25' stop-color='%230a0805'/%3E%3Cstop offset='100%25' stop-color='%23030201'/%3E%3C/radialGradient%3E%3CradialGradient id='amberPulse' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23f59e0b' stop-opacity='0.5'/%3E%3Cstop offset='100%25' stop-color='%23f59e0b' stop-opacity='0'/%3E%3C/radialGradient%3E%3ClinearGradient id='amberVein' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23fbbf24'/%3E%3Cstop offset='50%25' stop-color='%23f59e0b'/%3E%3Cstop offset='100%25' stop-color='%23924e09'/%3E%3C/linearGradient%3E%3Cfilter id='glow'%3E%3CfeGaussianBlur stdDeviation='3' result='blur'/%3E%3CfeMerge%3E%3CfeMergeNode in='blur'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3Cfilter id='strongGlow'%3E%3CfeGaussianBlur stdDeviation='5' result='blur'/%3E%3CfeMerge%3E%3CfeMergeNode in='blur'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3CclipPath id='hexClip'%3E%3Cpolygon points='256,30 472,133 472,379 256,482 40,379 40,133'/%3E%3C/clipPath%3E%3Cpattern id='hexPattern' x='0' y='0' width='30' height='52' patternUnits='userSpaceOnUse'%3E%3Cpath d='M15,0 L30,8.66 L30,26 L15,34.64 L0,26 L0,8.66 Z' fill='none' stroke='%23f59e0b' stroke-width='0.5' stroke-opacity='0.2'/%3E%3Cpath d='M15,52 L30,43.34 L30,26 L15,34.64 L0,26 L0,43.34 Z' fill='none' stroke='%23f59e0b' stroke-width='0.5' stroke-opacity='0.2'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='512' height='512' fill='url(%23bgGlow)'/%3E%3Cg clip-path='url(%23hexClip)'%3E%3Crect width='512' height='512' fill='%23050302'/%3E%3Crect width='512' height='512' fill='url(%23hexPattern)'/%3E%3Cellipse cx='256' cy='350' rx='200' ry='120' fill='url(%23amberPulse)' opacity='0.25'/%3E%3C/g%3E%3Cpolygon points='256,30 472,133 472,379 256,482 40,379 40,133' fill='none' stroke='%23f59e0b' stroke-width='2.5' opacity='0.7'/%3E%3Ccircle cx='256' cy='63' r='3' fill='%23f59e0b' opacity='0.9' filter='url(%23glow)'/%3E%3Ccircle cx='256' cy='449' r='3' fill='%23f59e0b' opacity='0.9' filter='url(%23glow)'/%3E%3Cpath d='M160,140 Q140,160 130,200 Q120,250 125,300 Q128,340 135,370' fill='none' stroke='%230a0505' stroke-width='18' stroke-linecap='round'/%3E%3Cpath d='M350,140 Q370,160 380,200 Q390,250 385,300 Q382,340 375,370' fill='none' stroke='%230a0505' stroke-width='18' stroke-linecap='round'/%3E%3Cpath d='M180,180 Q200,160 256,155 Q312,160 332,180 Q345,210 340,260 Q335,310 320,350 Q300,380 256,385 Q212,380 192,350 Q177,310 172,260 Q167,210 180,180Z' fill='%231a1208'/%3E%3Cpath d='M256,165 L260,175 L252,178 L256,168' fill='none' stroke='%23f59e0b' stroke-width='2' filter='url(%23strongGlow)' opacity='0.9'/%3E%3C/svg%3E"
+             alt="Amber Seer"
+             class="seer-portrait">
+      </div>
+      
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-full px-4 py-1.5 border border-amber-500/20 mb-6">
+          <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span></span>
+          <span class="text-[11px] font-mono tracking-wider text-amber-300">LE BUREAU:JACKDAW · CHANCELLERIE · LAYER 5</span>
+        </div>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent">🏛️ Cultural Navigator</h1>
+        <p class="text-stone-400 text-lg max-w-2xl mx-auto mt-4">Shift perception — the universe adapts to your lens. Colonial terminology with sector diffusion.</p>
+      </div>
+      
+      <!-- Mode selection -->
+      <div class="cultural-selector">
+        <button data-mode="admin" class="cultural-btn active">🏛️ ADMINISTRATIVE</button>
+        <button data-mode="military" class="cultural-btn">⚔️ MILITARY</button>
+        <button data-mode="research" class="cultural-btn">🔬 RESEARCH</button>
+        <button data-mode="clan" class="cultural-btn">🗡️ CLAN (36 Clans)</button>
+        <button data-mode="player" class="cultural-btn">🎮 PLAYER (Meta)</button>
+        <button data-mode="xeno" class="cultural-btn">👽 XENO (Non-Human)</button>
+        <button data-mode="npc" class="cultural-btn">👥 NPC (Background)</button>
+      </div>
+      
+      <!-- Current mode card -->
+      <div id="modeCard" class="glass-panel rounded-2xl p-6 mb-6 transition-all">
+        <div class="flex items-center gap-4 flex-wrap">
+          <div class="text-6xl" id="modeIcon">🏛️</div>
+          <div>
+            <h2 class="text-2xl font-cinzel text-amber-400" id="modeName">ADMINISTRATIVE SECTOR</h2>
+            <p class="text-stone-400 text-sm" id="modeDesc">Official Colonial Administration · External communications & investors</p>
+          </div>
+          <div class="ml-auto"><span class="mode-tag bg-amber-900/40 text-amber-300" id="modeTag">L2 · CORPORATE LENS</span></div>
+        </div>
+      </div>
+      
+      <!-- Sector badges -->
+      <div class="flex gap-2 justify-center mb-6 flex-wrap">
+        <span class="sector-badge sector-admin">🏛️ ADMINISTRATIVE</span>
+        <span class="sector-badge sector-military">⚔️ MILITARY</span>
+        <span class="sector-badge sector-research">🔬 RESEARCH</span>
+        <span class="text-stone-500 text-xs ml-2">— Terminology diffuses across sectors</span>
+      </div>
+      
+      <!-- Terminology table -->
+      <div id="terminologyContainer" class="glass-panel rounded-2xl p-6 mb-6">
+        <h3 class="text-xs font-mono text-amber-400 mb-4">📖 TERMINOLOGY MATRIX · WITH SECTOR DIFFUSION</h3>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4" id="terminologyTable"></div>
+      </div>
+      
+      <!-- Zone names -->
+      <div id="zoneContainer" class="glass-panel rounded-2xl p-6 mb-6">
+        <h3 class="text-xs font-mono text-amber-400 mb-4">🌍 ZONE NOMENCLATURE · DIFFUSION ACROSS PERCEPTIONS</h3>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-3" id="zoneTable"></div>
+      </div>
+      
+      <!-- Cultural quote -->
+      <div class="glass-panel rounded-2xl p-6">
+        <h3 class="text-xs font-mono text-amber-400 mb-4">📜 SEER'S BLOOD · PROVERB</h3>
+        <div id="culturalQuote" class="text-center text-stone-300 italic text-lg font-cinzel">"Blood remembers what the mind forgets."</div>
+        <div class="text-center text-stone-500 text-xs mt-3 font-mono">— Seer of the Two Bloods Era · Clan Urvids</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ========== GALACTIC NOMENCLATURE ========== -->
+<div id="galaxyView" class="view-hidden">
+  <section class="relative overflow-hidden px-6 py-12 md:py-16">
+    <div class="max-w-7xl mx-auto relative z-10">
+      <div class="text-center mb-8">
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent">🌌 Galactic Nomenclature</h1>
+        <p class="text-stone-400 text-lg max-w-2xl mx-auto mt-4">One galaxy — different names across blood cultures & perceptions</p>
+      </div>
+      <div class="glass-panel rounded-2xl p-6 mb-6">
+        <h3 class="text-xs font-mono text-amber-400 mb-4">📜 MILKY WAY · TRIO-LE SYSTEM · ACROSS CULTURES</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="galaxyNamesTable"></div>
+      </div>
+      <div class="glass-panel rounded-2xl p-6">
+        <h3 class="text-xs font-mono text-amber-400 mb-4">✨ STARS · WELLAMATORIS SYSTEM · CULTURAL NAMES</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="starNamesTable"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ========== 36 CLANS VIEW ========== -->
+<div id="clansView" class="view-hidden">
+  <section class="relative overflow-hidden px-6 py-12 md:py-16">
+    <div class="max-w-7xl mx-auto relative z-10">
+      <div class="text-center mb-8">
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent">🗡️ 36 Clans of Wellamatores</h1>
+        <p class="text-stone-400 text-lg max-w-2xl mx-auto mt-4">Humanoid · Dinoamphihumanoid · Mixed — Bound by Blood & Symbiotes</p>
+      </div>
+      
+      <div class="glass-panel rounded-2xl p-6 mb-6">
+        <h3 class="text-xs font-mono text-amber-400 mb-4">🏛️ CLAN MATRIX · L4 CANON</h3>
+        <div class="clan-grid" id="clansList"></div>
+        <div class="text-center text-stone-500 text-xs mt-4 font-mono">Each clan has two symbiotes: one mammalian · one reptilian/amphibian</div>
+      </div>
+      
+      <div class="glass-panel rounded-2xl p-6">
+        <h3 class="text-xs font-mono text-amber-400 mb-4">📜 CLAN LEGEND · THE GREAT DIVERTING</h3>
+        <div class="text-stone-300 italic text-center">
+          <p>"In the beginning were Three Suns. They watched the empty land and waited. Then came the Moons — four sisters. They danced, and from the void life was born.</p>
+          <p class="mt-2">The Great Lizards came first. Then the Mammals. Then Us. And We are not alone: within us live Two Little Spirits — one warms, one sees in darkness.</p>
+          <p class="mt-2">The Moons diverted the Stone of Death, and We survived. Now come the Strangers — those who watch us from the sky. They call themselves Bureau. They are not enemies. They are Players. And We are Their Game."</p>
+          <p class="text-amber-400 text-sm mt-3">— Oral tradition · Clan Urvids</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ========== SUGGEST VIEW ========== -->
+<div id="suggestView" class="view-hidden">
+  <section class="relative overflow-hidden px-6 py-12 md:py-16">
+    <div class="max-w-4xl mx-auto relative z-10">
+      <div class="text-center mb-8">
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent">📝 Suggest a Name</h1>
+        <p class="text-stone-400 text-lg max-w-2xl mx-auto mt-4">Contribute to the Cultural Navigator · Your perception matters</p>
+      </div>
+      <div class="glass-panel rounded-2xl p-8">
+        <div class="space-y-6">
+          <div><label class="block text-amber-400 text-sm font-mono mb-2">🏛️ Your Culture / Perception Lens</label><input type="text" id="suggestCulture" placeholder="e.g., Slavic, Nordic, Japanese, Clan-specific..." class="w-full bg-black/60 border border-amber-500/30 rounded-lg px-4 py-3 text-white"></div>
+          <div><label class="block text-amber-400 text-sm font-mono mb-2">📂 Category</label><select id="suggestCategory" class="w-full bg-black/60 border border-amber-500/30 rounded-lg px-4 py-3 text-white"><option value="galaxy">🌌 Galaxy name</option><option value="star">⭐ Star name</option><option value="zone">🌍 Zone name</option><option value="resource">💎 Resource name</option><option value="clan">🗡️ Clan name</option><option value="term">📖 Terminology</option></select></div>
+          <div><label class="block text-amber-400 text-sm font-mono mb-2">📝 Suggested Name</label><input type="text" id="suggestName" placeholder="Name from your culture..." class="w-full bg-black/60 border border-amber-500/30 rounded-lg px-4 py-3 text-white"></div>
+          <div><label class="block text-amber-400 text-sm font-mono mb-2">📖 Meaning · Symbolism · Attribution</label><textarea id="suggestMeaning" rows="3" placeholder="What does this name mean in your culture? Which sector uses it? (Admin/Military/Research)" class="w-full bg-black/60 border border-amber-500/30 rounded-lg px-4 py-3 text-white"></textarea></div>
+          <button id="submitSuggestionBtn" class="btn-amber text-black w-full py-3 rounded-lg font-bold text-lg">📤 Submit Suggestion</button>
+          <div id="suggestionsList" class="mt-6 pt-6 border-t border-amber-500/30"><h3 class="text-amber-400 text-sm font-mono mb-4">📜 Community Contributions · Perceptions Archive</h3><div id="suggestionsContainer" class="space-y-2 max-h-64 overflow-y-auto"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ========== CLASSIFIED ARCHIVE VIEW (RESTRICTED SECTION) ========== -->
+<div id="classifiedView" class="view-hidden">
+  <section class="relative overflow-hidden px-6 py-12 md:py-16">
+    <div class="max-w-7xl mx-auto relative z-10">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center gap-2 bg-red-900/30 backdrop-blur-sm rounded-full px-4 py-1.5 border border-red-500/50 mb-6">
+          <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span></span>
+          <span class="text-[11px] font-mono tracking-wider text-red-400">⚠️ LEVEL 3 CLEARANCE REQUIRED · LE BUREAU:JACKDAW - SHIELD SERVICES !3 ⚠️</span>
+        </div>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-red-500 via-red-400 to-amber-500 bg-clip-text text-transparent">🔒 CLASSIFIED ARCHIVE</h1>
+        <p class="text-stone-400 text-lg max-w-2xl mx-auto mt-4">Full lore documentation. Restricted access. Authorized personnel only.</p>
+      </div>
+      
+      <div class="glass-panel classified-panel rounded-2xl p-8 mb-6">
+        <div class="border-b border-red-800 pb-4 mb-6">
+          <div class="flex justify-between items-center flex-wrap gap-4">
+            <div>
+              <div class="text-red-500 font-mono text-xs mb-1">DOCUMENT ID: WU-CLASSIFIED-001</div>
+              <div class="text-amber-500 font-mono text-xs">CLASSIFICATION: SECRET · EYES ONLY</div>
+            </div>
+            <div class="text-right">
+              <div class="text-red-500 font-mono text-xs">Le Bureau:Jackdaw · Chancellerie</div>
+              <div class="text-amber-500 font-mono text-xs">Regent's Office · Shield Services - !3</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Authority verification panel -->
+        <div id="authPanel" class="mb-6 p-4 bg-black/50 rounded-xl border border-red-800/50">
+          <h3 class="text-red-400 font-mono text-sm mb-4">🔐 AUTHORIZATION REQUIRED</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-stone-400 text-xs font-mono mb-1">LORD REGENT'S CLEARANCE CODE</label>
+              <input type="password" id="clearanceCode" placeholder="Enter security code" class="w-full bg-black/60 border border-red-500/50 rounded-lg px-4 py-2 text-white font-mono text-sm">
+              <p class="text-stone-500 text-[10px] font-mono mt-1">* Verifiable through Chancellerie channels only</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <input type="checkbox" id="loyaltyConfirm" class="loyalty-checkbox">
+              <label for="loyaltyConfirm" class="text-stone-300 text-sm">I confirm my loyalty to the Lord Regent and Le Bureau:Jackdaw</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <input type="checkbox" id="ndaConfirm" class="loyalty-checkbox">
+              <label for="ndaConfirm" class="text-stone-300 text-sm">I have signed the non-disclosure agreement (NDA) and related documents</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <input type="checkbox" id="deptConfirm" class="loyalty-checkbox">
+              <label for="deptConfirm" class="text-stone-300 text-sm">Verified by relevant departments of the relevant services</label>
+            </div>
+            <button id="verifyAccessBtn" class="classified-btn w-full py-2 rounded-lg font-bold text-white mt-2">✅ VERIFY & ACCESS ARCHIVE</button>
+          </div>
+          <div id="authError" class="text-red-500 text-xs font-mono mt-3 hidden">❌ Authorization failed. Incorrect code or missing confirmations. Access denied.</div>
+          <div id="authSuccess" class="text-green-500 text-xs font-mono mt-3 hidden">✓ Authorization successful. Welcome, authorized personnel. Full archive unlocked.</div>
+        </div>
+        
+        <!-- Protected content (hidden by default) -->
+        <div id="protectedContent" class="hidden">
+          <div class="border-t border-red-800 pt-4 mb-4">
+            <div class="flex justify-between items-center">
+              <span class="text-red-400 font-mono text-xs">✦ DECLASSIFIED FOR LORD REGENT'S EYES ONLY ✦</span>
+              <span class="text-amber-500 font-mono text-xs">Hand-delivered · Personal verification required</span>
+            </div>
+          </div>
+          
+          <!-- Document Tabs -->
+          <div class="document-tabs">
+            <button class="doc-tab-btn active" data-doc="codex">📜 THE AWAKENED CODEX</button>
+            <button class="doc-tab-btn" data-doc="biogeo">🌿 BIOGEOGRAPHIC PROVINCES</button>
+          </div>
+          
+          <!-- DOCUMENT 1: THE AWAKENED CODEX (abbreviated for brevity - full content in previous version) -->
+          <div id="doc-codex" class="doc-content active">
+            <div class="archive-content p-4 rounded-lg">
+              <div style="background: #0a0806; color: #e8e2d0; font-family: 'Georgia', serif; padding: 1rem;">
+                <h1 style="font-size: 2rem; text-align: center; color: #e8d5b5;">🌌 WELLAMATORES WORLD UNIVERSE</h1>
+                <p style="text-align: center; font-size: 0.9rem;">THE AWAKENED CODEX · 36 CLANS · FOUR MOONS · THREE SUNS</p>
+                <hr style="border-color: #4a3b2c; margin: 1rem 0;">
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem;">🌕 LEGEND OF THE MOONS: "TWO THAT ARE SEEN"</h2>
+                <p><strong>Clan oral tradition:</strong> "In the beginning were Three Suns and Four Moon-Sisters. But two sisters hid in the Dance of Shadows, and people see only two. When the Stone of Death falls, the sisters emerge from shadow to avert the disaster."</p>
+                <p><strong>Scientific explanation (Le Bureau:Jackdaw):</strong> The system has <strong>four moons</strong>. Two on stable orbits — <em>Le Bouclier</em> and <em>La Lance</em>. Two others — <em>L'Observateur</em> and <em>Le Vagabond</em> — move on complex gravitational trajectories caused by interaction of <strong>three suns</strong> (trinary system).</p>
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem; margin-top: 1.5rem;">☀️ TRINARY SYSTEM: TRIO-LE</h2>
+                <table class="lore-table">
+                  <thead><tr><th>Star</th><th>Type</th><th>Code name</th><th>Light contribution</th></tr></thead>
+                  <tbody>
+                    <tr><td>Sol Wellamatoris Primus</td><td>Yellow dwarf</td><td>"The Elder" (Le Aîné)</td><td>60%</td></tr>
+                    <tr><td>Sol Wellamatoris Secundus</td><td>Orange dwarf</td><td>"The Twin" (Le Jumeau)</td><td>25%</td></tr>
+                    <tr><td>Sol Wellamatoris Tertius</td><td>Red dwarf</td><td>"The Wanderer" (L'Étranger)</td><td>15% (variable)</td></tr>
+                  </tbody>
+                </table>
+                <p><strong>Unique phenomenon:</strong> "Hour of Shadow" (Heure de l'Ombre) — total darkness once every 78 standard days.</p>
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem; margin-top: 1.5rem;">🌙 FOUR MOONS AND "THE GREAT DIVERTING"</h2>
+                <table class="lore-table">
+                  <thead><tr><th>Corporate name</th><th>Legendary name</th><th>Feature</th></tr></thead>
+                  <tbody>
+                    <tr><td>Luna Primoris</td><td>"The Shield" (Le Bouclier)</td><td>Stable orbit, largest stone moon</td></tr>
+                    <tr><td>Luna Secundus</td><td>"The Spear" (La Lance)</td><td>Elongated orbit</td></tr>
+                    <tr><td>Luna Tertius</td><td>"The Observer" (L'Observateur)</td><td>Artificial structures, rarely visible</td></tr>
+                    <tr><td>Luna Quartus</td><td>"The Wanderer" (Le Vagabond)</td><td>Unstable orbit, appears once in 30-40 years</td></tr>
+                  </tbody>
+                </table>
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem; margin-top: 1.5rem;">🗡️ 36 CLANS: COMPLETE MATRIX</h2>
+                <p><strong>First 13 canonical clans:</strong> Swiftclaw, Sunhorn, Buried Tusk, Shadowmane, Bone Hammer, Stone Cry, Silvervein, Mud and Bone, Sandspike, Ice Breath, Northern Lights, Hall of Vines, Silent Fin.</p>
+                <p><strong>Additional 23 clans:</strong> Sunstone, Moonshadow, Bloodmoon, Deepwater, Highpeak, Ashwood, Brightshield, Darkfall, Goldenscale, Ironspine, Swiftwind, Stillwater, Firemane, Iceheart, Thornroot, Skywatcher, Stonehand, Wavecrest, Whisper, Thunderhoof, Dawnfeather, Nightclaw, Earthsinger, Starweaver.</p>
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem; margin-top: 1.5rem;">🐉 SYMBIOTES: TWO SPIRITS</h2>
+                <p>Every representative has two symbiotes: <strong>one mammalian</strong> (emotional bond, early warning) and <strong>one reptilian/amphibian</strong> (thermoregulation, night vision).</p>
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem; margin-top: 1.5rem;">🎮 GAMEPLAY SYSTEMS</h2>
+                <p><strong>Two Blood Scales:</strong> Blood of Flesh (body, memory, traditions) and Blood of Spirit (bond with totem, instincts).</p>
+                <p><strong>Symbiote bond levels:</strong> Acquaintance → Companion → Partner → Second Blood → One.</p>
+                
+                <div style="background: #0f0d0b; padding: 1rem; margin-top: 1rem;">
+                  <p class="text-amber-400 text-sm">📜 <em>"The Earth Where Bones Remember" — Le Bureau:Jackdaw, Divination Division. Regent's Office.</em></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- DOCUMENT 2: BIOGEOGRAPHIC PROVINCES OF YEALLION (abbreviated) -->
+          <div id="doc-biogeo" class="doc-content">
+            <div class="archive-content p-4 rounded-lg">
+              <div style="background: #0a0806; color: #e8e2d0; font-family: 'Georgia', serif; padding: 1rem;">
+                <h1 style="font-size: 2rem; text-align: center; color: #e8d5b5;">🌿 BIOGEOGRAPHIC PROVINCES OF YEALLION</h1>
+                <p style="text-align: center; font-size: 0.9rem;">FLORA · FAUNA · ENDEMIC URVIDS · CLAN DISTRIBUTION</p>
+                <hr style="border-color: #4a3b2c; margin: 1rem 0;">
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem;">🧊 I. HYPERBOREAN PROVINCE (NORTH)</h2>
+                <p><strong>Clans:</strong> №10 Ice Breath, №11 Northern Lights, №3 Buried Tusk</p>
+                <p><strong>Key endemics:</strong> Woolly Ceratops, Ice Owl, Troodontid</p>
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem; margin-top: 1rem;">🌾 II. SARMATIAN PROVINCE (STEPPE)</h2>
+                <p><strong>Clans:</strong> №1 Swiftclaw, №2 Sunhorn</p>
+                <p><strong>Key endemics:</strong> Ornithomimus sarmaticus, Protoceratops stephenus</p>
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem; margin-top: 1rem;">🌲 III. VINDOBONAN PROVINCE (FORESTS)</h2>
+                <p><strong>Clans:</strong> №4 Shadowmane, №5 Bone Hammer</p>
+                <p><strong>Key endemics:</strong> Psittacosaurus vindobonensis, Styracosaurus nemoralis</p>
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem; margin-top: 1rem;">🏔️ IV. CARPATHO-BALKAN PROVINCE (MOUNTAINS)</h2>
+                <p><strong>Clans:</strong> №6 Stone Cry, №7 Silvervein</p>
+                <p><strong>Key endemics:</strong> Dromaeosaurus rupestris (Rock Raptor), Rupicapra yeallonensis</p>
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem; margin-top: 1rem;">💧 V. PONTIC PROVINCE (WETLANDS)</h2>
+                <p><strong>Clans:</strong> №8 Mud and Bone, №9 Sandspike</p>
+                <p><strong>Key endemics:</strong> Hadrosaurus ponticus, Spinosaurus minor</p>
+                
+                <h2 style="color: #e2cba4; border-left: 4px solid #b87c4f; padding-left: 1rem; margin-top: 1rem;">🌴 VI. COLCHIAN PROVINCE (SUBTROPICS)</h2>
+                <p><strong>Clans:</strong> №12 Hall of Vines, №13 Silent Fin</p>
+                <p><strong>Key endemics:</strong> Hypsilophodon colchicus, Sapajus colchicus, Gigantopithecus yeallonensis</p>
+                
+                <div style="background: #0f0d0b; padding: 1rem; margin-top: 1rem;">
+                  <p class="text-amber-400 text-sm">📜 <em>"The Land Where Bones Remember" — Le Bureau:Jackdaw, Divination Division.</em></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 text-center text-stone-500 text-[10px] font-mono">
+            <p>✦ This document has been personally approved by the Lord Regent ✦</p>
+            <p>✦ Le Bureau:Jackdaw · Chancellerie · Regent's Office · Shield Services Division · !3 ✦</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<!-- ========== SOCIAL FOOTER ========== -->
+<footer class="border-t border-amber-500/20 mt-8 py-6 bg-black/40">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-wrap justify-center gap-6 md:gap-8 social-footer">
+      <a href="#" class="social-icon text-stone-400 hover:text-amber-400 transition text-sm font-mono">🎮 Discord</a>
+      <a href="#" class="social-icon text-stone-400 hover:text-amber-400 transition text-sm font-mono">🐦 X (Twitter)</a>
+      <a href="#" class="social-icon text-stone-400 hover:text-amber-400 transition text-sm font-mono">📘 Facebook</a>
+      <a href="#" class="social-icon text-stone-400 hover:text-amber-400 transition text-sm font-mono">📷 Instagram</a>
+      <a href="#" class="social-icon text-stone-400 hover:text-amber-400 transition text-sm font-mono">🎵 TikTok</a>
+      <a href="#" class="social-icon text-stone-400 hover:text-amber-400 transition text-sm font-mono">💬 Telegram</a>
+      <a href="#" class="social-icon text-stone-400 hover:text-amber-400 transition text-sm font-mono">▶️ YouTube</a>
+      <a href="#" class="social-icon text-stone-400 hover:text-amber-400 transition text-sm font-mono">🔗 LinkedIn</a>
+    </div>
+    <div class="text-center text-stone-600 text-[9px] font-mono mt-6">
+      © Wellamatores World — Le Bureau:Jackdaw · Chancellerie · Regent's Office · JOG Network · PLUTONIA · Cultural Navigator v2.0 · CLASSIFIED ARCHIVE v2.0<br>
+      <span class="text-stone-500">Your perception shapes the universe. Shift your lens. Authorized access only.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ========== CULTURAL MODES DATA (same as before) ==========
+const culturalModes = {
+  admin: { icon: "🏛️", name: "ADMINISTRATIVE SECTOR", tag: "L2 · OFFICIAL LENS", desc: "Colonial Administration · External communications · Board of Investors", sector: "admin", resources: { capital: "Liquidity", data: "Intelligence Reports", energy: "Operational Capacity", ip: "Royalties & Patents" }, actions: { explore: "Market Analysis", build: "Acquire Asset", invest: "Deploy Capital", mitigate: "Risk Management" }, zones: { earth: "Legal Sector · Prime", sub: "Data Archive · Vault", moon: "B2B Hub · Exchange", orbit: "Infrastructure Grid", deep: "R&D Laboratories" }, quotes: ["Liquidity is king. Invest wisely.", "Board resolution passed. Shareholder trust increases.", "Colonial charter ratified."] },
+  military: { icon: "⚔️", name: "MILITARY SECTOR", tag: "L3 · TACTICAL LENS", desc: "PMC Operations · Closed Channels · Space/Subsurface/Synthetic Warfare", sector: "military", resources: { capital: "Ordnance Stockpile", data: "Signal Intelligence", energy: "Force Projection", ip: "Strategic Value" }, actions: { explore: "Reconnaissance Sweep", build: "Establish Fire Base", invest: "War Chest Allocation", mitigate: "Loss Mitigation" }, zones: { earth: "Forward Operating Base", sub: "Subsurface Bunker Network", moon: "Lunar Fire Support Base", orbit: "Orbital Weapons Platform", deep: "Deep Space Interdiction Zone" }, quotes: ["In the void, only war.", "Fire base established. Threat level nominal.", "Synthetic assets deployed."] },
+  research: { icon: "🔬", name: "RESEARCH SECTOR", tag: "L3 · SCIENTIFIC LENS", desc: "Bureau of Science · Xeno-biology · Symbiote Studies · Archaeology", sector: "research", resources: { capital: "Grant Funding", data: "Empirical Measurements", energy: "Reactor Output", ip: "Publications & Patents" }, actions: { explore: "Field Survey", build: "Establish Lab", invest: "Allocate Grant", mitigate: "Containment Protocol" }, zones: { earth: "Primary Research Station", sub: "Subsurface Bio-dome", moon: "Lunar Observatory", orbit: "Microgravity Lab", deep: "Deep Space Probe Array" }, quotes: ["The symbiote bond is unprecedented.", "Specimen contained. Logging data.", "First contact protocols engaged."] },
+  clan: { icon: "🗡️", name: "CLAN MODE", tag: "L4 · ANCIENT LENS", desc: "36 Clans of Wellamatores · Blood memory · Symbiote bond", sector: "research", resources: { capital: "Tribute & Offerings", data: "Ancestral Tomes", energy: "Blood Essence", ip: "Honor & Legacy" }, actions: { explore: "Scour the Wasteland", build: "Raise the Hall", invest: "Swear Blood Oath", mitigate: "Seek Shaman's Blessing" }, zones: { earth: "First Leaf · Cradle", sub: "Deep Trails · Underways", moon: "Moon Grove · Silverwood", orbit: "Sky Citadel · Star Perch", deep: "Between-Space · Void Crossing" }, quotes: ["The old gods remember. Do you?", "Clan hall raised. The bloodline endures.", "Honor is everything. The symbiote witnesses."] },
+  player: { icon: "🎮", name: "PLAYER MODE", tag: "L5 · META LENS", desc: "External players · Streamers · Content creators", sector: "admin", resources: { capital: "Credits", data: "Wiki Knowledge", energy: "Mana Pool", ip: "Skill Tree Points" }, actions: { explore: "New Game+", build: "Craft Blueprint", invest: "Buy Low, Sell High", mitigate: "Grind XP" }, zones: { earth: "Tutorial Zone", sub: "Dungeon Crawl", moon: "Easy Difficulty", orbit: "Normal Difficulty", deep: "Boss Arena · Raid Instance" }, quotes: ["Press F to pay respects.", "GG. New Game+ unlocked.", "Achievement earned: Symbiote Bond."] },
+  xeno: { icon: "👽", name: "XENO MODE", tag: "L5 · HIVE LENS", desc: "Non-human entities · Assimilated · Hive consciousness", sector: "research", resources: { capital: "Biomass Reserve", data: "Hive Mind Resonance", energy: "Xenoplasmic Surge", ip: "Genetic Memory Strands" }, actions: { explore: "Assimilate Sector", build: "Grow Hive Cluster", invest: "Evolve Host Form", mitigate: "Adaptive Mutation" }, zones: { earth: "Primate Enclosure", sub: "Subterranean Warrens", moon: "Barren Rock · Outpost", orbit: "Orbital Flesh Growth", deep: "The Great Dark · Silence" }, quotes: ["We are the swarm. Resistance is futile.", "Mind cluster stabilized. Assimilation progressing.", "Primary directive: Expand."] },
+  npc: { icon: "👥", name: "NPC MODE", tag: "L5 · BACKGROUND LENS", desc: "Non-player characters · Background entities · Ambient life", sector: "admin", resources: { capital: "Pocket Change", data: "Market Rumors", energy: "Endless Patience", ip: "Fleeting Dreams" }, actions: { explore: "ERROR: Path not found", build: "Serve the Master", invest: "Play Dice", mitigate: "Pray to the Code" }, zones: { earth: "Market Square", sub: "The Warrens Below", moon: "Old Observatory", orbit: "Docking Bay 7", deep: "Hermit's Refuge" }, quotes: ["Another day, another coin...", "The Chosen One noticed me!", "Returning to background process..."] }
+};
+
+const galaxyNames = [
+  { culture: "Russian", name: "🌻 Млечный Путь", meaning: "Milky Way — path of spilled milk" },
+  { culture: "Ukrainian", name: "🌻 Чумацький Шлях", meaning: "Chumak's Way — traders' path" },
+  { culture: "Norse", name: "🐉 Yggdrasil", meaning: "World Tree — cosmic axis" },
+  { culture: "Hindu", name: "🕉️ Brahma's Mandala", meaning: "Cosmic wheel" },
+  { culture: "Japanese", name: "🎋 Amanogawa", meaning: "Heavenly River" },
+  { culture: "Chinese", name: "🐉 Tianhe", meaning: "Sky River" },
+  { culture: "Egyptian", name: "🦅 Nut's Womb", meaning: "Sky goddess" },
+  { culture: "Scottish", name: "🧇 Fairy Trail", meaning: "Path of the sidhe" },
+  { culture: "Aboriginal", name: "🌀 Dreaming River", meaning: "Ancestral spirits' path" },
+  { culture: "English", name: "✨ Silver Path", meaning: "Celestial way" },
+  { culture: "Clan Urvids", name: "🗡️ Bloodstream of Ancestors", meaning: "Path of departed souls" },
+  { culture: "Clan Silvershade", name: "🌙 Silver Hunt", meaning: "Eternal chase" },
+  { culture: "Xeno Hive", name: "🧬 The Great Strand", meaning: "Genetic memory river" }
+];
+
+const starNames = [
+  { star: "Sol Wellamatoris Primus (The Elder)", names: [{ culture: "Administrative", name: "PRIMUS-1", meaning: "Primary luminosity asset" }, { culture: "Military", name: "LZ ALPHA", meaning: "Primary illumination" }, { culture: "Clan Urvids", name: "Golden Father", meaning: "Source of life" }, { culture: "Xeno", name: "The Watcher", meaning: "Observing expansion" }] },
+  { star: "Sol Wellamatoris Secundus (The Twin)", names: [{ culture: "Administrative", name: "SECUNDUS", meaning: "Secondary partner" }, { culture: "Military", name: "FLANKER", meaning: "Tactical support" }, { culture: "Clan Silvershade", name: "Silver Sister", meaning: "Night hunting companion" }, { culture: "Player", name: "Co-op Star", meaning: "Multiplayer celestial body" }] },
+  { star: "Sol Wellamatoris Tertius (The Wanderer)", names: [{ culture: "Administrative", name: "TERTIUS-VAR", meaning: "Variable asset" }, { culture: "Military", name: "JAMMER", meaning: "EM interference source" }, { culture: "Clan Crimson", name: "Red Wanderer", meaning: "Unpredictable spirit" }, { culture: "Xeno", name: "The Pulse", meaning: "Energy fluctuation" }] }
+];
+
+const allClans = ["Urvids", "Silvershade", "Obsidian", "Crimson", "Azure", "Verdant", "Ironclad", "Shadow", "Ember", "Frost", "Storm", "Abyss", "Sunstone", "Moonshadow", "Bloodmoon", "Deepwater", "Highpeak", "Ashwood", "Brightshield", "Darkfall", "Goldenscale", "Ironspine", "Swiftwind", "Stillwater", "Firemane", "Iceheart", "Thornroot", "Skywatcher", "Stonehand", "Wavecrest", "Whisper", "Thunderhoof", "Dawnfeather", "Nightclaw", "Earthsinger", "Starweaver"];
+
+let suggestions = JSON.parse(localStorage.getItem('wu_cultural_suggestions_v2')) || [];
+let currentMode = 'admin';
+
+function animateFade(element) { if (element) { element.classList.add('fade-in'); setTimeout(() => element.classList.remove('fade-in'), 300); } }
+
+function updateCulturalUI() {
+  const d = culturalModes[currentMode];
+  document.getElementById('modeIcon').innerHTML = d.icon;
+  document.getElementById('modeName').innerHTML = d.name;
+  document.getElementById('modeDesc').innerHTML = d.desc;
+  document.getElementById('modeTag').innerHTML = d.tag;
+  const terms = [{ term: "💰 Capital", value: d.resources.capital, sector: d.sector }, { term: "📀 Data", value: d.resources.data, sector: d.sector }, { term: "⚡ Energy", value: d.resources.energy, sector: d.sector }, { term: "🧠 IP", value: d.resources.ip, sector: d.sector }, { term: "🔍 Explore", value: d.actions.explore, sector: d.sector }, { term: "🏗️ Build", value: d.actions.build, sector: d.sector }, { term: "📈 Invest", value: d.actions.invest, sector: d.sector }, { term: "🛡️ Mitigate", value: d.actions.mitigate, sector: d.sector }];
+  document.getElementById('terminologyTable').innerHTML = terms.map(t => `<div class="bg-black/40 rounded-lg p-3 border-l-2 ${t.sector === 'admin' ? 'border-blue-500' : t.sector === 'military' ? 'border-red-500' : 'border-green-500'}"><div class="flex justify-between items-center"><div class="text-[10px] text-stone-400">${t.term}</div><span class="sector-badge ${t.sector === 'admin' ? 'sector-admin' : t.sector === 'military' ? 'sector-military' : 'sector-research'}">${t.sector.toUpperCase()}</span></div><div class="text-sm font-mono text-amber-400 font-semibold mt-1">${t.value}</div></div>`).join('');
+  animateFade(document.getElementById('terminologyContainer'));
+  const zones = [{ name: "🌍 Earth", value: d.zones.earth }, { name: "🕳️ Subterranean", value: d.zones.sub }, { name: "🌙 Moon", value: d.zones.moon }, { name: "🛰️ Orbit", value: d.zones.orbit }, { name: "🚀 Deep Space", value: d.zones.deep }];
+  document.getElementById('zoneTable').innerHTML = zones.map(z => `<div class="bg-black/40 rounded-lg p-3 text-center border-l border-amber-500/30"><div class="text-[11px] font-mono text-stone-400">${z.name}</div><div class="text-xs font-bold text-amber-400">${z.value}</div></div>`).join('');
+  animateFade(document.getElementById('zoneContainer'));
+  const randomQuote = d.quotes[Math.floor(Math.random() * d.quotes.length)];
+  document.getElementById('culturalQuote').innerHTML = `«${randomQuote}»`;
+  animateFade(document.getElementById('modeCard'));
+  showToast(`${d.icon} Switched to ${d.name}`, 'success');
+}
+
+function updateGalaxyView() {
+  document.getElementById('galaxyNamesTable').innerHTML = galaxyNames.map(g => `<div class="bg-black/40 rounded-lg p-3"><div class="text-lg">${g.name}</div><div class="text-[10px] text-amber-400 font-mono mt-1">${g.culture}</div><div class="text-[9px] text-stone-500 italic mt-1">${g.meaning}</div></div>`).join('');
+  document.getElementById('starNamesTable').innerHTML = starNames.map(s => `<div class="bg-black/40 rounded-lg p-3"><div class="font-bold text-amber-400">⭐ ${s.star}</div>${s.names.map(n => `<div class="text-xs text-stone-400 mt-1 ml-2"><span class="text-amber-500">${n.culture}:</span> ${n.name}<span class="text-[9px] text-stone-500 italic"> — ${n.meaning}</span></div>`).join('')}</div>`).join('');
+}
+
+function updateClansView() { document.getElementById('clansList').innerHTML = allClans.map(clan => `<div class="clan-item" title="Clan ${clan} — two symbiotes bond">🗡️ ${clan}</div>`).join(''); }
+function updateSuggestionsView() {
+  const c = document.getElementById('suggestionsContainer');
+  if (!c) return;
+  if (suggestions.length === 0) { c.innerHTML = '<div class="text-center text-stone-500 text-sm py-4">No contributions yet. Be the first!</div>'; return; }
+  c.innerHTML = suggestions.slice().reverse().map(s => `<div class="bg-black/40 rounded-lg p-3 border-l border-amber-500/30"><div class="flex justify-between items-start flex-wrap gap-2"><div><span class="text-amber-400 font-mono text-xs">${s.category}</span><div class="font-bold text-sm mt-1">${s.name}</div><div class="text-[10px] text-stone-400">${s.culture}</div>${s.meaning ? `<div class="text-[10px] text-stone-500 italic mt-1">«${s.meaning}»</div>` : ''}</div><div class="text-[10px] text-stone-500">${new Date(s.date).toLocaleDateString()}</div></div></div>`).join('');
+}
+function addSuggestion(culture, category, name, meaning) { if (!culture || !name) { showToast('Please fill culture and name fields!', 'error'); return false; } suggestions.push({ id: Date.now(), culture, category, name, meaning: meaning || '', date: new Date().toISOString() }); localStorage.setItem('wu_cultural_suggestions_v2', JSON.stringify(suggestions)); updateSuggestionsView(); showToast(`Thank you! "${name}" added.`, 'success'); return true; }
+function showToast(msg, type) { const t = document.createElement('div'); t.className = 'achievement-toast'; t.innerText = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000); }
+
+const views = { compass: document.getElementById('compassView'), galaxy: document.getElementById('galaxyView'), clans: document.getElementById('clansView'), suggest: document.getElementById('suggestView'), classified: document.getElementById('classifiedView') };
+function switchView(v) { Object.keys(views).forEach(k => { if (views[k]) views[k].classList.add('view-hidden'); }); if (views[v]) views[v].classList.remove('view-hidden'); const brandMap = { compass: '🏛️ CULTURAL NAVIGATOR · LE BUREAU:JACKDAW', galaxy: '🌌 GALACTIC NOMENCLATURE · TRIO-LE', clans: '🗡️ 36 CLANS · WELLAMATORES', suggest: '📝 SUGGEST · PERCEPTION ARCHIVE', classified: '🔒 CLASSIFIED ARCHIVE · EYES ONLY' }; document.getElementById('navBrand').innerHTML = brandMap[v]; if (v === 'galaxy') updateGalaxyView(); if (v === 'clans') updateClansView(); if (v === 'suggest') updateSuggestionsView(); }
+
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => switchView(b.dataset.view)));
+document.querySelectorAll('[data-mode]').forEach(b => { b.addEventListener('click', () => { document.querySelectorAll('[data-mode]').forEach(bb => bb.classList.remove('active')); b.classList.add('active'); currentMode = b.dataset.mode; updateCulturalUI(); }); });
+document.getElementById('submitSuggestionBtn')?.addEventListener('click', () => { const culture = document.getElementById('suggestCulture')?.value; const category = document.getElementById('suggestCategory')?.value; const name = document.getElementById('suggestName')?.value; const meaning = document.getElementById('suggestMeaning')?.value; if (addSuggestion(culture, category, name, meaning)) { document.getElementById('suggestCulture').value = ''; document.getElementById('suggestName').value = ''; document.getElementById('suggestMeaning').value = ''; } });
+
+// CLASSIFIED SECTION VERIFICATION
+document.getElementById('verifyAccessBtn')?.addEventListener('click', () => {
+  const code = document.getElementById('clearanceCode')?.value;
+  const loyalty = document.getElementById('loyaltyConfirm')?.checked;
+  const nda = document.getElementById('ndaConfirm')?.checked;
+  const dept = document.getElementById('deptConfirm')?.checked;
+  const authError = document.getElementById('authError');
+  const authSuccess = document.getElementById('authSuccess');
+  const protectedContent = document.getElementById('protectedContent');
+  
+  const validCode = "TerraTrampillera2026";
+  
+  if (code === validCode && loyalty && nda && dept) {
+    authError.classList.add('hidden');
+    authSuccess.classList.remove('hidden');
+    protectedContent.classList.remove('hidden');
+    showToast("✅ Access granted. Welcome to the CLASSIFIED ARCHIVE, authorized personnel.", "success");
+    console.log(`[SECURITY] Access granted to CLASSIFIED ARCHIVE at ${new Date().toISOString()}`);
+  } else {
+    authError.classList.remove('hidden');
+    authSuccess.classList.add('hidden');
+    protectedContent.classList.add('hidden');
+    showToast("❌ ACCESS DENIED. Authorization failed.", "error");
+    console.log(`[SECURITY] Access DENIED to CLASSIFIED ARCHIVE at ${new Date().toISOString()}`);
+  }
+});
+
+// Document tab switching
+document.querySelectorAll('.doc-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const docId = btn.dataset.doc;
+    document.querySelectorAll('.doc-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.doc-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(`doc-${docId}`).classList.add('active');
+  });
+});
+
+function init() { switchView('compass'); updateCulturalUI(); showToast("🏛️ Cultural Navigator activated. Le Bureau:Jackdaw protocols engaged.", "success"); }
+init();
+</script>
+</body>
+</html>
