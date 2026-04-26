@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>INVESTARIUM · LE BUREAU : JACKDAW · Wellamatores World</title>
+  <meta name="description" content="Financial archives of Le Bureau des Colonies. Treasury reports, investment protocols, 3D immersive scenes, and DAO governance.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Cinzel:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #030201;
+      background-image: radial-gradient(circle at 25% 40%, rgba(245, 158, 11, 0.08) 0%, rgba(0,0,0,0) 70%);
+      color: #ece8e0;
+      overflow-x: hidden;
+    }
+    .glass-panel {
+      background: rgba(10, 10, 12, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      transition: all 0.3s;
+    }
+    .glass-panel:hover {
+      border-color: #f59e0b;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+    }
+    .stat-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #f59e0b;
+    }
+    .nav-link:hover { color: #f59e0b; text-shadow: 0 0 5px #f59e0b; }
+    .btn-outline {
+      border: 1px solid #f59e0b;
+      background: transparent;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover {
+      background: rgba(245, 158, 11, 0.15);
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+    }
+    .role-card {
+      background: rgba(12, 20, 18, 0.65);
+      backdrop-filter: blur(10px);
+      border-radius: 36px;
+      padding: 1.8rem;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      transition: all 0.25s;
+    }
+    .role-card:hover {
+      transform: translateY(-6px);
+      border-color: #f59e0b;
+      background: rgba(30, 35, 25, 0.75);
+    }
+    .pill {
+      background: #1e2a1a;
+      border-radius: 40px;
+      padding: 0.2rem 0.8rem;
+      font-size: 0.7rem;
+      color: #f59e0b;
+    }
+    .modal-3d {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000000;
+      z-index: 10000;
+    }
+    .modal-3d.active {
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10001;
+      display: flex;
+      justify-content: flex-end;
+      padding: 20px;
+      pointer-events: none;
+    }
+    .close-modal-btn {
+      background: rgba(0,0,0,0.8);
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 8px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+      pointer-events: auto;
+      font-family: monospace;
+      border: 1px solid #f59e0b;
+      transition: 0.2s;
+    }
+    .close-modal-btn:hover {
+      background: #ff4444;
+      border-color: white;
+    }
+    .fullscreen-hint {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.6);
+      color: #ccc;
+      padding: 6px 14px;
+      border-radius: 24px;
+      font-size: 12px;
+      font-family: monospace;
+      z-index: 10001;
+      pointer-events: none;
+    }
+    .fullscreen-btn-inside {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.7);
+      color: #f59e0b;
+      border: 1px solid #f59e0b;
+      padding: 8px 18px;
+      border-radius: 40px;
+      cursor: pointer;
+      z-index: 10001;
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .fullscreen-btn-inside:hover {
+      background: #f59e0b;
+      color: black;
+    }
+    #sceneContainer {
+      width: 100%;
+      height: 100%;
+    }
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .social-links a {
+      color: #9cafb0;
+      text-decoration: none;
+      font-family: monospace;
+      font-size: 0.75rem;
+      transition: 0.2s;
+    }
+    .social-links a:hover {
+      color: #f59e0b;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="fixed top-0 left-0 w-full z-50 py-3 px-6 bg-black/80 backdrop-blur-md border-b border-amber-500/40">
+  <div class="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-3">
+    <div class="flex items-center gap-2">
+      <div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+      <span class="font-black tracking-tighter text-lg font-cinzel text-amber-400">🏛️ INVESTARIUM</span>
+      <span class="hidden md:inline-block text-[9px] font-mono text-amber-400/70 border-l border-white/20 pl-2 ml-1">LE BUREAU : JACKDAW · FINANCIAL ARCHIVE</span>
+    </div>
+    <div class="flex gap-2 text-xs font-mono flex-wrap">
+      <a href="https://wellamatores-metaverse.vercel.app/" class="nav-link px-3 py-1.5 rounded-full bg-blue-900/30 hover:bg-blue-700/40 transition">← MAIN SITE</a>
+      <a href="https://wellamatores-metaverse.vercel.app/culture.html" class="nav-link px-3 py-1.5 rounded-full bg-amber-900/30 hover:bg-amber-700/40 transition">🏛️ NAVIGATOR</a>
+      <a href="https://wellamatores-metaverse.vercel.app/genesis.html" class="nav-link px-3 py-1.5 rounded-full bg-amber-900/30 hover:bg-amber-700/40 transition">🐸 GENESIS</a>
+    </div>
+  </div>
+</nav>
+
+<main class="pt-24 max-w-6xl mx-auto px-5 py-8">
+
+  <!-- Header -->
+  <div class="text-center mb-12">
+    <div class="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full px-4 py-1.5 border border-amber-500/30 mb-6">
+      <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span></span>
+      <span class="text-[10px] font-mono tracking-wider text-amber-400">LE BUREAU DES COLONIES · LEVEL 4 · FINANCIAL ARCHIVE</span>
+    </div>
+    <h1 class="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent font-cinzel">🏛️ INVESTARIUM</h1>
+    <p class="text-stone-400 text-lg max-w-2xl mx-auto mt-4">Financial records, treasury reports, investment protocols, and 3D immersive scenes of the Colonial Administration.</p>
+  </div>
+
+  <!-- 3D SCENE BUTTONS (now with third scene from second file) -->
+  <div class="flex justify-center gap-4 flex-wrap mb-10">
+    <button id="openScene1Btn" class="btn-outline px-6 py-3 rounded-full text-sm font-mono text-amber-400 hover:text-black hover:bg-amber-400 transition">🐸 3D: Paleo Swamp · Pure Scene</button>
+    <button id="openScene2Btn" class="btn-outline px-6 py-3 rounded-full text-sm font-mono text-amber-400 hover:text-black hover:bg-amber-400 transition">🌿 3D: Ghost Dragonfly · Three Suns</button>
+    <button id="openScene3Btn" class="btn-outline px-6 py-3 rounded-full text-sm font-mono text-amber-400 hover:text-black hover:bg-amber-400 transition">✨ 3D: Meganeura Realm · First Croak</button>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid md:grid-cols-4 gap-5 mb-10">
+    <div class="glass-panel rounded-2xl p-5 text-center">
+      <div class="text-amber-400 text-2xl mb-2">💰</div>
+      <div class="text-xs font-mono text-stone-400">TREASURY (WELLIA)</div>
+      <div class="stat-number">12,847,392</div>
+      <div class="text-[10px] text-stone-500">+4.2% this cycle</div>
+    </div>
+    <div class="glass-panel rounded-2xl p-5 text-center">
+      <div class="text-amber-400 text-2xl mb-2">💎</div>
+      <div class="text-xs font-mono text-stone-400">RESERVES (TELLIA)</div>
+      <div class="stat-number">3,421,506</div>
+      <div class="text-[10px] text-stone-500">stable</div>
+    </div>
+    <div class="glass-panel rounded-2xl p-5 text-center">
+      <div class="text-amber-400 text-2xl mb-2">📊</div>
+      <div class="text-xs font-mono text-stone-400">JOG STAKED</div>
+      <div class="stat-number">892,441</div>
+      <div class="text-[10px] text-stone-500">APY 12.4%</div>
+    </div>
+    <div class="glass-panel rounded-2xl p-5 text-center">
+      <div class="text-amber-400 text-2xl mb-2">👥</div>
+      <div class="text-xs font-mono text-stone-400">SHAREHOLDERS</div>
+      <div class="stat-number">127</div>
+      <div class="text-[10px] text-stone-500">+3 this quarter</div>
+    </div>
+  </div>
+
+  <!-- Three Pillars / Roles -->
+  <h2 class="text-3xl font-cinzel text-amber-400 border-l-4 border-amber-500 pl-4 mb-6">👥 Three Pillars of the Bureau</h2>
+  <div class="grid md:grid-cols-3 gap-6 mb-12">
+    <div class="role-card">
+      <div class="text-4xl mb-3">🏦📈</div>
+      <h3 class="text-xl font-bold mb-2">Investors</h3>
+      <p class="text-sm text-stone-300 mb-3">Secure yield through Swamp Bonds, staking of $FERN tokens, and revenue from land NFT royalties.</p>
+      <div class="flex flex-wrap gap-2"><span class="pill">ROI 18-32% APY</span><span class="pill">DAO voting power</span><span class="pill">Genesis lilypads</span></div>
+    </div>
+    <div class="role-card">
+      <div class="text-4xl mb-3">🎮🐸</div>
+      <h3 class="text-xl font-bold mb-2">Players / Explorers</h3>
+      <p class="text-sm text-stone-300 mb-3">Collect spores, communicate via sonic croaks, tame ancient dragonflies, unlock "First Croak" prophecy.</p>
+      <div class="flex flex-wrap gap-2"><span class="pill">Procedural quests</span><span class="pill">Swarm racing</span><span class="pill">Glow auctions</span></div>
+    </div>
+    <div class="role-card">
+      <div class="text-4xl mb-3">👔🌿</div>
+      <h3 class="text-xl font-bold mb-2">Servants (Bureau Staff)</h3>
+      <p class="text-sm text-stone-300 mb-3">Curators, lore architects, ecosystem moderators. Organize events, whitelist biomes, earn stipends.</p>
+      <div class="flex flex-wrap gap-2"><span class="pill">$SAP salary</span><span class="pill">Governance weight</span><span class="pill">Exclusive tools</span></div>
+    </div>
+  </div>
+
+  <!-- Two columns: Investment Protocols + Quarterly Report -->
+  <div class="grid md:grid-cols-2 gap-8 mb-10">
+    <div class="glass-panel rounded-2xl p-6">
+      <h2 class="text-xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-2 mb-4">📜 INVESTMENT PROTOCOLS</h2>
+      <ul class="space-y-3 text-sm text-stone-300">
+        <li class="flex justify-between border-b border-white/10 pb-2"><span>🔹 Genesis Node Bonds</span><span class="text-amber-400">7.2% APY</span></li>
+        <li class="flex justify-between border-b border-white/10 pb-2"><span>🔹 PLUTONIA Infrastructure</span><span class="text-amber-400">9.8% APY</span></li>
+        <li class="flex justify-between border-b border-white/10 pb-2"><span>🔹 Cultural Navigator Fund</span><span class="text-amber-400">5.4% APY</span></li>
+        <li class="flex justify-between border-b border-white/10 pb-2"><span>🔹 JOG Network Expansion</span><span class="text-amber-400">11.2% APY</span></li>
+        <li class="flex justify-between"><span>🔹 Clan Development Grant</span><span class="text-amber-400">variable</span></li>
+      </ul>
+      <div class="mt-4 p-3 bg-black/40 rounded-lg">
+        <p class="text-[10px] font-mono text-stone-400">⚠️ All investments subject to Regent's approval. Minimum lock period: 30 cycles.</p>
+      </div>
+    </div>
+
+    <div class="glass-panel rounded-2xl p-6">
+      <h2 class="text-xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-2 mb-4">📊 QUARTERLY REPORT</h2>
+      <div class="space-y-3">
+        <div><span class="text-xs font-mono text-stone-400">JOG Network Revenue</span><div class="w-full bg-black/50 rounded-full h-2 mt-1"><div class="bg-amber-500 h-2 rounded-full" style="width: 78%"></div></div><span class="text-xs">+78% vs last quarter</span></div>
+        <div><span class="text-xs font-mono text-stone-400">Active Wallets</span><div class="w-full bg-black/50 rounded-full h-2 mt-1"><div class="bg-amber-500 h-2 rounded-full" style="width: 64%"></div></div><span class="text-xs">+64% vs last quarter</span></div>
+        <div><span class="text-xs font-mono text-stone-400">Transactions Volume</span><div class="w-full bg-black/50 rounded-full h-2 mt-1"><div class="bg-amber-500 h-2 rounded-full" style="width: 92%"></div></div><span class="text-xs">+92% vs last quarter</span></div>
+      </div>
+      <div class="mt-6 p-3 border border-amber-500/20 rounded-lg text-center">
+        <p class="text-xs font-mono text-amber-400">✦ NEXT SHAREHOLDER MEETING ✦</p>
+        <p class="text-sm">Cycle 127 · Day 42 · Regent's Chamber</p>
+        <button id="registerBtn" class="mt-3 btn-outline px-4 py-2 rounded-full text-xs font-mono text-amber-400 hover:text-black hover:bg-amber-400 transition">REGISTER ATTENDANCE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Treasury Log -->
+  <div class="glass-panel rounded-2xl p-6 mb-10">
+    <h2 class="text-xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-2 mb-4">📋 RECENT TRANSACTIONS</h2>
+    <div class="space-y-2 font-mono text-xs">
+      <div class="flex justify-between py-2 border-b border-white/10"><span>🔹 JOG Network · Staking Reward</span><span class="text-green-400">+1,240 WELLIA</span><span class="text-stone-500">2h ago</span></div>
+      <div class="flex justify-between py-2 border-b border-white/10"><span>🔹 Clan Urvids · Development Grant</span><span class="text-amber-400">-5,000 WELLIA</span><span class="text-stone-500">1d ago</span></div>
+      <div class="flex justify-between py-2 border-b border-white/10"><span>🔹 PLUTONIA Node · Infrastructure Bond</span><span class="text-green-400">+12,800 WELLIA</span><span class="text-stone-500">3d ago</span></div>
+      <div class="flex justify-between py-2 border-b border-white/10"><span>🔹 Cultural Navigator · Community Fund</span><span class="text-amber-400">-2,500 WELLIA</span><span class="text-stone-500">5d ago</span></div>
+      <div class="flex justify-between py-2"><span>🔹 JOG Token Buyback</span><span class="text-green-400">+8,420 WELLIA</span><span class="text-stone-500">1w ago</span></div>
+    </div>
+  </div>
+
+  <!-- Roadmap -->
+  <h2 class="text-3xl font-cinzel text-amber-400 border-l-4 border-amber-500 pl-4 mb-6">🗺️ Swamp Expansion Roadmap</h2>
+  <div class="glass-panel rounded-2xl p-6 mb-10">
+    <div class="space-y-3">
+      <div class="flex flex-wrap gap-4 justify-between border-b border-white/10 pb-3"><span class="text-amber-400 font-mono text-sm">Q3 2025</span><span>Genesis Swamp release · Three Suns lighting · Investor NFT presale</span></div>
+      <div class="flex flex-wrap gap-4 justify-between border-b border-white/10 pb-3"><span class="text-amber-400 font-mono text-sm">Q4 2025</span><span>Meganeura racing & Glow Mushroom farming · $FERN token TGE</span></div>
+      <div class="flex flex-wrap gap-4 justify-between border-b border-white/10 pb-3"><span class="text-amber-400 font-mono text-sm">Q1 2026</span><span>Bureau DAO launch · Servant rewards · Cross-metaverse vines (bridge)</span></div>
+      <div class="flex flex-wrap gap-4 justify-between"><span class="text-amber-400 font-mono text-sm">Q3 2026</span><span>Underwater lotus districts · First Croak cinematic narrative expansion</span></div>
+    </div>
+  </div>
+
+  <!-- Whitepaper & CTA -->
+  <div class="text-center mb-10">
+    <button id="whitepaperBtn" class="bg-amber-600 hover:bg-amber-500 text-black font-bold py-3 px-8 rounded-full transition shadow-lg shadow-amber-900/30">📜 INVESTOR DECK (WHITEPAPER)</button>
+    <p class="text-stone-500 text-xs mt-3">*For institutional inquiries, request the full INVESTARIUM prospectus via Bureau's official channels.</p>
+  </div>
+
+  <!-- Footer with Social Links -->
+  <div class="text-center text-stone-500 text-[9px] font-mono mt-10 pt-6 border-t border-amber-500/20">
+    <p>📜 INVESTARIUM · Le Bureau des Colonies · Financial Archive · Updated Cycle 127</p>
+    <p>🔒 LEVEL 4 CLEARANCE · REGENT AND SHAREHOLDERS · EYES ONLY</p>
+    <p class="text-amber-600 mt-2 italic">"Liquidity is king. Invest wisely." — Clan Urvids</p>
+    <div class="social-links mt-4">
+      <a href="#">🎮 Discord</a>
+      <a href="#">🐦 X (Twitter)</a>
+      <a href="#">📘 Facebook</a>
+      <a href="#">📷 Instagram</a>
+      <a href="#">💬 Telegram</a>
+      <a href="#">▶️ YouTube</a>
+      <a href="#">🔗 LinkedIn</a>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL WINDOW FOR 3D SCENES -->
+<div id="modal3d" class="modal-3d">
+  <div class="modal-header">
+    <div class="close-modal-btn" id="closeModalBtn">✕ CLOSE</div>
+  </div>
+  <div class="fullscreen-hint">🖱️ Mouse: rotate | Scroll: zoom | ESC or ✕ to exit</div>
+  <button class="fullscreen-btn-inside" id="fullscreenToggleBtn">⛶ True fullscreen mode</button>
+  <div id="sceneContainer"></div>
+</div>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+    }
+  }
+</script>
+
+<script type="module">
+  import * as THREE from 'three';
+  
+  let activeRenderer = null, activeScene = null, activeCamera = null, activeAnimationId = null;
+  const modal = document.getElementById('modal3d');
+  const sceneContainer = document.getElementById('sceneContainer');
+  const closeBtn = document.getElementById('closeModalBtn');
+  const fullscreenToggle = document.getElementById('fullscreenToggleBtn');
+  const openScene1 = document.getElementById('openScene1Btn');
+  const openScene2 = document.getElementById('openScene2Btn');
+  const openScene3 = document.getElementById('openScene3Btn');
+  
+  function stopCurrentScene() {
+    if (activeAnimationId) { cancelAnimationFrame(activeAnimationId); activeAnimationId = null; }
+    if (activeRenderer) {
+      activeRenderer.dispose();
+      while (sceneContainer.firstChild) sceneContainer.removeChild(sceneContainer.firstChild);
+      activeRenderer = null; activeScene = null; activeCamera = null;
+    }
+  }
+  
+  // SCENE 1: Paleo Swamp (original first scene from file 1)
+  function initScene1() {
+    stopCurrentScene();
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x030201);
+    scene.fog = new THREE.FogExp2(0x030201, 0.006);
+    const camera = new THREE.PerspectiveCamera(55, sceneContainer.clientWidth / sceneContainer.clientHeight, 0.1, 1000);
+    camera.position.set(8, 5, 12);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
+    renderer.shadowMap.enabled = true;
+    sceneContainer.appendChild(renderer.domElement);
+    
+    // Lights
+    const ambient = new THREE.AmbientLight(0x332211); scene.add(ambient);
+    const sunMain = new THREE.DirectionalLight(0xffcc88, 1.1); sunMain.position.set(6, 12, 4); sunMain.castShadow = true; scene.add(sunMain);
+    const sunCold = new THREE.PointLight(0x88aaff, 0.5); sunCold.position.set(-5, 7, 3); scene.add(sunCold);
+    const sunWarm = new THREE.PointLight(0xff6644, 0.55); sunWarm.position.set(4, 3, -6); scene.add(sunWarm);
+    const waterFill = new THREE.PointLight(0x448866, 0.4); waterFill.position.set(0, -0.5, 0); scene.add(waterFill);
+    
+    // Ground & Water
+    const groundPlane = new THREE.Mesh(new THREE.CircleGeometry(28, 32), new THREE.MeshStandardMaterial({ color: 0x1f3a1f, roughness: 0.85 }));
+    groundPlane.rotation.x = -Math.PI / 2; groundPlane.position.y = -1.3; groundPlane.receiveShadow = true; scene.add(groundPlane);
+    const waterDisc = new THREE.Mesh(new THREE.CircleGeometry(19, 32), new THREE.MeshStandardMaterial({ color: 0x2a6a5a, roughness: 0.35, metalness: 0.7, transparent: true, opacity: 0.82 }));
+    waterDisc.rotation.x = -Math.PI / 2; waterDisc.position.y = -1.12; scene.add(waterDisc);
+    
+    // Trees, ferns, mushrooms, lily pads
+    for (let i = 0; i < 60; i++) {
+      const a = Math.random() * Math.PI * 2, r = 10 + Math.random() * 12;
+      const x = Math.cos(a) * r, z = Math.sin(a) * r;
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.65, 1.5, 5), new THREE.MeshStandardMaterial({ color: 0x6b4c3b }));
+      trunk.position.set(x, -0.95, z); trunk.castShadow = true; scene.add(trunk);
+      const foliage = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.2, 6), new THREE.MeshStandardMaterial({ color: 0x4a8a3a }));
+      foliage.position.set(x, -0.2, z); scene.add(foliage);
+    }
+    for (let i = 0; i < 120; i++) {
+      const a = Math.random() * Math.PI * 2, r = 2 + Math.random() * 15;
+      const pad = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.04, 6), new THREE.MeshStandardMaterial({ color: 0x6d9e5a }));
+      pad.position.set(Math.cos(a) * r, -1.02, Math.sin(a) * r); pad.rotation.x = Math.PI / 2; scene.add(pad);
+    }
+    const starGeo = new THREE.BufferGeometry();
+    const starPos = [];
+    for (let i = 0; i < 1500; i++) starPos.push((Math.random() - 0.5) * 400, (Math.random() - 0.5) * 120 + 20, (Math.random() - 0.5) * 150 - 80);
+    starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+    scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.08 })));
+    
+    const sunOrb = new THREE.Mesh(new THREE.SphereGeometry(0.45, 16, 16), new THREE.MeshStandardMaterial({ color: 0xffaa66, emissive: 0xff4411, emissiveIntensity: 0.4 }));
+    sunOrb.position.set(18, 14, -12); scene.add(sunOrb);
+    
+    let angX = 0.8, angY = 0.45, rad = 14, drag = false, lx, ly;
+    function updateCam() {
+      const x = Math.sin(angX) * Math.cos(angY) * rad;
+      const y = Math.sin(angY) * rad + 1.2;
+      const z = Math.cos(angX) * Math.cos(angY) * rad;
+      camera.position.set(x, y, z); camera.lookAt(0, 0.2, 0);
+    }
+    renderer.domElement.addEventListener('mousedown', (e) => { drag = true; lx = e.clientX; ly = e.clientY; renderer.domElement.style.cursor = 'grabbing'; });
+    window.addEventListener('mousemove', (e) => { if (!drag) return; angX += (e.clientX - lx) * 0.008; angY += (e.clientY - ly) * 0.008; angY = Math.max(0.2, Math.min(1.2, angY)); lx = e.clientX; ly = e.clientY; updateCam(); });
+    window.addEventListener('mouseup', () => { drag = false; renderer.domElement.style.cursor = 'grab'; });
+    renderer.domElement.addEventListener('wheel', (e) => { rad -= e.deltaY * 0.02; rad = Math.max(5.5, Math.min(28, rad)); updateCam(); });
+    updateCam();
+    
+    let time = 0;
+    function animate() { time += 0.012; sunWarm.intensity = 0.55 + Math.sin(time * 0.7) * 0.08; renderer.render(scene, camera); activeAnimationId = requestAnimationFrame(animate); }
+    animate();
+    activeRenderer = renderer; activeScene = scene; activeCamera = camera;
+    new ResizeObserver(() => { if (activeRenderer === renderer && sceneContainer.clientWidth) { camera.aspect = sceneContainer.clientWidth / sceneContainer.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight); } }).observe(sceneContainer);
+  }
+  
+  // SCENE 2: Ghost Dragonfly (original second scene from file 1, enhanced)
+  function initScene2() {
+    stopCurrentScene();
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x010101);
+    scene.fog = new THREE.FogExp2(0x021c12, 0.0075);
+    const camera = new THREE.PerspectiveCamera(54, sceneContainer.clientWidth / sceneContainer.clientHeight, 0.1, 120);
+    camera.position.set(9, 5.2, 13);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
+    renderer.shadowMap.enabled = true;
+    sceneContainer.appendChild(renderer.domElement);
+    
+    const ambient = new THREE.AmbientLight(0x2a2418, 0.58); scene.add(ambient);
+    const sunGold = new THREE.DirectionalLight(0xffcc99, 1.15); sunGold.position.set(7, 11, 4); sunGold.castShadow = true; scene.add(sunGold);
+    const sunSilver = new THREE.PointLight(0x88aaff, 0.65); sunSilver.position.set(-5, 8, 5); scene.add(sunSilver);
+    const sunRed = new THREE.PointLight(0xff6644, 0.7); sunRed.position.set(4.2, 3.5, -7); scene.add(sunRed);
+    
+    const groundPlane = new THREE.Mesh(new THREE.CircleGeometry(34, 40), new THREE.MeshStandardMaterial({ color: 0x2c452a, roughness: 0.9 }));
+    groundPlane.rotation.x = -Math.PI / 2; groundPlane.position.y = -1.45; scene.add(groundPlane);
+    const waterDisc = new THREE.Mesh(new THREE.CircleGeometry(22, 40), new THREE.MeshStandardMaterial({ color: 0x2b7a62, roughness: 0.32, metalness: 0.72, transparent: true, opacity: 0.79 }));
+    waterDisc.rotation.x = -Math.PI / 2; waterDisc.position.y = -1.24; scene.add(waterDisc);
+    
+    const dragonfly = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.09, 0.45), new THREE.MeshStandardMaterial({ color: 0x557744 }));
+    dragonfly.add(body);
+    const wingMat = new THREE.MeshStandardMaterial({ color: 0xbbddaa, emissive: 0x99cc77, emissiveIntensity: 0.25, transparent: true, opacity: 0.65 });
+    const leftWing = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.03, 0.18), wingMat); leftWing.position.set(-0.32, 0, 0);
+    const rightWing = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.03, 0.18), wingMat); rightWing.position.set(0.32, 0, 0);
+    dragonfly.add(leftWing, rightWing);
+    scene.add(dragonfly);
+    
+    const stars = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ color: 0xfff5cf, size: 0.09 }));
+    const starPos = []; for (let i = 0; i < 2000; i++) starPos.push((Math.random() - 0.5) * 480, (Math.random() - 0.5) * 140 + 30, (Math.random() - 0.5) * 180 - 90);
+    stars.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+    scene.add(stars);
+    
+    let theta = 0.95, phi = 0.55, dist = 14.5, drag = false, lx, ly;
+    function updateCam() {
+      const x = Math.sin(theta) * Math.cos(phi) * dist;
+      const y = Math.sin(phi) * dist + 1.1;
+      const z = Math.cos(theta) * Math.cos(phi) * dist;
+      camera.position.set(x, y, z); camera.lookAt(0, 0.3, 0);
+    }
+    renderer.domElement.addEventListener('mousedown', (e) => { drag = true; lx = e.clientX; ly = e.clientY; renderer.domElement.style.cursor = 'grabbing'; });
+    window.addEventListener('mousemove', (e) => { if (!drag) return; theta += (e.clientX - lx) * 0.007; phi += (e.clientY - ly) * 0.007; phi = Math.max(0.22, Math.min(1.2, phi)); lx = e.clientX; ly = e.clientY; updateCam(); });
+    window.addEventListener('mouseup', () => { drag = false; renderer.domElement.style.cursor = 'grab'; });
+    renderer.domElement.addEventListener('wheel', (e) => { dist -= e.deltaY * 0.018; dist = Math.max(5.8, Math.min(28, dist)); updateCam(); });
+    updateCam();
+    
+    let time = 0, angle = 0;
+    function animate() {
+      time += 0.013; angle += 0.004;
+      const fx = Math.sin(angle * 1.3) * 8.5, fz = Math.cos(angle * 0.9) * 7.2;
+      dragonfly.position.set(fx, 1.65 + Math.sin(time * 1.8) * 0.2, fz);
+      dragonfly.rotation.y = Math.atan2(fx, fz);
+      const flap = Math.sin(time * 18) * 0.6;
+      leftWing.rotation.z = flap; rightWing.rotation.z = -flap;
+      renderer.render(scene, camera);
+      activeAnimationId = requestAnimationFrame(animate);
+    }
+    animate();
+    activeRenderer = renderer; activeScene = scene; activeCamera = camera;
+    new ResizeObserver(() => { if (activeRenderer === renderer && sceneContainer.clientWidth) { camera.aspect = sceneContainer.clientWidth / sceneContainer.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight); } }).observe(sceneContainer);
+  }
+  
+  // SCENE 3: Meganeura Realm · First Croak (from second file - rich swamp landscape)
+  function initScene3() {
+    stopCurrentScene();
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x010101);
+    scene.fog = new THREE.FogExp2(0x021c12, 0.0075);
+    const camera = new THREE.PerspectiveCamera(54, sceneContainer.clientWidth / sceneContainer.clientHeight, 0.1, 120);
+    camera.position.set(9, 5.2, 13);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight);
+    renderer.shadowMap.enabled = true;
+    sceneContainer.appendChild(renderer.domElement);
+    
+    // Lighting - Three Suns
+    const ambient = new THREE.AmbientLight(0x2a2418, 0.58); scene.add(ambient);
+    const sunGolden = new THREE.DirectionalLight(0xffcc99, 1.15); sunGolden.position.set(7, 11, 4); sunGolden.castShadow = true; scene.add(sunGolden);
+    const sunSilver = new THREE.PointLight(0x88aaff, 0.65); sunSilver.position.set(-5, 8, 5); scene.add(sunSilver);
+    const sunRed = new THREE.PointLight(0xff6644, 0.7); sunRed.position.set(4.2, 3.5, -7); scene.add(sunRed);
+    const waterGlow = new THREE.PointLight(0x338866, 0.45); waterGlow.position.set(0, -0.4, 0); scene.add(waterGlow);
+    
+    // Ground & Water
+    const groundPlane = new THREE.Mesh(new THREE.CircleGeometry(34, 40), new THREE.MeshStandardMaterial({ color: 0x2c452a, roughness: 0.9 }));
+    groundPlane.rotation.x = -Math.PI / 2; groundPlane.position.y = -1.45; groundPlane.receiveShadow = true; scene.add(groundPlane);
+    const waterDisc = new THREE.Mesh(new THREE.CircleGeometry(22, 40), new THREE.MeshStandardMaterial({ color: 0x2b7a62, roughness: 0.32, metalness: 0.72, transparent: true, opacity: 0.79 }));
+    waterDisc.rotation.x = -Math.PI / 2; waterDisc.position.y = -1.24; scene.add(waterDisc);
+    
+    // Fern Trees, Lotuses, Glowing Mushrooms, Midge Swarm, Meganeura and detailed flora from second file
+    for (let i = 0; i < 80; i++) {
+      const a = Math.random() * Math.PI * 2, r = 9 + Math.random() * 12;
+      const x = Math.cos(a) * r, z = Math.sin(a) * r;
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.72, 1.6, 7), new THREE.MeshStandardMaterial({ color: 0x6f4f37 }));
+      trunk.position.set(x, -1.25, z); trunk.castShadow = true; scene.add(trunk);
+      const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.5, 1.1, 5), new THREE.MeshStandardMaterial({ color: 0x5f8b4c }));
+      crown.position.set(x, -0.55, z); scene.add(crown);
+    }
+    for (let i = 0; i < 190; i++) {
+      const a = Math.random() * Math.PI * 2, r = 2.2 + Math.random() * 17;
+      const x = Math.cos(a) * r, z = Math.sin(a) * r;
+      const pad = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.31, 0.04, 7), new THREE.MeshStandardMaterial({ color: 0x8abd6a }));
+      pad.position.set(x, -1.145, z); pad.rotation.x = Math.PI / 2; scene.add(pad);
+      if (Math.random() > 0.86) {
+        const lotus = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.16, 8), new THREE.MeshStandardMaterial({ color: 0xffb98a }));
+        lotus.position.set(x, -1.06, z); scene.add(lotus);
+      }
+    }
+    const mushroomMat = new THREE.MeshStandardMaterial({ color: 0xffaa66, emissive: 0xff5511, emissiveIntensity: 0.62 });
+    for (let i = 0; i < 135; i++) {
+      const a = Math.random() * Math.PI * 2, r = 3.2 + Math.random() * 16;
+      const x = Math.cos(a) * r, z = Math.sin(a) * r;
+      const stalk = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.24, 5), new THREE.MeshStandardMaterial({ color: 0xbc9a6a }));
+      stalk.position.set(x, -1.12, z); scene.add(stalk);
+      const cap = new THREE.Mesh(new THREE.ConeGeometry(0.19, 0.13, 8), mushroomMat);
+      cap.position.set(x, -0.93, z); scene.add(cap);
+    }
+    // Midge Swarm
+    const midgeCount = 1200;
+    const midgeGeo = new THREE.BufferGeometry();
+    const midgePositions = [];
+    for (let i = 0; i < midgeCount; i++) midgePositions.push((Math.random() - 0.5) * 38, Math.random() * 2.2 + 0.15, (Math.random() - 0.5) * 36);
+    midgeGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(midgePositions), 3));
+    const midgeCloud = new THREE.Points(midgeGeo, new THREE.PointsMaterial({ color: 0xddbb88, size: 0.042, transparent: true, opacity: 0.7 }));
+    scene.add(midgeCloud);
+    function animateMidge() { requestAnimationFrame(animateMidge); const pos = midgeCloud.geometry.attributes.position.array; for (let i = 0; i < midgeCount; i++) { pos[i*3+1] += (Math.random() - 0.5) * 0.0065; if (pos[i*3+1] > 1.9) pos[i*3+1] = 0.2; if (pos[i*3+1] < 0.2) pos[i*3+1] = 1.9; pos[i*3] += (Math.random() - 0.5) * 0.003; pos[i*3+2] += (Math.random() - 0.5) * 0.003; if (pos[i*3] > 18) pos[i*3] = -17; if (pos[i*3] < -18) pos[i*3] = 17; if (pos[i*3+2] > 18) pos[i*3+2] = -17; if (pos[i*3+2] < -18) pos[i*3+2] = 17; } midgeCloud.geometry.attributes.position.needsUpdate = true; }
+    animateMidge();
+    // Meganeura (Ghost Dragonfly)
+    const dragonflyGroup = new THREE.Group();
+    const flyBody = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.09, 0.45), new THREE.MeshStandardMaterial({ color: 0x557744 }));
+    dragonflyGroup.add(flyBody);
+    const wingL = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.03, 0.18), new THREE.MeshStandardMaterial({ color: 0xbbddaa, emissive: 0x99cc77, emissiveIntensity: 0.25, transparent: true, opacity: 0.65 }));
+    wingL.position.set(-0.32, 0, 0);
+    const wingR = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.03, 0.18), wingL.material); wingR.position.set(0.32, 0, 0);
+    dragonflyGroup.add(wingL, wingR);
+    scene.add(dragonflyGroup);
+    // Orbiting suns
+    const orbGolden = new THREE.Mesh(new THREE.SphereGeometry(0.55, 24, 24), new THREE.MeshStandardMaterial({ color: 0xffbb77, emissive: 0xff6622, emissiveIntensity: 0.55 }));
+    orbGolden.position.set(22, 15, -15); scene.add(orbGolden);
+    const orbSilver = new THREE.Mesh(new THREE.SphereGeometry(0.48, 24, 24), new THREE.MeshStandardMaterial({ color: 0xaaddff, emissive: 0x88aaff, emissiveIntensity: 0.48 }));
+    orbSilver.position.set(-19, 13, -10); scene.add(orbSilver);
+    const orbRed = new THREE.Mesh(new THREE.SphereGeometry(0.52, 24, 24), new THREE.MeshStandardMaterial({ color: 0xff8866, emissive: 0xff4422, emissiveIntensity: 0.6 }));
+    orbRed.position.set(6, 6, -28); scene.add(orbRed);
+    
+    let theta = 0.95, phi = 0.55, dist = 14.5, drag = false, lx, ly;
+    function updateCam() { const x = Math.sin(theta) * Math.cos(phi) * dist; const y = Math.sin(phi) * dist + 1.1; const z = Math.cos(theta) * Math.cos(phi) * dist; camera.position.set(x, y, z); camera.lookAt(0, 0.3, 0); }
+    renderer.domElement.addEventListener('mousedown', (e) => { drag = true; lx = e.clientX; ly = e.clientY; renderer.domElement.style.cursor = 'grabbing'; });
+    window.addEventListener('mousemove', (e) => { if (!drag) return; theta += (e.clientX - lx) * 0.007; phi += (e.clientY - ly) * 0.007; phi = Math.max(0.22, Math.min(1.2, phi)); lx = e.clientX; ly = e.clientY; updateCam(); });
+    window.addEventListener('mouseup', () => { drag = false; renderer.domElement.style.cursor = 'grab'; });
+    renderer.domElement.addEventListener('wheel', (e) => { dist -= e.deltaY * 0.018; dist = Math.max(5.8, Math.min(28, dist)); updateCam(); });
+    updateCam();
+    
+    let time = 0, angle = 0;
+    function animateFull() {
+      time += 0.013; angle += 0.004;
+      const fx = Math.sin(angle * 1.3) * 8.5, fz = Math.cos(angle * 0.9) * 7.2;
+      dragonflyGroup.position.set(fx, 1.65 + Math.sin(time * 1.8) * 0.2, fz);
+      dragonflyGroup.rotation.y = Math.atan2(fx, fz);
+      const flap = Math.sin(time * 18) * 0.6;
+      wingL.rotation.z = flap; wingR.rotation.z = -flap;
+      orbGolden.scale.setScalar(1 + Math.sin(time) * 0.03);
+      orbSilver.scale.setScalar(1 + Math.sin(time + 1.2) * 0.03);
+      orbRed.scale.setScalar(1 + Math.sin(time + 2.4) * 0.04);
+      sunRed.intensity = 0.68 + Math.sin(time * 0.54) * 0.09;
+      renderer.render(scene, camera);
+      activeAnimationId = requestAnimationFrame(animateFull);
+    }
+    animateFull();
+    activeRenderer = renderer; activeScene = scene; activeCamera = camera;
+    new ResizeObserver(() => { if (activeRenderer === renderer && sceneContainer.clientWidth) { camera.aspect = sceneContainer.clientWidth / sceneContainer.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight); } }).observe(sceneContainer);
+  }
+  
+  function openModal(fn) { stopCurrentScene(); modal.classList.add('active'); document.body.style.overflow = 'hidden'; setTimeout(fn, 50); }
+  function closeModal() { stopCurrentScene(); modal.classList.remove('active'); document.body.style.overflow = ''; }
+  function toggleFullscreen() { if (!modal.classList.contains('active')) return; if (!document.fullscreenElement) modal.requestFullscreen(); else document.exitFullscreen(); }
+  
+  openScene1.addEventListener('click', () => openModal(initScene1));
+  openScene2.addEventListener('click', () => openModal(initScene2));
+  openScene3.addEventListener('click', () => openModal(initScene3));
+  closeBtn.addEventListener('click', closeModal);
+  fullscreenToggle.addEventListener('click', toggleFullscreen);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
+  
+  document.getElementById('whitepaperBtn').addEventListener('click', () => alert("📘 INVESTOR DECK (preview):\n\nLE BUREAU : JACKDAW offers gamified yield via Swamp staking pools, governance tokens, and metaverse land deeds. Total supply: 100M $FERN.\n\nFor full deck with tokenomics, contact bureau@jackdaw.io (simulated)."));
+  document.getElementById('registerBtn').addEventListener('click', () => alert("📅 Shareholder meeting registration: Cycle 127, Day 42, Regent's Chamber. (simulated)"));
+</script>
+</body>
+</html>
