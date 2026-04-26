@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>GENESIS · Wellamatores World · The First Croak · Frog Evolution Simulator</title>
+  <meta name="description" content="The sacred codex of 36 clans. The legend of the First Croak. Interactive 3D frog evolution simulator.">
+  <meta property="og:title" content="GENESIS · Wellamatores World · Frog Evolution">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpolygon points='50,10 90,35 90,65 50,90 10,65 10,35' fill='%23f59e0b'/%3E%3Ccircle cx='50' cy='50' r='20' fill='%23030303'/%3E%3C/svg%3E">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Cinzel:wght@400;600;800;900&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'IM Fell English', 'Inter', serif;
+      background-color: #030201;
+      color: #ece8e0;
+      overflow-x: hidden;
+    }
+    
+    .manuscript {
+      background: rgba(10, 8, 5, 0.85);
+      backdrop-filter: blur(3px);
+      border-left: 3px solid #f59e0b;
+      border-right: 1px solid rgba(245, 158, 11, 0.2);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    
+    .drop-cap {
+      font-size: 5rem;
+      font-weight: 800;
+      float: left;
+      line-height: 0.8;
+      margin-right: 0.5rem;
+      color: #f59e0b;
+      text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+      font-family: 'Cinzel', serif;
+    }
+    
+    .croak-chant {
+      font-size: 3rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.5rem;
+      color: #f59e0b;
+      text-shadow: 0 0 15px rgba(245,158,11,0.6);
+      font-family: 'Cinzel', serif;
+    }
+    
+    .clan-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px; margin: 1rem 0; }
+    .clan-tag { background: rgba(0,0,0,0.5); border: 1px solid rgba(245,158,11,0.3); border-radius: 4px; padding: 4px 8px; font-size: 0.7rem; font-family: monospace; text-align: center; }
+    .nav-link { transition: all 0.2s; cursor: pointer; }
+    .nav-link:hover { color: #f59e0b; text-shadow: 0 0 5px #f59e0b; }
+    
+    #frog-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    
+    .content-wrapper {
+      position: relative;
+      z-index: 10;
+      background: transparent;
+    }
+    
+    .glass-3d {
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(6px);
+      border-radius: 28px;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+    
+    .star-table, .clan-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .star-table th, .clan-table th { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); padding: 8px; text-align: left; font-family: 'JetBrains Mono', monospace; color: #f59e0b; }
+    .star-table td, .clan-table td { border: 1px solid rgba(245, 158, 11, 0.2); padding: 6px 8px; }
+    
+    /* golden pagoda + lab icon composite */
+    .golden-pagoda-lab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      filter: drop-shadow(0 0 4px rgba(245,158,11,0.5));
+    }
+    .pagoda-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+      color: #fbbf24;
+      filter: drop-shadow(0 0 2px #f59e0b);
+    }
+    .lab-flask {
+      font-size: 1rem;
+      color: #ef4444;
+      opacity: 0.95;
+    }
+    .gold-text {
+      color: #fbbf24 !important;
+      text-shadow: 0 0 3px rgba(251,191,36,0.5);
+    }
+    .crimson-text {
+      color: #ef4444 !important;
+      text-shadow: 0 0 2px rgba(239,68,68,0.4);
+    }
+    
+    @media (max-width: 768px) {
+      .croak-chant { font-size: 2rem; letter-spacing: 0.2rem; }
+      .drop-cap { font-size: 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="frog-canvas"></canvas>
+
+<nav class="fixed top-0 left-0 w-full z-50 py-3 px-6 bg-black/80 backdrop-blur-md border-b border-amber-500/40">
+  <div class="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-3">
+    <div class="flex items-center gap-2 flex-wrap">
+      <!-- golden pagoda + lab icon combo -->
+      <div class="golden-pagoda-lab">
+        <span class="pagoda-icon">🛕</span>
+        <span class="lab-flask">⚗️</span>
+      </div>
+      <span class="font-black tracking-tighter text-lg font-cinzel text-amber-400">🐸 GENESIS · FROG EVOLUTION SIMULATOR</span>
+      <span class="hidden md:inline-block text-[9px] font-mono border-l border-white/20 pl-2 ml-1">
+        <span class="gold-text font-bold tracking-wide">LE BUREAU : JACKDAW</span>
+        <span class="mx-1 text-stone-500">·</span>
+        <span class="crimson-text font-bold tracking-wide">INVESTARIUM</span>
+      </span>
+    </div>
+    <div class="flex gap-2 text-xs font-mono flex-wrap">
+      <a href="https://wellamatores-metaverse.vercel.app/" class="nav-link px-3 py-1.5 rounded-full bg-blue-900/30 hover:bg-blue-700/40 transition">← MAIN SITE</a>
+      <a href="https://wellamatores-metaverse.vercel.app/culture.html" class="nav-link px-3 py-1.5 rounded-full bg-amber-900/30 hover:bg-amber-700/40 transition">🏛️ NAVIGATOR</a>
+    </div>
+  </div>
+</nav>
+
+<div class="content-wrapper relative z-10 pt-20 max-w-5xl mx-auto px-5 py-8 mb-20">
+
+  <div class="text-center mb-12">
+    <div class="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full px-4 py-1.5 border border-amber-500/30 mb-6">
+      <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span></span>
+      <span class="text-[10px] font-mono tracking-wider text-amber-400">LE BUREAU · FROG EVOLUTION SIMULATOR · INVESTARIUM 3D</span>
+    </div>
+    <h1 class="text-6xl md:text-8xl font-black tracking-tighter bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent font-cinzel">GENESIS</h1>
+    <p class="text-stone-400 text-lg max-w-2xl mx-auto mt-4 italic">The Codex of Ancient Blood · The Scroll of the First Croak</p>
+    <p class="text-stone-500 text-sm font-mono mt-2">INVESTARIUM · live frog evolution · watch the Great Indifference in motion</p>
+  </div>
+
+  <!-- 3D interactive stats panel -->
+  <div class="glass-3d p-5 mb-8 text-center">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
+      <div><span class="text-amber-400">🐸 FROG POPULATION</span><br><span id="frogCount" class="text-xl text-white font-bold">0</span></div>
+      <div><span class="text-amber-400">🌿 SWAMP ACRES</span><br><span id="swampSize" class="text-xl text-white font-bold">0</span><span class="text-xs"> m²</span></div>
+      <div><span class="text-amber-400">🎵 CROAK ECHO</span><br><span id="croakIntensity" class="text-xl text-white font-bold">0</span><span class="text-xs"> dB</span></div>
+      <div><span class="text-amber-400">🧬 EVOLUTION STAGE</span><br><span id="evoStage" class="text-xl text-white font-bold">0</span><span class="text-xs"> / 7</span></div>
+    </div>
+    <div class="w-full bg-black/50 rounded-full h-2 mt-4">
+      <div id="evoBar" class="bg-amber-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+    </div>
+    <p class="text-stone-500 text-[10px] mt-3 italic">"The more frogs croak together — the stronger the First Sound echoes through the ages." — Clan Urvids</p>
+  </div>
+
+  <!-- I · THE FIRST CROAK (full poetic myth) -->
+  <div class="manuscript rounded-2xl p-6 md:p-10 mb-8">
+    <h2 class="text-3xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-3 mb-6">🐸 I · THE FIRST CROAK</h2>
+    <div class="drop-cap">B</div>
+    <p class="mb-4 leading-relaxed">efore the Three Suns ignited, before the Four Sisters began their dance — there was Silence. Deep. Wet. Saline. The silence of the primordial ocean.</p>
+    <p class="mb-4 leading-relaxed">In that silence the fish swam without words. The jellyfish drifted without song. The first lizards dreamed without names. Then <span class="text-amber-400 font-bold">One</span> crawled out. From water onto land. Wet, round-eyed, restless.</p>
+    <p class="mb-4 leading-relaxed">She breathed air for the first time — it burned her lungs. And she croaked.</p>
+    <div class="croak-chant my-5">✦ KVA shattered the Silence ✦</div>
+    <p class="mb-4 leading-relaxed">From KVA came waves. From waves — vibration. From vibration — the first echo. And from that click, the Three Suns burst into flame.</p>
+    <p class="mb-4 leading-relaxed">The Frog looked at them. Then turned. She jumped back into the water. But KVA remained — hanging in the air, echoing in the stones, whispering in the roots.</p>
+    <p class="text-amber-400 italic text-xl mt-5 border-l-2 border-amber-500 pl-4">"The Frog doesn't care."</p>
+    <div class="bureau-note mt-4 text-[11px] bg-black/40 p-3 border-l-4 border-blue-500">LE BUREAU NOTE: Three interpretations — Urvids say joy, Frost say terror, Whisper claim absolute indifference. The First Croak has no single meaning. Yet it echoes for 370 million years.</div>
+  </div>
+
+  <!-- II · THE THREE SUNS -->
+  <div class="manuscript rounded-2xl p-6 md:p-10 mb-8">
+    <h2 class="text-3xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-3 mb-6">☀️ II · THE THREE SUNS</h2>
+    <p class="italic text-stone-300 mb-3">"After KVA, the Silence split into three spheres of fire. They began to shine, and the world knew light."</p>
+    <table class="star-table w-full mt-3">
+      <thead><tr><th>Legendary Name</th><th>Bureau Designation</th><th>Type</th><th>Light Share</th></tr></thead>
+      <tbody>
+        <tr><td>Golden Frog (The Elder)</td><td>Sol Wellamatoris Primus</td><td>Yellow Dwarf</td><td>60%</td></tr>
+        <tr><td>Silver Toad (The Twin)</td><td>Sol Wellamatoris Secundus</td><td>Orange Dwarf</td><td>25%</td></tr>
+        <tr><td>Red Tadpole (The Wanderer)</td><td>Sol Wellamatoris Tertius</td><td>Red Dwarf</td><td>15%</td></tr>
+      </tbody>
+    </table>
+    <p class="text-stone-400 text-sm mt-4"><span class="text-amber-300">⌛ Hour of Shadow:</span> Every 78 days, the three suns align. Darkness lasts exactly as long as a frog can hold its breath. The dead speak. The living wait.</p>
+  </div>
+
+  <!-- III · THE FOUR MOONS and THE GREAT DIVERTING -->
+  <div class="manuscript rounded-2xl p-6 md:p-10 mb-8">
+    <h2 class="text-3xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-3 mb-6">🌙 III · THE FOUR SISTERS (MOONS)</h2>
+    <table class="star-table w-full">
+      <thead><tr><th>Name</th><th>Role</th><th>Orbit</th><th>Myth</th></tr></thead>
+      <tbody>
+        <tr><td>Luna Primoris</td><td>Shield</td><td>Stable</td><td>Always visible, oldest guardian</td></tr>
+        <tr><td>Luna Secundus</td><td>Spear</td><td>Elliptic</td><td>Changes size, pierces shadows</td></tr>
+        <tr><td>Luna Tertius</td><td>Watcher</td><td>Chaotic</td><td>Rare, artificial structures detected</td></tr>
+        <tr><td>Luna Quartus</td><td>Wanderer</td><td>Guest</td><td>Arrives every 30–40 years from deep void</td></tr>
+      </tbody>
+    </table>
+    <p class="mt-4 leading-relaxed text-stone-200"><span class="text-amber-300 font-bold">The Great Diverting:</span> When the Stone of Death fell, Shield and Spear could not stop it. But Watcher and Wanderer stepped from shadow — they turned the stone aside. It crashed into the ocean. Waves swallowed many. The world survived. Since then, clans pray to the moons and await their next emergence.</p>
+  </div>
+
+  <!-- IV · TWO SPIRITS (Symbionts) -->
+  <div class="manuscript rounded-2xl p-6 md:p-10 mb-8">
+    <h2 class="text-3xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-3 mb-6">🌀 IV · THE TWO SPIRITS (SYMBIONTS)</h2>
+    <p class="mb-3 italic">"The Frog left two gifts on land. They live within us still."</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+      <div class="bg-black/40 p-3 border-l-2 border-amber-400"><span class="font-bold text-amber-400">🔥 Little Warm One</span> — lives in the chest. It fears, it rejoices, it warns of danger. Mammal-endosymbiont, emotional anchor.</div>
+      <div class="bg-black/40 p-3 border-l-2 border-amber-400"><span class="font-bold text-amber-400">❄️ Little Cold One</span> — lives in the bones. Sees in darkness, knows when to strike or freeze. Reptile/amphibian core, instinct of survival.</div>
+    </div>
+    <p class="text-stone-400 text-sm mt-3">The bond forms between ages 6 and 8. Lasts until death. Severance is lethal in 97% of cases. Other animals lost their spirits long ago. But the 36 clans remember.</p>
+  </div>
+
+  <!-- V · 36 CLANS — full ancient and branch lineages -->
+  <div class="manuscript rounded-2xl p-6 md:p-10 mb-8">
+    <h2 class="text-3xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-3 mb-6">⚔️ V · THE THIRTY-SIX CLANS</h2>
+    <p class="text-stone-300 text-sm mb-2"><span class="text-amber-400">Blood of Roots (13 Ancient Clans):</span> Guardians of the First Croak.</p>
+    <div class="clan-grid">
+      <div class="clan-tag">Swiftclaw</div><div class="clan-tag">Sunhorn</div><div class="clan-tag">Buried Tusk</div><div class="clan-tag">Shadowmane</div>
+      <div class="clan-tag">Bone Hammer</div><div class="clan-tag">Stone Cry</div><div class="clan-tag">Silvervein</div><div class="clan-tag">Mud and Bone</div>
+      <div class="clan-tag">Sandspike</div><div class="clan-tag">Ice Breath</div><div class="clan-tag">Northern Lights</div><div class="clan-tag">Hall of Vines</div>
+      <div class="clan-tag">Silent Fin</div>
+    </div>
+    <p class="text-stone-300 text-sm mt-4 mb-2"><span class="text-amber-400">Blood of Branches (23 Younger Clans):</span> Born from the diaspora.</p>
+    <div class="clan-grid">
+      <div class="clan-tag">Sunstone</div><div class="clan-tag">Moonshadow</div><div class="clan-tag">Bloodmoon</div><div class="clan-tag">Deepwater</div>
+      <div class="clan-tag">Highpeak</div><div class="clan-tag">Ashwood</div><div class="clan-tag">Brightshield</div><div class="clan-tag">Darkfall</div>
+      <div class="clan-tag">Goldenscale</div><div class="clan-tag">Ironspine</div><div class="clan-tag">Swiftwind</div><div class="clan-tag">Stillwater</div>
+      <div class="clan-tag">Firemane</div><div class="clan-tag">Iceheart</div><div class="clan-tag">Thornroot</div><div class="clan-tag">Skywatcher</div>
+      <div class="clan-tag">Stonehand</div><div class="clan-tag">Wavecrest</div><div class="clan-tag">Whisper</div><div class="clan-tag">Thunderhoof</div>
+      <div class="clan-tag">Dawnfeather</div><div class="clan-tag">Nightclaw</div><div class="clan-tag">Earthsinger</div><div class="clan-tag">Starweaver</div>
+    </div>
+    <p class="text-stone-400 text-xs mt-2">13 + 23 = 36 living bloodlines. Each carries the Two Spirits. Each sings the Croak in their own tongue.</p>
+  </div>
+
+  <!-- VI · ARRIVAL OF THE STRANGERS + BUREAU MANDATE -->
+  <div class="manuscript rounded-2xl p-6 md:p-10 mb-8">
+    <h2 class="text-3xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-3 mb-6">👁️ VI · THE STRANGERS (LE BUREAU)</h2>
+    <p class="mb-3">A thousand years after the Great Diverting, a star fell from the sky — but it was no star. A white vessel, silent and gleaming. Strangers emerged with strange faces and stranger tongue.</p>
+    <p class="mb-3 italic">"We are Le Bureau des Colonies. We have come to observe."</p>
+    <p>The clans raised spears. But the strangers did not fight. They stood still. The shaman of Urvids walked forward and spoke: <span class="text-amber-300">"You do not need our lands. You need our stories. Follow me. I will tell you of KVA."</span></p>
+    <div class="bureau-note mt-4 bg-black/50 p-3 border-l-4 border-amber-500">
+      <strong>📜 MANDATE OF LE BUREAU:</strong><br>
+      1. Document the cultural heritage of 36 clans.<br>
+      2. Archive myths, legends, oral traditions.<br>
+      3. Study the Two Spirits phenomenon.<br>
+      4. Monitor Three Suns & Four Moons orbitally.<br>
+      5. Maintain the Cultural Navigator (JOG Network).<br>
+      <span class="text-amber-300 text-[10px]">Le Bureau does not interfere. Does not take sides. Does not enforce belief. Le Bureau archives.</span>
+    </div>
+  </div>
+
+  <!-- VII · PROPHECY + CHRONOLOGY -->
+  <div class="manuscript rounded-2xl p-6 md:p-10 mb-8">
+    <h2 class="text-3xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-3 mb-6">📜 VII · THE PROPHECY OF RETURN</h2>
+    <div class="italic text-stone-300 border-l-4 border-amber-600 pl-4 my-4">
+      "The Great Diverting was not the last. Stones of Death still fly in the dark.<br>
+      When they fall again — Watcher and Wanderer shall once more step from shadow. They will turn most stones aside. But one will fall.<br>
+      Then the Frog will rise from the water. She will look upon the world. She will not care. And she will croak.<br>
+      KVA will be the last sound. Or the first. Depending on how you count.<br>
+      No one knows. The Frog does not speak. She does not care."
+    </div>
+    <table class="star-table w-full mt-3">
+      <thead><tr><th>Epoch</th><th>Duration</th></tr></thead>
+      <tbody>
+        <tr><td>Era of Silence</td><td>Billions of years</td></tr>
+        <tr><td>The First Croak</td><td>~370 million years ago</td></tr>
+        <tr><td>Era of Clans</td><td>300,000 years</td></tr>
+        <tr><td>Era of Observation (present)</td><td>127 years</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VIII · GLOSSARY -->
+  <div class="manuscript rounded-2xl p-6 md:p-10 mb-8">
+    <h2 class="text-3xl font-cinzel text-amber-400 border-b border-amber-500/30 pb-3 mb-6">📖 VIII · GLOSSARY OF THE ANCIENT TONGUE</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-mono">
+      <div><span class="text-amber-400">KVA</span> – first sound, first cause, sacred croak</div>
+      <div><span class="text-amber-400">Great Indifference</span> – freedom from attachment, highest wisdom</div>
+      <div><span class="text-amber-400">Two Spirits</span> – symbionts (emotion + instinct)</div>
+      <div><span class="text-amber-400">Three Suns</span> – triple star system</div>
+      <div><span class="text-amber-400">Four Moons</span> – two visible, two hidden</div>
+      <div><span class="text-amber-400">Stone of Death</span> – meteor / asteroid</div>
+      <div><span class="text-amber-400">Great Diverting</span> – myth of moon deflection</div>
+      <div><span class="text-amber-400">Blood of Roots</span> – 13 ancient clans</div>
+      <div><span class="text-amber-400">Blood of Branches</span> – 23 branch clans</div>
+      <div><span class="text-amber-400">Strangers</span> – old name for Le Bureau</div>
+      <div><span class="text-amber-400">Players</span> – external observers via JOG Network</div>
+    </div>
+  </div>
+
+  <!-- epilogue -->
+  <div class="text-center text-stone-500 text-[10px] font-mono mt-6 pt-4 border-t border-amber-500/20">
+    <p>📜 GENESIS · COMPLETE CODEX · doc WU-GENESIS-001<br>🐸 The Frog sits on a stone. Water wet. Earth solid. Sky high.<br>The clans war and make peace. Le Bureau records. The Player just arrived.<br><span class="text-amber-400 text-xs">"The Frog doesn't care. Until then — croak."</span></p>
+    <p class="mt-2 text-[9px] text-stone-600">LEVEL 3 · EYES ONLY · REGENT AND CLAN KEEPERS · Observation Year 127 · JOG Network active</p>
+  </div>
+</div>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+    }
+  }
+</script>
+
+<script type="module">
+  import * as THREE from 'three';
+
+  const canvas = document.getElementById('frog-canvas');
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x030201);
+  scene.fog = new THREE.FogExp2(0x030201, 0.008);
+
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 8, 18);
+  
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.shadowMap.enabled = true;
+
+  const ambient = new THREE.AmbientLight(0x222222);
+  scene.add(ambient);
+  const sun1 = new THREE.DirectionalLight(0xffaa66, 1.2);
+  sun1.position.set(5, 10, 5);
+  scene.add(sun1);
+  const sun2 = new THREE.PointLight(0xff8866, 0.8);
+  sun2.position.set(-4, 6, 3);
+  scene.add(sun2);
+  const sun3 = new THREE.PointLight(0xff6644, 0.6);
+  sun3.position.set(3, 5, -4);
+  scene.add(sun3);
+  const fillLight = new THREE.PointLight(0x4488ff, 0.4);
+  fillLight.position.set(0, 4, 6);
+  scene.add(fillLight);
+
+  const groundGeo = new THREE.CircleGeometry(14, 32);
+  const groundMat = new THREE.MeshStandardMaterial({ color: 0x1a3a1a, roughness: 0.7 });
+  const ground = new THREE.Mesh(groundGeo, groundMat);
+  ground.rotation.x = -Math.PI/2;
+  ground.position.y = -1.2;
+  ground.receiveShadow = true;
+  scene.add(ground);
+  
+  const waterGeo = new THREE.CircleGeometry(12, 32);
+  const waterMat = new THREE.MeshStandardMaterial({ color: 0x2a5a5a, roughness: 0.3, metalness: 0.8, transparent: true, opacity: 0.7 });
+  const water = new THREE.Mesh(waterGeo, waterMat);
+  water.rotation.x = -Math.PI/2;
+  water.position.y = -1.0;
+  scene.add(water);
+
+  for (let i = 0; i < 60; i++) {
+    const pad = new THREE.Mesh(new THREE.SphereGeometry(0.35, 16, 8), new THREE.MeshStandardMaterial({ color: 0x3a7a3a }));
+    const angle = Math.random() * Math.PI * 2;
+    const rad = 3 + Math.random() * 8;
+    pad.position.set(Math.cos(angle)*rad, -0.9, Math.sin(angle)*rad);
+    pad.scale.set(0.8,0.2,0.8);
+    scene.add(pad);
+  }
+  
+  const starGeo = new THREE.BufferGeometry();
+  const starPos = [];
+  for (let i=0;i<2000;i++) { starPos.push((Math.random()-0.5)*400, (Math.random()-0.5)*150+20, (Math.random()-0.5)*150-80); }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+  const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.12 }));
+  scene.add(stars);
+
+  class WonderingFrog {
+    constructor(scene, x, z, hue=0.35) {
+      this.scene = scene;
+      this.group = new THREE.Group();
+      this.group.position.set(x, -0.8, z);
+      const bodyMat = new THREE.MeshStandardMaterial({ color: new THREE.Color().setHSL(hue, 0.7, 0.4), emissiveIntensity: 0.2 });
+      this.body = new THREE.Mesh(new THREE.SphereGeometry(0.28, 24, 24), bodyMat);
+      this.body.castShadow = true;
+      this.group.add(this.body);
+      const eyeMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+      const leftEye = new THREE.Mesh(new THREE.SphereGeometry(0.12,16,16), eyeMat);
+      leftEye.position.set(-0.16,0.22,0.24);
+      const rightEye = new THREE.Mesh(new THREE.SphereGeometry(0.12,16,16), eyeMat);
+      rightEye.position.set(0.16,0.22,0.24);
+      this.group.add(leftEye, rightEye);
+      const pupilMat = new THREE.MeshStandardMaterial({ color: 0x000000 });
+      const leftPupil = new THREE.Mesh(new THREE.SphereGeometry(0.06,16,16), pupilMat);
+      leftPupil.position.set(-0.16,0.2,0.32);
+      const rightPupil = new THREE.Mesh(new THREE.SphereGeometry(0.06,16,16), pupilMat);
+      rightPupil.position.set(0.16,0.2,0.32);
+      this.group.add(leftPupil, rightPupil);
+      this.speed = 0.008 + Math.random()*0.01;
+      this.angle = Math.random()*Math.PI*2;
+      this.radius = 2+Math.random()*8;
+      this.ySpeed = 0.03+Math.random()*0.04;
+      scene.add(this.group);
+      this.bodyMat = bodyMat;
+    }
+    update(time, hue) {
+      this.angle += this.speed * 0.5;
+      this.group.position.x = Math.cos(this.angle + time*0.2) * this.radius;
+      this.group.position.z = Math.sin(this.angle + time*0.3) * this.radius;
+      this.group.position.y = -0.8 + Math.sin(time*this.ySpeed)*0.05;
+      this.group.lookAt(Math.cos(this.angle+0.1)*10, 0, Math.sin(this.angle+0.1)*10);
+      if (this.bodyMat) this.bodyMat.color.setHSL(hue, 0.7, 0.4);
+    }
+  }
+  
+  let frogs = [];
+  let evolutionStage = 1;
+  let evolutionProgress = 0;
+  let croakAccumulator = 0;
+  
+  function spawnFrogs(count, hueBase=0.35) {
+    frogs.forEach(f => f.scene.remove(f.group));
+    frogs = [];
+    for (let i=0;i<count;i++) {
+      const angle = Math.random()*Math.PI*2;
+      const rad = 2+Math.random()*9;
+      frogs.push(new WonderingFrog(scene, Math.cos(angle)*rad, Math.sin(angle)*rad, hueBase));
+    }
+    updateMetrics();
+  }
+  
+  function updateMetrics() {
+    document.getElementById('frogCount').innerText = frogs.length;
+    document.getElementById('swampSize').innerText = Math.floor(50 + frogs.length * 2.2);
+    document.getElementById('croakIntensity').innerText = Math.floor(40 + frogs.length * 1.1);
+    document.getElementById('evoStage').innerText = evolutionStage;
+    document.getElementById('evoBar').style.width = (evolutionStage/7)*100 + '%';
+    const hue = 0.3 + (evolutionStage-1)*0.06;
+    frogs.forEach(f => f.update(performance.now()/1000, Math.min(0.8, hue)));
+  }
+  
+  let lastTime = Date.now();
+  function evolutionLoop() {
+    const now = Date.now();
+    const delta = Math.min(0.1, (now-lastTime)/1000);
+    lastTime = now;
+    croakAccumulator += delta * (frogs.length / 22);
+    if (croakAccumulator > 1.4 && frogs.length < 130) {
+      croakAccumulator = 0;
+      const newCount = Math.min(135, frogs.length + Math.floor(Math.random()*3)+1);
+      const hueBase = 0.3 + (evolutionStage-1)*0.06;
+      spawnFrogs(newCount, hueBase);
+      evolutionProgress += 0.1;
+      if (evolutionProgress >= 1.0 && evolutionStage < 7) {
+        evolutionProgress = 0;
+        evolutionStage++;
+        updateMetrics();
+        const glow = new THREE.Mesh(new THREE.SphereGeometry(0.6,8,8), new THREE.MeshStandardMaterial({ color: 0xffaa44, emissive: 0xff4422, emissiveIntensity: 0.9 }));
+        glow.position.set(0,1.5,0);
+        scene.add(glow);
+        setTimeout(()=>scene.remove(glow), 700);
+      }
+    }
+    updateMetrics();
+    requestAnimationFrame(evolutionLoop);
+  }
+  
+  spawnFrogs(28, 0.35);
+  evolutionLoop();
+  
+  let camAngle = 0;
+  function animateCamera() {
+    camAngle += 0.0015;
+    const r = 18;
+    camera.position.x = Math.sin(camAngle)*r;
+    camera.position.z = Math.cos(camAngle)*r;
+    camera.position.y = 6 + Math.sin(camAngle*0.7)*1.5;
+    camera.lookAt(0,0,0);
+    requestAnimationFrame(animateCamera);
+  }
+  animateCamera();
+  
+  let timeGlobal = 0;
+  function animateScene() {
+    requestAnimationFrame(animateScene);
+    timeGlobal += 0.02;
+    frogs.forEach(f => f.update(timeGlobal, 0.3 + (evolutionStage-1)*0.06));
+    water.position.y = -1.0 + Math.sin(timeGlobal*0.5)*0.02;
+    sun1.intensity = 0.9 + Math.sin(timeGlobal*0.1)*0.15;
+    stars.rotation.y += 0.0005;
+    renderer.render(scene, camera);
+  }
+  animateScene();
+  
+  window.addEventListener('resize', ()=>{
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+  
+  console.log('🐸 INVESTARIUM ACTIVE · The First Croak echoes · The Frog doesn’t care');
+</script>
+</body>
+</html>
