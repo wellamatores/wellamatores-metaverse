@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>VISORACLE | MAG-TECH-BIO AI SYNTH | WebGL + Sora-like Engine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            font-family: 'Inter', 'Segoe UI', 'JetBrains Mono', monospace;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        .ui-panel {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            right: 24px;
+            background: rgba(8, 6, 18, 0.82);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            border: 1px solid rgba(100, 150, 255, 0.5);
+            padding: 18px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            z-index: 100;
+            font-size: 12px;
+            pointer-events: auto;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .ui-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 8px 14px;
+            border-radius: 20px;
+            min-width: 130px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .ui-group label {
+            color: #d8b4fe;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        input, select, button {
+            background: rgba(10, 10, 25, 0.8);
+            border: 1px solid #a855f7;
+            color: #f0eaff;
+            padding: 8px 12px;
+            border-radius: 28px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: monospace;
+        }
+
+        input:hover, button:hover {
+            background: rgba(139, 92, 246, 0.4);
+            border-color: #e879f9;
+            box-shadow: 0 0 6px rgba(168, 85, 247, 0.5);
+        }
+
+        button {
+            background: linear-gradient(95deg, #2a204b, #1a153f);
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        input[type="range"] {
+            width: 140px;
+            cursor: pointer;
+            background: #1f1b36;
+        }
+
+        .status-bar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(12px);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #2dd4bf;
+            font-family: monospace;
+            z-index: 100;
+            pointer-events: none;
+            border-left: 3px solid #c084fc;
+            letter-spacing: 0.5px;
+        }
+
+        .recording-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(220, 38, 38, 0.85);
+            border-radius: 40px;
+            padding: 6px 18px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            display: none;
+            z-index: 100;
+            animation: pulse 1.2s infinite;
+            backdrop-filter: blur(4px);
+            font-family: monospace;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.9; text-shadow: 0 0 4px red; }
+            50% { opacity: 0.5; text-shadow: 0 0 12px #ff3366; }
+        }
+
+        @media (max-width: 900px) {
+            .ui-panel { flex-direction: column; bottom: 12px; left: 12px; right: 12px; padding: 14px; gap: 8px; }
+            .ui-group { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    
+    <div class="status-bar" id="statusBar">
+        🔮 VISORACLE | FPS: <span id="fps">0</span>
+    </div>
+    <div class="recording-indicator" id="recIndicator">
+        🔴 RECORDING · AI VIDEO CAPTURE
+    </div>
+
+    <div class="ui-panel">
+        <div class="ui-group">
+            <label>🎨 PROMPT (AI SYNTH)</label>
+            <input type="text" id="promptInput" placeholder="magic forest, cyberpunk, alien ocean, arcane..." value="magic forest">
+            <button id="applyPromptBtn">✨ INFUSE VISION</button>
+        </div>
+        
+        <div class="ui-group">
+            <label>🌀 COHERENCE · temporal flow</label>
+            <input type="range" id="coherenceSlider" min="0" max="1" step="0.01" value="0.72">
+            <span id="coherenceVal" style="font-size: 10px; color:#c084fc;">0.72</span>
+        </div>
+        
+        <div class="ui-group">
+            <label>⚡ INTENSITY · chaos & motion</label>
+            <input type="range" id="intensitySlider" min="0" max="1" step="0.01" value="0.65">
+            <span id="intensityVal" style="font-size: 10px; color:#c084fc;">0.65</span>
+        </div>
+        
+        <div class="ui-group">
+            <label>🎲 SEED · quantum signature</label>
+            <input type="number" id="seedInput" value="42024" style="width: 100px;">
+            <button id="randomSeedBtn">🌀 RESEED UNIVERSE</button>
+        </div>
+        
+        <div class="ui-group">
+            <label>📀 OUTPUT & CONTROL</label>
+            <button id="recordBtn">🎥 CAPTURE VIDEO (15-30s)</button>
+            <button id="chaosBtn">🌋 CHAOS MANIFEST</button>
+        </div>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // ============================================================
+        //  VISORACLE · MAG-TECH-BIO ENGINE | Sora-like realtime latent video synthesis
+        //  Vision + Oracle: procedural particle field + prompt-driven style
+        //  Interactive gestures | Adaptive performance | Video recording
+        // ============================================================
+        
+        const canvas = document.getElementById('canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, preserveDrawingBuffer: true });
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x010018);
+        scene.fog = new THREE.FogExp2(0x010018, 0.012);
+        
+        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+        camera.position.z = 1;
+        
+        // ------------- SYSTEM STATE --------------
+        let state = {
+            time: 0,
+            coherence: 0.72,
+            intensity: 0.65,
+            seed: 42024,
+            gesture: { x: 0.5, y: 0.5, active: false, intensity: 0 },
+            params: {
+                hueBase: 260,
+                techBias: 0.5,
+                organicBias: 0.6,
+                magBias: 0.7,
+                styleName: 'magic'
+            },
+            maxParticles: 3800,
+            frame: 0
+        };
+        
+        // ----- seeded random generator -----
+        let rngState = state.seed;
+        function seededRandom() {
+            rngState = (rngState * 1103515245 + 12345) & 0x7fffffff;
+            return rngState / 0x7fffffff;
+        }
+        
+        function reseed(seed) {
+            state.seed = seed;
+            rngState = seed;
+            if (particleGeometry) {
+                initParticleSystem(true);
+            }
+        }
+        
+        // ----- PARTICLE SYSTEM -----
+        let particleSystem;
+        let particleGeometry;
+        let particleMaterial;
+        let particleVelocities = [];
+        let particleLife = [];
+        
+        function initParticleSystem(resetVelocities = true) {
+            const count = state.maxParticles;
+            if (particleGeometry) particleGeometry.dispose();
+            particleGeometry = new THREE.BufferGeometry();
+            
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+            particleVelocities = new Array(count);
+            particleLife = new Array(count);
+            
+            for (let i = 0; i < count; i++) {
+                const angle = seededRandom() * Math.PI * 2;
+                const rad = Math.sqrt(seededRandom()) * 1.2;
+                positions[i*3] = Math.cos(angle) * rad * (seededRandom() * 0.8 + 0.2);
+                positions[i*3+1] = Math.sin(angle) * rad * (seededRandom() * 0.8 + 0.2);
+                positions[i*3+2] = (seededRandom() - 0.5) * 0.2;
+                
+                const hueShift = (state.params.hueBase + seededRandom() * 120) % 360;
+                const rgb = hslToRgb(hueShift / 360, 0.7 + seededRandom()*0.3, 0.5 + seededRandom()*0.4);
+                colors[i*3] = rgb.r;
+                colors[i*3+1] = rgb.g;
+                colors[i*3+2] = rgb.b;
+                
+                particleVelocities[i] = { x: (seededRandom() - 0.5) * 0.008, y: (seededRandom() - 0.5) * 0.008 };
+                particleLife[i] = 0.5 + seededRandom() * 0.5;
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            particleMaterial = new THREE.PointsMaterial({
+                size: 0.009,
+                vertexColors: true,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                opacity: 0.92
+            });
+            
+            if (particleSystem) scene.remove(particleSystem);
+            particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particleSystem);
+        }
+        
+        function updateParticles(dt) {
+            const positionsAttr = particleGeometry.attributes.position;
+            const colorsAttr = particleGeometry.attributes.color;
+            const positions = positionsAttr.array;
+            const colors = colorsAttr.array;
+            const count = state.maxParticles;
+            const coherence = state.coherence;
+            const intensity = state.intensity;
+            const gestureActive = state.gesture.active;
+            const gx = (state.gesture.x * 2 - 1);
+            const gy = -(state.gesture.y * 2 - 1);
+            const gestureStr = Math.min(0.9, state.gesture.intensity);
+            
+            const flowFieldX = Math.sin(state.time * 0.47) * 0.03;
+            const flowFieldY = Math.cos(state.time * 0.53) * 0.03;
+            
+            for (let i = 0; i < count; i++) {
+                const idx = i * 3;
+                let px = positions[idx];
+                let py = positions[idx+1];
+                const oldX = px, oldY = py;
+                
+                let vx = particleVelocities[i].x;
+                let vy = particleVelocities[i].y;
+                
+                const noiseX = (seededRandom() - 0.5) * 0.022 * intensity;
+                const noiseY = (seededRandom() - 0.5) * 0.022 * intensity;
+                vx += noiseX + flowFieldX * 0.5;
+                vy += noiseY + flowFieldY * 0.5;
+                
+                if (gestureActive && gestureStr > 0.02) {
+                    const dirX = gx - px;
+                    const dirY = gy - py;
+                    const distSq = dirX*dirX + dirY*dirY;
+                    const force = Math.min(0.25, (gestureStr * 0.8) / (distSq + 0.2));
+                    vx += dirX * force * dt * 40;
+                    vy += dirY * force * dt * 40;
+                }
+                
+                let newX = px + vx * dt * 55;
+                let newY = py + vy * dt * 55;
+                
+                if (Math.abs(newX) > 1.05) { newX = Math.sign(newX) * 1.02; vx *= -0.6; }
+                if (Math.abs(newY) > 1.05) { newY = Math.sign(newY) * 1.02; vy *= -0.6; }
+                
+                const finalX = newX * coherence + oldX * (1 - coherence);
+                const finalY = newY * coherence + oldY * (1 - coherence);
+                
+                positions[idx] = finalX;
+                positions[idx+1] = finalY;
+                positions[idx+2] = (Math.sin(state.time * 2.1 + i * 0.002) * 0.03) * state.params.magBias;
+                
+                particleVelocities[i] = { x: vx * 0.995, y: vy * 0.995 };
+                
+                let hueShift = (state.params.hueBase + (finalX * 90) + (finalY * 70) + state.time * 35) % 360;
+                let sat = 0.65 + Math.sin(finalX * 8 + state.time) * 0.25 * state.params.techBias;
+                let light = 0.55 + Math.sin(finalY * 6 + state.time * 2) * 0.3 * state.params.magBias;
+                const rgb = hslToRgb(hueShift / 360, sat, light);
+                const intensFactor = 0.7 + intensity * 0.5;
+                colors[idx] = rgb.r * intensFactor;
+                colors[idx+1] = rgb.g * intensFactor;
+                colors[idx+2] = rgb.b * intensFactor;
+            }
+            positionsAttr.needsUpdate = true;
+            colorsAttr.needsUpdate = true;
+        }
+        
+        function hslToRgb(h, s, l) {
+            let r, g, b;
+            if (s === 0) r = g = b = l;
+            else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1/6) return p + (q - p) * 6 * t;
+                    if (t < 1/2) return q;
+                    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                    return p;
+                };
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1/3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1/3);
+            }
+            return { r, g, b };
+        }
+        
+        function parsePrompt(promptText) {
+            const p = promptText.toLowerCase();
+            let hueBase = 260, tech = 0.5, organic = 0.6, mag = 0.7, style = 'magic';
+            
+            if (p.includes('forest') || p.includes('woods') || p.includes('nature')) {
+                hueBase = 130; organic = 0.92; tech = 0.3; mag = 0.5; style = 'forest';
+            } else if (p.includes('cyber') || p.includes('neon') || p.includes('grid')) {
+                hueBase = 280; tech = 0.95; organic = 0.2; mag = 0.85; style = 'cyber';
+            } else if (p.includes('fire') || p.includes('lava') || p.includes('inferno')) {
+                hueBase = 25; tech = 0.4; organic = 0.7; mag = 0.92; style = 'fire';
+            } else if (p.includes('water') || p.includes('ocean') || p.includes('aqua')) {
+                hueBase = 200; organic = 0.87; tech = 0.35; mag = 0.55; style = 'water';
+            } else if (p.includes('space') || p.includes('cosmic') || p.includes('nebula')) {
+                hueBase = 270; tech = 0.6; organic = 0.5; mag = 0.9; style = 'space';
+            } else if (p.includes('magic') || p.includes('arcane') || p.includes('ether')) {
+                hueBase = 300; tech = 0.45; organic = 0.65; mag = 0.94; style = 'magic';
+            } else if (p.includes('bio') || p.includes('organic') || p.includes('moss')) {
+                hueBase = 90; organic = 0.96; tech = 0.2; mag = 0.6; style = 'bio';
+            } else if (p.includes('alien') || p.includes('xenon')) {
+                hueBase = 210; tech = 0.55; organic = 0.78; mag = 0.88; style = 'alien';
+            }
+            
+            state.params = { hueBase, techBias: tech, organicBias: organic, magBias: mag, styleName: style };
+            updateDynamicBackground();
+            
+            const shortPrompt = promptText.length > 28 ? promptText.slice(0,25)+'..' : promptText;
+            const statusDiv = document.getElementById('statusBar');
+            statusDiv.innerHTML = `🎨 PROMPT: "${shortPrompt}" | FPS: <span id="fps">${Math.round(currentFPS)}</span>`;
+            setTimeout(() => {
+                if (document.getElementById('statusBar')) 
+                    document.getElementById('statusBar').innerHTML = `🔮 VISORACLE | FPS: <span id="fps">${Math.round(currentFPS)}</span>`;
+            }, 2200);
+        }
+        
+        let backgroundMesh, backgroundTexture;
+        function updateDynamicBackground() {
+            const canvasBg = document.createElement('canvas');
+            canvasBg.width = 1024;
+            canvasBg.height = 1024;
+            const ctx = canvasBg.getContext('2d');
+            
+            const hue = state.params.hueBase;
+            const grad = ctx.createLinearGradient(0, 0, 1024, 1024);
+            grad.addColorStop(0, `hsl(${hue}, 75%, 12%)`);
+            grad.addColorStop(1, `hsl(${hue + 40}, 80%, 6%)`);
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1024, 1024);
+            
+            if (state.params.organicBias > 0.3) {
+                for (let i=0;i<180;i++) {
+                    ctx.beginPath();
+                    const x = (seededRandom() * 1024);
+                    const y = (seededRandom() * 1024);
+                    const radX = 12 + seededRandom() * 55;
+                    const radY = 8 + seededRandom() * 45;
+                    ctx.ellipse(x, y, radX, radY, seededRandom() * Math.PI, 0, Math.PI*2);
+                    ctx.fillStyle = `hsla(${hue + 30}, 85%, 55%, ${0.08 + state.params.organicBias * 0.12})`;
+                    ctx.fill();
+                }
+            }
+            if (state.params.techBias > 0.35) {
+                ctx.strokeStyle = `hsla(${hue + 160}, 80%, 65%, ${0.2 + state.params.techBias * 0.2})`;
+                ctx.lineWidth = 1.2;
+                for (let g=0; g<35; g++) {
+                    ctx.beginPath();
+                    ctx.moveTo(g * 30, 0);
+                    ctx.lineTo(g * 30, 1024);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, g * 30);
+                    ctx.lineTo(1024, g * 30);
+                    ctx.stroke();
+                }
+            }
+            if (state.params.magBias > 0.5) {
+                for (let s=0; s<300; s++) {
+                    ctx.fillStyle = `hsla(${hue + 80}, 100%, 70%, 0.2)`;
+                    ctx.fillRect(seededRandom()*1024, seededRandom()*1024, 2+seededRandom()*5, 2+seededRandom()*5);
+                }
+            }
+            
+            if (backgroundTexture) backgroundTexture.dispose();
+            backgroundTexture = new THREE.CanvasTexture(canvasBg);
+            backgroundTexture.wrapS = THREE.RepeatWrapping;
+            backgroundTexture.wrapT = THREE.RepeatWrapping;
+            backgroundTexture.repeat.set(1.5, 1.5);
+            if (backgroundMesh) backgroundMesh.material.map = backgroundTexture;
+        }
+        
+        function initBackground() {
+            const geometry = new THREE.PlaneGeometry(2, 2);
+            const material = new THREE.MeshBasicMaterial({ transparent: false });
+            backgroundMesh = new THREE.Mesh(geometry, material);
+            scene.add(backgroundMesh);
+            updateDynamicBackground();
+        }
+        
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
+        let recordingStartTime = 0;
+        let recordingTimeout = null;
+        
+        async function startRecording() {
+            if (isRecording) return;
+            recordedChunks = [];
+            const stream = renderer.domElement.captureStream(30);
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const durationSec = ((Date.now() - recordingStartTime) / 1000).toFixed(1);
+                a.download = `visoracle_${state.params.styleName}_${Date.now()}_${durationSec}s.webm`;
+                a.href = url;
+                a.click();
+                URL.revokeObjectURL(url);
+                isRecording = false;
+                document.getElementById('recIndicator').style.display = 'none';
+                const recBtn = document.getElementById('recordBtn');
+                recBtn.textContent = '🎥 CAPTURE VIDEO (15-30s)';
+                if (recordingTimeout) clearTimeout(recordingTimeout);
+            };
+            mediaRecorder.start(100);
+            isRecording = true;
+            recordingStartTime = Date.now();
+            document.getElementById('recIndicator').style.display = 'block';
+            const recBtn = document.getElementById('recordBtn');
+            recBtn.textContent = '⏹️ STOP RECORDING';
+            
+            recordingTimeout = setTimeout(() => {
+                if (isRecording) stopRecording();
+            }, 30000);
+        }
+        
+        function stopRecording() {
+            if (mediaRecorder && isRecording && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                if (recordingTimeout) clearTimeout(recordingTimeout);
+            }
+        }
+        
+        function toggleRecording() {
+            if (isRecording) stopRecording();
+            else startRecording();
+        }
+        
+        let gestureVec = [];
+        function handleGestureStart(x, y) {
+            state.gesture.active = true;
+            state.gesture.x = Math.min(0.98, Math.max(0.02, x / width));
+            state.gesture.y = Math.min(0.98, Math.max(0.02, y / height));
+            state.gesture.intensity = 0.65;
+            gestureVec = [{ x: state.gesture.x, y: state.gesture.y }];
+        }
+        function handleGestureMove(x, y) {
+            if (!state.gesture.active) return;
+            state.gesture.x = Math.min(0.98, Math.max(0.02, x / width));
+            state.gesture.y = Math.min(0.98, Math.max(0.02, y / height));
+            state.gesture.intensity = Math.min(0.95, state.gesture.intensity + 0.025);
+            gestureVec.push({ x: state.gesture.x, y: state.gesture.y });
+        }
+        function handleGestureEnd() {
+            state.gesture.active = false;
+            let fade = setInterval(() => {
+                if (state.gesture.intensity > 0.02) state.gesture.intensity *= 0.88;
+                else { state.gesture.intensity = 0; clearInterval(fade); }
+            }, 45);
+            if (gestureVec.length > 12) {
+                const dx = gestureVec[gestureVec.length-1].x - gestureVec[0].x;
+                if (Math.abs(dx) > 0.28) {
+                    if (dx > 0) state.intensity = Math.min(1, state.intensity + 0.12);
+                    else state.coherence = Math.min(1, state.coherence + 0.12);
+                    document.getElementById('intensitySlider').value = state.intensity;
+                    document.getElementById('coherenceSlider').value = state.coherence;
+                    document.getElementById('intensityVal').innerText = state.intensity.toFixed(2);
+                    document.getElementById('coherenceVal').innerText = state.coherence.toFixed(2);
+                }
+            }
+        }
+        
+        // UI bindings
+        document.getElementById('coherenceSlider').addEventListener('input', (e) => {
+            state.coherence = parseFloat(e.target.value);
+            document.getElementById('coherenceVal').innerText = state.coherence.toFixed(2);
+        });
+        document.getElementById('intensitySlider').addEventListener('input', (e) => {
+            state.intensity = parseFloat(e.target.value);
+            document.getElementById('intensityVal').innerText = state.intensity.toFixed(2);
+        });
+        document.getElementById('applyPromptBtn').addEventListener('click', () => {
+            parsePrompt(document.getElementById('promptInput').value);
+        });
+        document.getElementById('randomSeedBtn').addEventListener('click', () => {
+            const newSeed = Math.floor(Math.random() * 99999);
+            document.getElementById('seedInput').value = newSeed;
+            reseed(newSeed);
+        });
+        document.getElementById('seedInput').addEventListener('change', (e) => {
+            reseed(parseInt(e.target.value) || 42);
+        });
+        document.getElementById('recordBtn').addEventListener('click', toggleRecording);
+        document.getElementById('chaosBtn').addEventListener('click', () => {
+            state.coherence = Math.random() * 0.9;
+            state.intensity = Math.random() * 0.9 + 0.2;
+            const prompts = ['cyber neon storm', 'magic forest essence', 'fire elemental', 'abyssal ocean', 'cosmic singularity', 'bio luminescence'];
+            const rp = prompts[Math.floor(Math.random() * prompts.length)];
+            document.getElementById('promptInput').value = rp;
+            document.getElementById('coherenceSlider').value = state.coherence;
+            document.getElementById('intensitySlider').value = state.intensity;
+            document.getElementById('coherenceVal').innerText = state.coherence.toFixed(2);
+            document.getElementById('intensityVal').innerText = state.intensity.toFixed(2);
+            parsePrompt(rp);
+        });
+        
+        canvas.addEventListener('mousedown', (e) => handleGestureStart(e.clientX, e.clientY));
+        canvas.addEventListener('mousemove', (e) => handleGestureMove(e.clientX, e.clientY));
+        canvas.addEventListener('mouseup', () => handleGestureEnd());
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); const t = e.touches[0]; handleGestureStart(t.clientX, t.clientY); });
+        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); const t = e.touches[0]; handleGestureMove(t.clientX, t.clientY); });
+        canvas.addEventListener('touchend', (e) => { e.preventDefault(); handleGestureEnd(); });
+        
+        let lastTimestamp = 0;
+        let currentFPS = 60;
+        let fpsTimes = [];
+        
+        function animate(now) {
+            requestAnimationFrame(animate);
+            let dt = Math.min(0.033, (now - lastTimestamp) / 1000);
+            if (dt < 0.003) return;
+            lastTimestamp = now;
+            
+            fpsTimes.push(now);
+            if (fpsTimes.length > 60) fpsTimes.shift();
+            if (fpsTimes.length > 1) currentFPS = (fpsTimes.length - 1) / ((fpsTimes[fpsTimes.length-1] - fpsTimes[0]) / 1000);
+            document.getElementById('fps').innerText = Math.round(currentFPS);
+            
+            if (currentFPS < 42 && state.maxParticles > 1500) {
+                state.maxParticles = Math.max(1200, state.maxParticles - 250);
+                initParticleSystem(true);
+            } else if (currentFPS > 56 && state.maxParticles < 5200) {
+                state.maxParticles = Math.min(7000, state.maxParticles + 200);
+                initParticleSystem(true);
+            }
+            
+            state.time += dt;
+            state.gesture.intensity *= Math.exp(-dt * 2.2);
+            updateParticles(dt);
+            
+            if (backgroundTexture) {
+                backgroundTexture.offset.x += 0.00035 * state.params.magBias;
+                backgroundTexture.offset.y += 0.0002 * state.params.organicBias;
+            }
+            renderer.render(scene, camera);
+        }
+        
+        function bootstrap() {
+            reseed(42024);
+            initBackground();
+            initParticleSystem(true);
+            parsePrompt('magic forest');
+            window.addEventListener('resize', () => {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                renderer.setSize(width, height);
+            });
+            requestAnimationFrame(animate);
+            console.log('🚀 VISORACLE | MAG-TECH-BIO active | prompt-driven video synthesis ready');
+        }
+        bootstrap();
+    </script>
+</body>
+</html>
