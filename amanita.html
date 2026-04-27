@@ -21,6 +21,25 @@
             width: 100vw;
         }
 
+        /* DISCLAIMER BAR - ADDED */
+        .disclaimer-bar {
+            background: #1a0a0a;
+            border-bottom: 2px solid #fb923c;
+            text-align: center;
+            padding: 5px 12px;
+            font-family: monospace;
+            font-size: 8px;
+            color: #fca5a5;
+            letter-spacing: 0.3px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10000;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
         /* Main workstation grid - 8 monitors */
         .workstation {
             display: grid;
@@ -32,6 +51,7 @@
             height: 100vh;
             width: 100vw;
             box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+            margin-top: 26px;
         }
 
         /* individual monitor panel */
@@ -59,7 +79,7 @@
             overflow-x: hidden;
             scrollbar-width: thin;
             scrollbar-color: #2b5e3b #0a0f0a;
-            user-select: text; /* allow text selection in monitors */
+            user-select: text;
         }
 
         .screen-content::-webkit-scrollbar {
@@ -344,6 +364,12 @@
     </style>
 </head>
 <body>
+
+<!-- ⚠️ DISCLAIMER BAR (добавлен) -->
+<div class="disclaimer-bar">
+    ⚠️ THIS IS A DEMO TEMPLATE. All data is fictitious. This page is not a trading platform, does not accept orders, and does not provide financial advice. The data is not associated with any real exchanges.
+</div>
+
 <div class="workstation">
     <!-- Monitor 1: Level 2 Order Book + Depth -->
     <div class="monitor">
@@ -550,7 +576,6 @@
         
         let formattedValue = newValue;
         if (typeof newValue === 'number') {
-            // Preserve decimal places intelligently
             const oldStr = oldValue.toString();
             const decimals = oldStr.includes('.') ? oldStr.split('.')[1].length : 2;
             formattedValue = newValue.toFixed(decimals);
