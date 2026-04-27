@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AMANITA | ULTRA-DENSE TRADING WORKSTATION</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            /* user-select removed for accessibility - can copy prices */
+        }
+
+        body {
+            background: #000000;
+            overflow: hidden;
+            font-family: 'Fira Code', 'IBM Plex Mono', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+            font-weight: 450;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Main workstation grid - 8 monitors */
+        .workstation {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 6px;
+            background: #0a0c0e;
+            padding: 10px;
+            height: 100vh;
+            width: 100vw;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        /* individual monitor panel */
+        .monitor {
+            background-color: #010101;
+            border: 1px solid #1e2a2a;
+            box-shadow: 0 0 0 1px #0f1a1a inset, 0 0 0 2px rgba(0,255,0,0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            font-size: 0.7rem;
+            transition: border-color 0.05s linear;
+        }
+
+        .monitor.flash {
+            border-color: #4cae4c !important;
+        }
+
+        /* inner content with dense scrolling */
+        .screen-content {
+            padding: 8px 6px 6px 6px;
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: #2b5e3b #0a0f0a;
+            user-select: text; /* allow text selection in monitors */
+        }
+
+        .screen-content::-webkit-scrollbar {
+            width: 4px;
+            background: #0a0f0a;
+        }
+        .screen-content::-webkit-scrollbar-thumb {
+            background: #2b5e3b;
+            border-radius: 0px;
+        }
+
+        /* ascii grid aesthetics */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.68rem;
+            letter-spacing: -0.02em;
+        }
+
+        .data-table td, .data-table th {
+            padding: 2px 2px;
+            border: none;
+            text-align: right;
+            font-weight: 400;
+        }
+
+        .data-table th {
+            color: #a0b8b0;
+            font-weight: 500;
+            border-bottom: 1px solid #1f3a2a;
+            letter-spacing: 0.5px;
+            font-size: 0.65rem;
+            text-align: right;
+        }
+
+        .left-align {
+            text-align: left;
+        }
+
+        /* trade direction colors */
+        .lime {
+            color: #aaff66;
+            text-shadow: 0 0 1px #227722;
+        }
+        .ruby {
+            color: #ff5e5e;
+            text-shadow: 0 0 1px #771111;
+        }
+        .amber {
+            color: #ffb347;
+            text-shadow: 0 0 1px #774400;
+        }
+        .neutral {
+            color: #9cc0b0;
+        }
+        .bid {
+            color: #aaff66;
+        }
+        .ask {
+            color: #ff5e5e;
+        }
+
+        /* animated price change */
+        .price-update-up {
+            animation: flashGreen 0.15s ease-out;
+        }
+        .price-update-down {
+            animation: flashRed 0.15s ease-out;
+        }
+        
+        @keyframes flashGreen {
+            0% { background-color: rgba(170, 255, 102, 0.3); }
+            100% { background-color: transparent; }
+        }
+        @keyframes flashRed {
+            0% { background-color: rgba(255, 94, 94, 0.3); }
+            100% { background-color: transparent; }
+        }
+
+        /* ticker tape */
+        .ticker-tape {
+            background: #030605;
+            border-bottom: 1px solid #1e3a2a;
+            border-top: 1px solid #1e3a2a;
+            padding: 4px 0;
+            margin-bottom: 8px;
+            font-family: monospace;
+            font-size: 0.65rem;
+            white-space: nowrap;
+            overflow-x: auto;
+            display: flex;
+            gap: 20px;
+            color: #bbdd99;
+        }
+
+        .ticker-item {
+            display: inline-block;
+            letter-spacing: 0px;
+        }
+
+        .orderbook-l2 {
+            font-size: 0.65rem;
+            line-height: 1.25;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 0.5px dotted #1c2a1c;
+            padding: 2px 0;
+            cursor: pointer;
+            transition: background 0.05s linear;
+        }
+        
+        .order-row:hover {
+            background: rgba(76, 174, 76, 0.15);
+        }
+
+        .price-bid {
+            color: #aaff66;
+        }
+        .price-ask {
+            color: #ff5e5e;
+        }
+
+        .section-title {
+            color: #aacfaa;
+            font-size: 0.6rem;
+            letter-spacing: 1px;
+            border-left: 2px solid #4cae4c;
+            padding-left: 6px;
+            margin: 6px 0 4px 0;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* central keyboard styling */
+        .keyboard-holder {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .ivory-keyboard {
+            background: #faf3e0;
+            background-image: radial-gradient(circle at 25% 30%, rgba(255,245,215,0.3) 1.5px, transparent 1px);
+            background-size: 12px 12px;
+            border: 2px solid #ab8e54;
+            border-radius: 12px;
+            padding: 12px 18px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,200,0.8);
+            pointer-events: auto;
+        }
+
+        .special-key {
+            background: #efe2c6;
+            border: 1px solid #b68b40;
+            color: #1e2a1a;
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            box-shadow: inset 0 -2px 0 #b68b40, 0 2px 6px black;
+            cursor: pointer;
+            transition: all 0.05s linear;
+            letter-spacing: 1px;
+        }
+
+        .special-key:active {
+            transform: translateY(2px);
+            box-shadow: inset 0 0px 0 #b68b40;
+        }
+
+        /* hardware badges */
+        .hardware-badge {
+            position: fixed;
+            bottom: 18px;
+            right: 18px;
+            background: #0c0e0c;
+            border-left: 3px solid #3ba53b;
+            padding: 6px 12px;
+            font-size: 0.55rem;
+            font-family: monospace;
+            color: #88cc88;
+            z-index: 99;
+            letter-spacing: 0.8px;
+            border-radius: 0px;
+            box-shadow: 0 0 0 1px #2a3a2a;
+        }
+
+        .biometric-led {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: #22ff66;
+            border-radius: 0px;
+            box-shadow: 0 0 4px #11ff33;
+            z-index: 99;
+        }
+
+        /* live indicator */
+        .live-indicator {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #000000aa;
+            padding: 4px 10px;
+            font-size: 0.55rem;
+            color: #22ff66;
+            font-family: monospace;
+            border: 0.5px solid #22ff66;
+            z-index: 99;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background-color: #22ff66;
+            border-radius: 50%;
+            animation: pulse-animation 1s infinite;
+        }
+        
+        @keyframes pulse-animation {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .token-reader {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            background: #000000aa;
+            padding: 3px 8px;
+            font-size: 0.55rem;
+            color: #eebb55;
+            font-family: monospace;
+            border: 0.5px solid #d4af37;
+            z-index: 99;
+        }
+
+        .monitor:before {
+            content: "⚡";
+            position: absolute;
+            bottom: 2px;
+            right: 5px;
+            font-size: 8px;
+            color: #2f6b2f;
+            opacity: 0.4;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #1e3a2a;
+            margin-bottom: 6px;
+            padding-bottom: 2px;
+            font-size: 0.55rem;
+            color: #8abf8a;
+        }
+        
+        /* clickable order rows */
+        .clickable {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="workstation">
+    <!-- Monitor 1: Level 2 Order Book + Depth -->
+    <div class="monitor">
+        <div class="screen-content">
+            <div class="stats-bar">L2_ORDER_BOOK | ES_M7 | BID×ASK</div>
+            <div class="section-title">📊 DEPTH (Level 2)</div>
+            <div class="orderbook-l2" id="l2-book">
+                <div class="order-row" data-side="bid" data-price="6324.50"><span class="bid">▲ 6324.50</span><span>24,300</span><span class="ask" style="margin-left: 20px;">6324.55 ▼</span><span>12,100</span></div>
+                <div class="order-row" data-side="bid" data-price="6324.25"><span class="bid">▲ 6324.25</span><span>31,200</span><span class="ask">6324.60 ▼</span><span>18,400</span></div>
+                <div class="order-row" data-side="bid" data-price="6324.00"><span class="bid">▲ 6324.00</span><span>45,000</span><span class="ask">6324.70 ▼</span><span>9,200</span></div>
+                <div class="order-row" data-side="bid" data-price="6323.85"><span class="bid">6323.85</span><span>12,500</span><span class="ask">6324.80</span><span>27,500</span></div>
+                <div class="order-row" data-side="bid" data-price="6323.60"><span class="bid">6323.60</span><span>9,800</span><span class="ask">6325.00</span><span>33,600</span></div>
+                <div class="order-row" data-side="bid" data-price="6323.40"><span class="bid">6323.40</span><span>22,100</span><span class="ask">6325.20</span><span>11,300</span></div>
+                <div class="order-row" data-side="bid" data-price="6323.15"><span class="bid">6323.15</span><span>33,400</span><span class="ask">6325.45</span><span>8,900</span></div>
+                <div class="section-title">└─ ICE_BOOK ─┘</div>
+                <div class="order-row"><span class="bid">hidden_ice: 6323.00</span><span>129k</span><span class="ask">hidden: 6325.80</span><span>87k</span></div>
+            </div>
+            <div class="section-title">LEVEL 3 (Orders)</div>
+            <div class="data-table" style="font-size:0.6rem" id="level3-orders">
+                <div class="order-row"><span>ID:AX47K</span><span class="bid">+B 6323.88</span><span>4500</span><span class="amber">FLG:CXL</span></div>
+                <div class="order-row"><span>ID:BY921</span><span class="ask">-S 6325.12</span><span>6200</span><span class="amber">FLG:IOC</span></div>
+                <div class="order-row"><span>ID:CZ388</span><span class="bid">+B 6323.90</span><span>10200</span><span class="lime">PEG</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monitor 2: Ticker Tapes & FX Futures -->
+    <div class="monitor">
+        <div class="screen-content">
+            <div class="ticker-tape" id="ticker-tape">
+                <span class="ticker-item"><span class="lime" id="eurusd">EUR/USD ▲ 1.08922</span> <span class="neutral">|</span> </span>
+                <span class="ticker-item"><span class="ruby" id="usdjpy">USD/JPY ▼ 147.382</span> <span class="neutral">|</span> </span>
+                <span class="ticker-item"><span class="lime" id="btc">BTC ▲ 67123.40</span> <span class="neutral">|</span> </span>
+                <span class="ticker-item"><span class="ruby" id="eth">ETH ▼ 3245.78</span> <span class="neutral">|</span> </span>
+                <span class="ticker-item"><span class="amber" id="ngas">NGAS +2.3%</span> <span class="neutral">|</span> </span>
+                <span class="ticker-item"><span class="lime" id="esf">ES_F +0.18%</span></span>
+            </div>
+            <div class="section-title">⚡ RAW TAPE (NYSE/NASDAQ)</div>
+            <div class="data-table" id="raw-tape">
+                <tr><td class="left-align">14:32:01.223</td><td class="lime">B 10,000 MSFT 418.32</td><td class="amber">@LDP</td></tr>
+                <tr><td class="left-align">14:32:01.455</td><td class="ruby">S 5,200 AAPL 187.44</td><td class="neutral">DARK</td></tr>
+                <tr><td class="left-align">14:32:01.997</td><td class="lime">B 22,100 NVDA 912.03</td><td class="amber">ARCA</td></tr>
+            </div>
+            <div class="section-title">CORPORATE BONDS</div>
+            <div class="order-row"><span>FDS  3.5 08/30</span><span class="bid">98.12</span><span class="ask ruby">98.19</span><span class="amber">YLD 3.67</span></div>
+            <div class="order-row"><span>PGOV T 4.25 11/33</span><span class="bid">102.04</span><span class="ask ruby">102.11</span><span class="amber">+0.02</span></div>
+        </div>
+    </div>
+
+    <!-- Monitor 3: PGOV / sovereign debt & macro data -->
+    <div class="monitor">
+        <div class="screen-content">
+            <div class="section-title">🏛️ PGOV - SOVEREIGN DEBT</div>
+            <div class="data-table" id="sovereign-debt">
+                <tr><td class="left-align">US10Y</td><td class="amber" id="us10y">4.325%</td><td class="lime">▲2.1bp</td><td class="neutral">BID/ASK</td></tr>
+                <tr><td class="left-align">DE10Y</td><td class="amber" id="de10y">2.453%</td><td class="ruby">▼0.8bp</td><td class="neutral">132.24</td></tr>
+                <tr><td class="left-align">JP10Y</td><td class="neutral" id="jp10y">0.892%</td><td class="lime">▲0.3bp</td><td class="neutral">149.72</td></tr>
+            </div>
+            <div class="section-title">▪️FUTURES STRIPS</div>
+            <div class="order-row"><span>ZNM7</span><span class="bid" id="znm7">111-205</span><span class="ask">111-210</span><span class="lime" id="znm7-change">+0.045</span></div>
+            <div class="order-row"><span>ZBM7</span><span class="bid" id="zbm7">139-160</span><span class="ask">139-165</span><span class="ruby" id="zbm7-change">-0.022</span></div>
+            <div class="section-title">MACRO RELEASES</div>
+            <div class="order-row"><span>CPI YoY</span><span class="amber">3.4%</span><span class="neutral">EXP 3.4%</span></div>
+            <div class="order-row"><span>Initial Claims</span><span class="lime">212k</span><span class="neutral">▼3k</span></div>
+            <div class="order-row"><span>PMI flash</span><span class="ruby">51.2</span><span class="neutral">-0.4</span></div>
+        </div>
+    </div>
+
+    <!-- Monitor 4: Corporate bonds + credit spreads -->
+    <div class="monitor">
+        <div class="screen-content">
+            <div class="section-title">🏢 CORP - CDS & IG SPREADS</div>
+            <div class="data-table" id="credit-spreads">
+                <tr><td class="left-align">AAPL CDS 5Y</td><td class="lime" id="aapl-cds">34.2bp</td><td class="ruby">-1.1</td></tr>
+                <tr><td class="left-align">MSFT CDS</td><td class="lime" id="msft-cds">29.7bp</td><td class="neutral">-0.3</td></tr>
+                <tr><td class="left-align">HYG OAS</td><td class="amber" id="hyg-oas">324bp</td><td class="lime">+2bp</td></tr>
+            </div>
+            <div class="section-title">📋 NEW ISSUANCE</div>
+            <div class="order-row"><span>FDS 5.2 2034</span><span class="bid">99.87</span><span class="ask ruby">99.95</span><span class="amber">BWIC</span></div>
+            <div class="order-row"><span>CORP EMTN</span><span class="lime">MS+68</span><span class="neutral">14:32</span></div>
+            <div class="section-title">LEVEL 2 CREDIT</div>
+            <div class="order-row bid ask">[B] 2.3mm @98.12 &nbsp;&nbsp; [S] 1.1mm @98.18</div>
+            <div class="order-row"><span class="lime">RUN:</span><span>FI_ORDER: ALT LOAD</span><span class="amber">ACTIVE</span></div>
+        </div>
+    </div>
+
+    <!-- Monitor 5: FLDS - futures & commodities -->
+    <div class="monitor">
+        <div class="screen-content">
+            <div class="section-title">⛽ FLDS - COMMODITIES DESK</div>
+            <div class="data-table" id="commodities">
+                <tr><td class="left-align">WTI Crude</td><td class="amber" id="wti">$82.43</td><td class="lime" id="wti-change">+0.96%</td></tr>
+                <tr><td class="left-align">Gold Spot</td><td class="amber" id="gold">$2,387.20</td><td class="lime" id="gold-change">+0.32%</td></tr>
+                <tr><td class="left-align">Soybeans</td><td class="ruby" id="soy">1148.25</td><td class="ruby" id="soy-change">-0.45%</td></tr>
+                <tr><td class="left-align">NatGas</td><td class="lime" id="natgas">2.734</td><td class="lime" id="natgas-change">+1.02%</td></tr>
+            </div>
+            <div class="section-title">⚙️ FUTURES LEVEL3</div>
+            <div class="order-row"><span>CLM7</span><span class="bid" id="clm7-bid">82.41</span><span>1450 lots</span><span class="ask ruby" id="clm7-ask">82.44</span><span>978</span></div>
+            <div class="order-row"><span>GCM7</span><span class="bid" id="gcm7-bid">2386.9</span><span>512</span><span class="ask" id="gcm7-ask">2387.4</span><span>823</span></div>
+            <div class="ticker-tape" style="margin-top:6px"> <span class="amber">FLDS_MARGIN_REQ: 12.7%</span> <span class="lime">| EXCH: ICE/CBOT</span> </div>
+        </div>
+    </div>
+
+    <!-- Monitor 6: Additional order flow & alerts -->
+    <div class="monitor">
+        <div class="screen-content">
+            <div class="section-title">🔥 RUN - RISK & P&L</div>
+            <div class="data-table" id="pnl-data">
+                <tr><td class="left-align">TOTAL_P&L</td><td class="lime" id="total-pnl">+$342,891.22</td><td class="neutral">1.2% VaR</td></tr>
+                <tr><td class="left-align">Greeks Delta</td><td class="amber" id="delta">+3,422</td><td class="ruby" id="gamma">Gamma -12.4</td></tr>
+                <tr><td class="left-align">RUN_STRAT</td><td class="lime">ACTIVE_ALGO</td><td class="amber">HEDGE_RATIO</td></tr>
+            </div>
+            <div class="section-title">⏱️ TIME & SALES</div>
+            <div id="time-sales">
+                <div class="order-row"><span>14:32:11</span><span class="lime">B 1200 ES 6324.25</span><span class="amber">@GTF</span></div>
+                <div class="order-row"><span>14:32:12</span><span class="ruby">S 500 ES 6324.20</span><span class="amber">@EDGX</span></div>
+                <div class="order-row"><span>14:32:14</span><span class="lime">B 2500 GC 2387.00</span><span>NYM</span></div>
+            </div>
+            <div class="section-title">COMPLIANCE ALERTS</div>
+            <div class="order-row neutral">PASS: REG NMS | ML valid</div>
+            <div class="order-row amber">⚠️ CIRCUIT BREAKER LV2</div>
+        </div>
+    </div>
+
+    <!-- Monitor 7: GO desk – execution & analytics -->
+    <div class="monitor">
+        <div class="screen-content">
+            <div class="section-title">🚀 GO - EXECUTION ALGOS</div>
+            <div class="order-row"><span>VWAP_TARGET</span><span class="lime" id="vwap">6324.28</span><span>slip -0.02</span></div>
+            <div class="order-row"><span>ARRIVAL PRICE</span><span class="amber" id="arrival">6324.31</span><span>particip 23%</span></div>
+            <div class="section-title">▪️ORDER ROUTING STATUS</div>
+            <div class="data-table" id="routing">
+                <tr><td class="left-align">GO_ICE</td><td class="lime">LIVE</td><td class="neutral" id="ice-latency">+0ms</td></tr>
+                <tr><td class="left-align">GO_CME</td><td class="lime">ACTIVE</td><td class="neutral" id="cme-latency">+1ms</td></tr>
+                <tr><td class="left-align">GO_EUREX</td><td class="amber">DEGRADED</td><td class="ruby" id="eurex-latency">latency+5ms</td></tr>
+            </div>
+            <div class="section-title">STRATEGY BIN</div>
+            <div class="order-row"><span class="lime">[RUN] RV_TRADE_ES</span><span class="amber">ACTIVE</span></div>
+            <div class="order-row"><span class="lime">[FLDS] CTA_FUT</span><span>CORREL +0.78</span></div>
+        </div>
+    </div>
+
+    <!-- Monitor 8: Raw market depth + hardware status -->
+    <div class="monitor">
+        <div class="screen-content">
+            <div class="section-title">🔒 TOTALVIEW - NASDAQ ITCH</div>
+            <div class="order-row"><span class="lime" id="total-bid">BID: 6324.20</span><span id="total-bid-size">234,800</span><span class="ruby" id="total-ask">ASK: 6324.58</span><span id="total-ask-size">198,300</span></div>
+            <div class="order-row"><span>MMID: CITI</span><span class="lime" id="citi-flow">+10k</span><span>GS</span><span class="ruby" id="gs-flow">-5k</span></div>
+            <div class="section-title">BIOMETRIC / SECURITY</div>
+            <div class="order-row"><span>FINGERPRINT SCAN</span><span class="lime">AUTH</span><span>TOKEN: HS654K</span></div>
+            <div class="order-row"><span>HARDWARE KEY</span><span class="amber">PRESENT</span><span>FIPS 140-2</span></div>
+            <div class="order-row"><span>CABLE INTEGRITY</span><span class="lime">PASS</span><span>SHIELDED</span></div>
+            <div class="stats-bar">⚡ PWR: +12V DUAL REDUNDANT</div>
+        </div>
+    </div>
+</div>
+
+<!-- mechanical ivory keyboard -->
+<div class="keyboard-holder">
+    <div class="ivory-keyboard">
+        <div class="special-key" data-action="run" aria-label="Execute RUN strategy">RUN</div>
+        <div class="special-key" data-action="flds" aria-label="Execute FLDS strategy">FLDS</div>
+        <div class="special-key" data-action="pgov" aria-label="Execute PGOV strategy">PGOV</div>
+        <div class="special-key" data-action="corp" aria-label="Execute CORP strategy">CORP</div>
+        <div class="special-key" data-action="go" aria-label="Execute GO strategy">GO</div>
+    </div>
+</div>
+
+<!-- hardware badges -->
+<div class="hardware-badge" aria-label="Hardware Security Module status">
+    🔐 HSM MODULE | SECURID F4 | TPM 2.0
+</div>
+<div class="biometric-led" aria-label="Biometric authentication active"></div>
+<div class="live-indicator" aria-label="Live market data connection">
+    <div class="pulse"></div>
+    <span>LIVE DATA</span>
+</div>
+<div class="token-reader" aria-label="Hardware token status">
+    🧬 BIOMETRIC: OK | TOKEN: LIVE
+</div>
+
+<script>
+    // ==================== REALISTIC MARKET DATA SIMULATION ====================
+    
+    // State variables
+    let lastESPrice = 6324.35;
+    let lastGCPrice = 2387.20;
+    let lastCLPrice = 82.43;
+    let lastBtcPrice = 67123.40;
+    let lastEthPrice = 3245.78;
+    let lastEurUsd = 1.08922;
+    let lastUsdJpy = 147.382;
+    
+    let totalPnl = 342891.22;
+    
+    // Helper: Update element with price change animation
+    function updatePriceElement(element, newValue, oldValue, prefix = '', suffix = '') {
+        if (!element) return;
+        const oldNum = parseFloat(oldValue);
+        const newNum = parseFloat(newValue);
+        element.classList.remove('price-update-up', 'price-update-down');
+        if (newNum > oldNum) element.classList.add('price-update-up');
+        else if (newNum < oldNum) element.classList.add('price-update-down');
+        
+        let formattedValue = newValue;
+        if (typeof newValue === 'number') {
+            // Preserve decimal places intelligently
+            const oldStr = oldValue.toString();
+            const decimals = oldStr.includes('.') ? oldStr.split('.')[1].length : 2;
+            formattedValue = newValue.toFixed(decimals);
+        }
+        element.textContent = `${prefix}${formattedValue}${suffix}`;
+    }
+    
+    // Update L2 order book with realistic movements
+    function updateL2Book() {
+        const drift = (Math.random() - 0.5) * 0.25;
+        lastESPrice += drift;
+        lastESPrice = Math.max(6310, Math.min(6340, lastESPrice));
+        
+        const bidPrice = (lastESPrice - 0.05 - (Math.random() * 0.1)).toFixed(2);
+        const askPrice = (lastESPrice + 0.05 + (Math.random() * 0.1)).toFixed(2);
+        const bidVol = Math.floor(20000 + Math.random() * 30000);
+        const askVol = Math.floor(15000 + Math.random() * 25000);
+        
+        const l2Container = document.getElementById('l2-book');
+        if (l2Container) {
+            const firstRow = l2Container.querySelector('.order-row:first-child');
+            if (firstRow) {
+                const bidSpan = firstRow.querySelector('.bid');
+                const askSpan = firstRow.querySelector('.ask');
+                const vols = firstRow.querySelectorAll('span:not(.bid):not(.ask)');
+                if (bidSpan && askSpan && vols.length >= 2) {
+                    const oldBid = parseFloat(bidSpan.textContent.replace(/[^0-9.-]/g, ''));
+                    updatePriceElement(bidSpan, bidPrice, oldBid, '', '');
+                    updatePriceElement(askSpan, askPrice, parseFloat(askSpan.textContent.replace(/[^0-9.-]/g, '')), '', '');
+                    vols[0].textContent = bidVol;
+                    vols[1].textContent = askVol;
+                }
+            }
+        }
+    }
+    
+    // Update tickers
+    function updateTickers() {
+        // ES Futures
+        const esElement = document.getElementById('esf');
+        if (esElement) {
+            const oldText = esElement.textContent;
+            const oldVal = parseFloat(oldText.match(/[\d.]+/)?.[0] || 0);
+            const change = (Math.random() - 0.5) * 0.15;
+            const newVal = oldVal + change;
+            const direction = newVal > oldVal ? '▲' : '▼';
+            const colorClass = newVal > oldVal ? 'lime' : 'ruby';
+            esElement.className = colorClass;
+            esElement.textContent = `ES_F ${direction} ${newVal.toFixed(2)}%`;
+        }
+        
+        // EUR/USD
+        const eurElement = document.getElementById('eurusd');
+        if (eurElement) {
+            const change = (Math.random() - 0.5) * 0.0005;
+            const newVal = lastEurUsd + change;
+            lastEurUsd = newVal;
+            const direction = newVal > lastEurUsd - change ? '▲' : '▼';
+            const colorClass = newVal > lastEurUsd - change ? 'lime' : 'ruby';
+            eurElement.className = colorClass;
+            eurElement.textContent = `EUR/USD ${direction} ${newVal.toFixed(5)}`;
+        }
+        
+        // BTC
+        const btcElement = document.getElementById('btc');
+        if (btcElement) {
+            const change = (Math.random() - 0.5) * 150;
+            const newVal = lastBtcPrice + change;
+            lastBtcPrice = newVal;
+            const direction = newVal > lastBtcPrice - change ? '▲' : '▼';
+            const colorClass = newVal > lastBtcPrice - change ? 'lime' : 'ruby';
+            btcElement.className = colorClass;
+            btcElement.textContent = `BTC ${direction} ${newVal.toFixed(2)}`;
+        }
+    }
+    
+    // Update P&L
+    function updatePnL() {
+        const change = (Math.random() - 0.5) * 5000;
+        totalPnl += change;
+        const pnlElement = document.getElementById('total-pnl');
+        if (pnlElement) {
+            const sign = totalPnl >= 0 ? '+' : '-';
+            pnlElement.textContent = `${sign}$${Math.abs(totalPnl).toFixed(2)}`;
+            pnlElement.className = totalPnl >= 0 ? 'lime' : 'ruby';
+        }
+        
+        const deltaElement = document.getElementById('delta');
+        if (deltaElement) {
+            const newDelta = 3422 + (Math.random() - 0.5) * 200;
+            deltaElement.textContent = `+${Math.floor(newDelta)}`;
+        }
+    }
+    
+    // Add new trade to time & sales
+    function addTrade() {
+        const timeSalesContainer = document.getElementById('time-sales');
+        if (!timeSalesContainer) return;
+        
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}.${now.getMilliseconds().toString().padStart(3,'0')}`;
+        const side = Math.random() > 0.5 ? 'B' : 'S';
+        const size = Math.floor(100 + Math.random() * 5000);
+        const price = (lastESPrice + (Math.random() - 0.5) * 0.2).toFixed(2);
+        const venue = ['@GTF', '@EDGX', '@ARCA', '@BATS', 'DARK'][Math.floor(Math.random() * 5)];
+        const colorClass = side === 'B' ? 'lime' : 'ruby';
+        
+        const newTrade = document.createElement('div');
+        newTrade.className = 'order-row';
+        newTrade.innerHTML = `<span>${timeStr}</span><span class="${colorClass}">${side} ${size} ES ${price}</span><span class="amber">${venue}</span>`;
+        
+        timeSalesContainer.insertBefore(newTrade, timeSalesContainer.firstChild);
+        
+        // Keep only last 10 trades
+        while (timeSalesContainer.children.length > 10) {
+            timeSalesContainer.removeChild(timeSalesContainer.lastChild);
+        }
+    }
+    
+    // Update commodities
+    function updateCommodities() {
+        // Gold
+        const goldElement = document.getElementById('gold');
+        if (goldElement) {
+            const oldVal = lastGCPrice;
+            const change = (Math.random() - 0.5) * 4;
+            lastGCPrice += change;
+            updatePriceElement(goldElement, lastGCPrice, oldVal, '$', '');
+            const changePct = ((lastGCPrice - oldVal) / oldVal * 100).toFixed(2);
+            const changeElement = document.getElementById('gold-change');
+            if (changeElement) {
+                changeElement.textContent = `${change > 0 ? '+' : ''}${changePct}%`;
+                changeElement.className = change > 0 ? 'lime' : 'ruby';
+            }
+        }
+        
+        // WTI
+        const wtiElement = document.getElementById('wti');
+        if (wtiElement) {
+            const oldVal = lastCLPrice;
+            const change = (Math.random() - 0.5) * 0.5;
+            lastCLPrice += change;
+            updatePriceElement(wtiElement, lastCLPrice, oldVal, '$', '');
+        }
+    }
+    
+    // Make order rows clickable for order entry simulation
+    function makeRowsClickable() {
+        document.querySelectorAll('.order-row').forEach(row => {
+            row.style.cursor = 'pointer';
+            row.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const priceElem = row.querySelector('.bid, .ask, .lime, .ruby');
+                let price = 'N/A';
+                let side = 'UNKNOWN';
+                if (priceElem) {
+                    const priceMatch = priceElem.textContent.match(/\d+\.?\d*/);
+                    if (priceMatch) price = priceMatch[0];
+                    if (priceElem.classList.contains('bid') || priceElem.classList.contains('lime')) side = 'BUY';
+                    else if (priceElem.classList.contains('ask') || priceElem.classList.contains('ruby')) side = 'SELL';
+                }
+                const timestamp = new Date().toISOString().substr(11, 12);
+                console.log(`[ORDER_ENTRY] ${timestamp} >> ${side} ${price} | SIZE: 100 | ROUTE: DMA | STATUS: ACK`);
+                
+                // Visual feedback
+                row.style.backgroundColor = 'rgba(76, 174, 76, 0.3)';
+                setTimeout(() => row.style.backgroundColor = '', 150);
+            });
+        });
+    }
+    
+    // Keyboard shortcuts for special keys
+    function setupKeyboardShortcuts() {
+        window.addEventListener('keydown', (e) => {
+            const keyMap = {
+                'F1': 'run',
+                'F2': 'flds',
+                'F3': 'pgov',
+                'F4': 'corp',
+                'F5': 'go'
+            };
+            const action = keyMap[e.key];
+            if (action) {
+                e.preventDefault();
+                const keyElement = document.querySelector(`.special-key[data-action="${action}"]`);
+                if (keyElement) keyElement.click();
+            }
+        });
+    }
+    
+    // Button click handlers
+    function setupButtons() {
+        const keys = document.querySelectorAll('.special-key');
+        const monitors = document.querySelectorAll('.monitor');
+        
+        keys.forEach(key => {
+            key.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const action = key.getAttribute('data-action') || key.innerText.trim().toLowerCase();
+                const timestamp = new Date().toISOString().substr(11, 12);
+                console.log(`[AMANITA_CMD] ${timestamp} >> EXEC: ${action.toUpperCase()}  |  ROUTE: DMA | FLD: ${action}_STRAT | PRICE: ${lastESPrice.toFixed(2)}`);
+                
+                // Flash monitors
+                monitors.forEach(monitor => {
+                    monitor.classList.add('flash');
+                    setTimeout(() => monitor.classList.remove('flash'), 100);
+                });
+            });
+        });
+    }
+    
+    // Initialize all event listeners and start simulation
+    function init() {
+        setupButtons();
+        setupKeyboardShortcuts();
+        makeRowsClickable();
+        
+        // Update market data every 1.2 seconds (realistic tick rate)
+        setInterval(() => {
+            updateL2Book();
+            updateTickers();
+            updatePnL();
+            updateCommodities();
+            
+            // 30% chance to generate a trade each tick
+            if (Math.random() < 0.3) {
+                addTrade();
+            }
+        }, 1200);
+        
+        // Re-attach click handlers to dynamically added rows
+        setInterval(() => {
+            makeRowsClickable();
+        }, 5000);
+    }
+    
+    // Start everything when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+</script>
+</body>
+</html>
