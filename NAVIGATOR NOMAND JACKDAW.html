@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NAVIGATOR NOMAND JACKDAW · Premium · Stadia Maps</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-deep: #0a0a1a;
+            --bg-surface: rgba(15, 12, 35, 0.85);
+            --glow-cyan: #00e6cc;
+            --glow-purple: #a855f7;
+            --nomand-primary: #1a1f2e;
+            --nomand-danger: #ff4d8d;
+            --nomand-success: #00ffaa;
+            --nomand-warning: #ffcc00;
+            --nomand-info: #5d7cff;
+            
+            --public: #2ecc71;
+            --colony: #f1c40f;
+            --bureau: #e74c3c;
+            --jackdaw: #7c8a9c;
+            --nomand-level: #9b59b6;
+            
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: radial-gradient(circle at 10% 20%, #0a0a1a, #020108);
+            color: #f0eefc;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Анимированный фон */
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .bg-glow::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: -20%;
+            width: 60%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: float 8s ease-in-out infinite;
+        }
+        .bg-glow::after {
+            content: '';
+            position: absolute;
+            bottom: 10%;
+            right: -10%;
+            width: 50%;
+            height: 50%;
+            background: radial-gradient(circle, rgba(236,72,153,0.12) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: float 6s ease-in-out infinite reverse;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            50% { transform: translateY(-20px) translateX(10px); }
+        }
+        @keyframes pulseNomand {
+            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px var(--glow-cyan); }
+            50% { opacity: 0.9; transform: scale(1.05); box-shadow: 0 0 25px var(--glow-cyan); }
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* HEADER */
+        .visoracle-header {
+            background: linear-gradient(135deg, rgba(10,10,26,0.95), rgba(2,1,8,0.98));
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--glow-cyan);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .visoracle-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--glow-cyan), var(--glow-purple));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.5rem;
+            animation: pulseNomand 3s infinite;
+            box-shadow: 0 0 20px var(--glow-cyan);
+        }
+
+        .title h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, var(--glow-cyan), var(--glow-purple));
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+        }
+        .title p {
+            font-size: 0.7rem;
+            color: #b9b3e6;
+        }
+
+        .security-badge {
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            border-left: 3px solid var(--glow-cyan);
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+
+        /* TABS */
+        .app-tabs {
+            display: flex;
+            gap: 0;
+            background: rgba(10,10,26,0.8);
+            backdrop-filter: blur(8px);
+            padding: 0.5rem 2rem;
+            border-bottom: 1px solid rgba(0,230,204,0.3);
+            z-index: 105;
+            position: relative;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #b9b3e6;
+            padding: 0.6rem 1.8rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+        }
+        .tab-btn.active {
+            color: var(--glow-cyan);
+            border-bottom-color: var(--glow-cyan);
+        }
+        .tab-btn:hover { color: var(--glow-cyan); }
+
+        .tab-content {
+            display: none;
+            height: calc(100vh - 130px);
+            position: relative;
+            z-index: 2;
+        }
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* CONTAINER */
+        .app-container {
+            display: flex;
+            height: 100%;
+            position: relative;
+            width: 100%;
+        }
+
+        /* SIDEBAR */
+        .worlds-sidebar {
+            width: 340px;
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(0, 230, 204, 0.4);
+            overflow-y: auto;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 10;
+        }
+
+        .world-filter {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+        .filter-chip {
+            background: rgba(168,85,247,0.15);
+            border: 1px solid rgba(168,85,247,0.3);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .filter-chip.active { background: var(--glow-cyan); color: #000; font-weight: bold; border-color: var(--glow-cyan);}
+
+        .world-card {
+            background: rgba(0,0,0,0.35);
+            border-left: 4px solid;
+            border-radius: 16px;
+            padding: 0.9rem;
+            margin-bottom: 0.6rem;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
+        }
+        .world-card:hover { transform: translateX(6px); background: rgba(168,85,247,0.2); border-left-width: 6px; }
+        .world-header { display: flex; justify-content: space-between; align-items: center; }
+        .world-name { font-weight: bold; font-size: 1rem; }
+        .clearance {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: #00000066;
+        }
+        .clearance.public { color: var(--public); border:1px solid var(--public);}
+        .clearance.colony { color: var(--colony); border:1px solid var(--colony);}
+        .clearance.bureau { color: var(--bureau); border:1px solid var(--bureau);}
+        .clearance.jackdaw { color: var(--jackdaw); border:1px solid var(--jackdaw);}
+        .clearance.nomand { color: var(--nomand-level); border:1px solid var(--nomand-level);}
+
+        .world-location { font-size: 0.7rem; opacity: 0.8; margin-top: 6px;}
+
+        .my-worlds-section {
+            margin-top: 1rem;
+            border-top: 1px solid rgba(0, 230, 204, 0.4);
+            padding-top: 1rem;
+        }
+        .section-title {
+            font-size: 0.8rem;
+            color: var(--glow-cyan);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .my-worlds-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .my-world-item {
+            background: rgba(0,230,204,0.1);
+            border-radius: 12px;
+            padding: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+        .my-world-item:hover {
+            border-color: var(--glow-cyan);
+            background: rgba(0,230,204,0.2);
+        }
+        .remove-fav {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0 6px;
+        }
+        .add-fav-btn {
+            background: rgba(0,230,204,0.2);
+            border: 1px solid var(--glow-cyan);
+            border-radius: 20px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            width: auto;
+            color: var(--glow-cyan);
+        }
+
+        /* MAP AREA */
+        .map-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        #mainMap {
+            width: 100%;
+            height: 100%;
+            background: #03060c;
+        }
+
+        /* MAP CONTROLS */
+        .map-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(10,15,27,0.9);
+            backdrop-filter: blur(12px);
+            padding: 12px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 500;
+            border: 1px solid var(--glow-cyan);
+        }
+        .ctrl-btn {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--glow-cyan);
+            color: var(--glow-cyan);
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+        }
+        .ctrl-btn:hover { background: var(--glow-cyan); color: #000; transform: scale(1.05);}
+
+        .layer-controls-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(10,15,27,0.9);
+            backdrop-filter: blur(12px);
+            padding: 12px 16px;
+            border-radius: 20px;
+            z-index: 500;
+            border: 1px solid var(--glow-cyan);
+            width: 260px;
+        }
+        .layer-select {
+            width: 100%;
+            padding: 6px 10px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--glow-cyan);
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+        }
+        .map-type-switch {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .type-btn {
+            flex: 1;
+            background: rgba(0,230,204,0.15);
+            border: 1px solid var(--glow-cyan);
+            padding: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .type-btn.active {
+            background: var(--glow-cyan);
+            color: #000;
+        }
+
+        .geolocation-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(10,15,27,0.9);
+            backdrop-filter: blur(12px);
+            padding: 12px 16px;
+            border-radius: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 500;
+            border: 1px solid var(--glow-cyan);
+        }
+        .geo-btn {
+            background: rgba(0,230,204,0.15);
+            border: 1px solid var(--glow-cyan);
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            color: var(--glow-cyan);
+        }
+        .geo-btn.active {
+            background: var(--glow-cyan);
+            color: #000;
+        }
+        .geo-btn:hover { background: var(--glow-cyan); color: #000; transform: scale(1.02);}
+
+        .status-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(3,6,12,0.9);
+            backdrop-filter: blur(12px);
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            border-top: 1px solid var(--glow-cyan);
+            z-index: 1000;
+            color: #b9b3e6;
+        }
+
+        /* PREMIUM PAGE STYLES */
+        .premium-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+        .premium-card {
+            background: rgba(15,12,35,0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid var(--glow-cyan);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .premium-card h2 {
+            color: var(--glow-cyan);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .premium-card h3 {
+            color: var(--glow-purple);
+            margin: 1rem 0 0.5rem 0;
+        }
+        .code-block {
+            background: #0a0a1a;
+            border-radius: 12px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0,230,204,0.3);
+            margin: 1rem 0;
+        }
+        .stadia-demo {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .demo-map {
+            width: 400px;
+            height: 300px;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--glow-cyan);
+        }
+        .api-key-input {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--glow-cyan);
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: white;
+            width: 300px;
+            margin-right: 10px;
+        }
+        .premium-badge {
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .style-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        .style-btn {
+            background: rgba(0,230,204,0.15);
+            border: 1px solid var(--glow-cyan);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: var(--transition);
+        }
+        .style-btn:hover, .style-btn.active {
+            background: var(--glow-cyan);
+            color: #000;
+        }
+
+        @media (max-width: 780px) {
+            .worlds-sidebar { width: 280px; position: absolute; left: -300px; transition: 0.2s; height: 100%; z-index: 600; background: rgba(7,11,20,0.98);}
+            .worlds-sidebar.open { left: 0; }
+            .layer-controls-panel { width: calc(100% - 40px); top: auto; bottom: 100px; left: 20px; right: 20px; }
+            .geolocation-panel { bottom: 80px; left: 10px; right: 10px; flex-wrap: wrap; justify-content: center; }
+            .premium-container { padding: 1rem; }
+            .demo-map { width: 100%; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(var(--glow-cyan), var(--glow-purple)); border-radius: 4px; }
+        
+        .leaflet-popup-content-wrapper {
+            background: rgba(15,12,35,0.95);
+            backdrop-filter: blur(12px);
+            color: #f0eefc;
+            border-radius: 20px;
+            border-left: 4px solid var(--glow-cyan);
+        }
+        .leaflet-popup-tip { background: rgba(15,12,35,0.95);}
+    </style>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<header class="visoracle-header">
+    <div class="logo-area">
+        <div class="visoracle-icon">⚫</div>
+        <div class="title">
+            <h1>NAVIGATOR NOMAND JACKDAW</h1>
+            <p>24 Worlds Atlas · Le Bureau des Colonies · MAG-TECH-BIO Synthesis</p>
+        </div>
+    </div>
+    <div class="security-badge">
+        <i class="fas fa-shield-alt"></i> CLEARANCE: NOMAND / JACKDAW / BUREAU
+    </div>
+</header>
+
+<div class="app-tabs">
+    <button class="tab-btn active" onclick="switchTab('atlas')">🌍 ATLAS (24 Worlds)</button>
+    <button class="tab-btn" onclick="switchTab('premium')">✨ PREMIUM · Stadia Maps</button>
+</div>
+
+<!-- ATLAS TAB -->
+<div id="atlasTab" class="tab-content active">
+    <div class="app-container">
+        <div class="worlds-sidebar" id="worldsSidebar">
+            <div class="world-filter" id="filterContainer">
+                <div class="filter-chip active" data-filter="all">ALL (24)</div>
+                <div class="filter-chip" data-filter="PUBLIC">🟢 PUBLIC</div>
+                <div class="filter-chip" data-filter="COLONY">🟡 COLONY</div>
+                <div class="filter-chip" data-filter="BUREAU">🔴 BUREAU</div>
+                <div class="filter-chip" data-filter="JACKDAW">⚫ JACKDAW</div>
+                <div class="filter-chip" data-filter="NOMAND">🟣 NOMAND</div>
+            </div>
+            <div id="worldListContainer" style="display:flex; flex-direction:column; gap:8px;"></div>
+            
+            <div class="my-worlds-section">
+                <div class="section-title">
+                    <i class="fas fa-star" style="color: var(--glow-cyan);"></i> MY WORLDS · FAVORITES
+                </div>
+                <div id="myWorldsList" class="my-worlds-list">
+                    <div style="text-align:center; font-size:0.7rem; opacity:0.6;">✦ Add worlds to favorites ✦</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 1rem; font-size: 0.65rem; text-align:center; opacity:0.5;">
+                <i class="fas fa-dragon"></i> VISORACLE · Osnaz Maneuver connects all worlds
+            </div>
+        </div>
+
+        <div class="map-wrapper">
+            <div id="mainMap"></div>
+            
+            <div class="layer-controls-panel">
+                <select id="mapProvider" class="layer-select" onchange="switchMapProvider()">
+                    <option value="cartodb">CartoDB Dark (Default)</option>
+                    <option value="osm">OpenStreetMap</option>
+                    <option value="arcgis">ArcGIS Satellite</option>
+                    <option value="opentopomap">OpenTopoMap</option>
+                    <option value="google">Google Maps</option>
+                    <option value="yandex">Yandex Maps</option>
+                    <option value="stadiamaps">Stadia Maps</option>
+                    <option value="cyclosm">CyclOSM</option>
+                    <option value="wikimapia">WikiMapia</option>
+                </select>
+                <div class="map-type-switch">
+                    <div class="type-btn" data-type="standard" onclick="setMapType('standard')">Standard</div>
+                    <div class="type-btn" data-type="topo" onclick="setMapType('topo')">Topographic</div>
+                    <div class="type-btn active" data-type="satellite" onclick="setMapType('satellite')">Satellite</div>
+                </div>
+            </div>
+
+            <div class="map-controls">
+                <button class="ctrl-btn" onclick="toggleWorldsSidebar()"><i class="fas fa-bars"></i></button>
+                <button class="ctrl-btn" onclick="zoomInMap()"><i class="fas fa-plus"></i></button>
+                <button class="ctrl-btn" onclick="zoomOutMap()"><i class="fas fa-minus"></i></button>
+                <button class="ctrl-btn" onclick="resetToTerra()"><i class="fas fa-globe"></i></button>
+            </div>
+            
+            <div class="geolocation-panel">
+                <button class="geo-btn" id="locateOnceBtn" onclick="locateUserOnce()"><i class="fas fa-location-dot"></i> Locate Me</button>
+                <button class="geo-btn" id="toggleSyncBtn" onclick="toggleAutoSync()"><i class="fas fa-sync-alt"></i> Auto Sync</button>
+                <span id="syncStatus" style="font-size:0.7rem; color:#00e6cc; display: flex; align-items: center;">⚪ manual</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PREMIUM TAB -->
+<div id="premiumTab" class="tab-content">
+    <div class="premium-container">
+        <div class="premium-card">
+            <h2><i class="fas fa-crown"></i> Stadia Maps Integration <span class="premium-badge">PREMIUM</span></h2>
+            <p>Professional-grade map tiles, geocoding, and static maps. Get your free API key at <a href="https://stadiamaps.com" target="_blank" style="color: var(--glow-cyan);">stadiamaps.com</a></p>
+            
+            <h3>📦 API Key Configuration</h3>
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="stadiaApiKey" class="api-key-input" placeholder="Enter your Stadia Maps API key" value="YOUR_API_KEY">
+                <button class="geo-btn" onclick="configureStadiaKey()">Save & Apply</button>
+            </div>
+        </div>
+
+        <div class="premium-card">
+            <h2><i class="fas fa-map"></i> Available Tile Styles</h2>
+            <div class="style-selector" id="styleSelector">
+                <button class="style-btn" data-style="alidade_smooth">🌄 Alidade Smooth</button>
+                <button class="style-btn" data-style="alidade_satellite">🛰️ Alidade Satellite</button>
+                <button class="style-btn" data-style="stamen_toner">⚫ Stamen Toner</button>
+                <button class="style-btn" data-style="osm_bright">☀️ OSM Bright</button>
+            </div>
+            <div class="stadia-demo">
+                <div class="demo-map" id="stadiaDemoMap"></div>
+                <div style="flex: 1; min-width: 200px;">
+                    <h3>Live Demo</h3>
+                    <p>Interactive map using selected Stadia Maps style.</p>
+                    <button class="geo-btn" onclick="searchStadiaAddress()"><i class="fas fa-search"></i> Search: Eiffel Tower</button>
+                    <div id="searchResult" style="margin-top: 10px; font-size:0.8rem;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="premium-card">
+            <h2><i class="fas fa-code"></i> Integration Examples</h2>
+            
+            <h3>Basic Leaflet Integration</h3>
+            <div class="code-block">
+&lt;script&gt;<br>
+const map = L.map('map').setView([55.7558, 37.6173], 10);<br>
+L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png?api_key=YOUR_API_KEY', {<br>
+&nbsp;&nbsp;attribution: '&copy; Stadia Maps, &copy; OpenStreetMap'<br>
+}).addTo(map);<br>
+&lt;/script&gt;
+            </div>
+
+            <h3>Geocoding (Address Search)</h3>
+            <div class="code-block">
+async function geocodeAddress(address) {<br>
+&nbsp;&nbsp;const url = `https://api.stadiamaps.com/search/v2?text=${encodeURIComponent(address)}&api_key=YOUR_API_KEY`;<br>
+&nbsp;&nbsp;const response = await fetch(url);<br>
+&nbsp;&nbsp;const data = await response.json();<br>
+&nbsp;&nbsp;return data.features[0]?.geometry.coordinates;<br>
+}
+            </div>
+
+            <h3>Static Map Image</h3>
+            <div class="code-block">
+&lt;img src="https://api.stadiamaps.com/static/v1?center=55.7558,37.6173&zoom=12&size=600x400&api_key=YOUR_API_KEY"&gt;
+            </div>
+
+            <h3>JavaScript SDK (Node.js)</h3>
+            <div class="code-block">
+npm install --save @stadiamaps/api<br><br>
+import { GeocodingApi, Configuration } from '@stadiamaps/api';<br>
+const config = new Configuration({ apiKey: 'YOUR_API_KEY' });<br>
+const geocodingApi = new GeocodingApi(config);<br>
+const result = await geocodingApi.searchV2({ text: 'London' });
+            </div>
+        </div>
+
+        <div class="premium-card">
+            <h2><i class="fas fa-chart-line"></i> Premium Features Summary</h2>
+            <ul style="margin-left: 1.5rem; line-height: 1.8;">
+                <li>✅ High-resolution map tiles up to zoom 20</li>
+                <li>✅ Satellite imagery with Alidade Satellite style</li>
+                <li>✅ Geocoding API (forward & reverse)</li>
+                <li>✅ Static map images for emails/PDFs</li>
+                <li>✅ Routing & isochrones (additional API)</li>
+                <li>✅ Global coverage with regular updates</li>
+                <li>✅ Commercial use allowed with attribution</li>
+            </ul>
+            <p style="margin-top: 1rem;"><i class="fas fa-info-circle"></i> Free tier includes 1,000 tile requests/day and 100 geocoding requests/day.</p>
+        </div>
+    </div>
+</div>
+
+<div class="status-footer">
+    <div><i class="fas fa-map"></i> NOMAND JACKDAW · 24 worlds active</div>
+    <div id="coordsStatus"><i class="fas fa-crosshairs"></i> coordinates: —</div>
+    <div><i class="fas fa-train"></i> Osnaz Maneuver: online</div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    // ==================== COMPLETE ATLAS: 24 WORLDS ====================
+    const WORLDS_DATA = {
+        "terratramp": { name: "TerraTrampillera", location: "St. Petersburg, Moscow, Vladivostok", coords: [55.7558, 37.6173], clearance: "PUBLIC", color: "#d4af37", type: "Homeland World", portals: ["frogkingdom","impempire","spenshult"] },
+        "frogkingdom": { name: "Frog Kingdom", location: "Poland", coords: [52.2297, 21.0122], clearance: "PUBLIC", color: "#2e6b3e", type: "Swamp Kingdom", portals: ["terratramp","crystalpeak"] },
+        "impempire": { name: "Imp Empire (Gnomes & Leprechauns)", location: "London, UK", coords: [51.5074, -0.1278], clearance: "COLONY", color: "#702459", type: "Underground Empire", portals: ["terratramp","wolflodge"] },
+        "wolflodge": { name: "Wolf Lodge", location: "Borislav, Kotovsk, Kharkiv", coords: [49.9935, 36.2304], clearance: "COLONY", color: "#7c8a9c", type: "Forest Brotherhood", portals: ["impempire","crystalpeak"] },
+        "spenshult": { name: "Spenshult", location: "Sweden", coords: [59.3293, 18.0686], clearance: "BUREAU", color: "#2c7a7a", type: "Techno-Occult Complex", portals: ["terratramp","frogkingdom"] },
+        "crystalpeak": { name: "Peatlands (Crystal Peak)", location: "Swiss Alps", coords: [46.8182, 8.2275], clearance: "COLONY", color: "#00b894", type: "Mountain of Gems", portals: ["frogkingdom","wolflodge"] },
+        "quebec": { name: "Quebec", location: "Canada", coords: [46.8139, -71.2080], clearance: "PUBLIC", color: "#4d9de0", type: "Franco-Canadian Crossroad", portals: ["terratramp"] },
+        "millimolly": { name: "Milli Molly", location: "Australia", coords: [-25.2744, 133.7751], clearance: "COLONY", color: "#b85c38", type: "Desert Anomaly Field", portals: [] },
+        "replitoland": { name: "Replitoland", location: "Arta, Japan", coords: [35.6895, 139.6917], clearance: "BUREAU", color: "#5f9c6b", type: "Replication Zone", portals: ["spenshult"] },
+        "osnaz": { name: "Osnaz Maneuver", location: "Postal Train", coords: [55.0, 65.0], clearance: "BUREAU", color: "#b87333", type: "Inter-world Artery", portals: [] },
+        "chaco": { name: "Chaco", location: "South & Central America", coords: [-22.0, -63.0], clearance: "COLONY", color: "#e67e22", type: "Energy Channel", portals: ["crystalpeak"] },
+        "wellamatores": { name: "Wellamatores", location: "Atlanta, USA", coords: [33.7490, -84.3880], clearance: "BUREAU", color: "#2c2c2c", type: "Central Administration", portals: ["impempire","terratramp"] },
+        "predator": { name: "Predator Kingdom", location: "Unknown Hunting Grounds", coords: [27.0, 85.0], clearance: "JACKDAW", color: "#a51c30", type: "Empire of Predators", portals: [] },
+        "arctic": { name: "Arctic", location: "Polar Zone", coords: [85.0, -45.0], clearance: "BUREAU", color: "#b0d4ff", type: "Observation Zone", portals: [] },
+        "antarctica": { name: "Antarctica", location: "Forbidden Territory", coords: [-82.8628, 135.0], clearance: "JACKDAW", color: "#c4e6f1", type: "Ancient Structures", portals: [] },
+        "aurora": { name: "Aurora", location: "Polar Portal Phenomenon", coords: [67.0, -40.0], clearance: "BUREAU", color: "#3cc7d6", type: "Dimensional Gate", portals: ["crystalpeak","spenshult"] },
+        "pandita": { name: "Pandita Nebula", location: "Nebula", coords: [42.0, -30.0], clearance: "JACKDAW", color: "#aa6dc9", type: "Cluster of Wisdom", portals: ["aurora"] },
+        "cairo": { name: "Cairo", location: "Egypt", coords: [30.0444, 31.2357], clearance: "JACKDAW", color: "#c9a87b", type: "Ancient Gates", portals: ["alamut"] },
+        "alamut": { name: "Alamut", location: "Mountain Fortress (Iran)", coords: [36.4444, 50.5833], clearance: "JACKDAW", color: "#8e7b6b", type: "Assassin Citadel", portals: ["cairo"] },
+        "malaysia": { name: "Malaysia & Vicinity", location: "Southeast Asia", coords: [3.1390, 101.6869], clearance: "COLONY", color: "#2c8c5a", type: "Jungle Portals", portals: ["chaco"] },
+        "eskimosia": { name: "Eskimosia", location: "Greenland", coords: [71.7069, -42.6043], clearance: "COLONY", color: "#4ea5d9", type: "Ice World", portals: [] },
+        "grelland": { name: "Grelland", location: "Parallel Greenland", coords: [72.0, -30.0], clearance: "BUREAU", color: "#b0c4de", type: "Mirror World", portals: ["eskimosia"] },
+        "plutonia": { name: "Plutonia", location: "Beyond Reality", coords: [65.0, 170.0], clearance: "NOMAND", color: "#6a1b9a", type: "Absolute Limit", portals: [] },
+        "kasatka": { name: "Kasatka", location: "Whale-World (Oceans)", coords: [0.0, -150.0], clearance: "JACKDAW", color: "#1e88b8", type: "Living World on Whale's Back", portals: ["spenshult","crystalpeak"] }
+    };
+    
+    const additionalPortals = {
+        "osnaz": ["terratramp","frogkingdom","impempire","wolflodge","spenshult","crystalpeak","wellamatores","quebec","malaysia","kasatka"]
+    };
+    
+    // ==================== GLOBALS ====================
+    let map, stadiaDemoMap;
+    let markersLayer, portalLinesLayer;
+    let currentFilter = "all";
+    let currentMapType = 'satellite';
+    let currentMapService = 'cartodb';
+    let userMarker = null;
+    let autoSyncActive = false;
+    let watchPositionId = null;
+    let currentStadiaKey = localStorage.getItem('stadia_api_key') || 'YOUR_API_KEY';
+    let currentStadiaStyle = 'alidade_smooth';
+    
+    let favoriteWorlds = JSON.parse(localStorage.getItem('nomand_jackdaw_favorites') || '[]');
+    
+    let mapLayers = {
+        standard: {
+            osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap', maxZoom: 19 }),
+            cartodb: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '© CartoDB', maxZoom: 20 }),
+            google: L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { attribution: '© Google', maxZoom: 20 }),
+            yandex: L.tileLayer('https://core-renderer-tiles.maps.yandex.net/tiles?l=map&x={x}&y={y}&z={z}', { attribution: '© Yandex', maxZoom: 19 }),
+            wikimapia: L.tileLayer('https://tiles.wikimapia.org/?x={x}&y={y}&z={z}', { attribution: '© WikiMapia', maxZoom: 19 }),
+            stadiamaps: L.tileLayer(`https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png?api_key=${currentStadiaKey}`, { attribution: '© Stadia Maps, © OpenStreetMap', maxZoom: 20 }),
+            cyclosm: L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', { attribution: '© CyclOSM', maxZoom: 20 })
+        },
+        topo: {
+            opentopomap: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { attribution: '© OpenTopoMap', maxZoom: 17 }),
+            cartodb: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '© CartoDB', maxZoom: 20 })
+        },
+        satellite: {
+            arcgis: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: '© Esri', maxZoom: 19 }),
+            google: L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { attribution: '© Google Satellite', maxZoom: 20 }),
+            yandex: L.tileLayer('https://core-sat.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}', { attribution: '© Yandex Satellite', maxZoom: 19 })
+        }
+    };
+    
+    // ==================== INIT ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        initMap();
+        buildWorldList();
+        drawAllPortals();
+        setupFilters();
+        renderMyWorlds();
+        updateCoordsDisplay();
+        setInterval(updateCoordsDisplay, 1500);
+        initStadiaDemo();
+        document.getElementById('stadiaApiKey').value = currentStadiaKey;
+    });
+    
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tab + 'Tab').classList.add('active');
+        if (tab === 'atlas') {
+            document.querySelector('.tab-btn[onclick="switchTab(\'atlas\')"]').classList.add('active');
+            setTimeout(() => map.invalidateSize(), 100);
+        } else {
+            document.querySelector('.tab-btn[onclick="switchTab(\'premium\')"]').classList.add('active');
+            if (stadiaDemoMap) setTimeout(() => stadiaDemoMap.invalidateSize(), 100);
+        }
+    }
+    
+    function initMap() {
+        map = L.map('mainMap').setView([35, 20], 2);
+        mapLayers.satellite.arcgis.addTo(map);
+        
+        markersLayer = L.layerGroup().addTo(map);
+        portalLinesLayer = L.layerGroup().addTo(map);
+        
+        map.on('mousemove', (e) => {
+            document.getElementById('coordsStatus').innerHTML = `<i class="fas fa-crosshairs"></i> ${e.latlng.lat.toFixed(4)}°, ${e.latlng.lng.toFixed(4)}°`;
+        });
+    }
+    
+    function initStadiaDemo() {
+        const container = document.getElementById('stadiaDemoMap');
+        if (!container) return;
+        stadiaDemoMap = L.map('stadiaDemoMap').setView([48.8584, 2.2945], 13);
+        updateStadiaTileLayer();
+    }
+    
+    function updateStadiaTileLayer() {
+        if (!stadiaDemoMap) return;
+        stadiaDemoMap.eachLayer(layer => { if (layer instanceof L.TileLayer) stadiaDemoMap.removeLayer(layer); });
+        const tileUrl = `https://tiles.stadiamaps.com/tiles/${currentStadiaStyle}/{z}/{x}/{y}.png?api_key=${currentStadiaKey}`;
+        L.tileLayer(tileUrl, {
+            attribution: '&copy; Stadia Maps, &copy; OpenStreetMap',
+            maxZoom: 20
+        }).addTo(stadiaDemoMap);
+    }
+    
+    function configureStadiaKey() {
+        const newKey = document.getElementById('stadiaApiKey').value;
+        if (newKey && newKey !== 'YOUR_API_KEY') {
+            currentStadiaKey = newKey;
+            localStorage.setItem('stadia_api_key', newKey);
+            // Update main map layer
+            if (mapLayers.standard.stadiamaps) {
+                mapLayers.standard.stadiamaps.setUrl(`https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png?api_key=${currentStadiaKey}`);
+            }
+            updateStadiaTileLayer();
+            showNotification('Stadia Maps API key saved!', 'success');
+        } else {
+            showNotification('Please enter a valid API key from stadiamaps.com', 'warning');
+        }
+    }
+    
+    function setStadiaStyle(style) {
+        currentStadiaStyle = style;
+        updateStadiaTileLayer();
+        document.querySelectorAll('.style-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.style-btn[data-style="${style}"]`).classList.add('active');
+        showNotification(`Stadia style: ${style}`, 'info');
+    }
+    
+    async function searchStadiaAddress() {
+        if (!currentStadiaKey || currentStadiaKey === 'YOUR_API_KEY') {
+            showNotification('Please configure your Stadia Maps API key first', 'warning');
+            return;
+        }
+        const address = 'Eiffel Tower, Paris';
+        const url = `https://api.stadiamaps.com/search/v2?text=${encodeURIComponent(address)}&api_key=${currentStadiaKey}`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.features && data.features.length > 0) {
+                const [lng, lat] = data.features[0].geometry.coordinates;
+                stadiaDemoMap.flyTo([lat, lng], 15);
+                L.marker([lat, lng]).addTo(stadiaDemoMap).bindPopup(address).openPopup();
+                document.getElementById('searchResult').innerHTML = `<i class="fas fa-check-circle"></i> Found: ${data.features[0].properties.label}`;
+            } else {
+                document.getElementById('searchResult').innerHTML = '<i class="fas fa-times-circle"></i> Not found';
+            }
+        } catch (err) {
+            document.getElementById('searchResult').innerHTML = '<i class="fas fa-exclamation-triangle"></i> API error';
+        }
+    }
+    
+    function setMapType(type) {
+        currentMapType = type;
+        document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.type-btn[data-type="${type}"]`).classList.add('active');
+        
+        map.eachLayer(layer => { if (layer instanceof L.TileLayer) map.removeLayer(layer); });
+        
+        let defaultService = type === 'standard' ? 'cartodb' : (type === 'topo' ? 'opentopomap' : 'arcgis');
+        currentMapService = defaultService;
+        document.getElementById('mapProvider').value = defaultService;
+        
+        if (mapLayers[type] && mapLayers[type][defaultService]) {
+            mapLayers[type][defaultService].addTo(map);
+        } else {
+            mapLayers.satellite.arcgis.addTo(map);
+        }
+        showNotification(`Map type: ${type}`, 'info');
+    }
+    
+    function switchMapProvider() {
+        const service = document.getElementById('mapProvider').value;
+        currentMapService = service;
+        
+        let type = currentMapType;
+        if (service === 'arcgis' || service === 'google' || service === 'yandex') type = 'satellite';
+        else if (service === 'opentopomap') type = 'topo';
+        else type = 'standard';
+        
+        if (type !== currentMapType) setMapType(type);
+        
+        map.eachLayer(layer => { if (layer instanceof L.TileLayer) map.removeLayer(layer); });
+        
+        if (mapLayers[type] && mapLayers[type][service]) {
+            mapLayers[type][service].addTo(map);
+        } else if (mapLayers.standard[service]) {
+            mapLayers.standard[service].addTo(map);
+        } else {
+            mapLayers.satellite.arcgis.addTo(map);
+        }
+        showNotification(`Provider: ${service}`, 'info');
+    }
+    
+    function buildWorldList() {
+        const container = document.getElementById('worldListContainer');
+        if (!container) return;
+        container.innerHTML = '';
+        for (let [id, world] of Object.entries(WORLDS_DATA)) {
+            if (currentFilter !== "all" && world.clearance !== currentFilter) continue;
+            const isFav = favoriteWorlds.includes(id);
+            const card = document.createElement('div');
+            card.className = 'world-card';
+            card.style.borderLeftColor = world.color;
+            card.innerHTML = `
+                <div class="world-header">
+                    <span class="world-name">${world.name}</span>
+                    <span class="clearance ${world.clearance.toLowerCase()}">${world.clearance}</span>
+                </div>
+                <div class="world-location"><i class="fas fa-map-pin"></i> ${world.location}</div>
+                <div style="font-size:0.7rem; margin-top:6px; display:flex; justify-content:space-between; align-items:center;">
+                    <span><i class="fas fa-arrows-spin"></i> ${world.type}</span>
+                    <button class="add-fav-btn" onclick="event.stopPropagation(); toggleFavorite('${id}')">
+                        <i class="fas fa-${isFav ? 'star' : 'star-o'}"></i> ${isFav ? 'Favorited' : 'Favorite'}
+                    </button>
+                </div>
+            `;
+            card.onclick = () => flyToWorld(world.coords, world.name);
+            container.appendChild(card);
+        }
+        refreshMarkers();
+    }
+    
+    function refreshMarkers() {
+        if (!markersLayer) return;
+        markersLayer.clearLayers();
+        for (let [id, world] of Object.entries(WORLDS_DATA)) {
+            if (currentFilter !== "all" && world.clearance !== currentFilter) continue;
+            const customIcon = L.divIcon({
+                className: 'custom-marker',
+                html: `<div style="background:${world.color}; width:28px; height:28px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); box-shadow:0 0 12px ${world.color}; border:2px solid white;"><div style="transform:rotate(45deg); text-align:center; line-height:24px; font-size:14px;">⚔️</div></div>`,
+                iconSize: [28, 28],
+                popupAnchor: [0, -15]
+            });
+            const marker = L.marker(world.coords, { icon: customIcon }).addTo(markersLayer);
+            marker.bindPopup(`
+                <div style="min-width:220px;">
+                    <h3>${world.name}</h3>
+                    <b>Location:</b> ${world.location}<br>
+                    <b>Clearance:</b> <span style="color:${world.color}">${world.clearance}</span><br>
+                    <b>Type:</b> ${world.type}<br>
+                    <b>Portals:</b> ${world.portals?.length ? world.portals.map(p => WORLDS_DATA[p]?.name || p).join(', ') : '—'}<br>
+                    <button onclick="flyToWorld([${world.coords[0]}, ${world.coords[1]}], '${world.name}')" style="margin-top:8px; background:#00e6cc; color:#000; border:none; padding:4px 12px; border-radius:20px; cursor:pointer;">Center</button>
+                    <button onclick="event.stopPropagation(); toggleFavorite('${id}')" style="margin-top:8px; margin-left:8px; background:#a855f7; border:none; padding:4px 12px; border-radius:20px; cursor:pointer;">⭐ Favorite</button>
+                </div>
+            `);
+        }
+        drawAllPortals();
+    }
+    
+    function drawAllPortals() {
+        if (!portalLinesLayer) return;
+        portalLinesLayer.clearLayers();
+        const processed = new Set();
+        for (let [id, world] of Object.entries(WORLDS_DATA)) {
+            if (currentFilter !== "all" && world.clearance !== currentFilter) continue;
+            let fullPortals = [...(world.portals || [])];
+            if (id === "osnaz" && additionalPortals.osnaz) fullPortals = [...fullPortals, ...additionalPortals.osnaz];
+            for (let targetId of fullPortals) {
+                const targetWorld = WORLDS_DATA[targetId];
+                if (!targetWorld) continue;
+                if (currentFilter !== "all" && targetWorld.clearance !== currentFilter && targetWorld.clearance !== world.clearance) continue;
+                const key = `${id}-${targetId}`;
+                const revKey = `${targetId}-${id}`;
+                if (processed.has(key) || processed.has(revKey)) continue;
+                processed.add(key);
+                const from = world.coords, to = targetWorld.coords;
+                L.polyline([from, to], { color: '#00e6cc', weight: 1.2, opacity: 0.55, dashArray: '6, 8' }).addTo(portalLinesLayer);
+                let t = 0;
+                const animate = () => {
+                    t = (t + 0.005) % 1;
+                    const lat = from[0] + (to[0] - from[0]) * t;
+                    const lng = from[1] + (to[1] - from[1]) * t;
+                    L.circleMarker([lat, lng], { radius: 3, color: '#88ffdd', weight: 1, fillColor: '#aaffee', fillOpacity: 0.9 }).addTo(portalLinesLayer);
+                    requestAnimationFrame(animate);
+                };
+                animate();
+            }
+        }
+    }
+    
+    function setupFilters() {
+        const chips = document.querySelectorAll('.filter-chip');
+        if (!chips.length) return;
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentFilter = chip.getAttribute('data-filter');
+                buildWorldList();
+            });
+        });
+    }
+    
+    function toggleFavorite(worldId) {
+        if (favoriteWorlds.includes(worldId)) {
+            favoriteWorlds = favoriteWorlds.filter(id => id !== worldId);
+        } else {
+            favoriteWorlds.push(worldId);
+        }
+        localStorage.setItem('nomand_jackdaw_favorites', JSON.stringify(favoriteWorlds));
+        buildWorldList();
+        renderMyWorlds();
+        showNotification(`${WORLDS_DATA[worldId]?.name} ${favoriteWorlds.includes(worldId) ? 'added to favorites' : 'removed from favorites'}`, 'success');
+    }
+    
+    function renderMyWorlds() {
+        const container = document.getElementById('myWorldsList');
+        if (!container) return;
+        if (favoriteWorlds.length === 0) {
+            container.innerHTML = '<div style="text-align:center; font-size:0.7rem; opacity:0.6;">✦ Add worlds to favorites ✦</div>';
+            return;
+        }
+        container.innerHTML = '';
+        favoriteWorlds.forEach(worldId => {
+            const world = WORLDS_DATA[worldId];
+            if (!world) return;
+            const favItem = document.createElement('div');
+            favItem.className = 'my-world-item';
+            favItem.innerHTML = `
+                <div style="flex:1;">
+                    <div style="font-weight:bold; font-size:0.85rem;">${world.name}</div>
+                    <div style="font-size:0.65rem; opacity:0.7;">${world.location}</div>
+                </div>
+                <button class="remove-fav" onclick="event.stopPropagation(); toggleFavorite('${worldId}')"><i class="fas fa-trash-alt"></i></button>
+            `;
+            favItem.onclick = () => flyToWorld(world.coords, world.name);
+            container.appendChild(favItem);
+        });
+    }
+    
+    function flyToWorld(coords, name) {
+        map.flyTo(coords, 8, { duration: 1.2 });
+        setTimeout(() => {
+            L.popup().setLatLng(coords).setContent(`<b>${name}</b><br><i class="fas fa-train"></i> Osnaz Maneuver available`).openOn(map);
+        }, 400);
+    }
+    
+    function toggleWorldsSidebar() {
+        document.getElementById('worldsSidebar').classList.toggle('open');
+    }
+    
+    function zoomInMap() { map.zoomIn(); }
+    function zoomOutMap() { map.zoomOut(); }
+    function resetToTerra() { flyToWorld([55.7558, 37.6173], "TerraTrampillera"); }
+    
+    function locateUserOnce() {
+        if (!navigator.geolocation) { showNotification("Geolocation not supported", "error"); return; }
+        showNotification("Locating...", "info");
+        navigator.geolocation.getCurrentPosition(pos => {
+            const {latitude, longitude} = pos.coords;
+            updateUserMarker(latitude, longitude);
+            map.flyTo([latitude, longitude], 12);
+            showNotification("Location detected", "success");
+        }, () => showNotification("Geolocation error", "error"));
+    }
+    
+    function updateUserMarker(lat, lng) {
+        if (userMarker) map.removeLayer(userMarker);
+        userMarker = L.marker([lat, lng], {
+            icon: L.divIcon({ html: '<div style="background:#00e6cc; width:24px; height:24px; border-radius:50%; border:3px solid white; box-shadow:0 0 20px #00e6cc;"></div>', iconSize: [24, 24] })
+        }).addTo(map).bindPopup("📍 Your location · NOMAND").openPopup();
+        setTimeout(() => { if(userMarker) userMarker.closePopup(); }, 3000);
+    }
+    
+    function toggleAutoSync() {
+        autoSyncActive = !autoSyncActive;
+        const btn = document.getElementById('toggleSyncBtn');
+        const statusSpan = document.getElementById('syncStatus');
+        if (autoSyncActive) {
+            if (watchPositionId) navigator.geolocation.clearWatch(watchPositionId);
+            watchPositionId = navigator.geolocation.watchPosition(
+                pos => { updateUserMarker(pos.coords.latitude, pos.coords.longitude); if(autoSyncActive) map.setView([pos.coords.latitude, pos.coords.longitude], map.getZoom()); },
+                () => showNotification("Auto-sync error", "error"),
+                { enableHighAccuracy: true, maximumAge: 5000, timeout: 15000 }
+            );
+            btn.classList.add('active');
+            statusSpan.innerHTML = '🟢 auto';
+            showNotification("Auto-sync ENABLED", "success");
+        } else {
+            if (watchPositionId) navigator.geolocation.clearWatch(watchPositionId);
+            btn.classList.remove('active');
+            statusSpan.innerHTML = '⚪ manual';
+            showNotification("Auto-sync DISABLED", "warning");
+        }
+    }
+    
+    function showNotification(message, type = 'info') {
+        const notif = document.createElement('div');
+        notif.style.cssText = `position: fixed; top: 90px; right: 20px; background: rgba(15,12,35,0.95); backdrop-filter: blur(12px); color: white; padding: 0.8rem 1.2rem; border-radius: 16px; border-left: 4px solid var(--glow-cyan); z-index: 10000; animation: slideIn 0.3s; font-size: 0.85rem; box-shadow: 0 10px 25px rgba(0,0,0,0.4);`;
+        notif.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'times-circle' : 'info-circle'}"></i> ${message}`;
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 3000);
+    }
+    
+    function updateCoordsDisplay() {
+        if (!map) return;
+        const center = map.getCenter();
+        document.getElementById('coordsStatus').innerHTML = `<i class="fas fa-crosshairs"></i> ${center.lat.toFixed(4)}°, ${center.lng.toFixed(4)}°`;
+    }
+    
+    // Expose globals
+    window.switchTab = switchTab;
+    window.flyToWorld = flyToWorld;
+    window.toggleWorldsSidebar = toggleWorldsSidebar;
+    window.zoomInMap = zoomInMap;
+    window.zoomOutMap = zoomOutMap;
+    window.resetToTerra = resetToTerra;
+    window.locateUserOnce = locateUserOnce;
+    window.toggleAutoSync = toggleAutoSync;
+    window.toggleFavorite = toggleFavorite;
+    window.setMapType = setMapType;
+    window.switchMapProvider = switchMapProvider;
+    window.configureStadiaKey = configureStadiaKey;
+    window.setStadiaStyle = setStadiaStyle;
+    window.searchStadiaAddress = searchStadiaAddress;
+    
+    // Style selector events
+    document.querySelectorAll('.style-btn').forEach(btn => {
+        btn.addEventListener('click', () => setStadiaStyle(btn.getAttribute('data-style')));
+    });
+</script>
+</body>
+</html>
