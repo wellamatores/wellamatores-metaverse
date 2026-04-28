@@ -108,6 +108,33 @@
             gap: 1rem;
         }
 
+        /* Новая кнопка HOME */
+        .home-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 230, 204, 0.15);
+            border: 1px solid var(--glow-cyan);
+            border-radius: 40px;
+            padding: 8px 18px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            color: var(--glow-cyan);
+            font-weight: 600;
+            font-size: 0.9rem;
+            backdrop-filter: blur(4px);
+        }
+        .home-button:hover {
+            background: var(--glow-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--glow-cyan);
+            transform: scale(1.02);
+        }
+        .home-button i {
+            font-size: 1.1rem;
+        }
+
         .visoracle-icon {
             width: 48px;
             height: 48px;
@@ -522,6 +549,8 @@
             .geolocation-panel { bottom: 80px; left: 10px; right: 10px; flex-wrap: wrap; justify-content: center; }
             .premium-container { padding: 1rem; }
             .demo-map { width: 100%; }
+            .home-button span { display: none; }
+            .home-button { padding: 8px 12px; }
         }
 
         ::-webkit-scrollbar { width: 6px; }
@@ -543,6 +572,11 @@
 
 <header class="visoracle-header">
     <div class="logo-area">
+        <!-- Новая кнопка возврата на главную -->
+        <a href="index.html" class="home-button">
+            <i class="fas fa-arrow-left"></i>
+            <span>🏠 HOME</span>
+        </a>
         <div class="visoracle-icon">⚫</div>
         <div class="title">
             <h1>NAVIGATOR NOMAND JACKDAW</h1>
