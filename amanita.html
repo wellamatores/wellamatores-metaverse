@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>AMANITA | ULTRA-DENSE TRADING WORKSTATION v2.0</title>
+    <title>AMANITA | ULTRA-DENSE TRADING v3.0 + TERNARY COMPUTER</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * {
@@ -193,12 +193,153 @@
             padding: 2px 0;
             border-bottom: 0.5px solid #1a3a1a;
         }
+        
+        /* Ternary panel styles (chat window) */
+        .ternary-panel {
+            background: #0c120c;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+            border: 1px solid #2a4a2a;
+        }
+        .ternary-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #aaffaa;
+        }
+        .ternary-display {
+            background: #030603;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            margin: 8px 0;
+        }
+        .ternary-digits {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .ternary-digit {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: #0a140a;
+            border: 2px solid #2a5a2a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.1s;
+            font-family: monospace;
+            font-weight: bold;
+        }
+        .ternary-digit:hover {
+            transform: scale(1.05);
+            border-color: #aaff66;
+        }
+        .ternary-digit .digit-val {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .ternary-digit .digit-desc {
+            font-size: 0.6rem;
+            opacity: 0.7;
+        }
+        .ternary-digit.negative { color: #ff5e5e; border-color: #ff5e5e; }
+        .ternary-digit.zero { color: #9cc0b0; }
+        .ternary-digit.positive { color: #aaff66; border-color: #aaff66; }
+        .ternary-result {
+            background: #0a0e0a;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 12px;
+            text-align: center;
+        }
+        .ternary-result .decimal {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #aaff66;
+        }
+        .ternary-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .ternary-buttons button {
+            flex: 1;
+            background: #0a1a0a;
+            border: 1px solid #2a5a2a;
+            padding: 6px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            color: #aaff66;
+        }
+        .ternary-buttons button:hover {
+            background: #2a5a2a;
+            color: white;
+        }
+        .ternary-info {
+            font-size: 0.7rem;
+            color: #9cc0b0;
+            margin-top: 8px;
+            padding: 8px;
+            background: #060b06;
+            border-radius: 6px;
+        }
+        .message-bubble {
+            padding: 6px 8px;
+            margin: 4px 0;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            word-break: break-word;
+        }
+        .user-msg {
+            background: #1a2a1a;
+            border-left: 3px solid #aaff66;
+            color: #ccffcc;
+        }
+        .system-msg {
+            background: #0c180c;
+            border-left: 3px solid #ffb347;
+            color: #c0e0c0;
+        }
+        #chatMessagesLog {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #030603;
+            border-radius: 14px;
+            padding: 10px;
+            margin-top: 12px;
+        }
+        #chatInput {
+            background: #0a1a0a;
+            border: 1px solid #2a5a2a;
+            color: #aaff66;
+            padding: 6px 8px;
+            font-size: 0.7rem;
+            border-radius: 8px;
+            width: 100%;
+        }
+        .flex-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
     </style>
 </head>
 <body>
 
 <div class="disclaimer-bar">
-    ⚠️ DEMO SIMULATOR | Virtual Trading Only | No Real Orders
+    ⚠️ DEMO SIMULATOR | Virtual Trading Only | No Real Orders | TERNARY COMPUTER (Setun) integrated
 </div>
 
 <div class="workstation">
@@ -220,19 +361,10 @@
         </div>
     </div>
 
-    <!-- Monitor 2: Tickers -->
+    <!-- Monitor 2: Tickers + AI CHAT (Ternary + Chat) -->
     <div class="monitor">
-        <div class="screen-content">
-            <div class="section-title">⚡ TICKERS</div>
-            <div id="tickers">
-                <div class="order-row"><span>ES_F</span><span class="lime" id="es-price">6324.35</span></div>
-                <div class="order-row"><span>BTC/USD</span><span class="lime" id="btc-price">67123.40</span></div>
-                <div class="order-row"><span>ETH/USD</span><span class="ruby" id="eth-price">3245.78</span></div>
-                <div class="order-row"><span>GOLD</span><span class="amber" id="gold-price">2387.20</span></div>
-            </div>
-            <div class="section-title">🔔 PRICE ALERTS</div>
-            <div id="alerts-list">No alerts</div>
-            <button class="small" id="new-alert-btn" style="margin-top:4px;">+ New Alert (Ctrl+A)</button>
+        <div class="screen-content" id="chat-window-container">
+            <!-- dynamic chat + ternary panel will be injected here -->
         </div>
     </div>
 
@@ -324,14 +456,16 @@
 </div>
 
 <div class="hardware-badge">
-    🔐 HSM MODULE | TPM 2.0 | SECURID
+    🔐 HSM MODULE | TPM 2.0 | SECURID | SETUN TERNARY CORE
 </div>
 
 <script>
     // ==================== INITIAL STATE ====================
     let portfolio = {
         USDT: 10000.00,
-        ES: 0
+        ES: 0,
+        BTC: 0,
+        ETH: 0
     };
     
     let openPositions = [];
@@ -341,6 +475,7 @@
     let priceAlerts = [];
     let soundEnabled = true;
     let pnlChart = null;
+    let currentSymbol = "ES";
     
     // Current prices
     let currentPrices = {
@@ -353,6 +488,16 @@
         US10Y: 4.325,
         DE10Y: 2.453
     };
+    
+    // Helper: sanitize HTML
+    function sanitizeHTML(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
     
     // ==================== SOUND SYSTEM ====================
     class SoundManager {
@@ -395,8 +540,6 @@
     
     function updateUI() {
         document.getElementById('balance-display').innerHTML = `USDT: ${portfolio.USDT.toFixed(2)}<br>ES: ${portfolio.ES.toFixed(4)}`;
-        
-        // Update unrealized PnL
         let unrealized = 0;
         openPositions.forEach(pos => {
             const current = currentPrices[pos.symbol];
@@ -409,7 +552,6 @@
         document.getElementById('unrealized-pnl').textContent = `$${unrealized.toFixed(2)}`;
         document.getElementById('unrealized-pnl').className = unrealized >= 0 ? 'lime' : 'ruby';
         
-        // Render positions
         const posDiv = document.getElementById('positions-list');
         if (openPositions.length === 0) {
             posDiv.innerHTML = 'No positions';
@@ -427,63 +569,194 @@
     
     function updatePnLChart(pnlChange) {
         const lastPnl = pnlHistory[pnlHistory.length - 1].pnl;
-        pnlHistory.push({
-            time: new Date().toLocaleTimeString(),
-            pnl: lastPnl + pnlChange
-        });
+        pnlHistory.push({ time: new Date().toLocaleTimeString(), pnl: lastPnl + pnlChange });
         if (pnlHistory.length > 30) pnlHistory.shift();
-        
         const totalPnl = pnlHistory[pnlHistory.length - 1].pnl;
         document.getElementById('total-pnl').textContent = `${totalPnl >= 0 ? '+' : ''}$${totalPnl.toFixed(2)}`;
         document.getElementById('total-pnl').className = totalPnl >= 0 ? 'lime' : 'ruby';
-        
         if (pnlChart) pnlChart.destroy();
         const ctx = document.getElementById('pnlChart').getContext('2d');
         pnlChart = new Chart(ctx, {
             type: 'line',
-            data: {
-                labels: pnlHistory.map(h => h.time.slice(-5)),
-                datasets: [{
-                    label: 'PnL (USDT)',
-                    data: pnlHistory.map(h => h.pnl),
-                    borderColor: '#aaff66',
-                    backgroundColor: 'rgba(170,255,102,0.1)',
-                    fill: true,
-                    pointRadius: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: { legend: { labels: { color: '#9cc0b0', font: { size: 8 } } } }
-            }
+            data: { labels: pnlHistory.map(h => h.time.slice(-5)), datasets: [{ label: 'PnL (USDT)', data: pnlHistory.map(h => h.pnl), borderColor: '#aaff66', backgroundColor: 'rgba(170,255,102,0.1)', fill: true, pointRadius: 1 }] },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#9cc0b0', font: { size: 8 } } } } }
         });
     }
     
     function addToHistory(side, symbol, qty, price, sl, tp, pnl = 0) {
-        tradeHistory.unshift({
-            time: new Date().toLocaleTimeString(),
-            side, symbol, qty, price, sl, tp, pnl
-        });
+        tradeHistory.unshift({ time: new Date().toLocaleTimeString(), side, symbol, qty, price, sl, tp, pnl });
         if (tradeHistory.length > 20) tradeHistory.pop();
-        
         const histDiv = document.getElementById('trade-history');
-        histDiv.innerHTML = tradeHistory.slice(0, 10).map(t => `
-            <div class="order-row" style="font-size:0.6rem;">
-                <span>${t.time}</span>
-                <span class="${t.side === 'BUY' ? 'lime' : 'ruby'}">${t.side}</span>
-                <span>${t.qty} ${t.symbol} @ ${t.price}</span>
-                <span class="${t.pnl >= 0 ? 'lime' : 'ruby'}">${t.pnl !== 0 ? (t.pnl >= 0 ? '+' : '') + t.pnl.toFixed(2) : ''}</span>
-            </div>
-        `).join('');
+        histDiv.innerHTML = tradeHistory.slice(0, 10).map(t => `<div class="order-row" style="font-size:0.6rem;"><span>${t.time}</span><span class="${t.side === 'BUY' ? 'lime' : 'ruby'}">${t.side}</span><span>${t.qty} ${t.symbol} @ ${t.price}</span><span class="${t.pnl >= 0 ? 'lime' : 'ruby'}">${t.pnl !== 0 ? (t.pnl >= 0 ? '+' : '') + t.pnl.toFixed(2) : ''}</span></div>`).join('');
     }
     
-    // ==================== TRADING ====================
+    // ========== TERNARY LOGIC (Setun) ==========
+    let ternaryDigits = [0, 0, 0]; // 3^2, 3^1, 3^0
+    
+    function ternaryToDecimal(digits) {
+        return digits[0] * 9 + digits[1] * 3 + digits[2] * 1;
+    }
+    
+    function decimalToTernary(num, length = 3) {
+        let clamped = Math.max(-13, Math.min(13, num));
+        let result = [0, 0, 0];
+        let remaining = clamped;
+        if (remaining >= 5) { result[0] = 1; remaining -= 9; }
+        else if (remaining <= -5) { result[0] = -1; remaining += 9; }
+        else result[0] = 0;
+        if (remaining >= 2) { result[1] = 1; remaining -= 3; }
+        else if (remaining <= -2) { result[1] = -1; remaining += 3; }
+        else result[1] = 0;
+        result[2] = remaining;
+        return result;
+    }
+    
+    function updateTernaryUI(localContainerId = 'ternaryDigits') {
+        const container = document.getElementById(localContainerId);
+        if (!container) return;
+        const digitSymbols = [{ val: -1, sym: 'T', desc: 'минус', class: 'negative' }, { val: 0, sym: '0', desc: 'ноль', class: 'zero' }, { val: 1, sym: '1', desc: 'плюс', class: 'positive' }];
+        container.innerHTML = ternaryDigits.map((digit, idx) => {
+            const info = digitSymbols.find(d => d.val === digit);
+            const power = [2, 1, 0][idx];
+            return `<div class="ternary-digit ${info.class}" onclick="window.cycleTernaryDigit(${idx})"><div class="digit-val">${info.sym}</div><div class="digit-desc">×3<sup>${power}</sup> = ${digit * Math.pow(3, power)}</div></div>`;
+        }).join('');
+        const decimal = ternaryToDecimal(ternaryDigits);
+        const decimalSpan = document.getElementById('ternaryDecimal');
+        if (decimalSpan) decimalSpan.innerHTML = decimal;
+        // log to chat
+        const ternaryStr = ternaryDigits.map(d => d === -1 ? 'T' : d === 0 ? '0' : '1').join('');
+        const chatLog = document.getElementById('chatMessagesLog');
+        if (chatLog && Math.random() < 0.3) { // occasional log but not spammy
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message-bubble system-msg';
+            msgDiv.innerHTML = `<strong>🧮 Сетунь:</strong> ${ternaryStr} (троичный) = ${decimal} (десятичный)`;
+            chatLog.appendChild(msgDiv);
+            chatLog.scrollTop = chatLog.scrollHeight;
+            if (chatLog.children.length > 50) chatLog.removeChild(chatLog.firstChild);
+        }
+    }
+    
+    window.cycleTernaryDigit = (idx) => {
+        const cycle = [-1, 0, 1];
+        const currentIndex = cycle.indexOf(ternaryDigits[idx]);
+        ternaryDigits[idx] = cycle[(currentIndex + 1) % 3];
+        updateTernaryUI('ternaryDigits');
+        const decimal = ternaryToDecimal(ternaryDigits);
+        showToast(`🔢 Ternary digit changed → ${ternaryDigits.map(d=>d===-1?'T':d).join('')} = ${decimal}`, false);
+    };
+    
+    // ========== BUILD CHAT + TERNARY PANEL ==========
+    function buildChatWin(container) {
+        if (!container) return;
+        container.innerHTML = `
+            <div class="ternary-panel">
+                <div class="ternary-title">🧮 СЕТУНЬ — Троичный компьютер <span style="font-size:0.6rem;">(балансированная троичная система)</span></div>
+                <div class="ternary-display">
+                    <div style="font-size:0.7rem; opacity:0.7;">Троичное число (3 разряда)</div>
+                    <div class="ternary-digits" id="ternaryDigits"></div>
+                </div>
+                <div class="ternary-result">
+                    <div style="font-size:0.7rem;">➜ Десятичное значение</div>
+                    <div class="decimal" id="ternaryDecimal">0</div>
+                </div>
+                <div class="ternary-buttons">
+                    <button id="ternaryIncrement">➕ +1</button>
+                    <button id="ternaryDecrement">➖ -1</button>
+                    <button id="ternaryRandom">🎲 Случайное</button>
+                    <button id="ternaryReset">🔄 000</button>
+                </div>
+                <div class="ternary-info">
+                    <strong>📖 Троичная логика (Setun)</strong><br>• <span style="color:#ff5e5e;">T (-1)</span> — Ложь<br>• <span style="color:#9cc0b0;">0</span> — Нейтрально<br>• <span style="color:#aaff66;">1</span> — Истина<br>• Формула: a·9 + b·3 + c·1
+                </div>
+            </div>
+            <div class="section-title">💬 AI ASSISTANT + COMMANDS</div>
+            <div id="chatMessagesLog" style="max-height:200px; overflow-y:auto; background:#030603; border-radius:14px; padding:10px;"></div>
+            <div class="flex-row">
+                <input id="chatInput" placeholder="Ask AI: price, сетунь, портфель, позиции, /help" style="flex:1;">
+                <button class="small" id="sendChatBtn">💬 Send</button>
+            </div>
+        `;
+        
+        // Ternary UI initialization
+        ternaryDigits = [0, 0, 0];
+        updateTernaryUI('ternaryDigits');
+        
+        // Button handlers
+        document.getElementById('ternaryIncrement')?.addEventListener('click', () => {
+            let decimal = ternaryToDecimal(ternaryDigits);
+            decimal++;
+            ternaryDigits = decimalToTernary(decimal);
+            updateTernaryUI('ternaryDigits');
+        });
+        document.getElementById('ternaryDecrement')?.addEventListener('click', () => {
+            let decimal = ternaryToDecimal(ternaryDigits);
+            decimal--;
+            ternaryDigits = decimalToTernary(decimal);
+            updateTernaryUI('ternaryDigits');
+        });
+        document.getElementById('ternaryRandom')?.addEventListener('click', () => {
+            const randomDecimal = Math.floor(Math.random() * 27) - 13;
+            ternaryDigits = decimalToTernary(randomDecimal);
+            updateTernaryUI('ternaryDigits');
+        });
+        document.getElementById('ternaryReset')?.addEventListener('click', () => {
+            ternaryDigits = [0, 0, 0];
+            updateTernaryUI('ternaryDigits');
+        });
+        
+        // Chat logic
+        const chatLog = document.getElementById('chatMessagesLog');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendChatBtn');
+        
+        function sendMessage() {
+            if (!chatInput.value.trim()) return;
+            const txt = sanitizeHTML(chatInput.value);
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'message-bubble user-msg';
+            msgDiv.innerHTML = `<strong>👤 You:</strong> ${txt}`;
+            chatLog.appendChild(msgDiv);
+            chatInput.value = '';
+            const lowerTxt = txt.toLowerCase();
+            let response = '';
+            if (lowerTxt.includes('price') || lowerTxt.includes('цена')) {
+                response = `💡 AI: ${currentSymbol.toUpperCase()} last price: ${currentPrices.ES?.toFixed(2) || 'loading...'} USDT (ES) | BTC: ${currentPrices.BTC.toFixed(2)}`;
+            } else if (lowerTxt.includes('сетунь') || lowerTxt.includes('троич')) {
+                const decimal = ternaryToDecimal(ternaryDigits);
+                const ternaryStr = ternaryDigits.map(d => d === -1 ? 'T' : d === 0 ? '0' : '1').join('');
+                response = `🧮 Троичный калькулятор: ${ternaryStr} = ${decimal}. Кликайте на цифры, чтобы менять!`;
+            } else if (lowerTxt.includes('/help') || lowerTxt.includes('помощь')) {
+                response = `🤖 Команды:<br>• "price" — цена ES/BTC<br>• "сетунь" — троичный компьютер<br>• "портфель" — баланс USDT<br>• "позиции" — открытые позиции<br>• "алерт" — как создать алерт<br>• Ctrl+A — алерт, Ctrl+M — звук, Ctrl+S — сохранить`;
+            } else if (lowerTxt.includes('портфель') || lowerTxt.includes('баланс')) {
+                response = `💼 Портфель: ${portfolio.USDT.toFixed(2)} USDT, ES: ${portfolio.ES.toFixed(4)} контрактов.`;
+            } else if (lowerTxt.includes('позиции') || lowerTxt.includes('поз')) {
+                if (openPositions.length === 0) response = `📊 Нет открытых позиций`;
+                else response = `📊 Открыто позиций: ${openPositions.length}. Подробности в окне POSITIONS.`;
+            } else if (lowerTxt.includes('алерт')) {
+                response = `🔔 Чтобы создать алерт: Ctrl+A, введи символ (ES/BTC/ETH), цену и условие (above/below)`;
+            } else {
+                response = `🤖 Assistant: Команда "${txt}" не распознана. Напиши "/help" для списка команд.`;
+            }
+            const respDiv = document.createElement('div');
+            respDiv.className = 'message-bubble system-msg';
+            respDiv.innerHTML = `<strong>🤖 AI:</strong> ${response}`;
+            chatLog.appendChild(respDiv);
+            chatLog.scrollTop = chatLog.scrollHeight;
+            if (chatLog.children.length > 50) chatLog.removeChild(chatLog.firstChild);
+            if (lowerTxt.includes('price')) sound.play('alert');
+        }
+        
+        sendBtn?.addEventListener('click', sendMessage);
+        chatInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'message-bubble system-msg';
+        welcomeDiv.innerHTML = `<strong>🤖 AI active:</strong> Троичный компьютер Сетунь загружен. Напишите /help для команд.`;
+        chatLog.appendChild(welcomeDiv);
+    }
+    
+    // ==================== TRADING CORE ====================
     window.openPosition = function(symbol, side, qty, entryPrice, stopLoss, takeProfit) {
-        const position = {
-            id: nextId++,
-            symbol, side, qty, entryPrice, stopLoss, takeProfit, closed: false
-        };
+        const position = { id: nextId++, symbol, side, qty, entryPrice, stopLoss, takeProfit, closed: false };
         openPositions.push(position);
         updateUI();
         showToast(`📊 ${side} ${qty} ${symbol} @ ${entryPrice} | SL:${stopLoss} TP:${takeProfit}`);
@@ -494,23 +767,12 @@
     window.closePosition = function(id) {
         const pos = openPositions.find(p => p.id === id);
         if (!pos || pos.closed) return;
-        
         const current = currentPrices[pos.symbol];
-        let pnl = 0;
-        if (pos.side === 'LONG') {
-            pnl = (current - pos.entryPrice) * pos.qty;
-        } else {
-            pnl = (pos.entryPrice - current) * pos.qty;
-        }
-        
+        let pnl = (pos.side === 'LONG') ? (current - pos.entryPrice) * pos.qty : (pos.entryPrice - current) * pos.qty;
         portfolio.USDT += pnl;
         if (pos.side === 'LONG') portfolio.ES -= pos.qty;
         else portfolio.ES += pos.qty;
-        
         pos.closed = true;
-        pos.pnl = pnl;
-        pos.closePrice = current;
-        
         addToHistory(pos.side === 'LONG' ? 'SELL' : 'BUY', pos.symbol, pos.qty, current, null, null, pnl);
         updatePnLChart(pnl);
         openPositions = openPositions.filter(p => p.id !== id);
@@ -523,13 +785,8 @@
         openPositions.forEach(pos => {
             const current = currentPrices[pos.symbol];
             let shouldClose = false;
-            if (pos.side === 'LONG') {
-                if (current <= pos.stopLoss) shouldClose = true;
-                if (current >= pos.takeProfit) shouldClose = true;
-            } else {
-                if (current >= pos.stopLoss) shouldClose = true;
-                if (current <= pos.takeProfit) shouldClose = true;
-            }
+            if (pos.side === 'LONG') { if (current <= pos.stopLoss || current >= pos.takeProfit) shouldClose = true; }
+            else { if (current >= pos.stopLoss || current <= pos.takeProfit) shouldClose = true; }
             if (shouldClose) closePosition(pos.id);
         });
     }
@@ -537,46 +794,29 @@
     function executeOrder(side, qty, stopLoss = null, takeProfit = null) {
         const price = currentPrices.ES;
         const cost = price * qty;
-        
         if (side === 'BUY') {
             if (portfolio.USDT >= cost) {
-                portfolio.USDT -= cost;
-                portfolio.ES += qty;
+                portfolio.USDT -= cost; portfolio.ES += qty;
                 addToHistory('BUY', 'ES', qty, price, stopLoss, takeProfit);
-                if (stopLoss && takeProfit) {
-                    openPosition('ES', 'LONG', qty, price, stopLoss, takeProfit);
-                }
-                showToast(`✅ BUY ${qty} ES @ ${price.toFixed(2)} | Cost: ${cost.toFixed(2)} USDT`);
+                if (stopLoss && takeProfit) openPosition('ES', 'LONG', qty, price, stopLoss, takeProfit);
+                showToast(`✅ BUY ${qty} ES @ ${price.toFixed(2)}`);
                 sound.play('order');
                 updateUI();
-            } else {
-                showToast(`❌ Insufficient USDT! Need ${cost.toFixed(2)}`, true);
-            }
+            } else showToast(`❌ Insufficient USDT!`, true);
         } else {
             if (portfolio.ES >= qty) {
-                portfolio.ES -= qty;
-                portfolio.USDT += cost;
+                portfolio.ES -= qty; portfolio.USDT += cost;
                 addToHistory('SELL', 'ES', qty, price, stopLoss, takeProfit);
-                if (stopLoss && takeProfit) {
-                    openPosition('ES', 'SHORT', qty, price, stopLoss, takeProfit);
-                }
-                showToast(`✅ SELL ${qty} ES @ ${price.toFixed(2)} | Received: ${cost.toFixed(2)} USDT`);
+                if (stopLoss && takeProfit) openPosition('ES', 'SHORT', qty, price, stopLoss, takeProfit);
+                showToast(`✅ SELL ${qty} ES @ ${price.toFixed(2)}`);
                 sound.play('order');
                 updateUI();
-            } else {
-                showToast(`❌ Insufficient ES balance!`, true);
-            }
+            } else showToast(`❌ Insufficient ES balance!`, true);
         }
     }
     
-    // ==================== PRICE ALERTS ====================
     function addPriceAlert(symbol, targetPrice, condition) {
-        priceAlerts.push({
-            id: Date.now(),
-            symbol, targetPrice, condition,
-            triggered: false,
-            created: new Date().toLocaleTimeString()
-        });
+        priceAlerts.push({ id: Date.now(), symbol, targetPrice, condition, triggered: false, created: new Date().toLocaleTimeString() });
         renderAlerts();
         showToast(`🔔 Alert: ${symbol} ${condition} ${targetPrice}`);
     }
@@ -588,208 +828,57 @@
             let triggered = false;
             if (alert.condition === 'above' && price >= alert.targetPrice) triggered = true;
             if (alert.condition === 'below' && price <= alert.targetPrice) triggered = true;
-            if (triggered) {
-                alert.triggered = true;
-                showToast(`🔔 ALERT: ${alert.symbol} ${alert.condition} ${alert.targetPrice} (now: ${price})`);
-                sound.play('alert');
-                renderAlerts();
-            }
+            if (triggered) { alert.triggered = true; showToast(`🔔 ALERT: ${alert.symbol} ${alert.condition} ${alert.targetPrice} (now: ${price})`); sound.play('alert'); renderAlerts(); }
         });
     }
     
     function renderAlerts() {
         const alertsDiv = document.getElementById('alerts-list');
-        if (priceAlerts.length === 0) {
-            alertsDiv.innerHTML = 'No alerts';
-        } else {
-            alertsDiv.innerHTML = priceAlerts.map(alert => `
-                <div class="alert-item">
-                    ${alert.symbol} ${alert.condition === 'above' ? '↑' : '↓'} ${alert.targetPrice}
-                    <span class="${alert.triggered ? 'lime' : 'amber'}">${alert.triggered ? 'TRIGGERED' : 'active'}</span>
-                    <button class="small" data-id="${alert.id}" onclick="removeAlert(${alert.id})" style="float:right;">✕</button>
-                </div>
-            `).join('');
-        }
+        if (!alertsDiv) return;
+        if (priceAlerts.length === 0) alertsDiv.innerHTML = 'No alerts';
+        else alertsDiv.innerHTML = priceAlerts.map(alert => `<div class="alert-item">${alert.symbol} ${alert.condition === 'above' ? '↑' : '↓'} ${alert.targetPrice} <span class="${alert.triggered ? 'lime' : 'amber'}">${alert.triggered ? 'TRIGGERED' : 'active'}</span><button class="small" data-id="${alert.id}" onclick="removeAlert(${alert.id})" style="float:right;">✕</button></div>`).join('');
     }
+    window.removeAlert = function(id) { priceAlerts = priceAlerts.filter(a => a.id !== id); renderAlerts(); };
     
-    window.removeAlert = function(id) {
-        priceAlerts = priceAlerts.filter(a => a.id !== id);
-        renderAlerts();
-    };
-    
-    // ==================== MARKET SIMULATION ====================
     function simulateMarket() {
-        const oldES = currentPrices.ES;
         const drift = (Math.random() - 0.5) * 2.5;
         currentPrices.ES = Math.max(6200, Math.min(6450, currentPrices.ES + drift));
-        
-        // Update UI
         document.getElementById('es-price').textContent = currentPrices.ES.toFixed(2);
         document.getElementById('vwap').textContent = (currentPrices.ES - 0.07).toFixed(2);
         document.getElementById('latency').textContent = `${Math.floor(Math.random() * 3)}ms`;
-        
-        // Update L2 book visual
         const firstRow = document.querySelector('#l2-book .order-row:first-child');
-        if (firstRow) {
-            const bidSpan = firstRow.querySelector('.bid');
-            const askSpan = firstRow.querySelector('.ask');
-            if (bidSpan) {
-                const newBid = (currentPrices.ES - 0.15 - Math.random() * 0.2).toFixed(2);
-                const newAsk = (currentPrices.ES + 0.15 + Math.random() * 0.2).toFixed(2);
-                bidSpan.textContent = `▲ ${newBid}`;
-                askSpan.textContent = `${newAsk} ▼`;
-                if (firstRow.children[3]) firstRow.children[3].textContent = Math.floor(10000 + Math.random() * 30000);
-            }
-        }
-        
-        // Add random trade to time & sales
+        if (firstRow) { const bidSpan = firstRow.querySelector('.bid'); const askSpan = firstRow.querySelector('.ask'); if(bidSpan){ bidSpan.textContent = `▲ ${(currentPrices.ES - 0.15).toFixed(2)}`; askSpan.textContent = `${(currentPrices.ES + 0.15).toFixed(2)} ▼`; } }
         const timeSales = document.getElementById('time-sales');
-        const now = new Date();
-        const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
-        const side = Math.random() > 0.5 ? 'B' : 'S';
-        const size = Math.floor(100 + Math.random() * 2000);
-        const tradeHtml = `<div class="order-row"><span>${timeStr}</span><span class="${side === 'B' ? 'lime' : 'ruby'}">${side} ${size} ES ${currentPrices.ES.toFixed(2)}</span></div>`;
-        timeSales.insertAdjacentHTML('afterbegin', tradeHtml);
+        const now = new Date(); const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+        const side = Math.random() > 0.5 ? 'B' : 'S'; const size = Math.floor(100 + Math.random() * 2000);
+        timeSales.insertAdjacentHTML('afterbegin', `<div class="order-row"><span>${timeStr}</span><span class="${side === 'B' ? 'lime' : 'ruby'}">${side} ${size} ES ${currentPrices.ES.toFixed(2)}</span></div>`);
         while (timeSales.children.length > 8) timeSales.removeChild(timeSales.lastChild);
-        
-        checkSLTP();
-        checkAlerts();
-        updateUI();
+        checkSLTP(); checkAlerts(); updateUI();
     }
     
-    // ==================== WORKSPACE ====================
-    function saveWorkspace() {
-        const ws = { portfolio, openPositions, tradeHistory, pnlHistory, priceAlerts };
-        localStorage.setItem('amanita_workspace', JSON.stringify(ws));
-        showToast('💾 Workspace saved');
-    }
+    function saveWorkspace() { localStorage.setItem('amanita_workspace', JSON.stringify({ portfolio, openPositions, tradeHistory, pnlHistory, priceAlerts })); showToast('💾 Workspace saved'); }
+    function loadWorkspace() { const saved = localStorage.getItem('amanita_workspace'); if(saved){ const ws = JSON.parse(saved); portfolio = ws.portfolio; openPositions = ws.openPositions; tradeHistory = ws.tradeHistory; pnlHistory = ws.pnlHistory; priceAlerts = ws.priceAlerts; updateUI(); renderAlerts(); if(pnlChart) pnlChart.destroy(); updatePnLChart(0); showToast('📂 Workspace loaded'); } else showToast('No saved workspace', true); }
+    function exportCSV() { if(tradeHistory.length===0){ showToast('No trades', true); return; } let csv = "Time,Side,Symbol,Quantity,Price,PnL\n"; tradeHistory.forEach(t=>{ csv+=`${t.time},${t.side},${t.symbol},${t.qty},${t.price},${t.pnl||0}\n`; }); const blob = new Blob([csv],{type:'text/csv'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download=`amanita_trades_${Date.now()}.csv`; a.click(); URL.revokeObjectURL(url); showToast('📄 CSV exported'); }
     
-    function loadWorkspace() {
-        const saved = localStorage.getItem('amanita_workspace');
-        if (saved) {
-            const ws = JSON.parse(saved);
-            portfolio = ws.portfolio;
-            openPositions = ws.openPositions;
-            tradeHistory = ws.tradeHistory;
-            pnlHistory = ws.pnlHistory;
-            priceAlerts = ws.priceAlerts;
-            updateUI();
-            renderAlerts();
-            if (pnlChart) pnlChart.destroy();
-            updatePnLChart(0);
-            showToast('📂 Workspace loaded');
-        } else {
-            showToast('No saved workspace', true);
-        }
-    }
-    
-    // ==================== EXPORT CSV ====================
-    function exportCSV() {
-        if (tradeHistory.length === 0) {
-            showToast('No trades to export', true);
-            return;
-        }
-        let csv = "Time,Side,Symbol,Quantity,Price,PnL\n";
-        tradeHistory.forEach(t => {
-            csv += `${t.time},${t.side},${t.symbol},${t.qty},${t.price},${t.pnl || 0}\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `amanita_trades_${Date.now()}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-        showToast('📄 CSV exported');
-    }
-    
-    // ==================== INIT ====================
     function setupEventListeners() {
-        document.getElementById('buy-with-sl').onclick = () => {
-            const qty = parseFloat(document.getElementById('trade-qty').value);
-            const sl = parseFloat(document.getElementById('sl-price').value);
-            const tp = parseFloat(document.getElementById('tp-price').value);
-            if (isNaN(qty) || qty <= 0) { showToast('Invalid quantity', true); return; }
-            if (isNaN(sl) || isNaN(tp)) { showToast('Enter SL and TP', true); return; }
-            executeOrder('BUY', qty, sl, tp);
-        };
-        
-        document.getElementById('sell-with-sl').onclick = () => {
-            const qty = parseFloat(document.getElementById('trade-qty').value);
-            const sl = parseFloat(document.getElementById('sl-price').value);
-            const tp = parseFloat(document.getElementById('tp-price').value);
-            if (isNaN(qty) || qty <= 0) { showToast('Invalid quantity', true); return; }
-            if (isNaN(sl) || isNaN(tp)) { showToast('Enter SL and TP', true); return; }
-            executeOrder('SELL', qty, sl, tp);
-        };
-        
-        document.getElementById('new-alert-btn').onclick = () => {
-            const symbol = prompt('Symbol (ES/BTC/ETH/GOLD):', 'ES');
-            if (!symbol || !currentPrices[symbol.toUpperCase()]) { showToast('Invalid symbol', true); return; }
-            const target = parseFloat(prompt('Target price:'));
-            if (isNaN(target)) return;
-            const condition = prompt('Condition (above/below):', 'above');
-            if (condition !== 'above' && condition !== 'below') return;
-            addPriceAlert(symbol.toUpperCase(), target, condition);
-        };
-        
-        document.getElementById('reset-pnl').onclick = () => {
-            pnlHistory = [{ time: new Date().toLocaleTimeString(), pnl: 0 }];
-            updatePnLChart(0);
-        };
-        
-        document.getElementById('save-ws').onclick = saveWorkspace;
-        document.getElementById('load-ws').onclick = loadWorkspace;
-        document.getElementById('export-csv').onclick = exportCSV;
-        document.getElementById('toggle-sound').onclick = () => {
-            soundEnabled = !soundEnabled;
-            document.getElementById('sound-status').textContent = soundEnabled ? 'ON' : 'OFF';
-            showToast(`Sound ${soundEnabled ? '🔊 ON' : '🔇 OFF'}`);
-        };
-        
-        // Click on order rows
-        document.querySelectorAll('.order-row').forEach(row => {
-            row.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const priceElem = row.querySelector('.bid, .ask');
-                if (priceElem) {
-                    const priceMatch = priceElem.textContent.match(/\d+\.?\d*/);
-                    const price = priceMatch ? parseFloat(priceMatch[0]) : currentPrices.ES;
-                    const isBid = priceElem.classList.contains('bid');
-                    const side = isBid ? 'BUY' : 'SELL';
-                    const qty = 0.1;
-                    if (confirm(`${side} ${qty} ES @ ${price}?`)) {
-                        executeOrder(side, qty);
-                    }
-                }
-            });
-        });
-        
-        // Keyboard shortcuts
-        window.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveWorkspace(); }
-            if (e.ctrlKey && e.key === 'l') { e.preventDefault(); loadWorkspace(); }
-            if (e.ctrlKey && e.key === 'e') { e.preventDefault(); exportCSV(); }
-            if (e.ctrlKey && e.key === 'a') { e.preventDefault(); document.getElementById('new-alert-btn').click(); }
-            if (e.ctrlKey && e.key === 'm') { e.preventDefault(); document.getElementById('toggle-sound').click(); }
-        });
-        
-        // Strategy buttons
-        document.querySelectorAll('.special-key').forEach(btn => {
-            btn.onclick = () => {
-                const monitors = document.querySelectorAll('.monitor');
-                monitors.forEach(m => { m.classList.add('flash'); setTimeout(() => m.classList.remove('flash'), 100); });
-                showToast(`⚡ EXECUTING ${btn.textContent} STRATEGY`);
-                sound.play('order');
-            };
-        });
+        document.getElementById('buy-with-sl').onclick = () => { const qty=parseFloat(document.getElementById('trade-qty').value); const sl=parseFloat(document.getElementById('sl-price').value); const tp=parseFloat(document.getElementById('tp-price').value); if(isNaN(qty)||qty<=0) showToast('Invalid qty',true); else if(isNaN(sl)||isNaN(tp)) showToast('Enter SL/TP',true); else executeOrder('BUY',qty,sl,tp); };
+        document.getElementById('sell-with-sl').onclick = () => { const qty=parseFloat(document.getElementById('trade-qty').value); const sl=parseFloat(document.getElementById('sl-price').value); const tp=parseFloat(document.getElementById('tp-price').value); if(isNaN(qty)||qty<=0) showToast('Invalid qty',true); else if(isNaN(sl)||isNaN(tp)) showToast('Enter SL/TP',true); else executeOrder('SELL',qty,sl,tp); };
+        document.getElementById('new-alert-btn').onclick = () => { const symbol = prompt('Symbol (ES/BTC/ETH/GOLD):','ES'); if(!symbol||!currentPrices[symbol.toUpperCase()]) showToast('Invalid symbol',true); else { const target=parseFloat(prompt('Target price:')); if(!isNaN(target)){ const condition=prompt('Condition (above/below):','above'); if(condition==='above'||condition==='below') addPriceAlert(symbol.toUpperCase(),target,condition); } } };
+        document.getElementById('reset-pnl').onclick = () => { pnlHistory = [{ time: new Date().toLocaleTimeString(), pnl: 0 }]; updatePnLChart(0); };
+        document.getElementById('save-ws').onclick = saveWorkspace; document.getElementById('load-ws').onclick = loadWorkspace; document.getElementById('export-csv').onclick = exportCSV;
+        document.getElementById('toggle-sound').onclick = () => { soundEnabled = !soundEnabled; document.getElementById('sound-status').textContent = soundEnabled ? 'ON' : 'OFF'; showToast(`Sound ${soundEnabled ? 'ON' : 'OFF'}`); };
+        document.querySelectorAll('.order-row').forEach(row=>{ row.addEventListener('click',(e)=>{ e.stopPropagation(); const priceElem=row.querySelector('.bid, .ask'); if(priceElem){ const match=priceElem.textContent.match(/\d+\.?\d*/); const price=match?parseFloat(match[0]):currentPrices.ES; const isBid=priceElem.classList.contains('bid'); const side=isBid?'BUY':'SELL'; if(confirm(`${side} 0.1 ES @ ${price}?`)) executeOrder(side,0.1); } }); });
+        window.addEventListener('keydown', (e)=>{ if(e.ctrlKey && e.key==='s'){ e.preventDefault(); saveWorkspace(); } if(e.ctrlKey && e.key==='l'){ e.preventDefault(); loadWorkspace(); } if(e.ctrlKey && e.key==='e'){ e.preventDefault(); exportCSV(); } if(e.ctrlKey && e.key==='a'){ e.preventDefault(); document.getElementById('new-alert-btn').click(); } if(e.ctrlKey && e.key==='m'){ e.preventDefault(); document.getElementById('toggle-sound').click(); } });
+        document.querySelectorAll('.special-key').forEach(btn=>{ btn.onclick=()=>{ document.querySelectorAll('.monitor').forEach(m=>{ m.classList.add('flash'); setTimeout(()=>m.classList.remove('flash'),100); }); showToast(`⚡ EXECUTING ${btn.textContent} STRATEGY`); sound.play('order'); }; });
     }
     
-    // Start
+    // INIT
+    const chatContainer = document.getElementById('chat-window-container');
+    if(chatContainer) buildChatWin(chatContainer);
     updatePnLChart(0);
     setupEventListeners();
     setInterval(simulateMarket, 1500);
-    showToast('🚀 AMANITA v2.0 | Virtual Trading Active | Ctrl+A for Alerts');
+    showToast('🚀 AMANITA v3.0 | Ternary Computer Setun Active | Ctrl+A for Alerts');
 </script>
 </body>
 </html>
