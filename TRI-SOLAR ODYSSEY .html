@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>WELLAMATORES · TRI-SOLAR ODYSSEY · 5 REALMS</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+    body, html { width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Courier New', monospace; }
+
+    .landing {
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 30% 20%, #0a0f2a, #000);
+      z-index: 200; transition: opacity 1s;
+    }
+    .landing.hidden { opacity: 0; pointer-events: none; }
+    .card {
+      text-align: center; background: rgba(0,20,20,0.9); backdrop-filter: blur(12px);
+      border: 2px solid #ffaa44; border-radius: 2rem; padding: 2rem; max-width: 90vw;
+    }
+    h1 { background: linear-gradient(135deg, #ffaa44, #ff44ff, #44ffaa); -webkit-background-clip: text; background-clip: text; color: transparent; font-size: 2rem; }
+    .btn { background: #ffaa44; color: #000; border: none; padding: 12px 32px; border-radius: 60px; cursor: pointer; font-weight: bold; margin: 10px; font-size: 1rem; }
+
+    .hud {
+      position: fixed; top: 10px; left: 10px; right: 10px;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); border-radius: 20px;
+      padding: 8px 16px; color: #ffaa44; font-size: 10px; z-index: 100;
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+      border: 1px solid #ffaa44; font-family: monospace;
+    }
+
+    .realm-indicator {
+      position: fixed; top: 80px; left: 20px;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
+      border-left: 3px solid #ffaa44; border-radius: 0 12px 12px 0;
+      padding: 8px 16px; z-index: 100; font-size: 11px; font-family: monospace;
+    }
+    .realm-indicator span { color: #ffaa44; font-weight: bold; }
+
+    .console {
+      position: fixed; bottom: 100px; left: 20px; right: 280px;
+      background: rgba(0,0,0,0.95); border: 1px solid #ffaa44; border-radius: 12px;
+      z-index: 150; display: none; font-family: monospace;
+    }
+    .console-input { display: flex; padding: 8px; gap: 8px; }
+    .console-input input { flex: 1; background: #0a1a0f; border: 1px solid #ffaa44; color: #ffaa44; padding: 8px; border-radius: 8px; }
+    .console-input button { background: #1a3a2a; border: 1px solid #ffaa44; color: #ffaa44; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+    .console-output { max-height: 120px; overflow-y: auto; padding: 8px; font-size: 9px; color: #aaffcc; border-top: 1px solid #ffaa44; }
+
+    .control-panel {
+      position: fixed; bottom: 20px; left: 20px; right: 20px;
+      background: rgba(0,0,0,0.9); backdrop-filter: blur(12px);
+      border: 1px solid #ffaa44; border-radius: 20px; padding: 10px;
+      z-index: 120; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+    }
+    .ctrl-btn {
+      background: #1a3a2a; border: 1px solid #ffaa44; color: #ffaa44;
+      padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 9px; font-weight: bold;
+    }
+    .ctrl-btn:active { transform: scale(0.95); background: #ffaa44; color: #000; }
+
+    .panel-right {
+      position: fixed; top: 80px; right: 20px; width: 260px;
+      background: rgba(0,0,0,0.92); border: 1px solid #ffaa44; border-radius: 16px;
+      padding: 10px; z-index: 110; font-size: 9px;
+    }
+    .artifact-list { max-height: 150px; overflow-y: auto; margin-top: 8px; }
+    .artifact-item { background: #0a1a0f; margin: 3px 0; padding: 4px; border-radius: 6px; border-left: 2px solid #ffaa44; font-size: 8px; }
+
+    .inventory {
+      position: fixed; bottom: 120px; right: 20px; width: 200px;
+      background: rgba(0,0,0,0.85); border: 1px solid #ffaa44; border-radius: 12px;
+      padding: 8px; z-index: 110; font-size: 8px;
+    }
+
+    #game-canvas { width: 100%; height: 100%; display: block; }
+    .achievement {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+      background: #ffaa44; color: #000; padding: 6px 16px; border-radius: 30px;
+      font-weight: bold; z-index: 200; animation: fadeOut 3s forwards; white-space: nowrap; font-size: 11px;
+    }
+    @keyframes fadeOut {
+      0% { opacity: 1; top: 80px; }
+      70% { opacity: 1; top: 60px; }
+      100% { opacity: 0; top: 40px; display: none; }
+    }
+    .physics-note {
+      position: fixed; bottom: 90px; left: 20px;
+      background: rgba(0,0,0,0.5); border-radius: 16px; padding: 4px 12px;
+      font-size: 8px; color: #88aaff; font-family: monospace; z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+<div id="landing" class="landing">
+  <div class="card">
+    <h1>⚡ WELLAMATORES ⚡</h1>
+    <div style="color:#ffaa44;">5 REALMS · SPACE · PLANET · MOON · UNDERWATER · UNDERGROUND</div>
+    <p style="color:#aaa;margin:20px 0;">Explore the Tri-Solaris system, collect 28 artifacts and tame the ancient guardian!</p>
+    <button id="enterGame" class="btn">⚡ ENTER THE TRI-VERSE ⚡</button>
+  </div>
+</div>
+
+<div id="gameContainer" style="display: block;">
+  <canvas id="game-canvas"></canvas>
+
+  <div class="hud">
+    <div>🚀 SPEED: <span id="speed">0</span> km/m</div>
+    <div>📍 LOCATION: <span id="location">Deep Space</span></div>
+    <div>💎 ARTIFACTS: <span id="artifactsCollected">0</span>/28</div>
+    <div>🌌 REALM: <span id="realm">Space</span></div>
+  </div>
+
+  <div class="realm-indicator">
+    ⚡ CURRENT REALM: <span>Deep Space</span>
+  </div>
+
+  <div id="console" class="console">
+    <div class="console-input">
+      <input type="text" id="cmdInput" placeholder="Type /help for commands..." autocomplete="off">
+      <button id="cmdSend">⏎ EXEC</button>
+    </div>
+    <div id="consoleOutput" class="console-output">> Welcome, Pilot. Type /help to begin your odyssey.</div>
+  </div>
+
+  <div class="control-panel">
+    <button class="ctrl-btn" data-action="forward">▲ FWD</button>
+    <button class="ctrl-btn" data-action="back">▼ BACK</button>
+    <button class="ctrl-btn" data-action="left">◀ LEFT</button>
+    <button class="ctrl-btn" data-action="right">▶ RIGHT</button>
+    <button class="ctrl-btn" data-action="up">⬆ UP</button>
+    <button class="ctrl-btn" data-action="down">⬇ DOWN</button>
+    <button class="ctrl-btn" data-cmd="scan">🔍 SCAN</button>
+    <button class="ctrl-btn" data-cmd="dig">⛏️ DIG</button>
+    <button class="ctrl-btn" data-cmd="summon">🦖 SUMMON</button>
+    <button class="ctrl-btn" data-cmd="land">🪂 LAND</button>
+    <button class="ctrl-btn" id="toggleConsoleBtn">💻 CONSOLE</button>
+  </div>
+
+  <div class="panel-right">
+    <div style="color:#ffaa44; margin-bottom:8px;">🌙 CELESTIAL BODIES</div>
+    <div id="celestialList"></div>
+    <div style="color:#ffaa44; margin:12px 0 8px;">🔍 SCAN RESULTS</div>
+    <div id="artifactList" class="artifact-list">No scan yet. Use /scan</div>
+  </div>
+
+  <div class="inventory">
+    <div style="color:#ffaa44;">🎒 INVENTORY (<span id="invCount">0</span>/28)</div>
+    <div id="inventoryItems">Empty</div>
+  </div>
+
+  <div class="physics-note">🌍 PHYSICS: NORMAL GRAVITY</div>
+</div>
+
+<script type="importmap">
+  { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+// ========== DOM ELEMENTS ==========
+const landing = document.getElementById('landing');
+const enterGame = document.getElementById('enterGame');
+const canvas = document.getElementById('game-canvas');
+const speedSpan = document.getElementById('speed');
+const locationSpan = document.getElementById('location');
+const artifactsSpan = document.getElementById('artifactsCollected');
+const realmSpan = document.getElementById('realm');
+const realmIndicatorSpan = document.querySelector('.realm-indicator span');
+const physicsNoteSpan = document.querySelector('.physics-note');
+const consoleDiv = document.getElementById('console');
+const cmdInput = document.getElementById('cmdInput');
+const cmdSend = document.getElementById('cmdSend');
+const toggleConsoleBtn = document.getElementById('toggleConsoleBtn');
+const celestialListDiv = document.getElementById('celestialList');
+const artifactListDiv = document.getElementById('artifactList');
+const inventoryItemsDiv = document.getElementById('inventoryItems');
+const invCountSpan = document.getElementById('invCount');
+
+// ========== THREE.JS SETUP ==========
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x010a1a);
+scene.fog = new THREE.FogExp2(0x010a1a, 0.0002);
+
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
+camera.position.set(0, 4, 14);
+
+// ========== LIGHTS ==========
+const ambientLight = new THREE.AmbientLight(0x222222);
+scene.add(ambientLight);
+
+// Three Suns
+const suns = [
+  { name: 'Alpha Sol', color: 0xff6633, intensity: 1.2, pos: [28, 18, 20] },
+  { name: 'Beta Sol', color: 0xffccaa, intensity: 0.8, pos: [-22, 16, 25] },
+  { name: 'Gamma Sol', color: 0x88aaff, intensity: 0.9, pos: [18, -12, -28] }
+];
+suns.forEach(sun => {
+  const light = new THREE.PointLight(sun.color, sun.intensity, 120);
+  light.position.set(sun.pos[0], sun.pos[1], sun.pos[2]);
+  scene.add(light);
+  
+  const mesh = new THREE.Mesh(new THREE.SphereGeometry(1.0, 32, 32), new THREE.MeshStandardMaterial({ color: sun.color, emissive: sun.color, emissiveIntensity: 0.5 }));
+  mesh.position.set(sun.pos[0], sun.pos[1], sun.pos[2]);
+  scene.add(mesh);
+});
+
+// ========== STARFIELD ==========
+const starGeo = new THREE.BufferGeometry();
+const starPositions = [];
+for (let i = 0; i < 6000; i++) {
+  starPositions.push((Math.random() - 0.5) * 800);
+  starPositions.push((Math.random() - 0.5) * 500);
+  starPositions.push((Math.random() - 0.5) * 400 - 100);
+}
+starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPositions), 3));
+const starField = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.08 }));
+scene.add(starField);
+
+// ========== PLANET TWIN EARTH ==========
+const planetTex = document.createElement('canvas');
+planetTex.width = 1024;
+planetTex.height = 512;
+const pctx = planetTex.getContext('2d');
+pctx.fillStyle = '#2d6a2d';
+pctx.fillRect(0, 0, 1024, 512);
+pctx.fillStyle = '#4a9c4a';
+pctx.beginPath();
+pctx.ellipse(200, 200, 90, 70, 0, 0, Math.PI * 2);
+pctx.fill();
+pctx.beginPath();
+pctx.ellipse(600, 150, 110, 80, 0, 0, Math.PI * 2);
+pctx.fill();
+pctx.fillStyle = '#c4b86a';
+pctx.beginPath();
+pctx.ellipse(500, 280, 70, 55, 0, 0, Math.PI * 2);
+pctx.fill();
+
+const planet = new THREE.Mesh(new THREE.SphereGeometry(5, 128, 128), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(planetTex), roughness: 0.5 }));
+planet.position.set(0, 0, 0);
+scene.add(planet);
+
+const cloudsTex = document.createElement('canvas');
+cloudsTex.width = 1024;
+cloudsTex.height = 512;
+const cctx = cloudsTex.getContext('2d');
+for (let i = 0; i < 400; i++) {
+  cctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.3})`;
+  cctx.beginPath();
+  cctx.ellipse(Math.random() * 1024, Math.random() * 512, Math.random() * 40 + 10, Math.random() * 25 + 8, 0, 0, Math.PI * 2);
+  cctx.fill();
+}
+const clouds = new THREE.Mesh(new THREE.SphereGeometry(5.08, 128, 128), new THREE.MeshPhongMaterial({ map: new THREE.CanvasTexture(cloudsTex), transparent: true, opacity: 0.25 }));
+scene.add(clouds);
+
+// ========== MOONS ==========
+const moonsData = [
+  { name: '🌙 Luna-1: Ancient Ruins', x: 12, z: 5, y: 0.8, color: 0xccaa88, size: 0.65, artifacts: ['💎 Ancient Crystal', '🏛️ Ruin Fragment', '📜 Scroll of Wisdom', '🔑 Portal Key'] },
+  { name: '🌙 Luna-2: Crystal Caves', x: -9, z: 10, y: -0.2, color: 0x88aacc, size: 0.55, artifacts: ['🔮 Mana Crystal', '⚡ Energy Core', '💠 Prism Shard', '🌀 Void Essence'] },
+  { name: '🌙 Luna-3: Frozen Core', x: 6, z: -13, y: 1.0, color: 0x4488cc, size: 0.60, artifacts: ['❄️ Frozen Heart', '🔷 Ice Diamond', '✨ Stardust', '🌊 Tear of Ocean'] },
+  { name: '🌙 Luna-4: Dark Orbit', x: 30, z: -22, y: 2.5, color: 0x553366, size: 0.70, artifacts: ['🌑 Dark Matter', '🪦 Shadow Stone', '👁️ Eye of Abyss', '💀 Necro Core'] }
+];
+const moons = [];
+moonsData.forEach((data, idx) => {
+  const moonTex = document.createElement('canvas');
+  moonTex.width = 512;
+  moonTex.height = 512;
+  const mctx = moonTex.getContext('2d');
+  mctx.fillStyle = `#${data.color.toString(16)}`;
+  mctx.fillRect(0, 0, 512, 512);
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(data.size, 64, 64), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(moonTex), roughness: 0.8 }));
+  moon.position.set(data.x, data.y, data.z);
+  scene.add(moon);
+  moons.push({ ...data, idx, mesh: moon });
+});
+
+// ========== UNDERWATER BUBBLES ==========
+const underwaterBubbles = [];
+for (let i = 0; i < 150; i++) {
+  const bubble = new THREE.Mesh(new THREE.SphereGeometry(0.04 + Math.random() * 0.06, 6, 6), new THREE.MeshStandardMaterial({ color: 0x88ccff, emissive: 0x2266aa, transparent: true, opacity: 0.6 }));
+  bubble.visible = false;
+  scene.add(bubble);
+  underwaterBubbles.push(bubble);
+}
+
+// ========== DUNGEON TORCHES ==========
+const dungeonTorches = [];
+for (let i = 0; i < 40; i++) {
+  const torch = new THREE.PointLight(0xff6600, 0.5, 10);
+  torch.position.set((Math.random() - 0.5) * 40, Math.random() * 8 - 2, (Math.random() - 0.5) * 40);
+  torch.visible = false;
+  scene.add(torch);
+  dungeonTorches.push(torch);
+}
+
+// ========== SHIP ==========
+const shipGroup = new THREE.Group();
+const bodyMat = new THREE.MeshStandardMaterial({ color: 0x33ff99, metalness: 0.85, emissive: 0x116633 });
+const shipBody = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.7, 1.2, 8), bodyMat);
+shipGroup.add(shipBody);
+const wings = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.08, 0.4), bodyMat);
+wings.position.set(0, 0.2, 0);
+shipGroup.add(wings);
+const cockpit = new THREE.Mesh(new THREE.SphereGeometry(0.35, 24, 24), new THREE.MeshStandardMaterial({ color: 0x88ccff, metalness: 0.3, transparent: true, opacity: 0.7 }));
+cockpit.position.set(0, 0.25, 0.4);
+shipGroup.add(cockpit);
+const engineLight = new THREE.PointLight(0x00ffaa, 1, 15);
+engineLight.position.set(0, 0, -0.7);
+shipGroup.add(engineLight);
+const pilot = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.35, 8), new THREE.MeshStandardMaterial({ color: 0xffaa88 }));
+pilot.position.set(0, 0.2, 0.35);
+const pilotHead = new THREE.Mesh(new THREE.SphereGeometry(0.16, 24, 24), new THREE.MeshStandardMaterial({ color: 0xffccaa }));
+pilotHead.position.set(0, 0.45, 0.35);
+shipGroup.add(pilot);
+shipGroup.add(pilotHead);
+scene.add(shipGroup);
+
+// ========== PTERODACTYL ==========
+const pteroGroup = new THREE.Group();
+const pteroBody = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.5, 0.9, 6), new THREE.MeshStandardMaterial({ color: 0x8B5A2B }));
+pteroGroup.add(pteroBody);
+const pteroHead = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.5, 6), new THREE.MeshStandardMaterial({ color: 0x8B5A2B }));
+pteroHead.position.set(0, 0.3, 0.5);
+pteroGroup.add(pteroHead);
+const leftWing = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.05, 0.35), new THREE.MeshStandardMaterial({ color: 0x6B3A1B }));
+leftWing.position.set(-0.6, 0.1, 0);
+const rightWing = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.05, 0.35), new THREE.MeshStandardMaterial({ color: 0x6B3A1B }));
+rightWing.position.set(0.6, 0.1, 0);
+pteroGroup.add(leftWing);
+pteroGroup.add(rightWing);
+const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), new THREE.MeshStandardMaterial({ color: 0xff3333, emissive: 0x440000 }));
+eyeL.position.set(-0.12, 0.4, 0.68);
+const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), new THREE.MeshStandardMaterial({ color: 0xff3333, emissive: 0x440000 }));
+eyeR.position.set(0.12, 0.4, 0.68);
+pteroGroup.add(eyeL);
+pteroGroup.add(eyeR);
+pteroGroup.position.set(5, 2, 8);
+scene.add(pteroGroup);
+
+// ========== GAME STATE ==========
+let shipX = 0, shipZ = 6, shipY = 1.5, shipRotation = 0, shipSpeed = 0;
+let currentLocation = 'space';
+let currentRealm = 'space';
+let currentMoonIdx = -1;
+let artifactsCollected = JSON.parse(localStorage.getItem('wellamatores_artifacts') || '[]');
+let pteroTamed = localStorage.getItem('wellamatores_ptero') === 'true';
+let cameraDistance = 10;
+
+const locationArtifacts = {
+  earth: ['🌾 Terra Seed', '💧 Spring of Life', '🔥 Ember of Creation'],
+  space: ['✨ Cosmic Dust', '🌠 Shooting Star Fragment', '🕳️ Singularity Shard'],
+  underwater: ['🐚 Ancient Pearl', '🌊 Trident Shard', '🧜 Coral Crown'],
+  dungeon: ['🗝️ Crypt Key', '⚰️ Ancient Seal', '👑 Crown of Wellamatores']
+};
+
+let currentArtifacts = [...locationArtifacts.space];
+
+function updateUI() {
+  artifactsSpan.innerText = artifactsCollected.length;
+  invCountSpan.innerText = artifactsCollected.length;
+  inventoryItemsDiv.innerHTML = artifactsCollected.length ? artifactsCollected.map(a => `<div class="artifact-item">${a}</div>`).join('') : 'Empty';
+  localStorage.setItem('wellamatores_artifacts', JSON.stringify(artifactsCollected));
+  localStorage.setItem('wellamatores_ptero', pteroTamed);
+}
+
+function logToConsole(msg) {
+  const output = document.getElementById('consoleOutput');
+  output.innerHTML += `\n> ${msg}`;
+  output.scrollTop = output.scrollHeight;
+}
+
+function showAchievement(msg) {
+  const div = document.createElement('div');
+  div.className = 'achievement';
+  div.innerText = `🏆 ${msg} 🏆`;
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 3000);
+}
+
+function applyRealmVisuals(realm) {
+  if (realm === 'space') {
+    scene.background.setHex(0x010a1a);
+    scene.fog.density = 0.0002;
+    starField.visible = true;
+    clouds.visible = false;
+    planet.visible = true;
+    physicsNoteSpan.innerText = '🚀 ZERO GRAVITY | VACUUM';
+    underwaterBubbles.forEach(b => b.visible = false);
+    dungeonTorches.forEach(t => t.visible = false);
+  } else if (realm === 'planet') {
+    scene.background.setHex(0x87CEEB);
+    scene.fog.density = 0.0015;
+    starField.visible = true;
+    clouds.visible = true;
+    planet.visible = true;
+    physicsNoteSpan.innerText = '🌍 NORMAL GRAVITY | BREATHABLE';
+    underwaterBubbles.forEach(b => b.visible = false);
+    dungeonTorches.forEach(t => t.visible = false);
+  } else if (realm === 'moon') {
+    scene.background.setHex(0x0a0a1a);
+    scene.fog.density = 0.0008;
+    starField.visible = true;
+    clouds.visible = false;
+    planet.visible = true;
+    physicsNoteSpan.innerText = '🌙 LOW GRAVITY | NO ATMOSPHERE';
+    underwaterBubbles.forEach(b => b.visible = false);
+    dungeonTorches.forEach(t => t.visible = false);
+  } else if (realm === 'underwater') {
+    scene.background.setHex(0x0a3355);
+    scene.fog.density = 0.025;
+    starField.visible = false;
+    clouds.visible = false;
+    planet.visible = false;
+    physicsNoteSpan.innerText = '💧 BUOYANCY | HIGH PRESSURE';
+    underwaterBubbles.forEach(b => b.visible = true);
+    dungeonTorches.forEach(t => t.visible = false);
+  } else if (realm === 'underground') {
+    scene.background.setHex(0x110011);
+    scene.fog.density = 0.018;
+    starField.visible = false;
+    clouds.visible = false;
+    planet.visible = false;
+    physicsNoteSpan.innerText = '🕯️ LOW LIGHT | ECHOING';
+    underwaterBubbles.forEach(b => b.visible = false);
+    dungeonTorches.forEach(t => t.visible = true);
+  }
+}
+
+function teleportToMoon(idx) {
+  const moon = moons[idx];
+  currentMoonIdx = idx;
+  currentLocation = moon.name;
+  currentRealm = 'moon';
+  shipX = moon.x;
+  shipZ = moon.z;
+  shipY = moon.y + 1.2;
+  shipGroup.position.set(shipX, shipY, shipZ);
+  currentArtifacts = [...moon.artifacts];
+  locationSpan.innerText = moon.name;
+  realmSpan.innerText = 'MOON';
+  realmIndicatorSpan.innerText = moon.name;
+  applyRealmVisuals('moon');
+  logToConsole(`🪐 Arrived at ${moon.name}`);
+  scanLocation();
+}
+
+function teleportTo(locationKey) {
+  const locData = {
+    earth: { name: '🌍 Twin Earth', realm: 'planet', pos: { x: 0, z: 6, y: 1.5 }, artifacts: locationArtifacts.earth },
+    space: { name: '🌌 Deep Space', realm: 'space', pos: { x: 35, z: 35, y: 18 }, artifacts: locationArtifacts.space },
+    underwater: { name: '🌊 Abyssal Trench', realm: 'underwater', pos: { x: 0, z: 0, y: -2 }, artifacts: locationArtifacts.underwater },
+    dungeon: { name: '🕳️ Ancient Crypt', realm: 'underground', pos: { x: 0, z: 0, y: -3 }, artifacts: locationArtifacts.dungeon }
+  };
+  const data = locData[locationKey];
+  currentLocation = data.name;
+  currentRealm = data.realm;
+  currentMoonIdx = -1;
+  shipX = data.pos.x;
+  shipZ = data.pos.z;
+  shipY = data.pos.y;
+  shipGroup.position.set(shipX, shipY, shipZ);
+  currentArtifacts = [...data.artifacts];
+  locationSpan.innerText = data.name;
+  realmSpan.innerText = data.realm.toUpperCase();
+  realmIndicatorSpan.innerText = data.name;
+  applyRealmVisuals(data.realm);
+  logToConsole(`🪄 Teleported to ${data.name}`);
+  scanLocation();
+}
+
+function scanLocation() {
+  const available = currentArtifacts.filter(a => !artifactsCollected.includes(a));
+  if (available.length === 0) {
+    artifactListDiv.innerHTML = '<div style="color:#669966;">✨ No more artifacts here! ✨</div>';
+    logToConsole(`⚠️ No artifacts left in ${currentLocation}`);
+  } else {
+    artifactListDiv.innerHTML = available.map(a => `<div class="artifact-item">🔍 ${a}</div>`).join('');
+    logToConsole(`🔍 Found ${available.length} artifacts in ${currentLocation}`);
+  }
+}
+
+function digArtifact() {
+  const available = currentArtifacts.filter(a => !artifactsCollected.includes(a));
+  if (available.length === 0) {
+    logToConsole('❌ No artifacts to dig here! Scan first.');
+    return;
+  }
+  const artifact = available[0];
+  artifactsCollected.push(artifact);
+  updateUI();
+  showAchievement(`Found: ${artifact}`);
+  logToConsole(`✨ Collected: ${artifact} (${artifactsCollected.length}/28)`);
+  scanLocation();
+  if (artifactsCollected.length === 28) showAchievement('MASTER COLLECTOR · ALL 28 ARTIFACTS!');
+}
+
+function summonPtero() {
+  if (!pteroTamed) {
+    pteroTamed = true;
+    localStorage.setItem('wellamatores_ptero', 'true');
+    logToConsole('🦖 Pterodactyl tamed! It will follow your ship.');
+    showAchievement('Dino Tamer');
+  } else {
+    logToConsole('Pterodactyl is already your companion!');
+  }
+}
+
+function landShip() {
+  if (currentRealm === 'space') {
+    teleportTo('earth');
+  } else {
+    logToConsole('🪂 Landing on surface...');
+    shipY = 0.3;
+    setTimeout(() => scanLocation(), 500);
+  }
+}
+
+function moveForward() { shipSpeed = Math.min(25, shipSpeed + 2); }
+function moveBack() { shipSpeed = Math.max(-12, shipSpeed - 2); }
+function turnLeft() { shipRotation += 0.1; }
+function turnRight() { shipRotation -= 0.1; }
+function moveUp() { shipY = Math.min(20, shipY + 0.5); }
+function moveDown() { shipY = Math.max(0.3, shipY - 0.5); }
+
+// ========== EVENT LISTENERS ==========
+enterGame.addEventListener('click', () => {
+  landing.classList.add('hidden');
+  setTimeout(() => {
+    landing.style.display = 'none';
+    consoleDiv.style.display = 'block';
+    updateUI();
+    applyRealmVisuals('space');
+    teleportTo('space');
+    animate();
+  }, 500);
+});
+
+cmdSend.addEventListener('click', () => {
+  const cmd = cmdInput.value.trim().toLowerCase();
+  if (cmd === '/moon1') teleportToMoon(0);
+  else if (cmd === '/moon2') teleportToMoon(1);
+  else if (cmd === '/moon3') teleportToMoon(2);
+  else if (cmd === '/moon4') teleportToMoon(3);
+  else if (cmd === '/earth') teleportTo('earth');
+  else if (cmd === '/space') teleportTo('space');
+  else if (cmd === '/underwater') teleportTo('underwater');
+  else if (cmd === '/dungeon') teleportTo('dungeon');
+  else if (cmd === '/scan') scanLocation();
+  else if (cmd === '/dig') digArtifact();
+  else if (cmd === '/summon') summonPtero();
+  else if (cmd === '/land') landShip();
+  else if (cmd === '/help') logToConsole('Commands: /moon1-4, /earth, /space, /underwater, /dungeon, /scan, /dig, /summon, /land');
+  else logToConsole(`Unknown: ${cmd}. Type /help`);
+  cmdInput.value = '';
+});
+
+toggleConsoleBtn.addEventListener('click', () => {
+  consoleDiv.style.display = consoleDiv.style.display === 'none' ? 'block' : 'none';
+});
+
+document.querySelectorAll('.ctrl-btn[data-action]').forEach(btn => {
+  btn.addEventListener('mousedown', (e) => {
+    const action = btn.dataset.action;
+    if (action === 'forward') moveForward();
+    if (action === 'back') moveBack();
+    if (action === 'left') turnLeft();
+    if (action === 'right') turnRight();
+    if (action === 'up') moveUp();
+    if (action === 'down') moveDown();
+  });
+});
+
+document.querySelectorAll('.ctrl-btn[data-cmd]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const fakeEvent = { target: { value: '/' + btn.dataset.cmd } };
+    cmdInput.value = '/' + btn.dataset.cmd;
+    cmdSend.click();
+  });
+});
+
+window.addEventListener('keydown', (e) => {
+  const k = e.key.toLowerCase();
+  if (k === 'arrowup' || k === 'w') moveForward();
+  if (k === 'arrowdown' || k === 's') moveBack();
+  if (k === 'arrowleft' || k === 'a') turnLeft();
+  if (k === 'arrowright' || k === 'd') turnRight();
+  if (k === 'q') moveUp();
+  if (k === 'e') moveDown();
+  if (k === '`') consoleDiv.style.display = consoleDiv.style.display === 'none' ? 'block' : 'none';
+});
+
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  cameraDistance = Math.max(5, Math.min(20, cameraDistance + (e.deltaY > 0 ? 0.5 : -0.5)));
+});
+
+// Populate celestial list
+moons.forEach(moon => {
+  const btn = document.createElement('button');
+  btn.textContent = moon.name;
+  btn.style.background = '#1a3a2a';
+  btn.style.color = '#ffaa44';
+  btn.style.border = '1px solid #ffaa44';
+  btn.style.borderRadius = '8px';
+  btn.style.padding = '4px 8px';
+  btn.style.margin = '2px';
+  btn.style.cursor = 'pointer';
+  btn.style.fontSize = '8px';
+  btn.onclick = () => teleportToMoon(moon.idx);
+  celestialListDiv.appendChild(btn);
+});
+
+// ========== ANIMATION LOOP ==========
+let lastTime = performance.now();
+let wingFlap = 0;
+
+function animate() {
+  const now = performance.now();
+  let delta = Math.min(0.033, (now - lastTime) / 1000);
+  lastTime = now;
+
+  let gravity = 9.8;
+  if (currentRealm === 'space') gravity = 0;
+  else if (currentRealm === 'moon') gravity = 1.6;
+  else if (currentRealm === 'underwater') gravity = 2.5;
+  else gravity = 9.8;
+
+  shipX += Math.sin(shipRotation) * shipSpeed * delta;
+  shipZ += Math.cos(shipRotation) * shipSpeed * delta;
+  shipSpeed *= 0.98;
+
+  shipGroup.position.set(shipX, shipY, shipZ);
+  shipGroup.rotation.y = shipRotation;
+  shipGroup.rotation.x = Math.sin(Date.now() * 0.01) * 0.05 + (shipSpeed / 30);
+  engineLight.intensity = 0.5 + Math.sin(Date.now() * 0.02) * 0.4 + (shipSpeed / 20);
+  speedSpan.innerText = Math.floor(Math.abs(shipSpeed * 12));
+
+  // Pterodactyl follow
+  if (pteroTamed) {
+    const dx = shipX - pteroGroup.position.x;
+    const dz = shipZ - pteroGroup.position.z;
+    pteroGroup.position.x += dx * 2.5 * delta;
+    pteroGroup.position.z += dz * 2.5 * delta;
+    pteroGroup.position.y = shipY + 1.0;
+    eyeL.material.color.setHex(0x00ff00);
+    eyeR.material.color.setHex(0x00ff00);
+  } else {
+    pteroGroup.position.x += Math.sin(Date.now() * 0.5) * 0.3 * delta;
+    pteroGroup.position.z += Math.cos(Date.now() * 0.3) * 0.3 * delta;
+    pteroGroup.position.y = 2 + Math.sin(Date.now() * 1.5) * 0.5;
+    eyeL.material.color.setHex(0xff3333);
+    eyeR.material.color.setHex(0xff3333);
+  }
+  wingFlap += delta * 8;
+  const wingAngle = Math.sin(wingFlap) * 0.8;
+  leftWing.rotation.z = wingAngle;
+  rightWing.rotation.z = -wingAngle;
+  pteroGroup.rotation.y = Math.atan2(shipX - pteroGroup.position.x, shipZ - pteroGroup.position.z);
+
+  // Underwater bubbles
+  if (currentRealm === 'underwater') {
+    underwaterBubbles.forEach((b, i) => {
+      b.visible = true;
+      b.position.y += 0.03;
+      if (b.position.y > 5) b.position.y = -5;
+      b.position.x = shipX + Math.sin(Date.now() * 0.003 + i) * 2;
+      b.position.z = shipZ + Math.cos(Date.now() * 0.003 + i * 0.7) * 2;
+    });
+  } else {
+    underwaterBubbles.forEach(b => b.visible = false);
+  }
+
+  // Dungeon torches flicker
+  if (currentRealm === 'underground') {
+    dungeonTorches.forEach((t, i) => {
+      t.visible = true;
+      t.intensity = 0.3 + Math.sin(Date.now() * 0.008 * i) * 0.2;
+    });
+  } else {
+    dungeonTorches.forEach(t => t.visible = false);
+  }
+
+  // Camera follow
+  const camX = shipX - Math.sin(shipRotation) * (cameraDistance / 1.5);
+  const camZ = shipZ - Math.cos(shipRotation) * (cameraDistance / 1.5);
+  camera.position.x += (camX - camera.position.x) * 0.1;
+  camera.position.z += (camZ - camera.position.z) * 0.1;
+  camera.position.y += (shipY + 2.2 - camera.position.y) * 0.1;
+  camera.lookAt(shipX, shipY + 0.8, shipZ);
+
+  clouds.rotation.y += 0.0008;
+  starField.rotation.y += 0.0002;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', () => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+});
+
+// Initial setup
+updateUI();
+applyRealmVisuals('space');
+</script>
+</body>
+</html>
