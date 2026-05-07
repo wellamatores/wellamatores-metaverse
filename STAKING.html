@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ENEIDA · HYBRID STAKING | Wellamatores World</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #030303;
+      background-image: radial-gradient(circle at 25% 40%, rgba(245, 158, 11, 0.08) 0%, rgba(0,0,0,0) 55%);
+      color: #e2e8ff;
+    }
+    .glass-panel {
+      background: rgba(10, 10, 12, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 28px;
+    }
+    .staking-card {
+      background: rgba(20, 20, 24, 0.6);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      transition: all 0.2s;
+      border-radius: 20px;
+    }
+    .staking-card:hover {
+      border-color: rgba(245, 158, 11, 0.6);
+      background: rgba(30, 30, 36, 0.8);
+      transform: translateY(-3px);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .cyber-input {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 14px;
+      padding: 8px 12px;
+      color: white;
+    }
+    .cyber-input:focus {
+      outline: none;
+      border-color: #f59e0b;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+    }
+    .live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulseDot 1.2s infinite;
+    }
+    @keyframes pulseDot {
+      0%,100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .notification-fly {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1300;
+      width: 320px;
+      pointer-events: none;
+    }
+    .notif {
+      background: rgba(10, 10, 12, 0.95);
+      backdrop-filter: blur(12px);
+      border-left: 4px solid #f59e0b;
+      padding: 12px;
+      border-radius: 16px;
+      margin-top: 8px;
+      font-size: 12px;
+      animation: slideRight 0.25s ease;
+      color: #fef3c7;
+      font-family: monospace;
+    }
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(60px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .progress-bar {
+      height: 8px;
+      background: rgba(245,158,11,0.2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      transition: width 0.5s;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: rgba(10,10,12,0.98);
+      border: 1px solid #f59e0b;
+      border-radius: 28px;
+      max-width: 500px;
+      width: 90%;
+      padding: 24px;
+    }
+    .apy-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .pool-stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(245,158,11,0.1);
+    }
+    .compound-toggle {
+      width: 44px;
+      height: 24px;
+      background: rgba(50,50,60,0.6);
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.2s;
+      position: relative;
+    }
+    .compound-toggle.active {
+      background: #f59e0b;
+    }
+    .compound-toggle div {
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: 0.2s;
+    }
+    .compound-toggle.active div {
+      left: 22px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-black/40 backdrop-blur-md border-b border-amber-500/30 px-4 md:px-6 py-3 flex flex-wrap justify-between items-center gap-2">
+  <div class="flex items-center gap-3">
+    <div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+    <span class="font-bold tracking-tighter text-xl italic bg-gradient-to-r from-amber-400 to-white bg-clip-text text-transparent">ENEIDA<span class="text-amber-400">⚡</span>EXO</span>
+    <span class="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30 hidden sm:inline">Hybrid Staking</span>
+  </div>
+  <div class="flex gap-2 text-xs font-mono">
+    <div class="flex items-center gap-2 bg-amber-500/10 px-3 py-1.5 rounded-full border border-amber-500/20">
+      <span class="text-amber-400">⭐</span>
+      <span id="userBpDisplay" class="font-bold">5,000 BP</span>
+    </div>
+    <div class="flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+      <span class="text-emerald-400">💎</span>
+      <span id="userExoDisplay" class="font-bold">0.00 EXO</span>
+    </div>
+    <div class="flex items-center gap-2 bg-purple-500/10 px-3 py-1.5 rounded-full border border-purple-500/20">
+      <span class="text-purple-400">💰</span>
+      <span id="userUsdtDisplay" class="font-bold">$0.00</span>
+    </div>
+  </div>
+</nav>
+
+<main class="relative z-10 pt-24 pb-12 px-4 max-w-7xl mx-auto">
+  
+  <!-- Hero -->
+  <div class="glass-panel p-6 mb-6 text-center">
+    <div class="inline-flex items-center gap-2 bg-amber-500/20 rounded-full px-4 py-1.5 border border-amber-400/40 mb-4">
+      <span class="live-dot"></span>
+      <span class="text-[11px] font-mono text-amber-300">HYBRID STAKING · REAL + GAME REWARDS</span>
+    </div>
+    <h1 class="text-3xl md:text-5xl font-black tracking-tighter gradient-text">Staking</h1>
+    <p class="text-stone-300 text-sm max-w-2xl mx-auto mt-2">Заморозь активы и получай пассивный доход до 250% APR</p>
+    
+    <div class="flex flex-wrap justify-center gap-6 mt-6">
+      <div class="feature-card rounded-2xl px-4 py-2 text-center">
+        <div class="text-xs text-stone-400">💎 Всего застейкано</div>
+        <div class="text-2xl font-mono font-bold text-amber-300" id="totalStaked">$0</div>
+      </div>
+      <div class="feature-card rounded-2xl px-4 py-2 text-center">
+        <div class="text-xs text-stone-400">👥 Активных стейкеров</div>
+        <div class="text-2xl font-mono font-bold text-amber-300" id="totalStakers">0</div>
+      </div>
+      <div class="feature-card rounded-2xl px-4 py-2 text-center">
+        <div class="text-xs text-stone-400">💰 Выплачено наград</div>
+        <div class="text-2xl font-mono font-bold text-amber-300" id="totalRewards">$0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Staking Pools -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    
+    <!-- Pool 1: EXO/USDT LP -->
+    <div class="glass-panel p-5">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <div class="text-2xl mb-1">💧</div>
+          <h3 class="font-mono text-amber-400 text-lg">EXO/USDT LP Pool</h3>
+          <div class="text-xs text-stone-400">DEX Liquidity Provider токены</div>
+        </div>
+        <div class="text-right">
+          <div class="apy-badge text-2xl">184% APR</div>
+          <div class="text-[10px] text-stone-400">~0.5% в день</div>
+        </div>
+      </div>
+      
+      <div class="space-y-3">
+        <div class="pool-stat">
+          <span class="text-stone-400">TVL:</span>
+          <span class="font-mono text-amber-300" id="pool1Tvl">$1,245,000</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Ваш стейк:</span>
+          <span class="font-mono text-amber-300" id="pool1YourStake">$0.00</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Накоплено наград:</span>
+          <span class="font-mono text-green-400" id="pool1Pending">0.0000 EXO</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Комиссии LP:</span>
+          <span class="font-mono text-purple-400" id="pool1Fees">$0.00</span>
+        </div>
+      </div>
+      
+      <div class="mt-4 flex gap-2">
+        <input type="number" id="pool1Amount" placeholder="Amount $" class="cyber-input flex-1 text-sm">
+        <button onclick="stake('pool1')" class="bg-emerald-600/40 hover:bg-emerald-500/60 px-4 py-2 rounded-xl text-sm font-bold transition">Stake</button>
+        <button onclick="unstake('pool1')" class="bg-rose-600/40 hover:bg-rose-500/60 px-4 py-2 rounded-xl text-sm font-bold transition">Unstake</button>
+      </div>
+      
+      <div class="mt-3 text-[10px] text-stone-400 flex justify-between">
+        <span>🔒 Lock: 7 дней</span>
+        <span>⚡ Награды каждые 6 часов</span>
+        <span>🛡️ Страховой фонд: 5%</span>
+      </div>
+    </div>
+
+    <!-- Pool 2: BP Staking -->
+    <div class="glass-panel p-5">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <div class="text-2xl mb-1">⭐</div>
+          <h3 class="font-mono text-amber-400 text-lg">Blum Points Pool</h3>
+          <div class="text-xs text-stone-400">Игровая валюта → EXO + BP</div>
+        </div>
+        <div class="text-right">
+          <div class="apy-badge text-2xl">95% APR</div>
+          <div class="text-[10px] text-stone-400">~0.26% в день</div>
+        </div>
+      </div>
+      
+      <div class="space-y-3">
+        <div class="pool-stat">
+          <span class="text-stone-400">TVL:</span>
+          <span class="font-mono text-amber-300" id="pool2Tvl">850,000 BP</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Ваш стейк:</span>
+          <span class="font-mono text-amber-300" id="pool2YourStake">0 BP</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Накоплено наград:</span>
+          <span class="font-mono text-green-400" id="pool2Pending">0 BP / 0 EXO</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Уровень бонуса:</span>
+          <span class="font-mono text-purple-400" id="pool2Bonus">x1.0</span>
+        </div>
+      </div>
+      
+      <div class="mt-4 flex gap-2">
+        <input type="number" id="pool2Amount" placeholder="Amount BP" class="cyber-input flex-1 text-sm">
+        <button onclick="stake('pool2')" class="bg-emerald-600/40 hover:bg-emerald-500/60 px-4 py-2 rounded-xl text-sm font-bold transition">Stake</button>
+        <button onclick="unstake('pool2')" class="bg-rose-600/40 hover:bg-rose-500/60 px-4 py-2 rounded-xl text-sm font-bold transition">Unstake</button>
+      </div>
+      
+      <div class="mt-3 text-[10px] text-stone-400 flex justify-between">
+        <span>🔒 Lock: 3 дня</span>
+        <span>⚡ Награды каждый час</span>
+        <span>🎮 Буст опыта: +25%</span>
+      </div>
+    </div>
+
+    <!-- Pool 3: EXO Token Staking -->
+    <div class="glass-panel p-5">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <div class="text-2xl mb-1">💎</div>
+          <h3 class="font-mono text-amber-400 text-lg">EXO Token Staking</h3>
+          <div class="text-xs text-stone-400">Нативный токен экосистемы</div>
+        </div>
+        <div class="text-right">
+          <div class="apy-badge text-2xl">250% APR</div>
+          <div class="text-[10px] text-stone-400">~0.68% в день</div>
+        </div>
+      </div>
+      
+      <div class="space-y-3">
+        <div class="pool-stat">
+          <span class="text-stone-400">TVL:</span>
+          <span class="font-mono text-amber-300" id="pool3Tvl">2,450,000 EXO</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Ваш стейк:</span>
+          <span class="font-mono text-amber-300" id="pool3YourStake">0 EXO</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Накоплено наград:</span>
+          <span class="font-mono text-green-400" id="pool3Pending">0 EXO</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">VeEXO баланс:</span>
+          <span class="font-mono text-purple-400" id="pool3VeExo">0 veEXO</span>
+        </div>
+      </div>
+      
+      <div class="mt-4 flex gap-2">
+        <input type="number" id="pool3Amount" placeholder="Amount EXO" class="cyber-input flex-1 text-sm">
+        <button onclick="stake('pool3')" class="bg-emerald-600/40 hover:bg-emerald-500/60 px-4 py-2 rounded-xl text-sm font-bold transition">Stake</button>
+        <button onclick="unstake('pool3')" class="bg-rose-600/40 hover:bg-rose-500/60 px-4 py-2 rounded-xl text-sm font-bold transition">Unstake</button>
+      </div>
+      
+      <div class="mt-3 text-[10px] text-stone-400 flex justify-between">
+        <span>🔒 Lock: 30 дней (max boost)</span>
+        <span>⚡ Награды каждый день</span>
+        <span>🗳️ Право голоса в DAO</span>
+      </div>
+    </div>
+
+    <!-- Pool 4: USDT Real Staking -->
+    <div class="glass-panel p-5">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <div class="text-2xl mb-1">💰</div>
+          <h3 class="font-mono text-amber-400 text-lg">USDT Real Pool</h3>
+          <div class="text-xs text-stone-400">Реальная криптовалюта</div>
+        </div>
+        <div class="text-right">
+          <div class="apy-badge text-2xl">12% APR</div>
+          <div class="text-[10px] text-stone-400">стабильный доход</div>
+        </div>
+      </div>
+      
+      <div class="space-y-3">
+        <div class="pool-stat">
+          <span class="text-stone-400">TVL:</span>
+          <span class="font-mono text-amber-300" id="pool4Tvl">$3,200,000</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Ваш стейк:</span>
+          <span class="font-mono text-amber-300" id="pool4YourStake">$0.00</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Накоплено наград:</span>
+          <span class="font-mono text-green-400" id="pool4Pending">$0.00</span>
+        </div>
+        <div class="pool-stat">
+          <span class="text-stone-400">Страховка:</span>
+          <span class="font-mono text-purple-400" id="pool4Insurance">Защита 100%</span>
+        </div>
+      </div>
+      
+      <div class="mt-4 flex gap-2">
+        <input type="number" id="pool4Amount" placeholder="Amount $" class="cyber-input flex-1 text-sm">
+        <button onclick="stake('pool4')" class="bg-emerald-600/40 hover:bg-emerald-500/60 px-4 py-2 rounded-xl text-sm font-bold transition">Stake</button>
+        <button onclick="unstake('pool4')" class="bg-rose-600/40 hover:bg-rose-500/60 px-4 py-2 rounded-xl text-sm font-bold transition">Unstake</button>
+      </div>
+      
+      <div class="mt-3 text-[10px] text-stone-400 flex justify-between">
+        <span>🔒 Lock: 0 дней (on-demand)</span>
+        <span>⚡ Награды каждый день</span>
+        <span>🏦 Институциональный пул</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compounding Settings & Insurance -->
+  <div class="grid md:grid-cols-2 gap-6 mb-8">
+    <div class="glass-panel p-5">
+      <div class="flex items-center gap-2 border-b border-amber-500/30 pb-2 mb-4">
+        <span class="text-xl">🔄</span>
+        <span class="font-mono text-amber-400">Auto-Compounding</span>
+      </div>
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="text-sm">Автоматический реинвест наград</div>
+            <div class="text-[10px] text-stone-400">Награды автоматически добавляются к стейку</div>
+          </div>
+          <div id="compoundingToggle" class="compound-toggle" onclick="toggleCompounding()">
+            <div></div>
+          </div>
+        </div>
+        <div class="text-[10px] text-stone-400 bg-amber-500/10 p-2 rounded-lg">
+          💡 Автокомпаундинг увеличивает доход на 30-40% за счет сложного процента
+        </div>
+      </div>
+    </div>
+
+    <div class="glass-panel p-5">
+      <div class="flex items-center gap-2 border-b border-amber-500/30 pb-2 mb-4">
+        <span class="text-xl">🛡️</span>
+        <span class="font-mono text-amber-400">Insurance Fund</span>
+      </div>
+      <div class="space-y-3">
+        <div class="flex justify-between">
+          <span class="text-stone-400">Страховой фонд:</span>
+          <span class="font-mono text-amber-300" id="insuranceFund">$125,000</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="insuranceProgress" style="width: 62%"></div>
+        </div>
+        <div class="flex justify-between text-xs">
+          <span>Покрытие: 62% от TVL</span>
+          <span>Цель: 100%</span>
+        </div>
+        <div class="text-[10px] text-stone-400 mt-2">
+          🔒 Страховой фонд защищает стейкеров от нештатных ситуаций. 5% от комиссий направляется в фонд.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Staking Positions -->
+  <div class="glass-panel p-5">
+    <div class="flex items-center gap-2 border-b border-amber-500/30 pb-2 mb-4">
+      <span class="text-xl">📊</span>
+      <span class="font-mono text-amber-400">Мои позиции</span>
+      <button onclick="claimAllRewards()" class="ml-auto text-xs bg-green-600/40 hover:bg-green-500/60 px-3 py-1 rounded-full transition">💰 Claim All Rewards</button>
+    </div>
+    <div id="myPositions" class="space-y-3">
+      <!-- Dynamic positions -->
+    </div>
+  </div>
+
+  <!-- Rewards History -->
+  <div class="glass-panel p-5 mt-6">
+    <div class="flex items-center gap-2 border-b border-amber-500/30 pb-2 mb-4">
+      <span class="text-xl">📜</span>
+      <span class="font-mono text-amber-400">История наград</span>
+      <button onclick="exportHistory()" class="ml-auto text-xs bg-purple-600/40 hover:bg-purple-500/60 px-3 py-1 rounded-full transition">📎 Export CSV</button>
+    </div>
+    <div id="rewardsHistory" class="space-y-2 max-h-60 overflow-y-auto">
+      <!-- Dynamic history -->
+    </div>
+  </div>
+</main>
+
+<!-- Modal: Stake Info -->
+<div id="infoModal" class="modal">
+  <div class="modal-content">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-mono text-amber-400 text-xl" id="modalTitle">Информация</h3>
+      <button onclick="closeModal()" class="text-white text-2xl">&times;</button>
+    </div>
+    <div id="modalMessage" class="text-stone-300"></div>
+    <button onclick="closeModal()" class="w-full mt-4 bg-amber-600/40 hover:bg-amber-500/60 py-2 rounded-xl transition">Закрыть</button>
+  </div>
+</div>
+
+<div class="notification-fly" id="notifArea"></div>
+
+<script>
+  // ============ STAKING STATE ============
+  let user = {
+    bp: 5000,
+    exo: 0.0,
+    usdt: 0.0,
+    stakingPositions: {
+      pool1: { amount: 0, stakedAt: null, lastRewardClaim: null, pendingRewards: 0 },
+      pool2: { amount: 0, stakedAt: null, lastRewardClaim: null, pendingRewards: { bp: 0, exo: 0 } },
+      pool3: { amount: 0, stakedAt: null, lastRewardClaim: null, pendingRewards: 0 },
+      pool4: { amount: 0, stakedAt: null, lastRewardClaim: null, pendingRewards: 0 }
+    },
+    rewardsHistory: [],
+    autoCompound: false
+  };
+  
+  // Pool configurations
+  const pools = {
+    pool1: { name: "EXO/USDT LP", token: "LP", apr: 1.84, rewardToken: "exo", lockDays: 7, rewardInterval: 6 },
+    pool2: { name: "Blum Points", token: "bp", apr: 0.95, rewardToken: "both", lockDays: 3, rewardInterval: 1, bonusMultiplier: 1 },
+    pool3: { name: "EXO Token", token: "exo", apr: 2.5, rewardToken: "exo", lockDays: 30, rewardInterval: 24, veExo: 0 },
+    pool4: { name: "USDT Real", token: "usdt", apr: 0.12, rewardToken: "usdt", lockDays: 0, rewardInterval: 24 }
+  };
+  
+  let globalStats = {
+    totalStaked: 0,
+    totalStakers: 4,
+    totalRewards: 0,
+    poolTvl: { pool1: 1245000, pool2: 850000, pool3: 2450000, pool4: 3200000 },
+    insuranceFund: 125000
+  };
+  
+  // ============ HELPER FUNCTIONS ============
+  function addNotification(msg, color = '#f59e0b') {
+    const area = document.getElementById('notifArea');
+    const div = document.createElement('div');
+    div.className = 'notif';
+    div.style.borderLeftColor = color;
+    div.innerHTML = `🍄 ${msg}`;
+    area.appendChild(div);
+    if (area.children.length > 4) area.removeChild(area.children[0]);
+    setTimeout(() => div.remove(), 3500);
+  }
+  
+  function updateUI() {
+    // User balances
+    document.getElementById('userBpDisplay').innerHTML = `${Math.floor(user.bp)} BP`;
+    document.getElementById('userExoDisplay').innerHTML = `${user.exo.toFixed(4)} EXO`;
+    document.getElementById('userUsdtDisplay').innerHTML = `$${user.usdt.toFixed(2)}`;
+    
+    // Global stats
+    document.getElementById('totalStaked').innerHTML = `$${globalStats.totalStaked.toLocaleString()}`;
+    document.getElementById('totalStakers').innerHTML = globalStats.totalStakers;
+    document.getElementById('totalRewards').innerHTML = `$${globalStats.totalRewards.toLocaleString()}`;
+    
+    // Pool TVLs
+    document.getElementById('pool1Tvl').innerHTML = `$${globalStats.poolTvl.pool1.toLocaleString()}`;
+    document.getElementById('pool2Tvl').innerHTML = `${globalStats.poolTvl.pool2.toLocaleString()} BP`;
+    document.getElementById('pool3Tvl').innerHTML = `${globalStats.poolTvl.pool3.toLocaleString()} EXO`;
+    document.getElementById('pool4Tvl').innerHTML = `$${globalStats.poolTvl.pool4.toLocaleString()}`;
+    
+    // User stakes
+    document.getElementById('pool1YourStake').innerHTML = `$${user.stakingPositions.pool1.amount.toFixed(2)}`;
+    document.getElementById('pool2YourStake').innerHTML = `${Math.floor(user.stakingPositions.pool2.amount)} BP`;
+    document.getElementById('pool3YourStake').innerHTML = `${user.stakingPositions.pool3.amount.toFixed(4)} EXO`;
+    document.getElementById('pool4YourStake').innerHTML = `$${user.stakingPositions.pool4.amount.toFixed(2)}`;
+    
+    // Pending rewards
+    document.getElementById('pool1Pending').innerHTML = `${user.stakingPositions.pool1.pendingRewards.toFixed(4)} EXO`;
+    document.getElementById('pool2Pending').innerHTML = `${Math.floor(user.stakingPositions.pool2.pendingRewards.bp)} BP / ${user.stakingPositions.pool2.pendingRewards.exo?.toFixed(4) || 0} EXO`;
+    document.getElementById('pool3Pending').innerHTML = `${user.stakingPositions.pool3.pendingRewards.toFixed(4)} EXO`;
+    document.getElementById('pool4Pending').innerHTML = `$${user.stakingPositions.pool4.pendingRewards.toFixed(2)}`;
+    
+    // Pool bonuses
+    let bonus = user.stakingPositions.pool2.amount > 1000 ? 1.25 : (user.stakingPositions.pool2.amount > 500 ? 1.1 : 1.0);
+    document.getElementById('pool2Bonus').innerHTML = `x${bonus}`;
+    
+    let veExo = Math.floor(user.stakingPositions.pool3.amount * 0.1);
+    document.getElementById('pool3VeExo').innerHTML = `${veExo} veEXO`;
+    
+    document.getElementById('insuranceFund').innerHTML = `$${globalStats.insuranceFund.toLocaleString()}`;
+    let insurancePercent = (globalStats.insuranceFund / (globalStats.totalStaked || 1)) * 100;
+    document.getElementById('insuranceProgress').style.width = `${Math.min(insurancePercent, 100)}%`;
+    
+    // Compounding toggle UI
+    const toggle = document.getElementById('compoundingToggle');
+    if (user.autoCompound) {
+      toggle.classList.add('active');
+    } else {
+      toggle.classList.remove('active');
+    }
+    
+    // Render my positions
+    renderMyPositions();
+    
+    // Render history
+    renderRewardsHistory();
+  }
+  
+  function renderMyPositions() {
+    const container = document.getElementById('myPositions');
+    let html = '';
+    
+    for (let [poolId, position] of Object.entries(user.stakingPositions)) {
+      if (position.amount > 0) {
+        const pool = pools[poolId];
+        let pendingText = '';
+        if (poolId === 'pool1') pendingText = `${position.pendingRewards.toFixed(4)} EXO`;
+        else if (poolId === 'pool2') pendingText = `${Math.floor(position.pendingRewards.bp)} BP + ${position.pendingRewards.exo?.toFixed(4) || 0} EXO`;
+        else if (poolId === 'pool3') pendingText = `${position.pendingRewards.toFixed(4)} EXO`;
+        else pendingText = `$${position.pendingRewards.toFixed(2)}`;
+        
+        let amountText = '';
+        if (poolId === 'pool1') amountText = `$${position.amount.toFixed(2)}`;
+        else if (poolId === 'pool2') amountText = `${Math.floor(position.amount)} BP`;
+        else if (poolId === 'pool3') amountText = `${position.amount.toFixed(4)} EXO`;
+        else amountText = `$${position.amount.toFixed(2)}`;
+        
+        html += `
+          <div class="flex justify-between items-center p-3 staking-card rounded-xl">
+            <div>
+              <div class="font-bold">${pool.name}</div>
+              <div class="text-xs text-stone-400">Заморожено: ${amountText}</div>
+              <div class="text-[10px] text-green-400">Награды: ${pendingText}</div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="claimRewards('${poolId}')" class="text-xs bg-green-600/40 hover:bg-green-500/60 px-3 py-1 rounded-full transition">Claim</button>
+              <button onclick="unstake('${poolId}')" class="text-xs bg-rose-600/40 hover:bg-rose-500/60 px-3 py-1 rounded-full transition">Unstake</button>
+            </div>
+          </div>
+        `;
+      }
+    }
+    
+    if (html === '') {
+      html = '<div class="text-center text-stone-400 py-4">У вас нет активных стейков. Выберите пул выше!</div>';
+    }
+    
+    container.innerHTML = html;
+  }
+  
+  function renderRewardsHistory() {
+    const container = document.getElementById('rewardsHistory');
+    if (user.rewardsHistory.length === 0) {
+      container.innerHTML = '<div class="text-center text-stone-400 py-4">История наград пуста</div>';
+      return;
+    }
+    
+    container.innerHTML = user.rewardsHistory.slice(0, 20).map(entry => `
+      <div class="flex justify-between items-center p-2 feature-card rounded-lg text-xs">
+        <span>${entry.date}</span>
+        <span>${entry.pool}</span>
+        <span class="text-green-400">${entry.amount}</span>
+      </div>
+    `).join('');
+  }
+  
+  function calculateRewards(poolId, amount, hoursStaked) {
+    const pool = pools[poolId];
+    const yearlyApr = pool.apr;
+    const dailyRate = yearlyApr / 365;
+    const reward = amount * dailyRate * (hoursStaked / 24);
+    
+    if (poolId === 'pool2') {
+      // BP pool дает и BP, и EXO
+      return { bp: Math.floor(reward * 100), exo: reward * 0.05 };
+    }
+    return reward;
+  }
+  
+  function updatePendingRewards() {
+    const now = Date.now();
+    
+    for (let [poolId, position] of Object.entries(user.stakingPositions)) {
+      if (position.amount > 0 && position.stakedAt) {
+        const hoursStaked = (now - position.stakedAt) / (1000 * 60 * 60);
+        const pool = pools[poolId];
+        
+        if (poolId === 'pool2') {
+          const rewards = calculateRewards(poolId, position.amount, hoursStaked);
+          position.pendingRewards = {
+            bp: (position.pendingRewards.bp || 0) + rewards.bp,
+            exo: (position.pendingRewards.exo || 0) + rewards.exo
+          };
+        } else {
+          const reward = calculateRewards(poolId, position.amount, hoursStaked);
+          position.pendingRewards += reward;
+        }
+        position.stakedAt = now;
+        
+        // Auto-compound
+        if (user.autoCompound && (poolId === 'pool1' || poolId === 'pool3')) {
+          if (position.pendingRewards >= 0.01) {
+            claimAndCompound(poolId);
+          }
+        }
+      }
+    }
+    updateUI();
+  }
+  
+  function claimAndCompound(poolId) {
+    const position = user.stakingPositions[poolId];
+    if (poolId === 'pool2') {
+      if (position.pendingRewards.bp > 0 || position.pendingRewards.exo > 0) {
+        position.amount += position.pendingRewards.exo || 0;
+        user.bp += position.pendingRewards.bp;
+        user.rewardsHistory.unshift({
+          date: new Date().toLocaleString(),
+          pool: pools[poolId].name,
+          amount: `${Math.floor(position.pendingRewards.bp)} BP + ${position.pendingRewards.exo?.toFixed(4)} EXO (auto-compound)`
+        });
+        position.pendingRewards = { bp: 0, exo: 0 };
+        globalStats.totalRewards += (position.pendingRewards.exo || 0) * 0.034;
+        addNotification(`🔄 Автоматически реинвестировано в ${pools[poolId].name}`, '#88ff88');
+      }
+    } else {
+      if (position.pendingRewards > 0.001) {
+        position.amount += position.pendingRewards;
+        user.rewardsHistory.unshift({
+          date: new Date().toLocaleString(),
+          pool: pools[poolId].name,
+          amount: `${position.pendingRewards.toFixed(4)} ${pools[poolId].rewardToken.toUpperCase()} (auto-compound)`
+        });
+        globalStats.totalRewards += position.pendingRewards * 0.034;
+        position.pendingRewards = 0;
+        addNotification(`🔄 Автоматически реинвестировано в ${pools[poolId].name}`, '#88ff88');
+      }
+    }
+    updateUI();
+  }
+  
+  function stake(poolId) {
+    let amountInput = document.getElementById(`${poolId}Amount`);
+    let amount = parseFloat(amountInput.value);
+    
+    if (isNaN(amount) || amount <= 0) {
+      addNotification('Введите корректную сумму', '#ff8888');
+      return;
+    }
+    
+    const pool = pools[poolId];
+    let canStake = false;
+    
+    if (poolId === 'pool1') {
+      if (user.usdt >= amount) {
+        user.usdt -= amount;
+        canStake = true;
+      } else {
+        addNotification(`Недостаточно USDT! Доступно: $${user.usdt.toFixed(2)}`, '#ff8888');
+      }
+    } else if (poolId === 'pool2') {
+      if (user.bp >= amount) {
+        user.bp -= amount;
+        canStake = true;
+      } else {
+        addNotification(`Недостаточно BP! Доступно: ${Math.floor(user.bp)} BP`, '#ff8888');
+      }
+    } else if (poolId === 'pool3') {
+      if (user.exo >= amount) {
+        user.exo -= amount;
+        canStake = true;
+      } else {
+        addNotification(`Недостаточно EXO! Доступно: ${user.exo.toFixed(4)} EXO`, '#ff8888');
+      }
+    } else if (poolId === 'pool4') {
+      if (user.usdt >= amount) {
+        user.usdt -= amount;
+        canStake = true;
+      } else {
+        addNotification(`Недостаточно USDT! Доступно: $${user.usdt.toFixed(2)}`, '#ff8888');
+      }
+    }
+    
+    if (canStake) {
+      user.stakingPositions[poolId].amount += amount;
+      user.stakingPositions[poolId].stakedAt = Date.now();
+      globalStats.totalStaked += amount;
+      addNotification(`✅ Застейкано ${amount} ${pool.token.toUpperCase()} в ${pool.name}`, '#88ff88');
+      amountInput.value = '';
+      updateUI();
+    }
+  }
+  
+  function unstake(poolId) {
+    const position = user.stakingPositions[poolId];
+    if (position.amount <= 0) {
+      addNotification('Нет активного стейка в этом пуле', '#ffaa66');
+      return;
+    }
+    
+    const pool = pools[poolId];
+    
+    // Claim pending rewards first
+    claimRewards(poolId);
+    
+    if (poolId === 'pool1') {
+      user.usdt += position.amount;
+    } else if (poolId === 'pool2') {
+      user.bp += position.amount;
+    } else if (poolId === 'pool3') {
+      user.exo += position.amount;
+    } else if (poolId === 'pool4') {
+      user.usdt += position.amount;
+    }
+    
+    addNotification(`📤 Анстейкнуто ${position.amount.toFixed(4)} ${pool.token.toUpperCase()} из ${pool.name}`, '#88ff88');
+    globalStats.totalStaked -= position.amount;
+    position.amount = 0;
+    position.stakedAt = null;
+    updateUI();
+  }
+  
+  function claimRewards(poolId) {
+    const position = user.stakingPositions[poolId];
+    const pool = pools[poolId];
+    
+    if (poolId === 'pool2') {
+      if (position.pendingRewards.bp > 0 || position.pendingRewards.exo > 0) {
+        user.bp += position.pendingRewards.bp;
+        user.exo += position.pendingRewards.exo || 0;
+        user.rewardsHistory.unshift({
+          date: new Date().toLocaleString(),
+          pool: pool.name,
+          amount: `${Math.floor(position.pendingRewards.bp)} BP + ${position.pendingRewards.exo?.toFixed(4)} EXO`
+        });
+        globalStats.totalRewards += (position.pendingRewards.exo || 0) * 0.034;
+        addNotification(`💰 Забрано ${Math.floor(position.pendingRewards.bp)} BP + ${position.pendingRewards.exo?.toFixed(4)} EXO из ${pool.name}`, '#88ff88');
+        position.pendingRewards = { bp: 0, exo: 0 };
+      }
+    } else {
+      if (position.pendingRewards > 0) {
+        if (poolId === 'pool1' || poolId === 'pool3') {
+          user.exo += position.pendingRewards;
+        } else if (poolId === 'pool4') {
+          user.usdt += position.pendingRewards;
+        }
+        user.rewardsHistory.unshift({
+          date: new Date().toLocaleString(),
+          pool: pool.name,
+          amount: `${position.pendingRewards.toFixed(4)} ${pool.rewardToken.toUpperCase()}`
+        });
+        globalStats.totalRewards += position.pendingRewards * 0.034;
+        addNotification(`💰 Забрано ${position.pendingRewards.toFixed(4)} ${pool.rewardToken.toUpperCase()} из ${pool.name}`, '#88ff88');
+        position.pendingRewards = 0;
+      }
+    }
+    updateUI();
+  }
+  
+  function claimAllRewards() {
+    for (let poolId of ['pool1', 'pool2', 'pool3', 'pool4']) {
+      claimRewards(poolId);
+    }
+    addNotification('✅ Все награды собраны!', '#88ff88');
+  }
+  
+  function toggleCompounding() {
+    user.autoCompound = !user.autoCompound;
+    addNotification(user.autoCompound ? '🔄 Автокомпаундинг включён' : '⏸️ Автокомпаундинг выключен', '#f59e0b');
+    updateUI();
+  }
+  
+  function exportHistory() {
+    let csv = "Date,Pool,Amount\n";
+    user.rewardsHistory.forEach(entry => {
+      csv += `${entry.date},${entry.pool},${entry.amount}\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `eneida_staking_history.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    addNotification('📎 История экспортирована!', '#88ff88');
+  }
+  
+  function closeModal() {
+    document.getElementById('infoModal').classList.remove('active');
+  }
+  
+  // ============ INITIALIZATION ============
+  // Даем пользователю немного EXO для демо
+  user.exo = 10.0;
+  user.usdt = 100.0;
+  
+  // Симуляция начисления наград каждые 10 секунд
+  setInterval(() => {
+    updatePendingRewards();
+  }, 10000);
+  
+  // Симуляция роста TVL (для динамики)
+  setInterval(() => {
+    globalStats.poolTvl.pool1 += Math.floor(Math.random() * 10000);
+    globalStats.poolTvl.pool2 += Math.floor(Math.random() * 5000);
+    globalStats.poolTvl.pool3 += Math.floor(Math.random() * 20000);
+    globalStats.poolTvl.pool4 += Math.floor(Math.random() * 15000);
+    globalStats.insuranceFund += Math.floor(Math.random() * 2000);
+    updateUI();
+  }, 30000);
+  
+  updateUI();
+  
+  console.log('%c🍄 ENEIDA HYBRID STAKING · 4 Pools Active', 'color: #f59e0b; font-size: 14px; font-weight: bold;');
+  console.log('%c📍 EXO/USDT LP | BP Staking | EXO Token | USDT Real', 'color: #87efac; font-size: 12px;');
+</script>
+</body>
+</html>
