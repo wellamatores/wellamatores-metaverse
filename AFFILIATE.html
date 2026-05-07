@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ENEIDA · HYBRID AFFILIATE | Wellamatores World</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #030303;
+      background-image: radial-gradient(circle at 25% 40%, rgba(245, 158, 11, 0.08) 0%, rgba(0,0,0,0) 55%);
+      color: #e2e8ff;
+    }
+    .glass-panel {
+      background: rgba(10, 10, 12, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 28px;
+    }
+    .feature-card {
+      background: rgba(20, 20, 24, 0.6);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      transition: all 0.2s;
+    }
+    .feature-card:hover {
+      border-color: rgba(245, 158, 11, 0.6);
+      background: rgba(30, 30, 36, 0.8);
+      transform: translateY(-2px);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .cyber-input {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 14px;
+      padding: 8px 12px;
+      color: white;
+    }
+    .cyber-input:focus {
+      outline: none;
+      border-color: #f59e0b;
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+    }
+    .live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulseDot 1.2s infinite;
+    }
+    @keyframes pulseDot {
+      0%,100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .notification-fly {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1300;
+      width: 320px;
+      pointer-events: none;
+    }
+    .notif {
+      background: rgba(10, 10, 12, 0.95);
+      backdrop-filter: blur(12px);
+      border-left: 4px solid #f59e0b;
+      padding: 12px;
+      border-radius: 16px;
+      margin-top: 8px;
+      font-size: 12px;
+      animation: slideRight 0.25s ease;
+      color: #fef3c7;
+      font-family: monospace;
+    }
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(60px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .progress-bar {
+      height: 6px;
+      background: rgba(245,158,11,0.2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      transition: width 0.5s;
+    }
+    .tier-card {
+      background: rgba(20, 20, 24, 0.6);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .tier-card.active {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.15);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+    }
+    .tier-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(245, 158, 11, 0.6);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: rgba(10,10,12,0.98);
+      border: 1px solid #f59e0b;
+      border-radius: 28px;
+      max-width: 600px;
+      width: 90%;
+      padding: 24px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .referral-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid rgba(245,158,11,0.1);
+    }
+    .commission-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(0,0,0,0.5);
+    }
+    .withdraw-btn {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      color: black;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-black/40 backdrop-blur-md border-b border-amber-500/30 px-4 md:px-6 py-3 flex flex-wrap justify-between items-center gap-2">
+  <div class="flex items-center gap-3">
+    <div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+    <span class="font-bold tracking-tighter text-xl italic bg-gradient-to-r from-amber-400 to-white bg-clip-text text-transparent">ENEIDA<span class="text-amber-400">⚡</span>EXO</span>
+    <span class="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30 hidden sm:inline">Affiliate Program</span>
+  </div>
+  <div class="flex gap-2 text-xs font-mono">
+    <div class="flex items-center gap-2 bg-amber-500/10 px-3 py-1.5 rounded-full border border-amber-500/20">
+      <span class="text-amber-400">⭐</span>
+      <span id="userBpDisplay" class="font-bold">1,420 BP</span>
+    </div>
+    <div class="flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+      <span class="text-emerald-400">💎</span>
+      <span id="userExoDisplay" class="font-bold">0.00 EXO</span>
+    </div>
+    <div class="flex items-center gap-2 bg-purple-500/10 px-3 py-1.5 rounded-full border border-purple-500/20">
+      <span class="text-purple-400">💰</span>
+      <span id="userUsdtDisplay" class="font-bold">$0.00</span>
+    </div>
+  </div>
+</nav>
+
+<main class="relative z-10 pt-24 pb-12 px-4 max-w-7xl mx-auto">
+  
+  <!-- Hero -->
+  <div class="glass-panel p-6 mb-6 text-center">
+    <div class="inline-flex items-center gap-2 bg-amber-500/20 rounded-full px-4 py-1.5 border border-amber-400/40 mb-4">
+      <span class="live-dot"></span>
+      <span class="text-[11px] font-mono text-amber-300">HYBRID AFFILIATE · REAL + GAME COMMISSIONS</span>
+    </div>
+    <h1 class="text-3xl md:text-5xl font-black tracking-tighter gradient-text">Partner Program</h1>
+    <p class="text-stone-300 text-sm max-w-2xl mx-auto mt-2">Зарабатывай до 15% от объёма торгов и покупок рефералов</p>
+    
+    <div class="flex flex-wrap justify-center gap-6 mt-6">
+      <div class="feature-card rounded-2xl px-4 py-2 text-center">
+        <div class="text-xs text-stone-400">👥 Рефералов</div>
+        <div class="text-2xl font-mono font-bold text-amber-300" id="refCount">2</div>
+      </div>
+      <div class="feature-card rounded-2xl px-4 py-2 text-center">
+        <div class="text-xs text-stone-400">💰 Заработано (USDT)</div>
+        <div class="text-2xl font-mono font-bold text-amber-300" id="earnedUsdt">$0.00</div>
+      </div>
+      <div class="feature-card rounded-2xl px-4 py-2 text-center">
+        <div class="text-xs text-stone-400">⭐ Заработано (BP)</div>
+        <div class="text-2xl font-mono font-bold text-amber-300" id="earnedBp">0</div>
+      </div>
+      <div class="feature-card rounded-2xl px-4 py-2 text-center">
+        <div class="text-xs text-stone-400">💎 Заработано (EXO)</div>
+        <div class="text-2xl font-mono font-bold text-amber-300" id="earnedExo">0.0000</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tiers -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+    <div class="tier-card" data-tier="bronze" onclick="showTierInfo('bronze')">
+      <div class="text-4xl mb-2">🥉</div>
+      <div class="font-bold text-lg">Bronze</div>
+      <div class="text-sm text-amber-300">3+ рефералов</div>
+      <div class="text-xs text-stone-400 mt-2">Комиссия: 5%</div>
+      <div class="text-[10px] text-stone-500 mt-1">Бонус: +200 BP</div>
+    </div>
+    <div class="tier-card" data-tier="silver" onclick="showTierInfo('silver')">
+      <div class="text-4xl mb-2">🥈</div>
+      <div class="font-bold text-lg">Silver</div>
+      <div class="text-sm text-amber-300">15+ рефералов</div>
+      <div class="text-xs text-stone-400 mt-2">Комиссия: 10%</div>
+      <div class="text-[10px] text-stone-500 mt-1">Бонус: +500 BP</div>
+    </div>
+    <div class="tier-card" data-tier="gold" onclick="showTierInfo('gold')">
+      <div class="text-4xl mb-2">🥇</div>
+      <div class="font-bold text-lg">Gold</div>
+      <div class="text-sm text-amber-300">50+ рефералов</div>
+      <div class="text-xs text-stone-400 mt-2">Комиссия: 15%</div>
+      <div class="text-[10px] text-stone-500 mt-1">Бонус: +5 EXO + NFT</div>
+    </div>
+  </div>
+
+  <!-- Progress to next tier -->
+  <div class="glass-panel p-5 mb-6">
+    <div class="flex justify-between text-sm mb-2">
+      <span class="font-mono text-amber-400">Прогресс до следующего уровня</span>
+      <span id="nextTierTarget">до Silver: нужно 13 рефералов</span>
+    </div>
+    <div class="progress-bar mb-2">
+      <div class="progress-fill" id="tierProgress" style="width: 0%"></div>
+    </div>
+    <div class="text-[10px] text-stone-400 text-right" id="progressPercent">0%</div>
+  </div>
+
+  <!-- Referral Link + Stats -->
+  <div class="grid lg:grid-cols-2 gap-6 mb-8">
+    <div class="glass-panel p-5">
+      <div class="flex items-center gap-2 border-b border-amber-500/30 pb-2 mb-4">
+        <span class="text-xl">🔗</span>
+        <span class="font-mono text-amber-400">Твоя реферальная ссылка</span>
+      </div>
+      <div class="flex flex-wrap gap-3 items-center">
+        <input type="text" id="referralLink" readonly value="https://eneida.exo/ref/WELLA_7X8K" class="cyber-input flex-1 text-sm font-mono">
+        <button id="copyRefLink" class="bg-amber-600/40 hover:bg-amber-500/50 px-4 py-2 rounded-xl text-sm transition">📋 Copy</button>
+      </div>
+      <div class="mt-4 text-xs text-stone-400">
+        * Приведи друга — получи 5% от его комиссий на бирже и маркетплейсе
+      </div>
+    </div>
+
+    <div class="glass-panel p-5">
+      <div class="flex items-center gap-2 border-b border-amber-500/30 pb-2 mb-4">
+        <span class="text-xl">📊</span>
+        <span class="font-mono text-amber-400">Статистика</span>
+      </div>
+      <div class="space-y-3">
+        <div class="flex justify-between">
+          <span class="text-stone-400">Всего рефералов:</span>
+          <span class="font-mono text-amber-300" id="statRefs">2</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-stone-400">Активные рефералы (торгуют):</span>
+          <span class="font-mono text-green-400" id="statActive">1</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-stone-400">Объём торгов рефералов:</span>
+          <span class="font-mono text-amber-300" id="statVolume">$0</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-stone-400">Твой текущий процент:</span>
+          <span class="font-mono text-amber-300" id="statRate">5%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Referral List -->
+  <div class="glass-panel p-5 mb-6">
+    <div class="flex items-center gap-2 border-b border-amber-500/30 pb-2 mb-4">
+      <span class="text-xl">👥</span>
+      <span class="font-mono text-amber-400">Твои рефералы</span>
+      <button onclick="showLeaderboard()" class="ml-auto text-xs bg-purple-600/40 hover:bg-purple-500/60 px-3 py-1 rounded-full transition">🏆 Leaderboard</button>
+    </div>
+    <div id="referralList" class="space-y-2 max-h-80 overflow-y-auto">
+      <!-- Dynamic referral list -->
+    </div>
+  </div>
+
+  <!-- Earnings History -->
+  <div class="glass-panel p-5 mb-6">
+    <div class="flex items-center gap-2 border-b border-amber-500/30 pb-2 mb-4">
+      <span class="text-xl">📜</span>
+      <span class="font-mono text-amber-400">История начислений</span>
+      <button onclick="exportEarnings()" class="ml-auto text-xs bg-emerald-600/40 hover:bg-emerald-500/60 px-3 py-1 rounded-full transition">📎 Export CSV</button>
+    </div>
+    <div id="earningsHistory" class="space-y-2 max-h-60 overflow-y-auto">
+      <!-- Dynamic earnings history -->
+    </div>
+  </div>
+
+  <!-- Withdraw Section -->
+  <div class="glass-panel p-5">
+    <div class="flex items-center gap-2 border-b border-amber-500/30 pb-2 mb-4">
+      <span class="text-xl">💸</span>
+      <span class="font-mono text-amber-400">Вывод средств</span>
+    </div>
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="feature-card p-3 text-center">
+        <div class="text-sm">💰 USDT (Real)</div>
+        <div class="text-xl font-mono text-amber-300" id="withdrawUsdt">$0.00</div>
+        <button id="withdrawUsdtBtn" class="mt-2 w-full bg-amber-600/40 hover:bg-amber-500/60 rounded-lg py-1 text-xs transition" disabled>Min $10</button>
+      </div>
+      <div class="feature-card p-3 text-center">
+        <div class="text-sm">⭐ Blum Points</div>
+        <div class="text-xl font-mono text-amber-300" id="withdrawBp">0 BP</div>
+        <button id="withdrawBpBtn" class="mt-2 w-full bg-amber-600/40 hover:bg-amber-500/60 rounded-lg py-1 text-xs transition">Transfer to Game</button>
+      </div>
+      <div class="feature-card p-3 text-center">
+        <div class="text-sm">💎 EXO Tokens</div>
+        <div class="text-xl font-mono text-amber-300" id="withdrawExo">0.0000 EXO</div>
+        <button id="withdrawExoBtn" class="mt-2 w-full bg-amber-600/40 hover:bg-amber-500/60 rounded-lg py-1 text-xs transition">Transfer to Wallet</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal: Tier Info -->
+<div id="tierModal" class="modal">
+  <div class="modal-content">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-mono text-amber-400 text-xl" id="tierModalTitle">Bronze Tier</h3>
+      <button onclick="closeTierModal()" class="text-white text-2xl">&times;</button>
+    </div>
+    <div id="tierModalContent">
+      <div class="text-center text-6xl mb-4">🥉</div>
+      <p class="mb-3">Открой бронзовый уровень с 3 рефералами и зарабатывай 5% от комиссий!</p>
+      <ul class="space-y-2 text-sm">
+        <li>✅ Комиссия: 5% от торгов и маркетплейса</li>
+        <li>✅ Бонус: 200 BP при достижении</li>
+        <li>✅ Доступ к базовой аналитике</li>
+      </ul>
+    </div>
+    <button onclick="closeTierModal()" class="w-full mt-4 withdraw-btn py-2 rounded-xl">Понятно</button>
+  </div>
+</div>
+
+<!-- Modal: Leaderboard -->
+<div id="leaderboardModal" class="modal">
+  <div class="modal-content">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="font-mono text-amber-400 text-xl">🏆 Топ партнёров</h3>
+      <button onclick="closeLeaderboard()" class="text-white text-2xl">&times;</button>
+    </div>
+    <div id="leaderboardList" class="space-y-2"></div>
+  </div>
+</div>
+
+<div class="notification-fly" id="notifArea"></div>
+
+<script>
+  // ============ AFFILIATE STATE ============
+  let user = {
+    id: "WELLA_7X8K",
+    name: "Wellamatores",
+    bp: 1420,
+    exo: 0.0,
+    usdt: 0.0,
+    referrals: [
+      { id: "REF_001", name: "CryptoHunter", joined: "2025-04-01", volume: 1250, active: true, commissionEarned: { usdt: 1.25, bp: 25, exo: 0.05 } },
+      { id: "REF_002", name: "NeuralTrader", joined: "2025-04-05", volume: 0, active: false, commissionEarned: { usdt: 0, bp: 0, exo: 0 } }
+    ],
+    earnings: {
+      usdt: 1.25,
+      bp: 25,
+      exo: 0.05
+    },
+    earningsHistory: [
+      { date: "2025-04-01", type: "trade", source: "CryptoHunter", amount: { usdt: 1.25, bp: 25, exo: 0.05 }, rate: "5%" }
+    ]
+  };
+  
+  let currentTier = "bronze";
+  let tierThresholds = { bronze: 3, silver: 15, gold: 50 };
+  let tierRates = { bronze: 5, silver: 10, gold: 15 };
+  
+  // Топ партнёров (симуляция)
+  let leaderboard = [
+    { name: "MyceliumLord", referrals: 127, volume: 125000, tier: "gold" },
+    { name: "CryptoShaman", referrals: 63, volume: 89000, tier: "gold" },
+    { name: "NeuralQueen", referrals: 42, volume: 45000, tier: "silver" },
+    { name: "BlockchainWizard", referrals: 28, volume: 32000, tier: "silver" },
+    { name: "Wellamatores", referrals: 2, volume: 1250, tier: "bronze" }
+  ];
+  
+  // ============ HELPER FUNCTIONS ============
+  function addNotification(msg, color = '#f59e0b') {
+    const area = document.getElementById('notifArea');
+    const div = document.createElement('div');
+    div.className = 'notif';
+    div.style.borderLeftColor = color;
+    div.innerHTML = `🍄 ${msg}`;
+    area.appendChild(div);
+    if (area.children.length > 4) area.removeChild(area.children[0]);
+    setTimeout(() => div.remove(), 3500);
+  }
+  
+  function updateUI() {
+    // User balances
+    document.getElementById('userBpDisplay').innerHTML = `${Math.floor(user.bp)} BP`;
+    document.getElementById('userExoDisplay').innerHTML = `${user.exo.toFixed(4)} EXO`;
+    document.getElementById('userUsdtDisplay').innerHTML = `$${user.usdt.toFixed(2)}`;
+    
+    // Statistics
+    document.getElementById('refCount').innerHTML = user.referrals.length;
+    document.getElementById('earnedUsdt').innerHTML = `$${user.earnings.usdt.toFixed(2)}`;
+    document.getElementById('earnedBp').innerHTML = Math.floor(user.earnings.bp);
+    document.getElementById('earnedExo').innerHTML = user.earnings.exo.toFixed(4);
+    
+    // Stats block
+    const activeRefs = user.referrals.filter(r => r.active).length;
+    const totalVolume = user.referrals.reduce((sum, r) => sum + r.volume, 0);
+    document.getElementById('statRefs').innerHTML = user.referrals.length;
+    document.getElementById('statActive').innerHTML = activeRefs;
+    document.getElementById('statVolume').innerHTML = `$${totalVolume}`;
+    
+    // Current tier rate
+    let currentRate = currentTier === 'bronze' ? 5 : (currentTier === 'silver' ? 10 : 15);
+    document.getElementById('statRate').innerHTML = `${currentRate}%`;
+    
+    // Tier progress
+    let nextTier = user.referrals.length >= 50 ? 'gold' : (user.referrals.length >= 15 ? 'silver' : 'bronze');
+    if (nextTier === 'bronze') {
+      let progress = (user.referrals.length / 3) * 100;
+      document.getElementById('tierProgress').style.width = `${Math.min(progress, 100)}%`;
+      document.getElementById('nextTierTarget').innerHTML = `до Silver: нужно ${15 - user.referrals.length} рефералов`;
+      document.getElementById('progressPercent').innerHTML = `${Math.min(progress, 100).toFixed(0)}%`;
+    } else if (nextTier === 'silver') {
+      let progress = ((user.referrals.length - 15) / 35) * 100;
+      document.getElementById('tierProgress').style.width = `${Math.min(progress, 100)}%`;
+      document.getElementById('nextTierTarget').innerHTML = `до Gold: нужно ${50 - user.referrals.length} рефералов`;
+      document.getElementById('progressPercent').innerHTML = `${Math.min(progress, 100).toFixed(0)}%`;
+    } else {
+      document.getElementById('tierProgress').style.width = `100%`;
+      document.getElementById('nextTierTarget').innerHTML = `🏆 Максимальный уровень достигнут!`;
+      document.getElementById('progressPercent').innerHTML = `100%`;
+    }
+    
+    // Highlight active tier card
+    document.querySelectorAll('.tier-card').forEach(card => {
+      card.classList.remove('active');
+      if (card.dataset.tier === currentTier) card.classList.add('active');
+    });
+    
+    // Withdraw section
+    document.getElementById('withdrawUsdt').innerHTML = `$${user.usdt.toFixed(2)}`;
+    document.getElementById('withdrawBp').innerHTML = `${Math.floor(user.bp)} BP`;
+    document.getElementById('withdrawExo').innerHTML = `${user.exo.toFixed(4)} EXO`;
+    
+    const withdrawUsdtBtn = document.getElementById('withdrawUsdtBtn');
+    if (user.usdt >= 10) {
+      withdrawUsdtBtn.disabled = false;
+      withdrawUsdtBtn.innerHTML = "Withdraw USDT";
+    } else {
+      withdrawUsdtBtn.disabled = true;
+      withdrawUsdtBtn.innerHTML = "Min $10";
+    }
+    
+    // Render referral list
+    renderReferralList();
+    
+    // Render earnings history
+    renderEarningsHistory();
+  }
+  
+  function renderReferralList() {
+    const container = document.getElementById('referralList');
+    if (user.referrals.length === 0) {
+      container.innerHTML = '<div class="text-center text-stone-400 py-4">У вас пока нет рефералов. Поделитесь ссылкой!</div>';
+      return;
+    }
+    
+    container.innerHTML = user.referrals.map(ref => `
+      <div class="flex justify-between items-center p-3 feature-card rounded-xl">
+        <div>
+          <div class="font-bold text-sm">${ref.name}</div>
+          <div class="text-[10px] text-stone-400">Присоединился: ${ref.joined}</div>
+        </div>
+        <div class="text-right">
+          <div class="text-xs font-mono text-amber-300">Объём: $${ref.volume}</div>
+          <div class="text-[10px] ${ref.active ? 'text-green-400' : 'text-stone-500'}">${ref.active ? '● Активен' : '○ Не активен'}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  function renderEarningsHistory() {
+    const container = document.getElementById('earningsHistory');
+    if (user.earningsHistory.length === 0) {
+      container.innerHTML = '<div class="text-center text-stone-400 py-4">История начислений пуста</div>';
+      return;
+    }
+    
+    container.innerHTML = user.earningsHistory.map(entry => `
+      <div class="flex justify-between items-center p-2 feature-card rounded-lg text-xs">
+        <span>${entry.date}</span>
+        <span>${entry.type === 'trade' ? '📊 Трейд' : '🛒 Маркетплейс'}</span>
+        <span>${entry.source}</span>
+        <span class="text-green-400">+$${entry.amount.usdt.toFixed(2)}</span>
+        <span class="text-amber-300">+${Math.floor(entry.amount.bp)} BP</span>
+        <span class="text-purple-400">+${entry.amount.exo.toFixed(4)} EXO</span>
+      </div>
+    `).join('');
+  }
+  
+  function addCommission(volume, source, type) {
+    let rate = tierRates[currentTier] / 100;
+    let commission = volume * rate;
+    let commissionBp = Math.floor(commission * 20); // 20 BP за каждый $ комиссии
+    let commissionExo = commission / 0.0342 * 0.1; // 10% от EXO от комиссии
+    
+    user.usdt += commission;
+    user.bp += commissionBp;
+    user.exo += commissionExo;
+    user.earnings.usdt += commission;
+    user.earnings.bp += commissionBp;
+    user.earnings.exo += commissionExo;
+    
+    user.earningsHistory.unshift({
+      date: new Date().toISOString().slice(0,10),
+      type: type,
+      source: source,
+      amount: { usdt: commission, bp: commissionBp, exo: commissionExo },
+      rate: `${tierRates[currentTier]}%`
+    });
+    
+    addNotification(`💰 Начислено $${commission.toFixed(2)} от ${source} (${tierRates[currentTier]}% комиссии)`, '#88ff88');
+    updateUI();
+  }
+  
+  function simulateReferralAction() {
+    // Симуляция прихода нового реферала
+    const newRef = {
+      id: `REF_${Math.floor(Math.random() * 10000)}`,
+      name: `Trader${Math.floor(Math.random() * 1000)}`,
+      joined: new Date().toISOString().slice(0,10),
+      volume: Math.floor(Math.random() * 5000),
+      active: true,
+      commissionEarned: { usdt: 0, bp: 0, exo: 0 }
+    };
+    user.referrals.push(newRef);
+    
+    // Проверка апгрейда уровня
+    let oldTier = currentTier;
+    if (user.referrals.length >= 50) currentTier = "gold";
+    else if (user.referrals.length >= 15) currentTier = "silver";
+    else if (user.referrals.length >= 3) currentTier = "bronze";
+    
+    if (oldTier !== currentTier) {
+      if (currentTier === "bronze") {
+        user.bp += 200;
+        addNotification(`🎉 Поздравляем! Вы достигли Bronze уровня! +200 BP`, '#ffcc66');
+      } else if (currentTier === "silver") {
+        user.bp += 500;
+        addNotification(`🏆 Silver уровень достигнут! +500 BP`, '#ffaa44');
+      } else if (currentTier === "gold") {
+        user.bp += 1200;
+        user.exo += 5;
+        addNotification(`💎 GOLD LEVEL! +1200 BP +5 EXO + Эксклюзивный NFT`, '#ff8844');
+      }
+    }
+    
+    addNotification(`👥 Новый реферал: ${newRef.name}!`, '#88ff88');
+    updateUI();
+  }
+  
+  function showTierInfo(tier) {
+    const modal = document.getElementById('tierModal');
+    const title = document.getElementById('tierModalTitle');
+    const content = document.getElementById('tierModalContent');
+    
+    if (tier === 'bronze') {
+      title.innerHTML = '🥉 Bronze Tier';
+      content.innerHTML = `
+        <div class="text-center text-6xl mb-4">🥉</div>
+        <p class="mb-3">Открой бронзовый уровень с 3 рефералами и зарабатывай 5% от комиссий!</p>
+        <ul class="space-y-2 text-sm">
+          <li>✅ Комиссия: 5% от торгов и маркетплейса</li>
+          <li>✅ Бонус: 200 BP при достижении</li>
+          <li>✅ Доступ к базовой аналитике</li>
+        </ul>
+      `;
+    } else if (tier === 'silver') {
+      title.innerHTML = '🥈 Silver Tier';
+      content.innerHTML = `
+        <div class="text-center text-6xl mb-4">🥈</div>
+        <p class="mb-3">Достигни 15 рефералов — получай 10% комиссии и эксклюзивные бонусы!</p>
+        <ul class="space-y-2 text-sm">
+          <li>✅ Комиссия: 10% от всех действий рефералов</li>
+          <li>✅ Бонус: 500 BP при достижении</li>
+          <li>✅ Ранний доступ к IDO на Launchpad</li>
+          <li>✅ Приоритетная поддержка</li>
+        </ul>
+      `;
+    } else {
+      title.innerHTML = '🥇 Gold Tier';
+      content.innerHTML = `
+        <div class="text-center text-6xl mb-4">🥇</div>
+        <p class="mb-3">Элитный уровень для топ-партнёров. 50+ рефералов — 15% комиссии!</p>
+        <ul class="space-y-2 text-sm">
+          <li>✅ Комиссия: 15% от всех действий рефералов</li>
+          <li>✅ Бонус: 1200 BP + 5 EXO + Эксклюзивный NFT</li>
+          <li>✅ Ежемесячный дроп от пула комиссий биржи</li>
+          <li>✅ Встречи с командой и AMA</li>
+        </ul>
+      `;
+    }
+    modal.classList.add('active');
+  }
+  
+  function closeTierModal() {
+    document.getElementById('tierModal').classList.remove('active');
+  }
+  
+  function showLeaderboard() {
+    const modal = document.getElementById('leaderboardModal');
+    const container = document.getElementById('leaderboardList');
+    
+    container.innerHTML = leaderboard.map((user, idx) => `
+      <div class="flex justify-between items-center p-3 feature-card rounded-xl">
+        <div class="flex items-center gap-3">
+          <span class="text-lg font-bold text-amber-400">#${idx + 1}</span>
+          <div>
+            <div class="font-bold">${user.name}</div>
+            <div class="text-[10px] text-stone-400">${user.tier === 'gold' ? '🥇 Gold' : (user.tier === 'silver' ? '🥈 Silver' : '🥉 Bronze')}</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-sm font-mono">👥 ${user.referrals}</div>
+          <div class="text-[10px] text-amber-300">$${user.volume.toLocaleString()}</div>
+        </div>
+      </div>
+    `).join('');
+    
+    modal.classList.add('active');
+  }
+  
+  function closeLeaderboard() {
+    document.getElementById('leaderboardModal').classList.remove('active');
+  }
+  
+  function exportEarnings() {
+    let csv = "Date,Type,Source,USDT,BP,EXO,Rate\n";
+    user.earningsHistory.forEach(e => {
+      csv += `${e.date},${e.type},${e.source},${e.amount.usdt},${e.amount.bp},${e.amount.exo},${e.rate}\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `eneida_affiliate_${user.id}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    addNotification('📎 Экспорт завершён!', '#88ff88');
+  }
+  
+  // ============ EVENT LISTENERS ============
+  document.getElementById('copyRefLink')?.addEventListener('click', () => {
+    const refInput = document.getElementById('referralLink');
+    refInput.select();
+    document.execCommand('copy');
+    addNotification('🔗 Реферальная ссылка скопирована! Поделись с друзьями', '#f59e0b');
+  });
+  
+  document.getElementById('withdrawBpBtn')?.addEventListener('click', () => {
+    addNotification('⭐ BP переведены в игровой кошелёк!', '#88ff88');
+    user.bp = 0;
+    updateUI();
+  });
+  
+  document.getElementById('withdrawExoBtn')?.addEventListener('click', () => {
+    if (user.exo >= 0.1) {
+      addNotification(`💎 ${user.exo.toFixed(4)} EXO отправлены на ваш кошелёк!`, '#88ff88');
+      user.exo = 0;
+      updateUI();
+    } else {
+      addNotification(`Минимальный вывод: 0.1 EXO`, '#ffaa66');
+    }
+  });
+  
+  document.getElementById('withdrawUsdtBtn')?.addEventListener('click', () => {
+    if (user.usdt >= 10) {
+      addNotification(`💰 $${user.usdt.toFixed(2)} USDT отправлены на ваш кошелёк! (симуляция)`, '#88ff88');
+      user.usdt = 0;
+      updateUI();
+    } else {
+      addNotification(`Минимальный вывод: $10 USDT`, '#ffaa66');
+    }
+  });
+  
+  // Симуляция активности рефералов (для демо)
+  setInterval(() => {
+    if (user.referrals.length > 0 && Math.random() > 0.7) {
+      let randomRef = user.referrals[Math.floor(Math.random() * user.referrals.length)];
+      if (randomRef.active) {
+        let tradeVolume = Math.floor(Math.random() * 500) + 50;
+        randomRef.volume += tradeVolume;
+        addCommission(tradeVolume, randomRef.name, 'trade');
+        updateUI();
+      }
+    }
+  }, 25000);
+  
+  // Initial update
+  updateUI();
+  
+  console.log('%c🍄 ENEIDA HYBRID AFFILIATE PROGRAM · Real + Game Commissions', 'color: #f59e0b; font-size: 14px; font-weight: bold;');
+  console.log('%c📍 Приглашай друзей и зарабатывай до 15% с их торгов!', 'color: #87efac; font-size: 12px;');
+</script>
+</body>
+</html>
