@@ -1000,8 +1000,22 @@
       document.body.style.overflow = '';
     });
     
-    hideLoader();
+     hideLoader();
     console.log("%c✅ Wellamatores World COMPLETE: Full CCP + Social Hub + Regent + JOG Universe working", "color:#10b981; font-size:14px;");
+  </script>
+
+  <!-- Fullscreen for trailer -->
+  <script>
+    document.getElementById('trailerFullscreenBtn')?.addEventListener('click', () => {
+      const wrapper = document.getElementById('trailerWrapper');
+      if (wrapper.requestFullscreen) {
+        wrapper.requestFullscreen();
+      } else if (wrapper.webkitRequestFullscreen) {
+        wrapper.webkitRequestFullscreen();
+      } else if (wrapper.msRequestFullscreen) {
+        wrapper.msRequestFullscreen();
+      }
+    });
   </script>
 </body>
 </html>
