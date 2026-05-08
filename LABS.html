@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Wellamatores LABS | Predators Division • Yautja Prime Feed • Neural Research</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0A0E17;
+      font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
+      color: #E1E9F0;
+      overflow-x: hidden;
+    }
+    #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+    .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,255,255,0.03) 1px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 4px); pointer-events: none; z-index: 20; }
+    .vignette { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%); pointer-events: none; z-index: 19; }
+    .tactical-grid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0,229,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.05) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 15; }
+    .lab-container { position: relative; z-index: 25; max-width: 1600px; margin: 0 auto; padding: 1.2rem 1.5rem 2rem; }
+    .lab-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(0,229,255,0.3); margin-bottom: 1.5rem; }
+    .logo-area h1 { font-size: 1.3rem; font-weight: 600; letter-spacing: 2px; color: #E1E9F0; }
+    .logo-area h1 span { color: #00E5FF; text-shadow: 0 0 8px #00E5FF; }
+    .logo-area p { font-size: 0.6rem; color: #8BA2C2; letter-spacing: 2px; }
+    .division-switch { display: flex; gap: 0.5rem; background: rgba(10,14,23,0.9); backdrop-filter: blur(8px); padding: 0.3rem; border-radius: 8px; border: 1px solid rgba(0,229,255,0.3); flex-wrap: wrap; }
+    .division-btn { background: transparent; border: none; padding: 0.4rem 1rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.65rem; letter-spacing: 1px; color: #8BA2C2; cursor: pointer; transition: all 0.2s; border-radius: 4px; }
+    .division-btn.active { background: rgba(0,229,255,0.2); color: #00E5FF; box-shadow: inset 0 0 8px rgba(0,229,255,0.2); border: 1px solid rgba(0,229,255,0.5); }
+    .system-status { display: flex; gap: 1.2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; }
+    .status-led { display: flex; align-items: center; gap: 6px; }
+    .led { width: 8px; height: 8px; border-radius: 50%; background: #00E5FF; box-shadow: 0 0 4px #00E5FF; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.7rem; color: #F9A826; text-decoration: none; transition: 0.2s; margin-bottom: 1rem; }
+    .back-link:hover { background: rgba(249,168,38,0.2); color: #00E5FF; }
+    .lab-main-grid { display: grid; grid-template-columns: 1fr 1.8fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+    @media (max-width: 1000px) { .lab-main-grid { grid-template-columns: 1fr; } }
+    .panel-left, .panel-right { background: rgba(6,10,18,0.7); backdrop-filter: blur(12px); border: 1px solid rgba(0,229,255,0.2); border-radius: 16px; overflow: hidden; }
+    .panel-header { background: rgba(0,0,0,0.5); padding: 0.7rem 1rem; border-bottom: 1px solid rgba(0,229,255,0.3); font-size: 0.7rem; letter-spacing: 2px; font-weight: 600; color: #00E5FF; }
+    .video-portal { margin: 1rem; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,215,0,0.4); position: relative; background: #000; }
+    .video-wrapper { position: relative; }
+    .video-wrapper iframe { width: 100%; aspect-ratio: 16/9; border: none; }
+    .video-controls { position: absolute; bottom: 10px; left: 10px; right: 10px; display: flex; gap: 8px; justify-content: flex-end; z-index: 30; }
+    .video-btn { background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #F9A826; border-radius: 8px; padding: 5px 12px; font-size: 0.6rem; color: #F9A826; cursor: pointer; font-family: monospace; transition: 0.2s; }
+    .video-btn.active { background: #F9A826; color: #000; border-color: #00E5FF; }
+    .video-btn:hover { background: #F9A826; color: #000; }
+    .progress-section { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .progress-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 0.4rem; color: #8BA2C2; }
+    .progress-bar-container { background: #0A1420; height: 4px; border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #F9A826, #00E5FF); width: 0%; transition: width 0.3s ease; }
+    .holo-digits { display: flex; justify-content: space-between; gap: 0.8rem; padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .holo-card { text-align: center; flex: 1; }
+    .holo-value { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: #00E5FF; text-shadow: 0 0 5px #00E5FF; }
+    .holo-label { font-size: 0.55rem; color: #8BA2C2; }
+    .predators-panel { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(249,168,38,0.03); }
+    .predators-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .predators-header h3 { font-size: 0.85rem; color: #F9A826; }
+    .predator-status { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .status-badge { background: rgba(0,0,0,0.5); border-radius: 12px; padding: 6px 12px; flex: 1; text-align: center; }
+    .status-badge .label { font-size: 0.55rem; color: #8BA2C2; }
+    .status-badge .value { font-size: 0.8rem; font-weight: bold; color: #F9A826; }
+    .contact-status { display: flex; align-items: center; gap: 8px; margin: 10px 0; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 12px; }
+    .help-request { background: rgba(0,229,255,0.1); border: 1px solid #00E5FF; border-radius: 12px; padding: 10px; margin: 10px 0; }
+    .help-request.hidden { display: none; }
+    .response-btn { background: #F9A826; border: none; border-radius: 8px; padding: 6px 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; margin-top: 8px; font-family: monospace; transition: 0.2s; width: 100%; }
+    .response-btn:hover { background: #00E5FF; color: #000; transform: scale(1.02); }
+    .clans-info { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .clan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+    .clan-tag { font-size: 0.55rem; background: rgba(0,0,0,0.4); padding: 3px 6px; border-radius: 12px; text-align: center; color: #8BA2C2; }
+    .samples-list { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .sample-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .log-terminal { padding: 0.8rem; background: rgba(0,0,0,0.4); margin: 0.8rem 1rem; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; height: 120px; overflow-y: auto; }
+    .log-line { color: #6BB5A0; padding: 3px 0; border-bottom: 1px solid rgba(0,229,255,0.08); }
+    .action-buttons { display: flex; gap: 1rem; padding: 0.8rem 1rem; }
+    .btn-lab { background: transparent; border: 1px solid #F9A826; padding: 0.5rem 1rem; border-radius: 6px; color: #F9A826; font-family: monospace; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: all 0.2s; flex: 1; }
+    .btn-lab:hover { background: rgba(249,168,38,0.15); border-color: #00E5FF; color: #00E5FF; }
+    .research-nodes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.2rem; }
+    .node-card { background: rgba(6,10,18,0.6); backdrop-filter: blur(8px); border: 1px solid rgba(0,229,255,0.15); border-radius: 12px; padding: 0.8rem; text-align: center; transition: all 0.2s; }
+    .node-card:hover { border-color: #F9A826; transform: translateY(-2px); }
+    .node-icon { font-size: 1.3rem; margin-bottom: 0.3rem; }
+    .node-title { font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; }
+    .node-desc { font-size: 0.55rem; color: #8BA2C2; }
+    .footer-holding { margin-top: 2rem; text-align: center; font-size: 0.55rem; font-family: monospace; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); color: #5A6E8A; }
+    @media (max-width: 700px) { .research-nodes { grid-template-columns: repeat(2, 1fr); } .holo-digits { flex-wrap: wrap; } .clan-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div class="tactical-grid"></div>
+  <div class="vignette"></div>
+  <div class="scanlines"></div>
+
+  <div class="lab-container">
+    <div class="lab-header">
+      <div class="logo-area">
+        <h1>WELLAMATORES<span>//</span>LABS</h1>
+        <p>JOG NEURAL DIVISION • PREDATORS UNIT • YAUTJA PRIME FEED</p>
+      </div>
+      <div class="division-switch">
+        <button class="division-btn active" data-division="jog">🛰️ JOG</button>
+        <button class="division-btn" data-division="plutonia">🌀 PLUTONIA X</button>
+        <button class="division-btn" data-division="bureau">🏛️ Le Bureau</button>
+        <button class="division-btn" data-division="jackdaw">🐦 JACKDAW</button>
+        <button class="division-btn" data-division="holding">💠 Holding</button>
+      </div>
+      <div class="system-status">
+        <div class="status-led"><span class="led"></span>PREDATORS • ACTIVE</div>
+        <div class="status-led"><span class="led"></span>DEEPSEEK V5</div>
+      </div>
+    </div>
+
+    <a href="javascript:history.back()" class="back-link">← BACK TO MAIN PAGE</a>
+
+    <div class="lab-main-grid">
+      <!-- LEFT PANEL -->
+      <div class="panel-left">
+        <div class="panel-header">🐺 PREDATORS SQUAD • AUTONOMOUS UNIT</div>
+        
+        <div class="predators-panel">
+          <div class="predators-header">
+            <span style="font-size: 1.5rem;">🐺⚔️</span>
+            <h3>ON AUTONOMOUS DUTY<br><span style="font-size: 0.55rem; color:#8BA2C2;">Kingdom of Predators • Invited by Lord Regent</span></h3>
+          </div>
+          <div class="predator-status">
+            <div class="status-badge"><div class="label">SQUAD STATUS</div><div class="value" id="squadStatus">🟢 IN LAB</div></div>
+            <div class="status-badge"><div class="label">PROFESSOR</div><div class="value" id="professorStatus">📚 BRIEFING</div></div>
+            <div class="status-badge"><div class="label">WAR HOUND</div><div class="value" id="dogStatus">🛡️ PATROL</div></div>
+          </div>
+          <div class="contact-status">
+            <span style="font-size: 0.7rem;">📡 LINK TO YAUTJA PRIME (KHARMA MOVIE):</span>
+            <span style="color:#00E5FF; font-size: 0.7rem;" id="connectionStatus">ACTIVE • STREAM READY</span>
+          </div>
+        </div>
+
+        <div id="helpRequestBlock" class="help-request hidden">
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span style="font-size: 1.2rem;">🐺</span>
+            <div style="flex: 1;">
+              <div style="font-size: 0.7rem; color:#F9A826; font-weight: bold;" id="helpRequestText">Predators request consultation</div>
+              <div style="font-size: 0.55rem; color:#8BA2C2;" id="helpRequestDetail">Sample #PR-422 analysis required</div>
+            </div>
+          </div>
+          <button class="response-btn" id="acceptHelpBtn">ACCEPT REQUEST → PROVIDE ASSISTANCE</button>
+        </div>
+
+        <div class="clans-info">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 0.65rem; color:#F9A826;">👑 KINGDOM OF PREDATORS</span>
+            <span style="font-size: 0.5rem; color:#8BA2C2;">15 CLANS</span>
+          </div>
+          <div class="clan-grid" id="clansGrid"></div>
+          <div style="margin-top: 8px; font-size: 0.55rem; color:#6BB5A0; text-align: center;">▸ Tech Exchange • Cultural Alliance • Joint Research ▸</div>
+        </div>
+
+        <div class="samples-list">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.65rem; color:#F9A826;">📦 SHARED SAMPLES (from Predators)</span>
+            <span style="font-size: 0.55rem; color:#8BA2C2;" id="samplesCount">4 samples</span>
+          </div>
+          <div id="samplesList">
+            <div class="sample-item"><span style="color:#6BB5A0;">🔮 Anomalous Mineral #PR-107</span><span style="color:#8BA2C2;">shared</span></div>
+            <div class="sample-item"><span style="color:#6BB5A0;">🧬 Biomass Sector G-4</span><span style="color:#8BA2C2;">shared</span></div>
+            <div class="sample-item"><span style="color:#6BB5A0;">⚙️ Tech Artifact (unidentified)</span><span style="color:#8BA2C2;">shared</span></div>
+          </div>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-label">
+            <span>🎓 JACKDAW TRAINING (Predators methodology)</span>
+            <span id="trainingPercent">52%</span>
+          </div>
+          <div class="progress-bar-container"><div class="progress-fill" id="trainingFill" style="width: 52%"></div></div>
+          <div style="font-size: 0.55rem; color:#6BB5A0; margin-top: 6px;">▸ Tactical training: ✓ complete<br>▸ Sample handling: in progress<br>▸ Cross-training: active</div>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL: Research Core + Video (РАБОТАЕТ — открывается в новой вкладке) -->
+      <div class="panel-right">
+        <div class="video-portal">
+          <div class="video-wrapper" id="videoWrapper">
+            <!-- Плесхолдер с кнопкой открытия на YouTube -->
+            <div id="videoPlaceholder" style="background: linear-gradient(135deg, #0A0E17, #1A1F2E); aspect-ratio: 16/9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; text-align: center; padding: 20px;">
+              <span style="font-size: 4rem;">🎬🐺</span>
+              <div style="color: #F9A826; font-family: monospace; font-size: 1rem; font-weight: bold;">PREDATOR ORIGINS</div>
+              <div style="color: #8BA2C2; font-size: 0.7rem;">The Engineers’ Secret Mission on Yautja Prime</div>
+              <a href="https://youtu.be/WXjiF4K7u4g" target="_blank" rel="noopener noreferrer" style="background: #F9A826; color: #000; padding: 8px 24px; border-radius: 40px; text-decoration: none; font-weight: bold; font-family: monospace; margin-top: 8px;">▶ WATCH ON YOUTUBE</a>
+              <div style="font-size: 0.55rem; color: #5A6E8A; margin-top: 8px;">🔍 Opens in new tab • Press F11 for fullscreen</div>
+            </div>
+          </div>
+          <div class="video-controls">
+            <button class="video-btn" id="labStreamBtn">🧠 LAB STREAM</button>
+            <button class="video-btn active" id="predatorsStreamBtn">🐺 YAUTJA PRIME (KHARMA)</button>
+            <button class="video-btn" id="fullscreenVideoBtn">⛶ FULLSCREEN</button>
+          </div>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-label">
+            <span id="currentResearchLabel">DEEPSEEK V5 • NEURAL EVOLUTION</span>
+            <span id="progressPercent">47.3%</span>
+          </div>
+          <div class="progress-bar-container"><div class="progress-fill" id="researchProgress" style="width: 47.3%"></div></div>
+        </div>
+
+        <div class="holo-digits">
+          <div class="holo-card"><div class="holo-value" id="tokensValue">14.2</div><div class="holo-label">INFERENCE TOKENS (M)</div></div>
+          <div class="holo-card"><div class="holo-value" id="framesValue">3.1</div><div class="holo-label">VIDEO FRAMES (M)</div></div>
+          <div class="holo-card"><div class="holo-value" id="autonomyValue">94.7</div><div class="holo-label">AUTONOMY INDEX (%)</div></div>
+          <div class="holo-card"><div class="holo-value" id="helpGivenValue">3</div><div class="holo-label">ASSISTANCE GIVEN</div></div>
+        </div>
+
+        <div class="log-terminal" id="logTerminal">
+          <div class="log-line">> [SYSTEM] Wellamatores LABS initialized</div>
+          <div class="log-line">> [PREDATORS] Squad deployed. Professor: "Operating autonomously"</div>
+          <div class="log-line">> [JOG] Neural network online, 22 active nodes</div>
+          <div class="log-line">> [FEED] Yautja Prime stream ready • KHARMA MOVIE</div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-lab" id="initiateBtn">⟁ INITIATE RESEARCH</button>
+          <button class="btn-lab" id="resetBtn">⟲ RESET</button>
+          <button class="btn-lab" id="checkPredatorsBtn">🐺 CHECK STATUS</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="research-nodes">
+      <div class="node-card"><div class="node-icon">🧪</div><div class="node-title">NEURAL LAB</div><div class="node-desc">Active 94%</div></div>
+      <div class="node-card"><div class="node-icon">📡</div><div class="node-title">JOG NODE</div><div class="node-desc">Orbital link</div></div>
+      <div class="node-card"><div class="node-icon">🔬</div><div class="node-title">PREDATORS POST</div><div class="node-desc">Autonomous sector</div></div>
+      <div class="node-card"><div class="node-icon">⚡</div><div class="node-title">JACKDAW HUB</div><div class="node-desc">Training active</div></div>
+    </div>
+
+    <div class="footer-holding">
+      <span>TerratrampilleraVerse Holding — JOG Laboratory Network • Predators Squad (Autonomous Unit) • Le Bureau des Colonies (JACKDAW) • Cultural & Tech Exchange with Kingdom of Predators • Stream: KHARMA MOVIE (Yautja Prime Lore)</span>
+    </div>
+  </div>
+
+  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene(); scene.background = new THREE.Color(0x03060C); scene.fog = new THREE.FogExp2(0x03060C, 0.008);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(0, 2, 12);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(renderer.domElement);
+    const knotGeo = new THREE.TorusKnotGeometry(1.1, 0.28, 200, 32, 3, 4);
+    const knotMat = new THREE.MeshStandardMaterial({ color: 0xF9A826, emissive: 0x442200, emissiveIntensity: 0.6, metalness: 0.85, roughness: 0.25 });
+    const knot = new THREE.Mesh(knotGeo, knotMat); scene.add(knot);
+    const wireMat = new THREE.MeshBasicMaterial({ color: 0x00E5FF, wireframe: true, transparent: true, opacity: 0.3 });
+    const knotWire = new THREE.Mesh(knotGeo, wireMat); scene.add(knotWire);
+    for (let i = 0; i < 5; i++) {
+      const radius = 1.6 + i * 0.45;
+      const ringGeo = new THREE.TorusGeometry(radius, 0.025, 64, 200);
+      const ringMat = new THREE.MeshStandardMaterial({ color: 0x00E5FF, emissive: 0x004466 });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.rotation.x = Math.PI / 2 + i * 0.2; ring.rotation.z = i * 0.5;
+      scene.add(ring);
+    }
+    const particleCount = 2000;
+    const particlesGeo = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      const r = 1.5 + Math.random() * 3.5;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      positions[i*3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i*3+1] = r * Math.sin(phi) * Math.sin(theta) * 0.7;
+      positions[i*3+2] = r * Math.cos(phi);
+    }
+    particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const particleMat = new THREE.PointsMaterial({ color: 0x00E5FF, size: 0.03, transparent: true, blending: THREE.AdditiveBlending });
+    const particles = new THREE.Points(particlesGeo, particleMat); scene.add(particles);
+    const starsGeo = new THREE.BufferGeometry();
+    const starsPos = new Float32Array(4000 * 3);
+    for (let i = 0; i < 4000; i++) { starsPos[i*3] = (Math.random() - 0.5) * 400; starsPos[i*3+1] = (Math.random() - 0.5) * 200; starsPos[i*3+2] = (Math.random() - 0.5) * 150 - 50; }
+    starsGeo.setAttribute('position', new THREE.BufferAttribute(starsPos, 3));
+    const starsMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.6 });
+    const stars = new THREE.Points(starsGeo, starsMat); scene.add(stars);
+    const ambient = new THREE.AmbientLight(0x111122); scene.add(ambient);
+    const mainLight = new THREE.DirectionalLight(0xFFDDAA, 1.2); mainLight.position.set(3, 5, 4); scene.add(mainLight);
+    const backLight = new THREE.PointLight(0x2266FF, 0.6); backLight.position.set(-2, 1, -5); scene.add(backLight);
+    let time = 0;
+    function animate3D() {
+      requestAnimationFrame(animate3D); time += 0.008;
+      knot.rotation.y = time * 0.5; knot.rotation.x = Math.sin(time * 0.3) * 0.2; knotWire.rotation.copy(knot.rotation);
+      particles.rotation.y += 0.001; stars.rotation.y += 0.0002;
+      camera.position.x += (Math.sin(time * 0.1) * 0.08 - camera.position.x) * 0.02;
+      camera.position.y += (Math.sin(time * 0.15) * 0.04 - camera.position.y) * 0.02;
+      camera.lookAt(0, 0.2, 0);
+      renderer.render(scene, camera);
+    }
+    animate3D();
+    window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
+  </script>
+
+  <script>
+    const clans = ["Shadow Clan", "Iron Wolves Clan", "Black Flame Clan", "North Wind Clan", "Deep Hunters Clan", "Blood Moon Clan", "Ice Peaks Clan", "Rusted Thrones Clan", "White Ghosts Clan", "Fire Hearts Clan", "Stone Wardens Clan", "Rending Claws Clan", "Silent Harbor Clan", "Broken Spears Clan", "Last Chance Clan"];
+    document.getElementById('clansGrid').innerHTML = clans.map(clan => `<div class="clan-tag">${clan}</div>`).join('');
+
+    // Функции переключения между стримами (LAB Stream — iframe, Predators — внешняя ссылка)
+    function switchToLabStream() {
+      const wrapper = document.getElementById('videoWrapper');
+      wrapper.innerHTML = `<iframe id="labVideo" src="https://www.youtube-nocookie.com/embed/FbtkI4rEiiE?autoplay=1&mute=1&controls=1&loop=1&playlist=FbtkI4rEiiE&modestbranding=1&rel=0&disablekb=1&fs=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      document.getElementById('labStreamBtn').classList.add('active');
+      document.getElementById('predatorsStreamBtn').classList.remove('active');
+      addLogMessage("Switched to LAB Stream • Neural network visualization", 'system');
+    }
+
+    function switchToPredatorsStream() {
+      const wrapper = document.getElementById('videoWrapper');
+      wrapper.innerHTML = `<div id="videoPlaceholder" style="background: linear-gradient(135deg, #0A0E17, #1A1F2E); aspect-ratio: 16/9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; text-align: center; padding: 20px;">
+        <span style="font-size: 4rem;">🎬🐺</span>
+        <div style="color: #F9A826; font-family: monospace; font-size: 1rem; font-weight: bold;">PREDATOR ORIGINS</div>
+        <div style="color: #8BA2C2; font-size: 0.7rem;">The Engineers’ Secret Mission on Yautja Prime</div>
+        <a href="https://youtu.be/WXjiF4K7u4g" target="_blank" rel="noopener noreferrer" style="background: #F9A826; color: #000; padding: 8px 24px; border-radius: 40px; text-decoration: none; font-weight: bold; font-family: monospace; margin-top: 8px;">▶ WATCH ON YOUTUBE</a>
+        <div style="font-size: 0.55rem; color: #5A6E8A; margin-top: 8px;">🔍 Opens in new tab • Press F11 for fullscreen</div>
+      </div>`;
+      document.getElementById('predatorsStreamBtn').classList.add('active');
+      document.getElementById('labStreamBtn').classList.remove('active');
+      addLogMessage("Switched to YAUTJA PRIME FEED • KHARMA MOVIE (Predator Origins S1E1)", 'predator');
+    }
+
+    let researchProgress = 47.3, tokens = 14.2, frames = 3.1, autonomy = 94.7, helpGiven = 3, trainingProgress = 52;
+    let researchInterval = null, helpRequestTimeout = null, helpRequestActive = false;
+    const helpRequests = [
+      { title: "Sample Consultation", detail: "Anomalous mineral #PR-422 analysis required" },
+      { title: "Tactical Advice", detail: "Professor requests data on Sector X-7" },
+      { title: "Data Exchange", detail: "Squad shares field recordings, processing needed" },
+      { title: "Technical Assistance", detail: "Equipment malfunction, diagnostics required" }
+    ];
+
+    function updateUI() {
+      document.getElementById('researchProgress').style.width = researchProgress + '%';
+      document.getElementById('progressPercent').innerText = researchProgress.toFixed(1) + '%';
+      document.getElementById('tokensValue').innerText = tokens.toFixed(1);
+      document.getElementById('framesValue').innerText = frames.toFixed(1);
+      document.getElementById('autonomyValue').innerText = autonomy.toFixed(1);
+      document.getElementById('helpGivenValue').innerText = helpGiven;
+      document.getElementById('trainingPercent').innerText = trainingProgress + '%';
+      document.getElementById('trainingFill').style.width = trainingProgress + '%';
+    }
+
+    function addLogMessage(msg, type = 'info') {
+      const log = document.getElementById('logTerminal');
+      const newLine = document.createElement('div');
+      newLine.className = 'log-line';
+      const prefix = type === 'predator' ? '🐺 [PREDATORS]' : (type === 'system' ? '⚙️ [SYSTEM]' : '📡 [INFO]');
+      newLine.innerHTML = `> [${new Date().toLocaleTimeString()}] ${prefix} ${msg}`;
+      log.insertBefore(newLine, log.firstChild);
+      if (log.children.length > 12) log.removeChild(log.lastChild);
+    }
+
+    function addSampleFromPredators(sampleName) {
+      const container = document.getElementById('samplesList');
+      const newSample = document.createElement('div');
+      newSample.className = 'sample-item';
+      newSample.innerHTML = `<span style="color:#6BB5A0;">📦 ${sampleName}</span><span style="color:#8BA2C2;">shared</span>`;
+      container.insertBefore(newSample, container.firstChild);
+      if (container.children.length > 8) container.removeChild(container.lastChild);
+      document.getElementById('samplesCount').innerText = container.children.length + ' samples';
+    }
+
+    function showHelpRequest() {
+      if (helpRequestActive) return;
+      const randomRequest = helpRequests[Math.floor(Math.random() * helpRequests.length)];
+      document.getElementById('helpRequestText').innerText = randomRequest.title;
+      document.getElementById('helpRequestDetail').innerText = randomRequest.detail;
+      document.getElementById('helpRequestBlock').classList.remove('hidden');
+      helpRequestActive = true;
+      addLogMessage(`Predators squad requests assistance: ${randomRequest.title}`, 'predator');
+      if (helpRequestTimeout) clearTimeout(helpRequestTimeout);
+      helpRequestTimeout = setTimeout(() => {
+        if (helpRequestActive) {
+          document.getElementById('helpRequestBlock').classList.add('hidden');
+          helpRequestActive = false;
+          addLogMessage("Predators squad resolved the issue independently", 'predator');
+        }
+      }, 30000);
+    }
+
+    function acceptHelp() {
+      if (!helpRequestActive) return;
+      helpGiven++;
+      trainingProgress = Math.min(100, trainingProgress + Math.random() * 5);
+      researchProgress = Math.min(100, researchProgress + Math.random() * 4);
+      tokens = Math.min(32, tokens + Math.random() * 0.5);
+      updateUI();
+      addLogMessage(`Assistance provided. Predators squad expresses gratitude.`, 'system');
+      if (Math.random() > 0.6) {
+        const samples = ['Rare Crystal #PR-777', 'Artifact "Tear of the Predator"', 'Biomass Sample (classified)'];
+        const sample = samples[Math.floor(Math.random() * samples.length)];
+        addSampleFromPredators(sample);
+        addLogMessage(`📦 In gratitude, shared sample: ${sample}`, 'predator');
+      }
+      document.getElementById('helpRequestBlock').classList.add('hidden');
+      helpRequestActive = false;
+      if (helpRequestTimeout) clearTimeout(helpRequestTimeout);
+      setTimeout(() => { if (!helpRequestActive) showHelpRequest(); }, 25000 + Math.random() * 35000);
+    }
+
+    function initiateResearch() {
+      if (researchInterval) clearInterval(researchInterval);
+      addLogMessage(`INITIATING RESEARCH PROTOCOL...`, 'system');
+      researchInterval = setInterval(() => {
+        if (researchProgress < 100) {
+          researchProgress = Math.min(100, researchProgress + Math.random() * 2.5);
+          tokens = Math.min(32, tokens + Math.random() * 0.6);
+          frames = Math.min(10, frames + Math.random() * 0.25);
+          autonomy = Math.min(99.9, autonomy + Math.random() * 0.4);
+          updateUI();
+          if (researchProgress >= 100) {
+            clearInterval(researchInterval);
+            addLogMessage('✓ RESEARCH COMPLETE! Neural evolution achieved.', 'system');
+            researchInterval = null;
+          }
+        } else { clearInterval(researchInterval); researchInterval = null; }
+      }, 700);
+    }
+
+    function resetSimulation() {
+      if (researchInterval) { clearInterval(researchInterval); researchInterval = null; }
+      researchProgress = 47.3; tokens = 14.2; frames = 3.1; autonomy = 94.7;
+      updateUI();
+      addLogMessage('SYSTEM RESET • Neural state reinitialized', 'system');
+    }
+
+    function checkPredatorsStatus() {
+      const statuses = ["Squad at camp, professor conducting briefing", "War hound patrolling perimeter", "Predators analyzing field data", "Link to Kingdom stable, data exchange active"];
+      addLogMessage(statuses[Math.floor(Math.random() * statuses.length)], 'predator');
+      const squadStatuses = ['🟢 IN LAB', '🔴 FIELD MISSION', '🟡 REST/PREP'];
+      const professorStatuses = ['📚 BRIEFING', '🎓 JACKDAW TRAINING', '🔬 RESEARCH', '📡 ON CALL'];
+      document.getElementById('squadStatus').innerHTML = squadStatuses[Math.floor(Math.random() * squadStatuses.length)];
+      document.getElementById('professorStatus').innerHTML = professorStatuses[Math.floor(Math.random() * professorStatuses.length)];
+    }
+
+    function goFullscreen() {
+      const wrapper = document.querySelector('.video-wrapper');
+      if (wrapper.requestFullscreen) wrapper.requestFullscreen();
+      else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
+      else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
+    }
+
+    document.getElementById('initiateBtn').addEventListener('click', initiateResearch);
+    document.getElementById('resetBtn').addEventListener('click', resetSimulation);
+    document.getElementById('checkPredatorsBtn').addEventListener('click', checkPredatorsStatus);
+    document.getElementById('acceptHelpBtn').addEventListener('click', acceptHelp);
+    document.getElementById('labStreamBtn').addEventListener('click', switchToLabStream);
+    document.getElementById('predatorsStreamBtn').addEventListener('click', switchToPredatorsStream);
+    document.getElementById('fullscreenVideoBtn').addEventListener('click', goFullscreen);
+
+    document.querySelectorAll('.division-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.division-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        addLogMessage(`Switched to ${btn.innerText} division (reference info)`, 'info');
+      });
+    });
+
+    updateUI();
+    addLogMessage('🐺 Predators squad deployed. "Operating autonomously, ready to assist"', 'predator');
+    addLogMessage('📡 Yautja Prime stream ready • KHARMA MOVIE (Predator Origins)', 'system');
+    addLogMessage('👑 15 clans of the Kingdom of Predators recognized • Cultural exchange active', 'info');
+    setTimeout(() => { if (!helpRequestActive) showHelpRequest(); }, 15000);
+  </script>
+</body>
+</html>
