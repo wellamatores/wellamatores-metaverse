@@ -172,25 +172,687 @@
         </div>
       </div>
 
-      <!-- RIGHT PANEL: Research Core + Video (РАБОТАЕТ — открывается в новой вкладке) -->
-      <div class="panel-right">
+以下是您所需的HTML代码。它创建了一个科幻主题的3D场景，展示“阿门吉神器”的旋转核心与环绕能量，并包含一个面板，其中的“LAB STREAM”按钮可打开您指定的文件。
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Amengi Artifact | Kingdom of Predators | 3D Scene</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Courier New', 'Segoe UI', monospace;
+        }
+        
+        /* 原有3D画布覆盖全屏 */
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        /* 原有信息面板（左下）和提示（右下）保留，提高层级 */
+        #info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 200;
+            color: #8fcfb5;
+            background: rgba(5, 10, 14, 0.85);
+            padding: 12px 24px;
+            border-left: 4px solid #e2b870;
+            border-radius: 0 12px 12px 0;
+            backdrop-filter: blur(8px);
+            pointer-events: none;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        
+        #info h1 {
+            margin: 0 0 4px;
+            font-size: 18px;
+            color: #e2b870;
+        }
+        
+        #info p {
+            margin: 0;
+            font-size: 11px;
+            opacity: 0.8;
+        }
+        
+        #controls-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 200;
+            color: #688b7a;
+            background: rgba(0,0,0,0.5);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-family: monospace;
+            pointer-events: none;
+        }
+        
+        /* 右侧面板样式 — 完全按照原设计但稍微浮于3D之上，不干扰3D交互 */
+        .panel-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 320px;
+            z-index: 150;
+            background: rgba(8, 12, 18, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(226, 184, 112, 0.5);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            overflow: hidden;
+            font-family: monospace;
+            transition: all 0.2s ease;
+            pointer-events: auto;
+        }
+        
+        .video-portal {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .video-wrapper {
+            aspect-ratio: 16 / 9;
+            background: #0A0E17;
+            position: relative;
+        }
+        
+        /* 占位或内嵌iframe样式统一 */
+        .video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .video-controls {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            border-top: 1px solid rgba(226, 184, 112, 0.3);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .video-btn {
+            background: #1E2A32;
+            border: none;
+            color: #C0D4E8;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 0.7rem;
+            padding: 6px 14px;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: 0.2s;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .video-btn.active {
+            background: #F9A826;
+            color: #0A0E17;
+            box-shadow: 0 0 6px #F9A826;
+        }
+        
+        .video-btn:hover {
+            background: #F9A826;
+            color: #000;
+            transform: scale(0.96);
+        }
+        
+        /* 小屏适配 */
+        @media (max-width: 720px) {
+            .panel-right { width: 280px; top: 10px; right: 10px; }
+            .video-btn { padding: 4px 10px; font-size: 0.6rem; }
+        }
+        
+        /* scanline 保持3D风格 */
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 0, 0.02) 0px,
+                rgba(0, 255, 0, 0.02) 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h1>⚔️ AMENGI ARTIFACT ⚔️</h1>
+        <p>«Heart of the Rusted Throne» — Hyper-Gate Destabilizer | Clearance Level: Σ (Black Whisper)</p>
+    </div>
+    <div id="controls-hint">
+        🖱️ Mouse: rotate camera | RMB: pan | Scroll: zoom
+    </div>
+    <div class="scanline"></div>
+    
+    <!-- 右侧面板: LAB STREAM 按钮及视频区域 完全符合需求: 🧠 LAB STREAM 打开当前HTML文件（新窗口） 其他视频按钮保持原功能/占位 -->
+    <div class="panel-right">
         <div class="video-portal">
-          <div class="video-wrapper" id="videoWrapper">
-            <!-- Плесхолдер с кнопкой открытия на YouTube -->
-            <div id="videoPlaceholder" style="background: linear-gradient(135deg, #0A0E17, #1A1F2E); aspect-ratio: 16/9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; text-align: center; padding: 20px;">
-              <span style="font-size: 4rem;">🎬🐺</span>
-              <div style="color: #F9A826; font-family: monospace; font-size: 1rem; font-weight: bold;">PREDATOR ORIGINS</div>
-              <div style="color: #8BA2C2; font-size: 0.7rem;">The Engineers’ Secret Mission on Yautja Prime</div>
-              <a href="https://youtu.be/WXjiF4K7u4g" target="_blank" rel="noopener noreferrer" style="background: #F9A826; color: #000; padding: 8px 24px; border-radius: 40px; text-decoration: none; font-weight: bold; font-family: monospace; margin-top: 8px;">▶ WATCH ON YOUTUBE</a>
-              <div style="font-size: 0.55rem; color: #5A6E8A; margin-top: 8px;">🔍 Opens in new tab • Press F11 for fullscreen</div>
+            <div class="video-wrapper" id="videoWrapper">
+                <!-- 默认显示 Yautja Prime 预告占位风格 (模仿原设计但独立) -->
+                <div id="videoPlaceholder" style="background: linear-gradient(135deg, #0A0E17, #1A1F2E); aspect-ratio: 16/9; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; text-align: center; padding: 20px;">
+                    <span style="font-size: 4rem;">🎬🐺</span>
+                    <div style="color: #F9A826; font-family: monospace; font-size: 1rem; font-weight: bold;">PREDATOR ORIGINS</div>
+                    <div style="color: #8BA2C2; font-size: 0.7rem;">The Engineers’ Secret Mission on Yautja Prime</div>
+                    <a href="https://youtu.be/WXjiF4K7u4g" target="_blank" rel="noopener noreferrer" style="background: #F9A826; color: #000; padding: 8px 24px; border-radius: 40px; text-decoration: none; font-weight: bold; font-family: monospace; margin-top: 8px;">▶ WATCH ON YOUTUBE</a>
+                    <div style="font-size: 0.55rem; color: #5A6E8A; margin-top: 8px;">🔍 Opens in new tab • Press F11 for fullscreen</div>
+                </div>
             </div>
-          </div>
-          <div class="video-controls">
-            <button class="video-btn" id="labStreamBtn">🧠 LAB STREAM</button>
-            <button class="video-btn active" id="predatorsStreamBtn">🐺 YAUTJA PRIME (KHARMA)</button>
-            <button class="video-btn" id="fullscreenVideoBtn">⛶ FULLSCREEN</button>
-          </div>
+            <div class="video-controls">
+                <button class="video-btn" id="labStreamBtn">🧠 LAB STREAM</button>
+                <button class="video-btn active" id="predatorsStreamBtn">🐺 YAUTJA PRIME (KHARMA)</button>
+                <button class="video-btn" id="fullscreenVideoBtn">⛶ FULLSCREEN</button>
+            </div>
         </div>
+    </div>
+
+    <!-- 3D 库导入及原有场景代码（完整保留原有所有特效与模型） -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        
+        // --- INITIALIZATION ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x03080c);
+        scene.fog = new THREE.FogExp2(0x03080c, 0.008);
+        
+        // --- CAMERA ---
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(5, 3, 7);
+        camera.lookAt(0, 0, 0);
+        
+        // --- RENDERER WITH EFFECTS ---
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.toneMapping = THREE.ReinhardToneMapping;
+        renderer.toneMappingExposure = 1.2;
+        document.body.appendChild(renderer.domElement);
+        
+        // Bloom effect
+        const renderScene = new RenderPass(scene, camera);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.3, 0.85);
+        bloomPass.threshold = 0.1;
+        bloomPass.strength = 0.65;
+        bloomPass.radius = 0.5;
+        const effectComposer = new EffectComposer(renderer);
+        effectComposer.addPass(renderScene);
+        effectComposer.addPass(bloomPass);
+        
+        // --- CONTROLS ---
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+        controls.enableZoom = true;
+        controls.enablePan = true;
+        controls.autoRotate = false;
+        controls.target.set(0, 0.5, 0);
+        
+        // --- LIGHTING ---
+        const ambientLight = new THREE.AmbientLight(0x111820);
+        scene.add(ambientLight);
+        
+        const mainLight = new THREE.DirectionalLight(0xd4b87a, 1.2);
+        mainLight.position.set(3, 5, 2);
+        scene.add(mainLight);
+        
+        const fillLight = new THREE.PointLight(0x9e6b3e, 0.8);
+        fillLight.position.set(0, -1, 0);
+        scene.add(fillLight);
+        
+        const backLight = new THREE.PointLight(0x3a6ea5, 0.6);
+        backLight.position.set(-2, 3, -4);
+        scene.add(backLight);
+        
+        const pulseLight = new THREE.PointLight(0xaa4444, 1.5);
+        pulseLight.position.set(0.5, 0.8, 0.5);
+        scene.add(pulseLight);
+        
+        // --- DUST PARTICLES (ancient atmosphere) ---
+        const particleCount = 1200;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount; i++) {
+            particlePositions[i*3] = (Math.random() - 0.5) * 30;
+            particlePositions[i*3+1] = (Math.random() - 0.5) * 15;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 20 - 5;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            color: 0x7a8c6e,
+            size: 0.05,
+            transparent: true,
+            opacity: 0.4,
+            blending: THREE.AdditiveBlending
+        });
+        const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particleSystem);
+        
+        // --- MAIN ARTIFACT: "Heart of the Rusted Throne" ---
+        const artifactGroup = new THREE.Group();
+        
+        // Core
+        const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
+        const coreMat = new THREE.MeshStandardMaterial({
+            color: 0x4a2a1a,
+            emissive: 0x882222,
+            emissiveIntensity: 0.45,
+            metalness: 0.85,
+            roughness: 0.3
+        });
+        const core = new THREE.Mesh(coreGeo, coreMat);
+        artifactGroup.add(core);
+        
+        // Inner glowing core
+        const innerGlowGeo = new THREE.IcosahedronGeometry(0.68, 1);
+        const glowMat = new THREE.MeshStandardMaterial({
+            color: 0xff6644,
+            emissive: 0xcc3311,
+            emissiveIntensity: 0.7,
+            transparent: true,
+            opacity: 0.4,
+            metalness: 0.2,
+            roughness: 0.1
+        });
+        const innerGlow = new THREE.Mesh(innerGlowGeo, glowMat);
+        artifactGroup.add(innerGlow);
+        
+        // Rotating rings
+        const ring1Geo = new THREE.TorusGeometry(1.2, 0.08, 64, 200);
+        const ringMat1 = new THREE.MeshStandardMaterial({
+            color: 0xb87c3a,
+            emissive: 0x552200,
+            emissiveIntensity: 0.4,
+            metalness: 0.9,
+            roughness: 0.2
+        });
+        const ring1 = new THREE.Mesh(ring1Geo, ringMat1);
+        ring1.rotation.x = Math.PI / 2;
+        artifactGroup.add(ring1);
+        
+        const ring2Geo = new THREE.TorusGeometry(1.45, 0.06, 64, 200);
+        const ringMat2 = new THREE.MeshStandardMaterial({
+            color: 0x8a6e4b,
+            emissive: 0x442200,
+            emissiveIntensity: 0.3,
+            metalness: 0.85,
+            roughness: 0.25
+        });
+        const ring2 = new THREE.Mesh(ring2Geo, ringMat2);
+        ring2.rotation.z = Math.PI / 3;
+        ring2.rotation.x = Math.PI / 3;
+        artifactGroup.add(ring2);
+        
+        const ring3Geo = new THREE.TorusGeometry(1.7, 0.05, 64, 200);
+        const ringMat3 = new THREE.MeshStandardMaterial({
+            color: 0x6a543a,
+            emissive: 0x331100,
+            emissiveIntensity: 0.2,
+            metalness: 0.8,
+            roughness: 0.3
+        });
+        const ring3 = new THREE.Mesh(ring3Geo, ringMat3);
+        ring3.rotation.x = Math.PI / 1.5;
+        ring3.rotation.z = Math.PI / 4;
+        artifactGroup.add(ring3);
+        
+        // Floating shards
+        const shardCount = 24;
+        const shards = [];
+        const shardGeo = new THREE.ConeGeometry(0.12, 0.35, 6);
+        for (let i = 0; i < shardCount; i++) {
+            const mat = new THREE.MeshStandardMaterial({
+                color: 0xbc7a42,
+                emissive: 0x662200,
+                emissiveIntensity: 0.3,
+                metalness: 0.7,
+                roughness: 0.4
+            });
+            const shard = new THREE.Mesh(shardGeo, mat);
+            const angle = (i / shardCount) * Math.PI * 2;
+            const radius = 2.1;
+            const yOffset = Math.sin(angle * 3) * 0.6;
+            shard.position.x = Math.cos(angle) * radius;
+            shard.position.z = Math.sin(angle) * radius;
+            shard.position.y = yOffset + 0.2;
+            shard.rotation.x = Math.random() * Math.PI;
+            shard.rotation.z = Math.random() * Math.PI;
+            artifactGroup.add(shard);
+            shards.push({ mesh: shard, angle: angle, radius: radius });
+        }
+        
+        // Runic spheres
+        const runeSpheres = [];
+        const sphereMat = new THREE.MeshStandardMaterial({
+            color: 0xdd8844,
+            emissive: 0xaa3311,
+            emissiveIntensity: 0.6,
+            metalness: 0.3,
+            roughness: 0.2
+        });
+        for (let i = 0; i < 12; i++) {
+            const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), sphereMat);
+            const phi = Math.acos(2 * Math.random() - 1);
+            const theta = 2 * Math.PI * Math.random();
+            const rad = 2.3;
+            sphere.position.x = rad * Math.sin(phi) * Math.cos(theta);
+            sphere.position.y = rad * Math.sin(phi) * Math.sin(theta);
+            sphere.position.z = rad * Math.cos(phi);
+            artifactGroup.add(sphere);
+            runeSpheres.push({ mesh: sphere, phi, theta, rad, speed: 0.005 });
+        }
+        
+        scene.add(artifactGroup);
+        
+        // --- PEDESTAL / ALTAR ---
+        const pedestalGroup = new THREE.Group();
+        
+        const baseGeo = new THREE.CylinderGeometry(2.2, 2.5, 0.4, 8);
+        const stoneMat = new THREE.MeshStandardMaterial({
+            color: 0x2a2e3a,
+            roughness: 0.7,
+            metalness: 0.1,
+            emissive: 0x111111
+        });
+        const basePlate = new THREE.Mesh(baseGeo, stoneMat);
+        basePlate.position.y = -0.8;
+        pedestalGroup.add(basePlate);
+        
+        const pillarGeo = new THREE.CylinderGeometry(1.3, 1.6, 0.9, 6);
+        const pillarMat = new THREE.MeshStandardMaterial({
+            color: 0x3a3e4a,
+            roughness: 0.5,
+            metalness: 0.3
+        });
+        const pillar = new THREE.Mesh(pillarGeo, pillarMat);
+        pillar.position.y = -0.3;
+        pedestalGroup.add(pillar);
+        
+        const topPlateGeo = new THREE.CylinderGeometry(1.8, 1.9, 0.2, 8);
+        const topMat = new THREE.MeshStandardMaterial({
+            color: 0x5a4e3a,
+            metalness: 0.6,
+            roughness: 0.4,
+            emissive: 0x221100
+        });
+        const topPlate = new THREE.Mesh(topPlateGeo, topMat);
+        topPlate.position.y = 0.15;
+        pedestalGroup.add(topPlate);
+        
+        const runeEdges = new THREE.EdgesGeometry(pillarGeo);
+        const runeLines = new THREE.LineSegments(runeEdges, new THREE.LineBasicMaterial({ color: 0xad6b3a }));
+        runeLines.position.copy(pillar.position);
+        pedestalGroup.add(runeLines);
+        
+        scene.add(pedestalGroup);
+        
+        // --- LIGHTNING ARCS ---
+        const lightningMat = new THREE.LineBasicMaterial({ color: 0xff6633 });
+        
+        function createLightning(start, end, segments = 8) {
+            const points = [start.clone()];
+            for (let i = 1; i <= segments; i++) {
+                const t = i / segments;
+                const mid = start.clone().lerp(end, t);
+                mid.x += (Math.random() - 0.5) * 0.12;
+                mid.y += (Math.random() - 0.5) * 0.12;
+                mid.z += (Math.random() - 0.5) * 0.12;
+                points.push(mid);
+            }
+            points.push(end.clone());
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            return new THREE.Line(geometry, lightningMat);
+        }
+        
+        for (let i = 0; i < 6; i++) {
+            const angle = (i / 6) * Math.PI * 2;
+            const start = new THREE.Vector3(Math.cos(angle) * 1.2, 0.2 + Math.sin(angle*2)*0.3, Math.sin(angle) * 1.2);
+            const end = new THREE.Vector3(Math.cos(angle) * 2.0, -0.2 + Math.cos(angle)*0.4, Math.sin(angle) * 2.0);
+            const lightning = createLightning(start, end, 5);
+            artifactGroup.add(lightning);
+        }
+        
+        // --- ENERGY PARTICLES ---
+        const energyParticleCount = 800;
+        const energyParticleGeo = new THREE.BufferGeometry();
+        const energyPositions = new Float32Array(energyParticleCount * 3);
+        for (let i = 0; i < energyParticleCount; i++) {
+            const rad = 1.5 + Math.random() * 1.2;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.acos(2 * Math.random() - 1);
+            energyPositions[i*3] = rad * Math.sin(phi) * Math.cos(theta);
+            energyPositions[i*3+1] = rad * Math.sin(phi) * Math.sin(theta);
+            energyPositions[i*3+2] = rad * Math.cos(phi);
+        }
+        energyParticleGeo.setAttribute('position', new THREE.BufferAttribute(energyPositions, 3));
+        const energyParticleMat = new THREE.PointsMaterial({
+            color: 0xff8844,
+            size: 0.04,
+            transparent: true,
+            blending: THREE.AdditiveBlending,
+            opacity: 0.7
+        });
+        const energyParticles = new THREE.Points(energyParticleGeo, energyParticleMat);
+        artifactGroup.add(energyParticles);
+        
+        // --- GROUND RING ---
+        const groundRingGeo = new THREE.RingGeometry(2.4, 3.4, 32);
+        const groundRingMat = new THREE.MeshStandardMaterial({
+            color: 0x1f2a1e,
+            emissive: 0x331a0a,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.5,
+            metalness: 0.1
+        });
+        const groundRing = new THREE.Mesh(groundRingGeo, groundRingMat);
+        groundRing.rotation.x = -Math.PI / 2;
+        groundRing.position.y = -0.95;
+        scene.add(groundRing);
+        
+        // --- STARFIELD BACKGROUND ---
+        const starCount = 3000;
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = [];
+        for (let i = 0; i < starCount; i++) {
+            starPos.push((Math.random() - 0.5) * 400);
+            starPos.push((Math.random() - 0.5) * 200);
+            starPos.push((Math.random() - 0.5) * 150 - 70);
+        }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+        const starMat = new THREE.PointsMaterial({ color: 0xb0c4b0, size: 0.12, transparent: true, opacity: 0.6 });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+        
+        // --- ANIMATION LOOP ---
+        let time = 0;
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.012;
+            
+            artifactGroup.rotation.y = time * 0.15;
+            artifactGroup.rotation.x = Math.sin(time * 0.2) * 0.05;
+            artifactGroup.rotation.z = Math.cos(time * 0.23) * 0.03;
+            
+            ring1.rotation.z += 0.01;
+            ring2.rotation.x += 0.008;
+            ring2.rotation.y += 0.005;
+            ring3.rotation.z -= 0.007;
+            ring3.rotation.x += 0.006;
+            
+            pulseLight.intensity = 1.0 + Math.sin(time * 4) * 0.5;
+            coreMat.emissiveIntensity = 0.45 + Math.sin(time * 2.5) * 0.1;
+            glowMat.emissiveIntensity = 0.7 + Math.sin(time * 3.2) * 0.25;
+            
+            shards.forEach((shard) => {
+                shard.angle += 0.008;
+                const rad = 2.1;
+                shard.mesh.position.x = Math.cos(shard.angle) * rad;
+                shard.mesh.position.z = Math.sin(shard.angle) * rad;
+                shard.mesh.position.y = Math.sin(shard.angle * 3) * 0.6 + 0.2;
+                shard.mesh.rotation.x += 0.03;
+                shard.mesh.rotation.z += 0.02;
+            });
+            
+            runeSpheres.forEach((rune) => {
+                rune.theta += rune.speed * 0.8;
+                rune.phi += 0.003;
+                const x = rune.rad * Math.sin(rune.phi) * Math.cos(rune.theta);
+                const y = rune.rad * Math.sin(rune.phi) * Math.sin(rune.theta);
+                const z = rune.rad * Math.cos(rune.phi);
+                rune.mesh.position.set(x, y, z);
+            });
+            
+            energyParticleMat.opacity = 0.6 + Math.sin(time * 5) * 0.2;
+            particleSystem.rotation.y += 0.0005;
+            particleSystem.rotation.x = Math.sin(time * 0.1) * 0.05;
+            
+            controls.update();
+            effectComposer.render();
+        }
+        
+        animate();
+        
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            effectComposer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        console.log('3D Scene | Amengi Artifact | Kingdom of Predators | Loaded');
+    </script>
+
+    <!-- 独立脚本：处理右侧视频面板及按钮行为，保证 🧠 LAB STREAM 打开当前html文件的新窗口 -->
+    <script type="text/javascript">
+        (function() {
+            // 获取DOM元素
+            const labStreamBtn = document.getElementById('labStreamBtn');
+            const predatorsBtn = document.getElementById('predatorsStreamBtn');
+            const fullscreenBtn = document.getElementById('fullscreenVideoBtn');
+            const videoWrapper = document.getElementById('videoWrapper');
+            
+            // 辅助清除当前wrapper内容
+            function clearWrapper() {
+                while (videoWrapper.firstChild) {
+                    videoWrapper.removeChild(videoWrapper.firstChild);
+                }
+            }
+            
+            // 🧠 LAB STREAM 按钮: 打开当前HTML文件的新窗口 (完全按照原要求: 打开这个文件(html)在新窗口)
+            labStreamBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                // 获取当前页面的完整URL
+                const currentUrl = window.location.href;
+                // 在新标签页/窗口中打开当前文件
+                window.open(currentUrl, '_blank');
+                // 并且保持视频区域不改变原有布局(不干扰其他按钮激活样式)
+                // 但为了交互反馈，临时高亮提醒
+                labStreamBtn.style.transform = 'scale(0.95)';
+                setTimeout(() => { labStreamBtn.style.transform = ''; }, 150);
+                // 不修改面板内容，符合「只打开窗口，不碰其他内容」
+            });
+            
+            // 🐺 YAUTJA PRIME (KHARMA) —— 恢复原本YouTube占位符或内嵌YouTube (保持风格一致)
+            predatorsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                clearWrapper();
+                // 重新创建占位内容，使用与原始一致的设计（保留原链接 & 预览风格）
+                const placeholderDiv = document.createElement('div');
+                placeholderDiv.style.background = "linear-gradient(135deg, #0A0E17, #1A1F2E)";
+                placeholderDiv.style.aspectRatio = "16/9";
+                placeholderDiv.style.display = "flex";
+                placeholderDiv.style.flexDirection = "column";
+                placeholderDiv.style.alignItems = "center";
+                placeholderDiv.style.justifyContent = "center";
+                placeholderDiv.style.gap = "15px";
+                placeholderDiv.style.textAlign = "center";
+                placeholderDiv.style.padding = "20px";
+                placeholderDiv.innerHTML = `
+                    <span style="font-size: 4rem;">🎬🐺</span>
+                    <div style="color: #F9A826; font-family: monospace; font-size: 1rem; font-weight: bold;">PREDATOR ORIGINS</div>
+                    <div style="color: #8BA2C2; font-size: 0.7rem;">The Engineers’ Secret Mission on Yautja Prime</div>
+                    <a href="https://youtu.be/WXjiF4K7u4g" target="_blank" rel="noopener noreferrer" style="background: #F9A826; color: #000; padding: 8px 24px; border-radius: 40px; text-decoration: none; font-weight: bold; font-family: monospace; margin-top: 8px;">▶ WATCH ON YOUTUBE</a>
+                    <div style="font-size: 0.55rem; color: #5A6E8A; margin-top: 8px;">🔍 Opens in new tab • Press F11 for fullscreen</div>
+                `;
+                videoWrapper.appendChild(placeholderDiv);
+                
+                // 按钮激活样式切换
+                document.querySelectorAll('.video-btn').forEach(btn => btn.classList.remove('active'));
+                predatorsBtn.classList.add('active');
+            });
+            
+            // FULLSCREEN 针对视频区域实现全屏 (如果videoWrapper内有iframe或者占位，将wrapper元素全屏)
+            fullscreenBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const elem = videoWrapper;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen().catch(err => {
+                        console.warn(`全屏失败: ${err.message}`);
+                    });
+                } else if (elem.webkitRequestFullscreen) {
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) {
+                    elem.msRequestFullscreen();
+                }
+            });
+            
+            // 初始激活 predators 按钮样式和内容同步 (确保默认内容与激活按钮匹配)
+            // 默认已有占位内容，但需保证激活样式为 predatorsBtn
+            if (predatorsBtn && !labStreamBtn.classList.contains('active')) {
+                predatorsBtn.classList.add('active');
+            }
+            
+            // 处理来自 YOUTUBE 链接额外确保没有影响
+            // 如果预置占位里的a标签是新窗口，完全不影响主需求。
+        })();
+    </script>
+</body>
+</html>
+```
 
         <div class="progress-section">
           <div class="progress-label">
