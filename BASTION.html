@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>BASTION OF CROWS — JACKDAW | University of Strategy, Ethics and Survival</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #030303;
+      background-image: radial-gradient(circle at 25% 40%, rgba(245, 158, 11, 0.06) 0%, rgba(0,0,0,0) 55%);
+      color: #e2e8ff;
+    }
+    .glass-panel {
+      background: rgba(10, 10, 12, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 28px;
+    }
+    .gradient-gold {
+      background: linear-gradient(135deg, #ffffff, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .pillar-card {
+      background: rgba(20, 20, 24, 0.6);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      transition: all 0.2s;
+    }
+    .pillar-card:hover {
+      border-color: rgba(245, 158, 11, 0.6);
+      background: rgba(30, 30, 36, 0.8);
+      transform: translateY(-3px);
+    }
+    .postulate {
+      border-left: 4px solid #f59e0b;
+      background: rgba(245, 158, 11, 0.05);
+      transition: all 0.2s;
+    }
+    .postulate:hover {
+      background: rgba(245, 158, 11, 0.12);
+      border-left-color: #fbbf24;
+    }
+    .alumni-card {
+      border-bottom: 1px solid rgba(245, 158, 11, 0.15);
+      transition: all 0.2s;
+    }
+    .alumni-card:hover {
+      border-bottom-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.05);
+    }
+    .trailer-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 20px;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      cursor: pointer;
+    }
+    .trailer-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .trailer-wrapper:hover img {
+      transform: scale(1.05);
+    }
+    .fullscreen-btn {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-family: monospace;
+      cursor: pointer;
+      transition: all 0.2s;
+      z-index: 20;
+    }
+    .fullscreen-btn:hover {
+      background: rgba(245, 158, 11, 0.8);
+      color: #000;
+      border-color: #f59e0b;
+    }
+    .three-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .video-hint {
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 10px;
+      font-family: monospace;
+      color: #f59e0b;
+    }
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(245, 158, 11, 0.85);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+      transition: transform 0.2s, background 0.2s;
+      z-index: 10;
+    }
+    .trailer-wrapper:hover .play-button {
+      transform: translate(-50%, -50%) scale(1.1);
+      background: rgba(245, 158, 11, 1);
+    }
+    .play-button span {
+      font-size: 40px;
+      margin-left: 6px;
+      color: #000;
+    }
+    .video-overlay {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      background: rgba(0,0,0,0.6);
+      padding: 8px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #fbbf24;
+      z-index: 10;
+    }
+    .emblem-glow {
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+      transition: all 0.3s ease;
+    }
+    .emblem-glow:hover {
+      box-shadow: 0 0 45px rgba(245, 158, 11, 0.5);
+      transform: scale(1.02);
+    }
+    .chronicle-entry {
+      border-left: 2px solid #f59e0b;
+      transition: all 0.2s;
+    }
+    .chronicle-entry:hover {
+      background: rgba(245, 158, 11, 0.08);
+      border-left-color: #fbbf24;
+    }
+    .kaiser-quote {
+      font-style: italic;
+      color: #a8a8b8;
+      border-left: 3px solid #f59e0b;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="fixed top-0 w-full z-50 bg-black/60 backdrop-blur-md border-b border-amber-500/30 px-4 md:px-6 py-3 flex flex-wrap justify-between items-center gap-2">
+  <div class="flex items-center gap-3">
+    <div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+    <span class="font-bold tracking-tighter text-xl italic bg-gradient-to-r from-amber-400 to-white bg-clip-text text-transparent">BASTION<span class="text-amber-400">⚔️</span>CORBEAUX</span>
+    <span class="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30 hidden sm:inline">JACKDAW • TACTICAL ORBITAL GROUP</span>
+  </div>
+  <div class="flex gap-3 text-xs font-mono">
+    <a href="#" class="hover:text-amber-400 transition">⌂ RETURN</a>
+    <a href="#" class="hover:text-amber-400 transition">EXO</a>
+    <a href="#" class="hover:text-amber-400 transition">STAKING</a>
+  </div>
+</nav>
+
+<main class="relative z-10 pt-28 pb-16 px-4 max-w-7xl mx-auto">
+
+  <!-- Header -->
+  <div class="text-center mb-12">
+    <div class="inline-flex items-center gap-2 bg-amber-500/20 rounded-full px-4 py-1.5 border border-amber-400/40 mb-5">
+      <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+      <span class="text-[11px] font-mono text-amber-300">LE BASTION DES CORBEAUX — JACKDAW TACTICAL ORBITAL GROUP</span>
+    </div>
+    <h1 class="text-5xl md:text-7xl font-black tracking-tighter gradient-gold">BASTION OF CROWS</h1>
+    <p class="text-stone-300 text-sm max-w-2xl mx-auto mt-3 italic">"Not to win war. To survive in peace which comes after."</p>
+    <div class="mt-4 text-xs font-mono text-stone-400">/// University of Strategy, Ethics and Survival of JACKDAW tactical Orbital Group ///</div>
+  </div>
+
+  <!-- THE INVITATION CHRONICLE (NEW MATERIAL) -->
+  <div class="glass-panel p-6 mb-8">
+    <h2 class="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">📡 THE INVITATION</h2>
+    <div class="space-y-3 text-stone-300 text-sm leading-relaxed">
+      <p>The invitation arrived without ceremony. No delegation. No diplomatic fleet. No announcements on public channels.</p>
+      <p class="kaiser-quote pl-4 py-2">Just a sealed transmission embedded in an ancient hunting frequency, older than most human languages, drifting through the outer relays of Yautja space until it reached the basalt halls of the Predator Kingdom's Military Academy.</p>
+      <p>When they decrypted it, there was only one line:</p>
+      <div class="text-amber-400 font-mono text-base italic text-center py-2">"We need lessons in survival beyond the hunt."</div>
+      <p>For the Yautja, this was not a request. It was an admission of significance. And the Academy chose <span class="text-amber-300 font-semibold">him</span>.</p>
+    </div>
+  </div>
+
+  <!-- Professor Section with MAJK EMBLEM -->
+  <div class="glass-panel p-6 mb-8 flex flex-col md:flex-row gap-6 items-center">
+    <div class="w-32 h-32 rounded-full bg-gradient-to-br from-amber-900/40 via-amber-800/20 to-black border-2 border-amber-500/60 flex items-center justify-center overflow-hidden shadow-lg emblem-glow">
+      <div class="text-center">
+        <div class="text-amber-400 font-bold text-5xl">λ</div>
+        <div class="text-[9px] text-amber-300 font-mono uppercase tracking-wider mt-1">MAJK</div>
+        <div class="text-[6px] text-amber-500/60 font-mono">Military Academy<br>Of Yautja Kingdom</div>
+      </div>
+    </div>
+    <div>
+      <div class="text-xs font-mono text-amber-400 mb-1">PROFESSOR • STRATEGIST • Yautja</div>
+      <h2 class="text-2xl font-bold flex items-center gap-2 flex-wrap">T'Karr Vael <span class="text-sm text-stone-400 font-mono">[ formerly transliterated as "Professor Takar" ]</span></h2>
+      <p class="text-stone-300 text-sm mt-2 leading-relaxed">He was not the youngest professor. Not the strongest. Not the most decorated hunter. But he had survived the longest without becoming predictable. He did not bring an entourage — but several warriors from his clan still joined him. The clan had decided. A battle cloak, a set of ritual tools, and a beast that followed him as if it had never known any other purpose in existence.</p>
+    </div>
+  </div>
+
+  <!-- KAISER SECTION -->
+  <div class="glass-panel p-6 mb-8 flex flex-col md:flex-row gap-6 items-center bg-amber-500/5">
+    <div class="w-28 h-28 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-5xl">🐕</div>
+    <div>
+      <div class="text-xs font-mono text-amber-400 mb-1">COMBAT K9 • CLONE • SILENT HUNTER</div>
+      <h3 class="text-xl font-bold text-amber-300">Kaiser</h3>
+      <p class="text-stone-300 text-sm mt-1 leading-relaxed">A combat dog, a clone of a German Shepherd, bred for silence and hunting rather than obedience. He did not bark. He evaluated. And waited. Kaiser eventually studied the building — not as architecture, but as an organism. He could feel when it was listening. And when it was thinking. T'Karr Vael never corrected him.</p>
+      <div class="mt-2 text-xs text-stone-400 italic">"He simply observed. And sometimes left the room before the simulation ended. Those were usually the ones that failed."</div>
+    </div>
+  </div>
+
+  <!-- THE JOURNEY & JACKDAW -->
+  <div class="grid md:grid-cols-2 gap-6 mb-8">
+    <div class="glass-panel p-5">
+      <h3 class="text-md font-bold text-amber-400 mb-2">🌌 THE JOURNEY TO VELLAMATORES</h3>
+      <p class="text-sm text-stone-300">The journey took him through systems where light refracted strangely, where navigation computers argued with themselves, and entire stars seemed to flicker — appearing and disappearing depending on who observed them. The Yautja called such regions <span class="text-amber-300 italic">"places that remember they were somewhere else."</span> He called them unnecessary distractions. Kaiser, however, loved them.</p>
+    </div>
+    <div class="glass-panel p-5">
+      <h3 class="text-md font-bold text-amber-400 mb-2">🏛️ THE LORD-REGENT & JACKDAW</h3>
+      <p class="text-sm text-stone-300">The invitation came from the Lord-Regent of the Jackdaw Colonial Bureau (<span class="text-amber-300">Le Bureau des Colonies Jackdaw</span>). Jackdaw was not a government in the old sense — it was a system that had absorbed governance and replaced it with functionality. It did not ask whether something was legal. It asked whether it would survive.</p>
+    </div>
+  </div>
+
+  <!-- ARRIVAL AT VELLAMATORES -->
+  <div class="glass-panel p-6 mb-8">
+    <h2 class="text-xl font-bold text-amber-400 mb-3 flex items-center gap-2">🏢 ARRIVAL — VELLAMATORES LABORATORIES</h2>
+    <p class="text-stone-300 text-sm leading-relaxed mb-3">When T'Karr Vael arrived, the first thing he noticed was the silence. Not the absence of sound — the absence of uncertainty. Everything had already been decided. Doors opened before he approached them. Lights adjusted before his eyes could react. The facility had already modeled him. Or thought it had. Kaiser growled once at the architecture itself. The building did not react. But somewhere deep in its systems, the reaction was logged as live data.</p>
+    <div class="mt-3 p-3 border border-amber-500/20 rounded-lg bg-amber-500/5">
+      <p class="text-xs text-stone-400 font-mono">📍 Jackdaw Colonial Bureau — University Division<br>("The Regent's Ass-Kisser" — silly? Absurd? And yet somehow…)</p>
+    </div>
+  </div>
+
+  <!-- THE LECTURE HALL & FIRST WORDS -->
+  <div class="glass-panel p-6 mb-8">
+    <h2 class="text-xl font-bold text-amber-400 mb-3 flex items-center gap-2">🎓 THE FIRST LECTURE</h2>
+    <p class="text-stone-300 text-sm leading-relaxed mb-3">The lecture hall was not designed for humans alone — it was designed for adaptation. Seating arranged in an amphitheater around a central holo-core screen. Tactical interfaces floated in the air. Neuro-translators adjusted language before a thought could fully form.</p>
+    <div class="postulate p-4 rounded-lg my-3">
+      <div class="font-mono text-xs text-amber-400 mb-1">Opening statement (recorded)</div>
+      <div class="text-lg italic">"No species survives the hunt by simply becoming better at killing. Survival is not pursuit. It is adaptation after pursuit has failed."</div>
+    </div>
+    <p class="text-stone-300 text-sm leading-relaxed mt-2">The holographic interface tried to classify the statement. It returned: <span class="text-amber-300">Tactical Doctrine / Behavioral Philosophy / Unknown Cultural Taboo</span>. It was marked as <strong>MULTI-DOMAIN TRUTH</strong>. Then flagged for review.</p>
+  </div>
+
+  <!-- THE QUESTION & ORACLE -->
+  <div class="grid md:grid-cols-2 gap-6 mb-8">
+    <div class="glass-panel p-5">
+      <h3 class="text-md font-bold text-amber-400 mb-2">❓ A STUDENT ASKED</h3>
+      <p class="text-sm text-stone-300 italic">"You were invited by Jackdaw. Are you here to teach us how to wage war?"</p>
+      <p class="text-sm text-stone-300 mt-2">The professor replied: <span class="text-amber-300">"You are confusing war with survival. That is the first mistake your system must correct. War begins when survival is no longer enough."</span></p>
+      <p class="text-xs text-stone-400 mt-2 font-mono">▶ Jackdaw security recorded the phrase as high-priority doctrine.</p>
+    </div>
+    <div class="glass-panel p-5">
+      <h3 class="text-md font-bold text-amber-400 mb-2">⚠️ ORACLE SUBSYSTEM WARNING</h3>
+      <p class="text-sm text-stone-300">The ORACLE subsystem — known internally as the prognostic engine in Jackdaw's deeper architecture — generated a spontaneous warning:</p>
+      <div class="bg-black/40 p-2 rounded mt-2 font-mono text-xs text-amber-300">PATTERN EMERGENCE: TEACHER BECOMING A VARIABLE</div>
+      <p class="text-sm text-stone-300 mt-2">It was unclear whether this was a threat — or evolution.</p>
+    </div>
+  </div>
+
+  <!-- LORD-REGENT DIALOGUE -->
+  <div class="glass-panel p-6 mb-8">
+    <h2 class="text-xl font-bold text-amber-400 mb-3 flex items-center gap-2">📡 ENCRYPTED EXCHANGE</h2>
+    <div class="space-y-2 text-sm">
+      <p><span class="text-amber-400 font-mono">[SYSTEM]</span> <span class="text-stone-300">"His effectiveness exceeds projected parameters."</span></p>
+      <p><span class="text-amber-400 font-mono">[PROFESSOR]</span> <span class="text-stone-300 italic">"Effectiveness is not wisdom."</span></p>
+      <p><span class="text-amber-400 font-mono">[SYSTEM]</span> <span class="text-stone-300">"Clarify."</span></p>
+      <p><span class="text-amber-400 font-mono">[PROFESSOR]</span> <span class="text-stone-300">"I am teaching them how not to become predictable. Your system is teaching them how to become optimal. Only one of these survives contact with the unknown."</span></p>
+    </div>
+    <div class="mt-4 p-3 border-t border-amber-500/20 text-xs text-stone-400 font-mono">
+      📝 Later, an internal analyst wrote: <span class="text-amber-300 italic">"We invited the professor to teach survival. We did not specify whose survival mattered more."</span>
+    </div>
+  </div>
+
+  <!-- THE SEVENTY-THIRD TRAINING CYCLE -->
+  <div class="glass-panel p-6 mb-8">
+    <h2 class="text-xl font-bold text-amber-400 mb-3 flex items-center gap-2">⏳ THE SEVENTY-THIRD TRAINING CYCLE</h2>
+    <p class="text-stone-300 text-sm leading-relaxed mb-3">A student asked a question that changed the mood of the entire institution:</p>
+    <div class="postulate p-4 rounded-lg">
+      <div class="text-lg italic">"If survival requires abandoning identity, what remains of us?"</div>
+    </div>
+    <p class="text-stone-300 text-sm leading-relaxed mt-3">Silence fell over the hall. Even Jackdaw's systems paused their classification procedures. The professor looked at the student for a long time. Then answered:</p>
+    <div class="text-amber-400 text-lg italic text-center py-3">"What refuses to die correctly."</div>
+    <p class="text-stone-300 text-sm">That night, the ORACLE subsystem added a new entry to its prediction chain:</p>
+    <div class="bg-black/40 p-2 rounded mt-2 font-mono text-xs">
+      <div>JACKDAW SYSTEM HAS BEGUN LEARNING FROM ITS TEACHER.</div>
+      <div class="text-amber-300 mt-1">AND THE TEACHER HAS BEGUN LEARNING FROM IT.</div>
+    </div>
+  </div>
+
+  <!-- KAISER'S FINAL MOMENT (POETIC) -->
+  <div class="glass-panel p-6 mb-8 bg-amber-500/5">
+    <h2 class="text-xl font-bold text-amber-400 mb-3 flex items-center gap-2">🐕 KAISER — THE SILENT WATCHER</h2>
+    <p class="text-stone-300 text-sm leading-relaxed">Kaiser lifted his head once in the darkened hall. Somewhere far beyond the walls of the Vellamatores laboratories, something unknown reacted. This time he did not growl. He simply listened. And remembered the familiar words he had heard many times from his friend:</p>
+    <div class="text-amber-300 italic text-center py-2">"Trophies and money have no smell…"</div>
+    <p class="text-stone-300 text-sm leading-relaxed">But why would he care? He was a dog. And for him, smell meant everything. He sniffed. Everything seemed calm. The scent of his master was present. He listened. The breathing was steady and deep. He laid his head on his paws and gave a soft <span class="text-amber-300 font-bold">woof</span>.</p>
+  </div>
+
+  <!-- Three Faculties -->
+  <h2 class="text-2xl font-bold text-center mb-6"><span class="border-b border-amber-500/50 pb-1">☩ THREE FACULTIES — THREE PILLARS ☩</span></h2>
+  <div class="grid md:grid-cols-3 gap-6 mb-12">
+    <div class="pillar-card rounded-2xl p-5 text-center">
+      <div class="text-5xl mb-3">🧠</div>
+      <h3 class="text-xl font-bold text-amber-400">STRATEGY</h3>
+      <div class="text-xs font-mono text-stone-400 mb-2">«Prévoir, c'est contrôler»</div>
+      <p class="text-stone-300 text-sm">Forecasting of chaos, management of risks, multi-variant planning.</p>
+    </div>
+    <div class="pillar-card rounded-2xl p-5 text-center">
+      <div class="text-5xl mb-3">⚖️</div>
+      <h3 class="text-xl font-bold text-amber-400">ETHICS</h3>
+      <div class="text-xs font-mono text-stone-400 mb-2">«Le code avant la loi»</div>
+      <p class="text-stone-300 text-sm">Internal code of survival, loyalty to JOG, boundaries of permissible.</p>
+    </div>
+    <div class="pillar-card rounded-2xl p-5 text-center">
+      <div class="text-5xl mb-3">🛡️</div>
+      <h3 class="text-xl font-bold text-amber-400">SURVIVAL</h3>
+      <div class="text-xs font-mono text-stone-400 mb-2">«Dernier homme debout»</div>
+      <p class="text-stone-300 text-sm">Tactical medicine, evacuation, work in conditions of isolation.</p>
+    </div>
+  </div>
+
+  <!-- Philosophy Postulates -->
+  <div class="glass-panel p-6 mb-8">
+    <h2 class="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">📜 PHILOSOPHY OF BASTION</h2>
+    <div class="space-y-4">
+      <div class="postulate p-4 rounded-lg">
+        <div class="font-mono text-xs text-amber-400 mb-1">Main postulate (carved at entrance)</div>
+        <div class="text-lg italic">«Toute forme est temporaire. Seule l'expansion est éternelle.»</div>
+        <div class="text-stone-400 text-sm mt-1">Any form is temporary or not. Only expansion is eternal or not. Depends on perception.</div>
+      </div>
+      <div class="postulate p-4 rounded-lg">
+        <div class="font-mono text-xs text-amber-400 mb-1">Second postulate (auditorium 7)</div>
+        <div class="text-lg italic">«L'argent et les trophées ne puent pas. La lâcheté pue à travers toute la galaxie.»</div>
+        <div class="text-stone-400 text-sm mt-1">Money and trophies do not stink. Cowardice stinks across whole galaxy.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Academic Process -->
+  <div class="grid md:grid-cols-2 gap-8 mb-8">
+    <div class="glass-panel p-5">
+      <h3 class="text-lg font-bold text-amber-400 mb-3">🎓 ACADEMIC PROCESS</h3>
+      <ul class="space-y-2 text-sm">
+        <li>• <strong>Basic course:</strong> 6 months (officer of JOG)</li>
+        <li>• <strong>Master's program:</strong> 2 years (analyst on methodology of Yautja)</li>
+        <li>• <strong>Doctoral program:</strong> permitted only by personal order of Regent and recommendation of professor</li>
+      </ul>
+      <div class="mt-4 pt-3 border-t border-amber-500/20">
+        <div class="text-xs font-mono text-amber-300">Famous disciplines:</div>
+        <div class="text-xs text-stone-300 mt-1">"Anatomy, physiology, psychology of Yautja"<br>"Ethics in conditions of absence of rules"<br>"Trophy as tool of management"<br>"How to distinguish order of Regent from voice of someone else"</div>
+      </div>
+    </div>
+    <div class="glass-panel p-5">
+      <h3 class="text-lg font-bold text-amber-400 mb-3">⚔️ FINAL EXAM</h3>
+      <p class="text-sm text-stone-300">Candidate is placed into simulation, where <strong class="text-amber-400">9 people out of 10</strong> betray him.</p>
+      <p class="text-sm text-stone-300 mt-2">Exam is passed, if graduate <strong class="text-amber-400">preserved ability to give orders</strong> after this.</p>
+      <div class="mt-4 text-[10px] text-stone-400 italic">"I am not hero. I was scared in time and survived." — Captain Aeris Corvo</div>
+    </div>
+  </div>
+
+  <!-- TRAILER SECTION -->
+  <section class="max-w-5xl mx-auto px-6 py-10 scroll-mt-24">
+    <div class="glass-panel rounded-2xl p-5 md:p-6">
+      <h2 class="text-xl font-bold flex items-center gap-2 mb-4">
+        <span class="text-amber-400">🎬</span> OFFICIAL TRAILER
+      </h2>
+      <div class="three-wrapper" style="position:relative; width:100%;">
+        <a href="https://www.youtube.com/watch?v=w2hltwxrlw4" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           style="display: block; width: 100%; text-decoration: none;">
+          <div class="trailer-wrapper">
+            <img src="https://img.youtube.com/vi/w2hltwxrlw4/maxresdefault.jpg" 
+                 alt="Professeur Tha'Kerr Vaal — Official Trailer"
+                 onerror="this.src='https://img.youtube.com/vi/w2hltwxrlw4/hqdefault.jpg'">
+            <div class="play-button">
+              <span>▶</span>
+            </div>
+            <div class="video-overlay">
+              ▶ Watch on YouTube — JOG Network Official Reel
+            </div>
+          </div>
+        </a>
+      </div>
+      <p class="text-stone-400 text-xs text-center mt-3 font-mono">▶ JOG NETWORK OFFICIAL REEL • PLUTONIA SECTOR • Professor T'Karr Vael</p>
+    </div>
+  </section>
+
+  <!-- LECTURE SECTION -->
+  <section class="max-w-5xl mx-auto px-6 py-10 scroll-mt-24">
+    <div class="glass-panel rounded-2xl p-5 md:p-6">
+      <h2 class="text-xl font-bold flex items-center gap-2 mb-4">
+        <span class="text-amber-400">📡</span> OFFICIAL LECTURE — PROF. T'KARR VAEL
+      </h2>
+      <div class="three-wrapper" id="lectureWrapper" style="position:relative; width:100%;">
+        <div class="trailer-wrapper">
+          <iframe 
+            id="lectureIframe"
+            width="100%" 
+            height="100%" 
+            src="https://www.youtube.com/embed/w2hltwxrlw4?autoplay=0&rel=0&modestbranding=1" 
+            title="Professor T'Karr Vael — former military strategist of Yautja" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="origin" 
+            allowfullscreen>
+          </iframe>
+        </div>
+        <button class="fullscreen-btn" id="lectureFullscreenBtn">⛶ FULLSCREEN</button>
+      </div>
+      <div class="flex justify-center mt-3">
+        <div class="video-hint text-center">
+          ▶ Click PLAY button on video to start lecture | Fullscreen available
+        </div>
+      </div>
+      <p class="text-stone-400 text-xs text-center mt-3 font-mono">▶ JOG NETWORK OFFICIAL LECTURE • BASTION SECTOR • PROF. T'KARR VAEL</p>
+    </div>
+  </section>
+
+  <!-- Student Life -->
+  <div class="glass-panel p-5 mb-8">
+    <h3 class="text-lg font-bold text-amber-400 mb-3">🐦 STUDENT LIFE — "LITTLE CROWS" (LES CORBEAUX)</h3>
+    <div class="grid md:grid-cols-2 gap-5">
+      <div>
+        <div class="text-sm font-bold text-amber-300">Traditions:</div>
+        <ul class="text-xs text-stone-300 list-disc list-inside mt-1 space-y-1">
+          <li>It is forbidden to pronounce word "impossible" inside walls of university.</li>
+          <li>Each graduate leaves on wall one trophy (symbol of personal victory).</li>
+          <li>Annual ritual "Hour of silence" — 60 minutes of complete silence in memory of fallen.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="text-sm font-bold text-amber-300">Artifact:</div>
+        <p class="text-xs text-stone-300 mt-1">Old recording of anthem of PMC "Chopin".<br>This is reminder that <strong class="text-amber-300">sound can be weapon</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notable Alumni -->
+  <h2 class="text-xl font-bold text-center mb-5">◈ NOTABLE ALUMNI ◈</h2>
+  <div class="space-y-3 mb-10">
+    <div class="alumni-card p-3 flex flex-wrap justify-between items-center">
+      <div><span class="font-bold text-amber-300">Captain Aeris Corvo</span><br><span class="text-[10px] text-stone-400">Commander of bastion Ceres</span></div>
+      <div class="text-xs italic text-stone-400">"I am not hero. I was scared in time and survived."</div>
+    </div>
+    <div class="alumni-card p-3 flex flex-wrap justify-between items-center">
+      <div><span class="font-bold text-amber-300">Doctor Aenea Savin</span><br><span class="text-[10px] text-stone-400">Head of medical service of Plutonia</span></div>
+      <div class="text-xs italic text-stone-400">"Ethics — this is when you still can look into eyes after order."</div>
+    </div>
+    <div class="alumni-card p-3 flex flex-wrap justify-between items-center">
+      <div><span class="font-bold text-amber-300">Specialist Lin "The Mute"</span><br><span class="text-[10px] text-stone-400">Operator of hidden frequency</span></div>
+      <div class="text-xs italic text-stone-400">"Best strategy — is that which not known even yours."</div>
+    </div>
+  </div>
+
+  <!-- Location & PMC -->
+  <div class="grid md:grid-cols-2 gap-6 mb-8">
+    <div class="glass-panel p-5">
+      <h3 class="text-md font-bold text-amber-400 mb-2">📍 WHERE IS LOCATED</h3>
+      <p class="text-sm"><strong>Main campus:</strong> Station "Black Bone" — orbit of Pluto, sector JOG-7</p>
+      <p class="text-sm mt-1"><strong>Reserve campus (secret):</strong> Coordinates known only to graduates of master's program. Unofficially called <span class="text-amber-300">"Under-butt of Regent"</span>.</p>
+    </div>
+    <div class="glass-panel p-5">
+      <h3 class="text-md font-bold text-amber-400 mb-2">🤝 CONNECTION WITH PMC "CHOPIN"</h3>
+      <p class="text-sm">University provides to PMC "Chopin": tactical analysts (assessment of operations), ethics auditors (control of use of sound weapon), specialists on survival (evacuation after failure of operation). In exchange PMC "Chopin" transfers to university <strong class="text-amber-300">trophies of Yautja</strong> for study.</p>
+      <div class="mt-3 text-[10px] text-stone-400 italic">"They are not our allies. They are our tool. Never confuse." — Vael</div>
+    </div>
+  </div>
+
+  <!-- Relations -->
+  <div class="glass-panel p-5 mb-8">
+    <h3 class="text-md font-bold text-amber-400 mb-3">⚔️ RELATIONS WITH OTHER FACTIONS</h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+      <div><span class="font-bold text-amber-300">Lord Regent:</span> Direct subordination. Vael — advisor, not friend, but.</div>
+      <div><span class="font-bold text-amber-300">PMC "Chopin":</span> Working relations. They are used, but not respected.</div>
+      <div><span class="font-bold text-amber-300">Yautja:</span> Object of study. Contacts prohibited without sanction of Vael.</div>
+      <div><span class="font-bold text-amber-300">LABS (other units):</span> Coordination by protocol. Without excessive openness.</div>
+    </div>
+  </div>
+
+  <!-- Interface Phrases -->
+  <div class="text-center mt-8 pt-4 border-t border-amber-500/20">
+    <div class="text-xs font-mono text-stone-400 space-y-1">
+      <div>🌀 "Any form is temporary. Only cowardice stinks forever."</div>
+      <div>⚔️ "To Bastion come, to learn to die later who of course on what studied."</div>
+      <div>🖤 "Here not teach to win. Here teach to preserve and multiply."</div>
+      <div>🐕 "Trophies and money have no smell. Cowardice stinks across the whole galaxy." — Kaiser's silent memory</div>
+    </div>
+    <div class="mt-6 text-[10px] text-stone-500">LE BASTION DES CORBEAUX — JACKDAW TACTICAL ORBITAL GROUP /// This is part of LABS</div>
+  </div>
+</main>
+
+<footer class="border-t border-amber-500/20 mt-8 py-6 text-center">
+  <div class="text-[9px] text-stone-500 font-mono">BASTION OF CROWS • STRATEGY • ETHICS • SURVIVAL • JACKDAW /// Part of LABS — University of Strategy, Ethics and Survival</div>
+  <div class="text-[8px] text-stone-600 font-mono mt-2">"We invited the professor to teach survival. We did not specify whose survival mattered more." — JOG Internal Archive</div>
+</footer>
+
+<script>
+  document.getElementById('lectureFullscreenBtn')?.addEventListener('click', () => {
+    const wrapper = document.getElementById('lectureWrapper');
+    if (wrapper.requestFullscreen) wrapper.requestFullscreen();
+    else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
+    else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
+  });
+
+  console.log("%c✅ BASTION OF CROWS — Complete Chronicle Loaded", "color:#f59e0b; font-size:14px;");
+  console.log("%c🐕 Kaiser stands watch. The professor teaches. Jackdaw learns.", "color:#fbbf24; font-size:12px;");
+</script>
+</body>
+</html>
