@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>URVIDPHONE — P2P Encrypted Rooms | Video Calls | EXO Terminal</title>
+  <title>URVIDPHONE PRO — E2EE Video Chat | Enhanced Edition</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -31,18 +31,18 @@
     }
 
     .app-wrapper {
-      max-width: 1600px;
+      max-width: 1800px;
       margin: 0 auto;
-      padding: 20px 24px 32px;
+      padding: 16px 20px 24px;
       position: relative;
       z-index: 2;
     }
 
-    /* Navigation Bar */
+    /* Navigation */
     .nav-bar {
       display: flex;
-      gap: 16px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
     }
 
@@ -50,18 +50,14 @@
       background: rgba(10, 10, 12, 0.8);
       backdrop-filter: blur(12px);
       border: 1px solid #f59e0b60;
-      padding: 10px 24px;
+      padding: 8px 20px;
       border-radius: 40px;
       color: #fbbf24;
       font-family: 'Orbitron', monospace;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
       transition: 0.2s;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .nav-btn:hover {
@@ -70,26 +66,20 @@
       transform: translateY(-2px);
     }
 
-    .nav-btn.primary {
-      background: linear-gradient(135deg, #f59e0b, #fbbf24);
-      color: #050505;
-      border: none;
-    }
-
     .comm-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 16px;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
       border-bottom: 1px solid #f59e0b60;
     }
 
     .logo-area h1 {
       font-family: 'Orbitron', monospace;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 800;
       background: linear-gradient(135deg, #ffffff, #fbbf24, #f59e0b);
       -webkit-background-clip: text;
@@ -97,21 +87,15 @@
       color: transparent;
     }
 
-    .logo-area p {
-      font-size: 0.7rem;
-      color: #fbbf24cc;
-      font-family: 'Space Mono', monospace;
-    }
-
     .status-panel {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       background: rgba(10, 10, 12, 0.6);
       backdrop-filter: blur(12px);
-      padding: 8px 20px;
+      padding: 8px 18px;
       border-radius: 60px;
       border: 1px solid #f59e0b40;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
     }
 
     .live-dot {
@@ -131,15 +115,15 @@
 
     .main-grid {
       display: grid;
-      grid-template-columns: 300px 1fr 380px;
-      gap: 20px;
-      height: calc(100vh - 180px);
+      grid-template-columns: 320px 1fr 360px;
+      gap: 16px;
+      height: calc(100vh - 160px);
     }
 
-    /* Left Panel - Rooms */
+    /* Left Panel */
     .rooms-panel {
-      background: rgba(5, 5, 8, 0.8);
-      border-radius: 24px;
+      background: rgba(5, 5, 8, 0.85);
+      border-radius: 20px;
       border: 1px solid #f59e0b40;
       backdrop-filter: blur(8px);
       display: flex;
@@ -148,20 +132,19 @@
     }
 
     .panel-header {
-      padding: 20px;
+      padding: 16px;
       border-bottom: 1px solid #f59e0b30;
     }
 
     .panel-header h3 {
       font-family: 'Orbitron', monospace;
-      font-size: 1rem;
-      margin-bottom: 12px;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
     }
 
     .create-room-form {
       display: flex;
       gap: 8px;
-      margin-top: 12px;
     }
 
     .create-room-form input {
@@ -180,8 +163,8 @@
     }
 
     .room-item {
-      padding: 12px;
-      border-radius: 16px;
+      padding: 10px;
+      border-radius: 14px;
       cursor: pointer;
       margin-bottom: 8px;
       transition: 0.1s;
@@ -199,18 +182,53 @@
 
     .room-name {
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .room-meta {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: #fbbf24cc;
+    }
+
+    /* Snapshot Gallery */
+    .gallery-section {
+      padding: 12px;
+      border-top: 1px solid #f59e0b30;
+    }
+
+    .gallery-title {
+      font-size: 0.7rem;
+      color: #fbbf24;
+      margin-bottom: 8px;
+      font-family: 'Orbitron', monospace;
+    }
+
+    .gallery-thumbs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .gallery-thumb {
+      width: 50px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #f59e0b60;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+    .gallery-thumb:hover {
+      border-color: #f59e0b;
+      transform: scale(1.05);
     }
 
     /* Chat Panel */
     .chat-panel {
-      background: rgba(10, 10, 12, 0.4);
-      border-radius: 24px;
+      background: rgba(10, 10, 12, 0.5);
+      border-radius: 20px;
       border: 1px solid #f59e0b30;
       backdrop-filter: blur(8px);
       display: flex;
@@ -219,32 +237,32 @@
     }
 
     .chat-header {
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-bottom: 1px solid #f59e0b30;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
 
     .room-info h4 {
       font-family: 'Orbitron', monospace;
-      font-size: 1rem;
+      font-size: 0.9rem;
     }
 
     .call-controls {
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
 
     .call-btn {
       background: rgba(245, 158, 11, 0.2);
       border: 1px solid #f59e0b;
-      padding: 8px 16px;
+      padding: 6px 14px;
       border-radius: 40px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       transition: 0.1s;
     }
 
@@ -255,10 +273,10 @@
     .messages-container {
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .message {
@@ -276,9 +294,9 @@
 
     .message-bubble {
       background: rgba(30, 30, 40, 0.9);
-      padding: 10px 16px;
-      border-radius: 20px;
-      font-size: 0.85rem;
+      padding: 8px 14px;
+      border-radius: 18px;
+      font-size: 0.8rem;
       border: 1px solid #f59e0b30;
     }
 
@@ -287,27 +305,17 @@
       color: #030303;
     }
 
-    .message-file {
-      background: rgba(245, 158, 11, 0.2);
-      padding: 8px 12px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
-
     .message-time {
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       opacity: 0.6;
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
     .input-area {
-      padding: 16px 20px;
+      padding: 14px 18px;
       border-top: 1px solid #f59e0b30;
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
     }
 
@@ -316,7 +324,7 @@
       background: rgba(0, 0, 0, 0.5);
       border: 1px solid #f59e0b60;
       border-radius: 40px;
-      padding: 12px 18px;
+      padding: 10px 16px;
       color: #e2e8ff;
       font-family: monospace;
     }
@@ -324,7 +332,7 @@
     .send-btn, .file-btn {
       background: #f59e0b;
       border: none;
-      padding: 10px 20px;
+      padding: 8px 18px;
       border-radius: 40px;
       cursor: pointer;
       font-weight: bold;
@@ -335,10 +343,10 @@
       border: 1px solid #f59e0b;
     }
 
-    /* Video Panel */
+    /* Video Panel with Metrics */
     .video-panel {
-      background: rgba(5, 5, 8, 0.8);
-      border-radius: 24px;
+      background: rgba(5, 5, 8, 0.85);
+      border-radius: 20px;
       border: 1px solid #f59e0b40;
       backdrop-filter: blur(8px);
       display: flex;
@@ -348,16 +356,16 @@
 
     .video-container {
       flex: 1;
-      padding: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .remote-video {
       flex: 2;
       background: #00000060;
-      border-radius: 16px;
+      border-radius: 14px;
       overflow: hidden;
       position: relative;
     }
@@ -371,7 +379,7 @@
     .local-video {
       flex: 1;
       background: #00000060;
-      border-radius: 16px;
+      border-radius: 14px;
       overflow: hidden;
       position: relative;
     }
@@ -388,17 +396,70 @@
       justify-content: center;
       height: 100%;
       color: #f59e0b80;
-      font-size: 2rem;
+      font-size: 1.5rem;
+    }
+
+    /* Metrics Panel */
+    .metrics-panel {
+      padding: 10px 14px;
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 1px solid #f59e0b30;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 0.7rem;
+    }
+
+    .metric-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .metric-label {
+      color: #fbbf24cc;
+    }
+
+    .metric-value {
+      font-family: 'Space Mono', monospace;
+      font-weight: bold;
+    }
+
+    .signal-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-left: 6px;
+    }
+
+    .signal-good { background: #22c55e; box-shadow: 0 0 5px #22c55e; }
+    .signal-medium { background: #f59e0b; box-shadow: 0 0 5px #f59e0b; }
+    .signal-bad { background: #ef4444; box-shadow: 0 0 5px #ef4444; }
+
+    /* Audio Visualizer */
+    .audio-viz {
+      height: 40px;
+      background: #00000060;
+      border-radius: 20px;
+      margin: 8px 14px;
+      overflow: hidden;
+    }
+
+    canvas#audioCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     .encryption-badge {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
+      bottom: 8px;
+      right: 8px;
       background: rgba(0,0,0,0.7);
-      padding: 4px 8px;
+      padding: 3px 8px;
       border-radius: 8px;
-      font-size: 0.7rem;
+      font-size: 0.6rem;
       color: #22c55e;
     }
 
@@ -427,29 +488,30 @@
     .share-modal {
       background: #0c0c10;
       border: 1px solid #f59e0b;
-      border-radius: 32px;
-      padding: 32px;
+      border-radius: 28px;
+      padding: 28px;
       text-align: center;
-      max-width: 500px;
+      max-width: 450px;
     }
 
     .invite-link {
       background: rgba(0,0,0,0.5);
-      padding: 12px;
+      padding: 10px;
       border-radius: 12px;
-      margin: 16px 0;
+      margin: 14px 0;
       word-break: break-all;
       font-family: monospace;
+      font-size: 0.7rem;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1100px) {
       .main-grid {
         grid-template-columns: 1fr;
         height: auto;
       }
       .video-panel {
         order: -1;
-        height: 300px;
+        height: 350px;
       }
       .video-container {
         flex-direction: row;
@@ -460,23 +522,14 @@
 <body>
 <div class="grid-bg"></div>
 <div class="app-wrapper">
-  <!-- Navigation Bar -->
   <div class="nav-bar">
-    <a href="https://wellamatores-metaverse.vercel.app/" class="nav-btn" target="_blank">
-      🏠 MAIN PAGE
-    </a>
-    <a href="https://wellamatores-metaverse.vercel.app/COMMUNITY.html" class="nav-btn" target="_blank">
-      🌍 COMMUNITY HUB
-    </a>
-    <button class="nav-btn primary" id="backToMainBtn">
-      ⬅️ EXO TERMINAL
-    </button>
+    <button class="nav-btn" id="backToMainBtn">🏠 EXIT TO MAIN</button>
   </div>
 
   <div class="comm-header">
     <div class="logo-area">
-      <h1>📡 URVIDPHONE</h1>
-      <p>Wellamatores World Edition · E2EE Rooms · Video Calls · EXO Terminal</p>
+      <h1>📡 URVIDPHONE PRO</h1>
+      <p>E2EE Rooms · Real-time Metrics · Snapshot Gallery · Audio Viz</p>
     </div>
     <div class="status-panel">
       <span><span class="live-dot"></span> P2P ACTIVE</span>
@@ -486,30 +539,38 @@
   </div>
 
   <div class="main-grid">
-    <!-- Left Panel: Rooms -->
+    <!-- Left Panel -->
     <div class="rooms-panel">
       <div class="panel-header">
         <h3>🔐 ENCRYPTED ROOMS</h3>
         <div class="create-room-form">
           <input type="text" id="newRoomName" placeholder="Room name..." autocomplete="off">
-          <button class="file-btn" id="createRoomBtn" style="padding: 8px 16px;">CREATE</button>
+          <button class="file-btn" id="createRoomBtn" style="padding: 6px 14px;">CREATE</button>
         </div>
       </div>
       <div class="rooms-list" id="roomsList"></div>
-      <div style="padding: 16px; border-top: 1px solid #f59e0b30; font-size: 0.7rem; text-align: center;">
+      
+      <!-- Snapshot Gallery (NEW from JOG APEX) -->
+      <div class="gallery-section">
+        <div class="gallery-title">📸 SNAPSHOT GALLERY</div>
+        <div class="gallery-thumbs" id="snapshotGallery"></div>
+      </div>
+      
+      <div style="padding: 12px; border-top: 1px solid #f59e0b30; font-size: 0.65rem; text-align: center;">
         🔒 End-to-end encrypted · Keys stored locally
       </div>
     </div>
 
-    <!-- Center Panel: Chat -->
+    <!-- Center Panel -->
     <div class="chat-panel">
       <div class="chat-header">
         <div class="room-info">
           <h4 id="currentRoomName">💬 Select a room</h4>
-          <span style="font-size: 0.7rem;" id="roomEncryptionStatus">🔒 E2EE Active</span>
+          <span style="font-size: 0.65rem;" id="roomEncryptionStatus">🔒 E2EE Active</span>
         </div>
         <div class="call-controls">
           <button class="call-btn" id="startVideoBtn">📹 START VIDEO</button>
+          <button class="call-btn" id="snapshotBtn">📸 SNAPSHOT</button>
           <button class="call-btn" id="inviteBtn">🔗 INVITE</button>
         </div>
       </div>
@@ -522,7 +583,7 @@
       <input type="file" id="fileInput" style="display: none;">
     </div>
 
-    <!-- Right Panel: Video -->
+    <!-- Right Panel with Metrics -->
     <div class="video-panel">
       <div class="video-container">
         <div class="remote-video">
@@ -535,11 +596,36 @@
           <video id="localVideo" autoplay playsinline muted style="display: none;"></video>
         </div>
       </div>
+      
+      <!-- Audio Visualizer (NEW from JOG APEX) -->
+      <div class="audio-viz">
+        <canvas id="audioCanvas" width="300" height="40" style="width:100%; height:100%;"></canvas>
+      </div>
+      
+      <!-- Real-time Metrics Panel (NEW from JOG APEX) -->
+      <div class="metrics-panel">
+        <div class="metric-item">
+          <span class="metric-label">📊 Bitrate:</span>
+          <span class="metric-value" id="bitrateVal">0 kbps</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">📦 Packet Loss:</span>
+          <span class="metric-value" id="packetLossVal">0%</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">⏱️ Latency:</span>
+          <span class="metric-value" id="latencyVal">0 ms</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-label">📶 Signal:</span>
+          <span class="metric-value" id="signalQualityVal">99%</span>
+          <span class="signal-indicator signal-good" id="signalIndicator"></span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Invite Modal -->
 <div id="inviteModal" class="modal-overlay">
   <div class="share-modal">
     <h3>🔗 Invite to Room</h3>
@@ -552,9 +638,9 @@
 
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
-  // ====================== URVIDPHONE С ВИДЕОКОМНАТАМИ И ШИФРОВАНИЕМ ======================
+  // ====================== URVIDPHONE PRO ======================
+  // Enhanced with: Snapshot Gallery, Real-time Metrics, Audio Visualizer
   
-  // Конфигурация
   const SIGNALING_SERVER = 'https://broadband-signal.onrender.com';
   
   let socket = null;
@@ -563,20 +649,28 @@
   let peerConnections = {};
   let roomUsers = new Set();
   let encryptionKey = null;
+  let snapshots = []; // Snapshot gallery storage
+  let audioContext = null;
+  let audioAnalyser = null;
   
-  // Кнопка возврата на главную (EXO Terminal)
+  // UI Elements
+  const remoteVideo = document.getElementById('remoteVideo');
+  const localVideo = document.getElementById('localVideo');
+  const remotePlaceholder = document.getElementById('remoteVideoPlaceholder');
+  const localPlaceholder = document.getElementById('localVideoPlaceholder');
+  
+  // Back to main
   document.getElementById('backToMainBtn').addEventListener('click', () => {
     window.location.href = 'https://wellamatores-metaverse.vercel.app/';
   });
   
-  // Шифрование AES-GCM
+  // ========== Encryption (AES-GCM) ==========
   async function generateEncryptionKey() {
-    const key = await crypto.subtle.generateKey(
+    return await crypto.subtle.generateKey(
       { name: 'AES-GCM', length: 256 },
       true,
       ['encrypt', 'decrypt']
     );
-    return key;
   }
   
   async function encryptMessage(key, text) {
@@ -600,20 +694,20 @@
     return decoder.decode(decrypted);
   }
   
-  // Хранилище данных
-  let rooms = JSON.parse(localStorage.getItem('urvid_rooms') || '[]');
-  let messages = JSON.parse(localStorage.getItem('urvid_messages') || '{}');
+  // Storage
+  let rooms = JSON.parse(localStorage.getItem('urvid_rooms_pro') || '[]');
+  let messages = JSON.parse(localStorage.getItem('urvid_messages_pro') || '{}');
   
   function saveRooms() {
-    localStorage.setItem('urvid_rooms', JSON.stringify(rooms));
+    localStorage.setItem('urvid_rooms_pro', JSON.stringify(rooms));
     document.getElementById('roomCount').innerHTML = `📡 ${rooms.length} ROOMS`;
   }
   
   function saveMessages() {
-    localStorage.setItem('urvid_messages', JSON.stringify(messages));
+    localStorage.setItem('urvid_messages_pro', JSON.stringify(messages));
   }
   
-  // WebRTC конфигурация
+  // WebRTC Config
   const rtcConfig = {
     iceServers: [
       { urls: 'stun:stun.l.google.com:19302' },
@@ -632,8 +726,6 @@
     }
     
     pc.ontrack = (event) => {
-      const remoteVideo = document.getElementById('remoteVideo');
-      const remotePlaceholder = document.getElementById('remoteVideoPlaceholder');
       if (event.streams[0]) {
         remoteVideo.srcObject = event.streams[0];
         remoteVideo.style.display = 'block';
@@ -654,7 +746,142 @@
     return pc;
   }
   
-  // Инициализация Signaling
+  // ========== Real-time Metrics (NEW from JOG APEX) ==========
+  async function updateMetrics() {
+    if (!peerConnections || Object.keys(peerConnections).length === 0) return;
+    
+    for (const [userId, pc] of Object.entries(peerConnections)) {
+      if (pc.connectionState === 'connected') {
+        try {
+          const stats = await pc.getStats();
+          stats.forEach(report => {
+            if (report.type === 'inbound-rtp' && report.kind === 'video') {
+              // Bitrate calculation
+              if (report.bytesReceived) {
+                const bitrate = (report.bytesReceived * 8 / 1024).toFixed(0);
+                document.getElementById('bitrateVal').innerText = bitrate + ' kbps';
+              }
+              // Packet loss
+              if (report.packetsLost !== undefined) {
+                const total = report.packetsReceived + report.packetsLost;
+                const lossPercent = total > 0 ? ((report.packetsLost / total) * 100).toFixed(1) : 0;
+                document.getElementById('packetLossVal').innerText = lossPercent + '%';
+                
+                // Update signal indicator based on packet loss
+                const signalIndicator = document.getElementById('signalIndicator');
+                const signalQualityVal = document.getElementById('signalQualityVal');
+                if (lossPercent < 2) {
+                  signalIndicator.className = 'signal-indicator signal-good';
+                  signalQualityVal.innerText = '99%';
+                } else if (lossPercent < 8) {
+                  signalIndicator.className = 'signal-indicator signal-medium';
+                  signalQualityVal.innerText = (95 - lossPercent).toFixed(0) + '%';
+                } else {
+                  signalIndicator.className = 'signal-indicator signal-bad';
+                  signalQualityVal.innerText = (80 - lossPercent).toFixed(0) + '%';
+                }
+              }
+              // Latency (round-trip)
+              if (report.roundTripTime) {
+                document.getElementById('latencyVal').innerText = (report.roundTripTime * 1000).toFixed(0) + ' ms';
+              }
+            }
+          });
+        } catch(e) {
+          console.log('Stats error:', e);
+        }
+      }
+    }
+  }
+  
+  setInterval(updateMetrics, 2000);
+  
+  // ========== Audio Visualizer (NEW from JOG APEX) ==========
+  function initAudioVisualizer() {
+    if (!localStream) return;
+    
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      audioAnalyser = audioContext.createAnalyser();
+      audioAnalyser.fftSize = 256;
+      
+      const source = audioContext.createMediaStreamSource(localStream);
+      source.connect(audioAnalyser);
+      
+      const canvas = document.getElementById('audioCanvas');
+      const ctx = canvas.getContext('2d');
+      const bufferLength = audioAnalyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
+      function draw() {
+        requestAnimationFrame(draw);
+        if (!audioAnalyser) return;
+        
+        audioAnalyser.getByteFrequencyData(dataArray);
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        const barWidth = (canvas.width / bufferLength) * 2.5;
+        let x = 0;
+        
+        for (let i = 0; i < bufferLength; i++) {
+          const barHeight = (dataArray[i] / 255) * canvas.height;
+          ctx.fillStyle = `hsl(${30 + dataArray[i] / 4}, 100%, 60%)`;
+          ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+          x += barWidth + 1;
+        }
+      }
+      
+      draw();
+    }
+  }
+  
+  // ========== Snapshot Gallery (NEW from JOG APEX) ==========
+  function captureSnapshot() {
+    const video = remoteVideo;
+    if (!video.srcObject || video.style.display === 'none') {
+      showNotif('❌ No active video stream', '#ff8888');
+      return;
+    }
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+    snapshots.unshift(dataUrl);
+    if (snapshots.length > 12) snapshots.pop();
+    
+    updateSnapshotGallery();
+    showNotif('📸 Snapshot saved to gallery', '#88ff88');
+  }
+  
+  function updateSnapshotGallery() {
+    const gallery = document.getElementById('snapshotGallery');
+    if (snapshots.length === 0) {
+      gallery.innerHTML = '<div style="color:#666; font-size:0.65rem; text-align:center;">No snapshots yet<br>Click 📸 button</div>';
+      return;
+    }
+    
+    gallery.innerHTML = snapshots.map((url, idx) => `
+      <img src="${url}" class="gallery-thumb" data-idx="${idx}" style="cursor:pointer;" title="Click to download">
+    `).join('');
+    
+    document.querySelectorAll('.gallery-thumb').forEach(img => {
+      img.addEventListener('click', (e) => {
+        const idx = parseInt(e.target.dataset.idx);
+        const link = document.createElement('a');
+        link.href = snapshots[idx];
+        link.download = `snapshot_${Date.now()}.jpg`;
+        link.click();
+        showNotif('💾 Snapshot downloaded', '#88ff88');
+      });
+    });
+  }
+  
+  // ========== Signaling ==========
   function initSignaling() {
     socket = io(SIGNALING_SERVER, { transports: ['websocket'], reconnection: true });
     
@@ -708,10 +935,9 @@
       updateUserCount();
       
       if (roomUsers.size === 0) {
-        const remoteVideo = document.getElementById('remoteVideo');
         remoteVideo.srcObject = null;
         remoteVideo.style.display = 'none';
-        document.getElementById('remoteVideoPlaceholder').style.display = 'flex';
+        remotePlaceholder.style.display = 'flex';
       }
     });
     
@@ -759,7 +985,7 @@
   function renderMessages() {
     const container = document.getElementById('messagesContainer');
     if (!currentRoom || !messages[currentRoom] || messages[currentRoom].length === 0) {
-      container.innerHTML = '<div style="text-align: center; opacity: 0.5;">✨ Select a room to start chatting</div>';
+      container.innerHTML = '<div style="text-align: center; opacity: 0.5;">✨ No messages yet</div>';
       return;
     }
     
@@ -802,7 +1028,6 @@
     saveRooms();
     renderRooms();
     input.value = '';
-    
     await joinRoom(roomId);
   }
   
@@ -810,7 +1035,6 @@
     const room = rooms.find(r => r.id === roomId);
     if (!room) return;
     
-    // Close old connections
     Object.values(peerConnections).forEach(pc => pc.close());
     peerConnections = {};
     roomUsers.clear();
@@ -823,19 +1047,22 @@
     currentRoom = roomId;
     document.getElementById('currentRoomName').innerHTML = `💬 ${room.name}`;
     
-    // Import encryption key
     const importedKey = await crypto.subtle.importKey('jwk', room.encryptionKey, 'AES-GCM', true, ['encrypt', 'decrypt']);
     encryptionKey = importedKey;
     
-    // Get media stream
     try {
       localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-      const localVideo = document.getElementById('localVideo');
       localVideo.srcObject = localStream;
       localVideo.style.display = 'block';
-      document.getElementById('localVideoPlaceholder').style.display = 'none';
+      localPlaceholder.style.display = 'none';
+      
+      // Initialize audio visualizer
+      initAudioVisualizer();
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
     } catch(e) {
-      console.log('Camera permission denied or not requested');
+      console.log('Camera permission denied');
     }
     
     if (socket) {
@@ -872,15 +1099,11 @@
   
   function shareInvite() {
     if (!currentRoom) return;
-    const room = rooms.find(r => r.id === currentRoom);
-    if (!room) return;
-    
     const inviteLink = `${window.location.origin}${window.location.pathname}#join=${currentRoom}`;
     document.getElementById('inviteLink').innerHTML = inviteLink;
     document.getElementById('inviteModal').classList.add('active');
   }
   
-  // File sending
   async function sendFile() {
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
@@ -910,6 +1133,14 @@
     fileInput.value = '';
   }
   
+  function showNotif(msg, color) {
+    let toast = document.createElement('div');
+    toast.innerText = msg;
+    toast.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#030303;border-left:4px solid ${color};border-radius:28px;padding:10px 20px;color:#fef3c7;font-family:'Space Mono',monospace;z-index:9999;backdrop-filter:blur(12px);border:1px solid #f59e0b;font-size:0.8rem;`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2500);
+  }
+  
   // Initialize
   function init() {
     renderRooms();
@@ -917,6 +1148,7 @@
     
     document.getElementById('createRoomBtn').addEventListener('click', createRoom);
     document.getElementById('sendBtn').addEventListener('click', sendMessage);
+    document.getElementById('snapshotBtn').addEventListener('click', captureSnapshot);
     document.getElementById('messageInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') sendMessage();
     });
@@ -925,9 +1157,10 @@
         navigator.mediaDevices.getUserMedia({ audio: true, video: true })
           .then(stream => {
             localStream = stream;
-            document.getElementById('localVideo').srcObject = stream;
-            document.getElementById('localVideo').style.display = 'block';
-            document.getElementById('localVideoPlaceholder').style.display = 'none';
+            localVideo.srcObject = stream;
+            localVideo.style.display = 'block';
+            localPlaceholder.style.display = 'none';
+            initAudioVisualizer();
             showNotif('🎥 Camera activated', '#88ff88');
           })
           .catch(err => showNotif('❌ Camera access denied', '#ff8888'));
@@ -949,7 +1182,6 @@
       document.getElementById('inviteModal').classList.remove('active');
     });
     
-    // Auto-join from URL hash
     if (window.location.hash.startsWith('#join=')) {
       const roomId = window.location.hash.substring(6);
       const room = rooms.find(r => r.id === roomId);
@@ -958,21 +1190,12 @@
       }
     }
     
-    // Create demo room if empty
     setTimeout(() => {
       if (rooms.length === 0) {
         document.getElementById('newRoomName').value = 'Main Hall';
         createRoom();
       }
     }, 500);
-  }
-  
-  function showNotif(msg, color) {
-    let toast = document.createElement('div');
-    toast.innerText = msg;
-    toast.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#030303;border-left:4px solid ${color};border-radius:28px;padding:12px 24px;color:#fef3c7;font-family:'Space Mono',monospace;z-index:9999;backdrop-filter:blur(12px);border:1px solid #f59e0b;`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2800);
   }
   
   init();
