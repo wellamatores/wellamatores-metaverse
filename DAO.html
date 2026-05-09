@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>DAO Governance — Wellamatores EXO Terminal | JOG Decentralized Council</title>
+  <!-- Ethers + WalletConnect -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@walletconnect/modal@2.7.2/dist/index.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #050505;
+      font-family: 'Inter', 'Space Mono', sans-serif;
+      color: #e2e8ff;
+      overflow-x: hidden;
+    }
+
+    .grid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 20%, rgba(245, 158, 11, 0.12) 0%, rgba(0, 0, 0, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(rgba(245, 158, 11, 0.025) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(245, 158, 11, 0.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 40px 48px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .dao-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #f59e0b60;
+    }
+
+    .title-section h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -1px;
+    }
+
+    .title-section p {
+      font-size: 0.85rem;
+      color: #fbbf24cc;
+      font-family: 'Space Mono', monospace;
+      margin-top: 6px;
+      letter-spacing: 1px;
+    }
+
+    .stats-panel {
+      display: flex;
+      gap: 24px;
+      background: rgba(10, 10, 12, 0.6);
+      backdrop-filter: blur(12px);
+      padding: 12px 24px;
+      border-radius: 60px;
+      border: 1px solid #f59e0b40;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+    }
+
+    .connect-wallet-btn {
+      background: linear-gradient(135deg, #f59e0b, #b45309);
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+      font-family: 'Orbitron', monospace;
+      transition: 0.2s;
+    }
+    .connect-wallet-btn:hover {
+      box-shadow: 0 0 12px #f59e0b;
+      transform: scale(1.02);
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; transform: scale(0.8);}
+      100% { opacity: 1; transform: scale(1.2);}
+    }
+
+    .dao-ticker {
+      background: rgba(6, 12, 8, 0.7);
+      border: 1px solid #f59e0b40;
+      border-radius: 60px;
+      padding: 12px 24px;
+      margin-bottom: 40px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      overflow-x: auto;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .ticker-label {
+      font-weight: 700;
+      color: #fbbf24;
+      background: rgba(245,158,11,0.2);
+      padding: 4px 14px;
+      border-radius: 40px;
+      white-space: nowrap;
+    }
+
+    .dao-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 28px;
+      margin: 32px 0 40px;
+    }
+
+    .dao-card {
+      background: rgba(20, 20, 24, 0.65);
+      backdrop-filter: blur(12px);
+      border-radius: 28px;
+      border: 1px solid #fb923c40;
+      padding: 24px;
+      transition: all 0.25s ease;
+    }
+
+    .dao-card:hover {
+      border-color: #f59e0b;
+      box-shadow: 0 0 22px rgba(245, 158, 11, 0.3);
+      transform: translateY(-3px);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+
+    .dao-card h3 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      font-family: 'Orbitron', monospace;
+      margin-bottom: 16px;
+      color: #fbbf24;
+    }
+
+    .progress-bar {
+      background: #1a1f2e;
+      border-radius: 20px;
+      height: 8px;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: #f59e0b;
+      height: 100%;
+      width: 0%;
+      border-radius: 20px;
+      transition: width 0.3s;
+    }
+
+    .side-btn, .btn-primary, .btn-back-main {
+      background: transparent;
+      border: 1px solid #f59e0b;
+      color: #fbbf24;
+      padding: 10px 18px;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: 'Space Mono', monospace;
+      width: 100%;
+      margin-top: 16px;
+      text-align: center;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .btn-back-main {
+      background: #1f1a0a;
+      border-color: #f59e0b;
+      margin-top: 0;
+    }
+    .btn-back-main:hover {
+      background: #f59e0b20;
+    }
+
+    .btn-primary {
+      background: #f59e0b;
+      color: #030303;
+      border: none;
+    }
+
+    .side-btn:hover, .btn-primary:hover {
+      background: rgba(245, 158, 11, 0.2);
+      box-shadow: 0 0 8px #f59e0b;
+    }
+
+    .proposal-item {
+      border-bottom: 1px solid #f59e0b30;
+      padding: 14px 0;
+    }
+
+    .proposal-title {
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .vote-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .vote-btn {
+      background: rgba(34,197,94,0.2);
+      border: none;
+      padding: 4px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      color: #86efac;
+      font-family: monospace;
+    }
+
+    .vote-btn.no {
+      background: rgba(239,68,68,0.2);
+      color: #fca5a5;
+    }
+
+    .event-feed {
+      background: rgba(15, 15, 18, 0.8);
+      border-radius: 24px;
+      padding: 20px;
+      margin-top: 20px;
+      border-left: 3px solid #f59e0b;
+    }
+
+    .event-feed h4 {
+      font-family: 'Space Mono', monospace;
+      margin-bottom: 14px;
+      font-size: 1rem;
+      color: #fbbf24;
+    }
+
+    .event-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .event-item {
+      font-size: 0.85rem;
+      border-bottom: 1px dashed #f59e0b30;
+      padding-bottom: 6px;
+    }
+
+    .timestamp {
+      color: #f59e0b;
+      font-family: monospace;
+      margin-right: 12px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.2s, opacity 0.2s;
+    }
+
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: #0c0c10;
+      border: 1px solid #f59e0b;
+      border-radius: 32px;
+      max-width: 500px;
+      width: 90%;
+      padding: 28px;
+      box-shadow: 0 0 48px rgba(245,158,11,0.4);
+    }
+
+    .modal-content input, .modal-content textarea {
+      width: 100%;
+      background: #1a1f2e;
+      border: 1px solid #f59e0b60;
+      padding: 10px;
+      border-radius: 16px;
+      color: #e2e8ff;
+      margin: 12px 0;
+      font-family: monospace;
+    }
+
+    .address-badge {
+      font-size: 0.7rem;
+      background: #00000080;
+      border-radius: 30px;
+      padding: 4px 12px;
+    }
+
+    @media (max-width: 760px) {
+      .app-wrapper { padding: 16px; }
+      .title-section h1 { font-size: 1.8rem; }
+      .stats-panel { flex-wrap: wrap; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="grid-overlay"></div>
+<div class="app-wrapper">
+  <div class="dao-header">
+    <div class="title-section">
+      <h1>🏛️ DAO GOVERNANCE</h1>
+      <p>JACKDAW ORBITAL GROUP — DECENTRALIZED COUNCIL</p>
+    </div>
+    <div class="stats-panel">
+      <span><span class="live-dot"></span> TREASURY: <span id="treasuryExo">124,500</span> EXO</span>
+      <span>🗳️ ACTIVE VOTES: 3</span>
+      <span>💎 STAKED: <span id="totalStakedExo">48,200</span> EXO</span>
+      <button id="connectWalletBtnHeader" class="connect-wallet-btn">🔌 CONNECT WALLET</button>
+    </div>
+  </div>
+
+  <div class="dao-ticker">
+    <span class="ticker-label">📡 DAO BROADCAST</span>
+    <span class="ticker-message" id="daoBroadcastMsg">⚡ Smart contract active • Stake EXO to vote on-chain</span>
+    <a href="https://wellamatores-metaverse.vercel.app/" class="btn-back-main" style="width: auto; margin-left: auto; padding: 6px 16px;">← MAIN PAGE</a>
+  </div>
+
+  <div class="dao-grid">
+    <div class="dao-card">
+      <div class="card-icon">💰</div>
+      <h3>DAO TREASURY</h3>
+      <p style="font-size: 1.8rem; font-weight: bold; color: #fbbf24;"><span id="treasuryDetail">124,500</span> EXO</p>
+      <p>Monthly revenue: +8,420 EXO</p>
+      <div class="progress-bar"><div class="progress-fill" style="width: 68%;"></div></div>
+      <button class="side-btn" id="viewTreasuryBtn">VIEW DETAILS</button>
+    </div>
+
+    <div class="dao-card">
+      <div class="card-icon">⚡</div>
+      <h3>YOUR VOTING POWER</h3>
+      <p id="userStakeDisplay">Staked: 0 EXO</p>
+      <p>Voting weight: <strong id="votingWeight">0</strong> pts</p>
+      <div class="progress-bar"><div class="progress-fill" id="powerFill" style="width: 0%;"></div></div>
+      <button class="btn-primary" id="stakeModalBtn">🔒 STAKE MORE EXO</button>
+      <button class="side-btn" id="claimRewardsBtn">CLAIM REWARDS</button>
+    </div>
+
+    <div class="dao-card">
+      <div class="card-icon">🗳️</div>
+      <h3>ACTIVE PROPOSALS</h3>
+      <div id="proposalsList">
+        <div class="proposal-item" data-proposal-id="0">
+          <div class="proposal-title"><span>📈 Increase APR to 198%</span><span id="prop0For">78%</span> FOR</div>
+          <div class="progress-bar"><div class="progress-fill" id="prop0Fill" style="width: 78%;"></div></div>
+          <div class="vote-buttons"><button class="vote-btn for-vote" data-proposal-id="0">FOR</button><button class="vote-btn no" data-proposal-id="0">AGAINST</button></div>
+        </div>
+        <div class="proposal-item" data-proposal-id="1">
+          <div class="proposal-title"><span>🏷️ Reduce market fee to 1.5%</span><span id="prop1For">52%</span> FOR</div>
+          <div class="progress-bar"><div class="progress-fill" id="prop1Fill" style="width: 52%;"></div></div>
+          <div class="vote-buttons"><button class="vote-btn for-vote" data-proposal-id="1">FOR</button><button class="vote-btn no" data-proposal-id="1">AGAINST</button></div>
+        </div>
+        <div class="proposal-item" data-proposal-id="2">
+          <div class="proposal-title"><span>🌑 Black Market Week Event</span><span id="prop2For">91%</span> FOR</div>
+          <div class="progress-bar"><div class="progress-fill" id="prop2Fill" style="width: 91%;"></div></div>
+          <div class="vote-buttons"><button class="vote-btn for-vote" data-proposal-id="2">FOR</button><button class="vote-btn no" data-proposal-id="2">AGAINST</button></div>
+        </div>
+      </div>
+      <button class="side-btn" id="createProposalBtn">✍️ CREATE NEW PROPOSAL</button>
+    </div>
+
+    <div class="dao-card">
+      <div class="card-icon">🧠</div>
+      <h3>AI CORE FORECAST</h3>
+      <p>Market sentiment: <strong style="color:#22c55e;">BULLISH</strong></p>
+      <p>Next proposal: <em>Liquidity mining program</em></p>
+      <p>Expected yield: +24% APR</p>
+      <button class="side-btn" id="aiForecastBtn">REQUEST FULL ANALYSIS</button>
+    </div>
+  </div>
+
+  <div class="event-feed">
+    <h4>🔮 DAO EVENT LOG (LIVE + ON-CHAIN)</h4>
+    <div class="event-list" id="eventLog">
+      <div class="event-item"><span class="timestamp">⏲️ System</span> Ready · Connect wallet to interact with DAO contract</div>
+    </div>
+  </div>
+</div>
+
+<div id="stakeModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2 style="font-family: Orbitron;">🔒 STAKE EXO</h2>
+    <p>Wallet balance: <span id="walletBalance">0 EXO</span></p>
+    <input type="number" id="stakeAmount" placeholder="Amount to stake" value="10">
+    <button class="btn-primary" id="confirmStakeBtn">CONFIRM STAKE</button>
+    <button class="side-btn close-modal" style="margin-top: 8px;">CANCEL</button>
+  </div>
+</div>
+
+<div id="proposalModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2 style="font-family: Orbitron;">✍️ CREATE PROPOSAL</h2>
+    <input type="text" id="proposalTitle" placeholder="Proposal title">
+    <textarea id="proposalDesc" rows="3" placeholder="Describe your proposal..."></textarea>
+    <p style="font-size: 0.75rem;">Fee: 100 EXO (burn or locked)</p>
+    <button class="btn-primary" id="submitProposalBtn">SUBMIT TO DAO</button>
+    <button class="side-btn close-modal" style="margin-top: 8px;">CANCEL</button>
+  </div>
+</div>
+
+<script>
+  // ---------- REAL CONTRACT INTEGRATION (Solidity ABI & Address) ----------
+  // Contract deployed on Sepolia or local chain — for demo we provide full on-chain simulation with read/write via ethers.
+  // ACTUAL SMART CONTRACT ADDRESS (replace with your deployed address, but example includes full interface)
+  const DAO_CONTRACT_ADDRESS = "0x9Bf9D98FCfB208EeA9bFbc9c90D5D82b1F0a5C3F"; // Example placeholder — replace with real after deployment.
+  // ABI defines: stake(uint256), getStake(address), claimRewards(), createProposal(string), vote(uint256,bool), getProposal(uint256)
+  const DAO_ABI = [
+    "function stake(uint256 amount) external",
+    "function getStake(address user) external view returns (uint256)",
+    "function claimRewards() external",
+    "function createProposal(string memory description) external payable",
+    "function vote(uint256 proposalId, bool support) external",
+    "function getProposal(uint256 proposalId) external view returns (string memory description, uint256 forVotes, uint256 againstVotes, bool active)",
+    "function totalStaked() external view returns (uint256)",
+    "function treasuryBalance() external view returns (uint256)",
+    "function getUserVotingPower(address user) external view returns (uint256)",
+    "event Staked(address indexed user, uint256 amount)",
+    "event Voted(address indexed user, uint256 proposalId, bool support)",
+    "event ProposalCreated(uint256 proposalId, string description)"
+  ];
+
+  let provider, signer, daoContract, userAddress = null;
+  let userStake = 0;
+  let connected = false;
+
+  // Helper UI
+  function showNotif(msg, color='#fbbf24') {
+    let toast = document.createElement('div');
+    toast.innerText = msg;
+    toast.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#030303;border-left:4px solid ${color};border-radius:28px;padding:12px 24px;color:#fef3c7;font-family:'Space Mono',monospace;z-index:9999;backdrop-filter:blur(12px);border:1px solid #f59e0b;`;
+    document.body.appendChild(toast);
+    setTimeout(()=>toast.remove(), 3500);
+  }
+
+  function addEventToLog(message) {
+    const eventLog = document.getElementById('eventLog');
+    const eventDiv = document.createElement('div');
+    eventDiv.className = 'event-item';
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+    eventDiv.innerHTML = `<span class="timestamp">⏲️ ${timeStr}</span> ${message}`;
+    eventLog.insertBefore(eventDiv, eventLog.firstChild);
+    while(eventLog.children.length > 12) eventLog.removeChild(eventLog.lastChild);
+  }
+
+  async function updateUIAfterContract() {
+    if(!daoContract || !userAddress) {
+      document.getElementById('userStakeDisplay').innerText = `Staked: 0 EXO`;
+      document.getElementById('votingWeight').innerText = '0';
+      document.getElementById('powerFill').style.width = '0%';
+      return;
+    }
+    try {
+      const stake = await daoContract.getStake(userAddress);
+      userStake = Number(stake);
+      document.getElementById('userStakeDisplay').innerText = `Staked: ${userStake} EXO`;
+      const weight = Math.floor(userStake / 10);
+      document.getElementById('votingWeight').innerText = weight;
+      document.getElementById('powerFill').style.width = Math.min(100, (userStake / 5000) * 100) + '%';
+      const totalStaked = await daoContract.totalStaked();
+      document.getElementById('totalStakedExo').innerText = totalStaked.toString();
+      const treasury = await daoContract.treasuryBalance();
+      document.getElementById('treasuryExo').innerText = treasury.toString();
+      document.getElementById('treasuryDetail').innerText = treasury.toString();
+      
+      // Fetch proposals (3 mock proposals mapped to on-chain ids 0,1,2)
+      for(let i=0;i<3;i++) {
+        try {
+          const prop = await daoContract.getProposal(i);
+          if(prop) {
+            const total = Number(prop.forVotes) + Number(prop.againstVotes);
+            const forPercent = total === 0 ? 0 : (Number(prop.forVotes) / total) * 100;
+            document.getElementById(`prop${i}For`).innerText = Math.floor(forPercent)+'%';
+            const fillEl = document.getElementById(`prop${i}Fill`);
+            if(fillEl) fillEl.style.width = forPercent+'%';
+          }
+        } catch(e) {}
+      }
+    } catch(e) { console.warn(e); }
+  }
+
+  // Connect wallet (MetaMask / WalletConnect)
+  async function connectWallet() {
+    if(window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        provider = new ethers.BrowserProvider(window.ethereum);
+        signer = await provider.getSigner();
+        userAddress = await signer.getAddress();
+        daoContract = new ethers.Contract(DAO_CONTRACT_ADDRESS, DAO_ABI, signer);
+        connected = true;
+        showNotif(`✅ Wallet connected: ${userAddress.slice(0,6)}...${userAddress.slice(-4)}`, "#88ff88");
+        addEventToLog(`Wallet connected: ${userAddress.slice(0,6)}...`);
+        await updateUIAfterContract();
+        // listen to events
+        daoContract.on("Staked", (user, amount) => { if(user.toLowerCase()===userAddress.toLowerCase()) addEventToLog(`🔒 Staked ${amount} EXO`); updateUIAfterContract(); });
+        daoContract.on("Voted", (user, proposalId, support) => { if(user.toLowerCase()===userAddress.toLowerCase()) addEventToLog(`🗳️ Voted ${support?"FOR":"AGAINST"} on proposal #${proposalId}`); updateUIAfterContract(); });
+        daoContract.on("ProposalCreated", (id, desc) => { addEventToLog(`📜 New proposal #${id}: ${desc.substring(0,40)}`); });
+        return true;
+      } catch(e) { showNotif("Connection error: "+e.message, "#ff8888"); return false; }
+    } else if(window.walletconnect) { /* fallback but we also support via modal? For simplicity, we embed WC but user needs extension. */
+      showNotif("Please install MetaMask or use WalletConnect extension", "#ff8888");
+      return false;
+    } else {
+      showNotif("Please install MetaMask to interact with DAO contracts", "#ff8888");
+      return false;
+    }
+  }
+
+  document.getElementById('connectWalletBtnHeader')?.addEventListener('click', async () => { await connectWallet(); });
+
+  // Stake Action
+  document.getElementById('confirmStakeBtn')?.addEventListener('click', async () => {
+    if(!daoContract || !userAddress) { showNotif("Connect wallet first", "#ff8888"); return; }
+    const amount = parseInt(document.getElementById('stakeAmount')?.value);
+    if(isNaN(amount) || amount <= 0) { showNotif("Invalid amount", "#ff8888"); return; }
+    try {
+      const tx = await daoContract.stake(amount);
+      showNotif("⏳ Staking transaction submitted...", "#fbbf24");
+      await tx.wait();
+      await updateUIAfterContract();
+      showNotif(`✅ Staked ${amount} EXO! Voting power increased.`, "#88ff88");
+      addEventToLog(`Staked ${amount} EXO on-chain`);
+      document.getElementById('stakeModal')?.classList.remove('active');
+    } catch(e) { showNotif("Stake failed: "+e.message, "#ff8888"); }
+  });
+
+  // Voting
+  document.querySelectorAll('.vote-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if(!daoContract || !userAddress) { showNotif("Connect wallet to vote", "#ff8888"); return; }
+      const proposalId = parseInt(btn.dataset.proposalId);
+      const support = btn.classList.contains('no') ? false : true;
+      try {
+        const tx = await daoContract.vote(proposalId, support);
+        showNotif("Vote recording...", "#fbbf24");
+        await tx.wait();
+        showNotif(`Vote cast: ${support?"FOR":"AGAINST"} proposal #${proposalId}`, "#88ff88");
+        addEventToLog(`🗳️ Voted ${support?"FOR":"AGAINST"} proposal #${proposalId} (+ weight ${Math.floor(userStake/10)})`);
+        await updateUIAfterContract();
+      } catch(e) { showNotif("Vote error: "+e.message, "#ff8888"); }
+    });
+  });
+
+  // Create proposal
+  document.getElementById('submitProposalBtn')?.addEventListener('click', async () => {
+    if(!daoContract || !userAddress) { showNotif("Connect wallet", "#ff8888"); return; }
+    const title = document.getElementById('proposalTitle')?.value;
+    const desc = document.getElementById('proposalDesc')?.value;
+    if(!title) { showNotif("Title required", "#ff8888"); return; }
+    try {
+      const fullDesc = `${title} | ${desc}`;
+      const tx = await daoContract.createProposal(fullDesc, { value: ethers.parseEther("0") }); // fee handled in contract
+      showNotif("Proposal creation tx sent", "#fbbf24");
+      await tx.wait();
+      addEventToLog(`📜 New DAO proposal: "${title}"`);
+      showNotif("✅ Proposal submitted on-chain!", "#88ff88");
+      document.getElementById('proposalModal').classList.remove('active');
+      document.getElementById('proposalTitle').value = '';
+      document.getElementById('proposalDesc').value = '';
+    } catch(e) { showNotif("Create proposal failed: "+e.message, "#ff8888"); }
+  });
+
+  // Claim Rewards
+  document.getElementById('claimRewardsBtn')?.addEventListener('click', async () => {
+    if(!daoContract || !userAddress) { showNotif("Connect wallet", "#ff8888"); return; }
+    try {
+      const tx = await daoContract.claimRewards();
+      showNotif("Claiming rewards...", "#fbbf24");
+      await tx.wait();
+      showNotif("🎁 Rewards claimed successfully!", "#88ff88");
+      addEventToLog(`Claimed EXO staking rewards`);
+      await updateUIAfterContract();
+    } catch(e) { showNotif("Rewards error: "+e.message, "#ff8888"); }
+  });
+
+  document.getElementById('viewTreasuryBtn')?.addEventListener('click', async () => {
+    if(daoContract) { let bal = await daoContract.treasuryBalance(); showNotif(`DAO Treasury: ${bal} EXO`, "#fbbf24"); }
+    else showNotif("Connect wallet for real treasury data", "#fbbf24");
+  });
+  document.getElementById('aiForecastBtn')?.addEventListener('click', () => showNotif("AI Core: +24% APR expected next month. Recommendation: Increase stake.", "#fbbf24"));
+
+  // Modal handling
+  const stakeModal = document.getElementById('stakeModal');
+  const proposalModalDiv = document.getElementById('proposalModal');
+  document.getElementById('stakeModalBtn')?.addEventListener('click', async () => {
+    if(!userAddress) { await connectWallet(); }
+    if(!userAddress) { showNotif("Connect wallet to stake", "#ff8888"); return; }
+    if(provider) {
+      const bal = await provider.getBalance(userAddress);
+      document.getElementById('walletBalance').innerText = ethers.formatEther(bal).slice(0,8) + " ETH (native)";
+    } else document.getElementById('walletBalance').innerText = "??";
+    stakeModal.classList.add('active');
+  });
+  document.getElementById('createProposalBtn')?.addEventListener('click', async () => {
+    if(!userAddress) await connectWallet();
+    if(!userAddress) { showNotif("Connect wallet to propose", "#ff8888"); return; }
+    proposalModalDiv.classList.add('active');
+  });
+  document.querySelectorAll('.close-modal').forEach(btn => btn.addEventListener('click', () => { stakeModal.classList.remove('active'); proposalModalDiv.classList.remove('active'); }));
+  [stakeModal, proposalModalDiv].forEach(modal => modal?.addEventListener('click', (e) => { if(e.target === modal) modal.classList.remove('active'); }));
+
+  // Broadcast rotation
+  let idx=0; const msgs=["⚡ On-chain DAO active | Stake EXO to govern","📡 Proposal #42: Liquidity mining incoming","🔮 EXO treasury growing via fees","🤖 AI Core: bullish momentum"];
+  setInterval(()=>{ const el=document.getElementById('daoBroadcastMsg'); if(el){ idx=(idx+1)%msgs.length; el.innerText=msgs[idx]; } }, 12000);
+  addEventToLog("🏛️ DAO Interface with real Solidity contract • Connect wallet to interact");
+  // Auto-check if window.ethereum, attempt reconnect local storage
+  if(window.ethereum) window.ethereum.on('accountsChanged', () => { window.location.reload(); });
+</script>
+</body>
+</html>
