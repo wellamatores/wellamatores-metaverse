@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Wellamatores Archive — Vault & Auction House | EXO Terminal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050505; font-family: 'Inter', 'Space Mono', sans-serif; color: #e2e8ff; overflow-x: hidden; }
+    .grid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 30% 20%, rgba(245, 158, 11, 0.06) 0%, rgba(0, 0, 0, 0) 70%); pointer-events: none; z-index: 0; }
+    .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(245, 158, 11, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 158, 11, 0.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+    .app-wrapper { max-width: 1600px; margin: 0 auto; padding: 20px 24px 32px; position: relative; z-index: 2; }
+
+    /* Header */
+    .archive-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid #f59e0b60; }
+    .logo h1 { font-family: 'Orbitron', monospace; font-size: 2rem; background: linear-gradient(135deg, #ffffff, #fbbf24, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .logo p { font-size: 0.7rem; color: #fbbf24cc; font-family: 'Space Mono', monospace; }
+    .stats { display: flex; gap: 20px; background: rgba(10, 10, 12, 0.6); backdrop-filter: blur(12px); padding: 8px 24px; border-radius: 60px; border: 1px solid #f59e0b40; font-size: 0.75rem; }
+    .live-dot { display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; animation: pulse 1.5s infinite; margin-right: 6px; }
+    @keyframes pulse { 0% { opacity: 0.4; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid #f59e0b30; padding-bottom: 8px; }
+    .tab { padding: 8px 24px; border-radius: 40px; cursor: pointer; transition: 0.1s; font-weight: 600; }
+    .tab:hover { background: rgba(245, 158, 11, 0.1); }
+    .tab.active { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; }
+
+    /* Filters */
+    .filters-bar { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; background: rgba(10, 10, 12, 0.5); backdrop-filter: blur(8px); padding: 16px; border-radius: 28px; }
+    .filter-select, .filter-input { background: rgba(0, 0, 0, 0.5); border: 1px solid #f59e0b60; padding: 8px 16px; border-radius: 40px; color: #e2e8ff; font-family: monospace; }
+    .search-input { flex: 1; min-width: 200px; }
+
+    /* Grid */
+    .archive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; margin-top: 20px; }
+    .archive-card { background: rgba(20, 20, 24, 0.65); backdrop-filter: blur(12px); border-radius: 28px; border: 1px solid #fb923c40; padding: 20px; transition: 0.2s; cursor: pointer; }
+    .archive-card:hover { border-color: #f59e0b; transform: translateY(-4px); box-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }
+    .card-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .card-title { font-family: 'Orbitron', monospace; font-size: 1.2rem; margin-bottom: 8px; }
+    .card-price { font-size: 1.4rem; font-weight: bold; color: #fbbf24; margin: 12px 0; }
+    .card-meta { display: flex; justify-content: space-between; font-size: 0.7rem; color: #a0aec0; margin-top: 12px; }
+    .bid-indicator { background: rgba(245, 158, 11, 0.2); padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; }
+    .status-badge { position: absolute; top: 16px; right: 16px; background: rgba(34,197,94,0.2); padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; color: #86efac; }
+    .auction-badge { background: rgba(245,158,11,0.3); color: #fbbf24; }
+
+    /* Modal */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: center; z-index: 1000; visibility: hidden; opacity: 0; transition: 0.2s; }
+    .modal-overlay.active { visibility: visible; opacity: 1; }
+    .modal-content { background: #0c0c10; border: 1px solid #f59e0b; border-radius: 32px; max-width: 550px; width: 90%; padding: 28px; max-height: 80vh; overflow-y: auto; }
+    .modal-content h3 { font-family: 'Orbitron', monospace; margin-bottom: 16px; }
+    .bid-input { background: rgba(0,0,0,0.5); border: 1px solid #f59e0b; padding: 12px; border-radius: 40px; width: 100%; margin: 12px 0; color: #fff; }
+    .btn-primary { background: #f59e0b; border: none; padding: 12px 24px; border-radius: 40px; font-weight: bold; cursor: pointer; width: 100%; }
+    .btn-secondary { background: transparent; border: 1px solid #f59e0b; padding: 12px 24px; border-radius: 40px; cursor: pointer; margin-top: 8px; }
+    .rent-options { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+    .rent-period { background: rgba(245,158,11,0.1); padding: 8px 16px; border-radius: 40px; cursor: pointer; transition: 0.1s; }
+    .rent-period.selected { background: #f59e0b; color: #030303; }
+    .crypto-options { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+    .crypto-option { background: rgba(245,158,11,0.1); padding: 8px 16px; border-radius: 40px; cursor: pointer; }
+    .crypto-option.selected { background: #f59e0b; color: #030303; }
+
+    .upload-area { border: 2px dashed #f59e0b60; border-radius: 28px; padding: 40px; text-align: center; margin-bottom: 24px; cursor: pointer; }
+    .upload-area:hover { border-color: #f59e0b; }
+
+    @media (max-width: 760px) { .app-wrapper { padding: 12px; } .archive-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="grid-overlay"></div>
+<div class="app-wrapper">
+  <div class="archive-header">
+    <div class="logo">
+      <h1>🏛️ ARCHIVE · VAULT</h1>
+      <p>Wellamatores Dead Stock Exchange · Encrypted Storage & Auctions</p>
+    </div>
+    <div class="stats">
+      <span><span class="live-dot"></span> 2,847 ITEMS</span>
+      <span>💰 124,500 EXO VOLUME</span>
+      <span>🔒 AES-256 + XMR</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="catalog">📚 CATALOG</div>
+    <div class="tab" data-tab="auctions">⚡ AUCTIONS</div>
+    <div class="tab" data-tab="rentals">🏗️ RENTALS</div>
+    <div class="tab" data-tab="upload">📤 UPLOAD</div>
+    <div class="tab" data-tab="myitems">👤 MY ITEMS</div>
+  </div>
+
+  <div class="filters-bar" id="filtersBar">
+    <input type="text" class="filter-input search-input" id="searchArchive" placeholder="🔍 Search by name, tags, owner...">
+    <select class="filter-select" id="categoryFilter"><option value="all">All Categories</option><option value="3d">3D Models</option><option value="code">Code/Scripts</option><option value="game">Game Assets</option><option value="dataset">Datasets</option><option value="media">Media/Sounds</option></select>
+    <select class="filter-select" id="typeFilter"><option value="all">All Types</option><option value="sale">Fixed Price</option><option value="auction">Auction</option><option value="rent">Rental</option></select>
+    <input type="number" class="filter-input" id="minPrice" placeholder="Min EXO" style="width: 100px;">
+    <input type="number" class="filter-input" id="maxPrice" placeholder="Max EXO" style="width: 100px;">
+    <button class="filter-select" id="resetFilters" style="background:#f59e0b20;">⟳ Reset</button>
+  </div>
+
+  <div id="archiveContainer" class="archive-grid"></div>
+</div>
+
+<!-- Modal -->
+<div id="itemModal" class="modal-overlay">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<script>
+  // ====================== ARCHIVE DATABASE ======================
+  let archiveItems = [
+    { id: 1, name: "Ancient Ruins 3D Pack", category: "3d", type: "sale", price: 450, owner: "0xK1r1ll", tags: ["#blender", "#lowpoly"], size: "2.4 GB", compressed: "890 MB", downloads: 127, rating: 4.8, status: "active", description: "Complete 3D ruins set for game dev. Includes 45 models, textures 4K.", imageIcon: "🏛️", hash: "QmX8k3j...", rentPrice: null },
+    { id: 2, name: "Neural Network Training Dataset", category: "dataset", type: "sale", price: 1200, owner: "TechPriest", tags: ["#ai", "#ml", "#python"], size: "45 GB", compressed: "12 GB", downloads: 89, rating: 4.9, status: "active", description: "Curated dataset for NLP training. 2M samples.", imageIcon: "🧠", hash: "QmYt7w..." },
+    { id: 3, name: "Cyberpunk Soundtrack Vol.3", category: "media", type: "auction", price: 250, currentBid: 320, bids: 12, endsIn: "2d 4h", owner: "NeonVendor", tags: ["#music", "#wav"], size: "1.8 GB", compressed: "890 MB", downloads: 340, rating: 4.7, status: "active", description: "Original cyberpunk tracks, royalty-free.", imageIcon: "🎵", hash: "QmZ9k2..." },
+    { id: 4, name: "Minecraft Server Hosting (32 slots)", category: "game", type: "rent", price: 25, rentPeriods: ["1d:25", "7d:150", "30d:500"], owner: "ServerDAO", tags: ["#minecraft", "#hosting"], description: "Fully managed Minecraft server. 24/7 uptime.", imageIcon: "⛏️", status: "active" },
+    { id: 5, name: "Unity FPS Kit", category: "game", type: "sale", price: 890, owner: "0xK1r1ll", tags: ["#unity", "#csharp"], size: "3.2 GB", compressed: "1.1 GB", downloads: 567, rating: 4.9, status: "active", description: "Complete FPS controller with animations, weapons, AI.", imageIcon: "🔫", hash: "QmA4r5..." },
+    { id: 6, name: "RTX 3090 GPU Time (24h)", category: "code", type: "rent", price: 45, rentPeriods: ["1h:2", "6h:10", "24h:45"], owner: "CloudNode", tags: ["#gpu", "#render"], description: "GPU rental for rendering or ML training. NVIDIA RTX 3090.", imageIcon: "🎮", status: "active" },
+    { id: 7, name: "Rare Cyber Mask NFT Asset", category: "3d", type: "auction", price: 1200, currentBid: 1850, bids: 23, endsIn: "12h", owner: "ShadowTrader", tags: ["#nft", "#wearable"], size: "245 MB", rating: 5.0, status: "active", description: "Exclusive Cyber Mask from limited collection.", imageIcon: "🎭", hash: "QmX1z9..." }
+  ];
+
+  let currentTab = "catalog";
+  let userWallet = "0xUser...";
+  let userBalance = { XMR: 12.5, EXO: 3450, BTC: 0.023 };
+
+  function showNotif(msg, color = '#fbbf24') {
+    let toast = document.createElement('div');
+    toast.innerText = msg;
+    toast.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#030303;border-left:4px solid ${color};border-radius:28px;padding:12px 24px;color:#fef3c7;font-family:'Space Mono',monospace;z-index:9999;backdrop-filter:blur(12px);border:1px solid #f59e0b;`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  function getFilteredItems() {
+    let search = document.getElementById('searchArchive')?.value.toLowerCase() || '';
+    let category = document.getElementById('categoryFilter')?.value || 'all';
+    let type = document.getElementById('typeFilter')?.value || 'all';
+    let minP = parseFloat(document.getElementById('minPrice')?.value) || 0;
+    let maxP = parseFloat(document.getElementById('maxPrice')?.value) || Infinity;
+
+    return archiveItems.filter(item => {
+      if (currentTab === "auctions" && item.type !== "auction") return false;
+      if (currentTab === "rentals" && item.type !== "rent") return false;
+      if (currentTab === "catalog" && (item.type === "rent" || item.type === "auction")) return true; // catalog shows all except rent/auction? Actually show all but filtered
+      if (currentTab === "myitems" && item.owner !== userWallet && item.owner !== "0xK1r1ll") return false;
+      
+      if (search && !item.name.toLowerCase().includes(search) && !item.tags?.some(t => t.includes(search)) && !item.owner.toLowerCase().includes(search)) return false;
+      if (category !== 'all' && item.category !== category) return false;
+      if (type !== 'all' && item.type !== type) return false;
+      let price = item.type === 'auction' ? (item.currentBid || item.price) : (item.type === 'rent' ? item.rentPeriods?.[0]?.split(':')[1] : item.price);
+      if (parseFloat(price) < minP || parseFloat(price) > maxP) return false;
+      return true;
+    });
+  }
+
+  function renderArchive() {
+    const container = document.getElementById('archiveContainer');
+    const items = getFilteredItems();
+    if (items.length === 0) { container.innerHTML = '<div class="archive-card" style="text-align:center; grid-column:1/-1;">📦 No items found in this section.</div>'; return; }
+    
+    container.innerHTML = items.map(item => `
+      <div class="archive-card" data-id="${item.id}">
+        <div class="status-badge ${item.type === 'auction' ? 'auction-badge' : ''}">${item.type === 'auction' ? '⚡ AUCTION' : item.type === 'rent' ? '🏗️ RENT' : '💰 SALE'}</div>
+        <div class="card-icon">${item.imageIcon || '📁'}</div>
+        <div class="card-title">${item.name}</div>
+        <div class="card-price">${item.type === 'auction' ? `💰 ${item.currentBid || item.price} EXO` : item.type === 'rent' ? `🔧 FROM ${item.rentPeriods?.[0]?.split(':')[1]} EXO` : `💎 ${item.price} EXO`}</div>
+        <div class="card-meta">👤 ${item.owner.substring(0, 10)}... | 📦 ${item.size || 'N/A'} | ⭐ ${item.rating || 'N/A'}</div>
+        ${item.type === 'auction' ? `<div class="bid-indicator">📈 ${item.bids || 0} bids · ends ${item.endsIn || 'soon'}</div>` : ''}
+        <div style="margin-top:12px; font-size:0.7rem; color:#a0aec0;">🔒 AES-256 · ${item.compressed ? `Compressed ${item.compressed}` : ''}</div>
+      </div>
+    `).join('');
+    
+    document.querySelectorAll('.archive-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const id = parseInt(card.dataset.id);
+        const item = archiveItems.find(i => i.id === id);
+        if (item) openModal(item);
+      });
+    });
+  }
+
+  function openModal(item) {
+    const modal = document.getElementById('itemModal');
+    const modalContent = document.getElementById('modalContent');
+    
+    if (item.type === 'sale') {
+      modalContent.innerHTML = `
+        <h3>📦 ${item.name}</h3>
+        <p>${item.description || 'No description provided.'}</p>
+        <div style="background:#1a1f2e; padding:12px; border-radius:20px; margin:16px 0;">
+          <p>💎 Price: <strong style="color:#fbbf24;">${item.price} EXO</strong></p>
+          <p>📦 Size: ${item.size} → compressed ${item.compressed}</p>
+          <p>🔗 IPFS Hash: ${item.hash || 'Qm...'}</p>
+          <p>⭐ Rating: ${item.rating} (${item.downloads || 0} downloads)</p>
+        </div>
+        <div class="crypto-options" id="cryptoSelect">
+          <div class="crypto-option" data-currency="XMR">🟠 Monero (XMR)</div>
+          <div class="crypto-option" data-currency="EXO">⚡ EXO Token</div>
+          <div class="crypto-option" data-currency="BTC">₿ Bitcoin</div>
+        </div>
+        <button class="btn-primary" id="buyNowBtn">BUY NOW · ${item.price} EXO</button>
+        <button class="btn-secondary closeModal">Cancel</button>
+      `;
+      document.querySelectorAll('.crypto-option').forEach(opt => opt.addEventListener('click', (e) => { document.querySelectorAll('.crypto-option').forEach(o => o.classList.remove('selected')); opt.classList.add('selected'); showNotif(`Selected ${opt.innerText} for payment`, '#fbbf24'); }));
+      document.getElementById('buyNowBtn')?.addEventListener('click', () => { showNotif(`✅ Purchase complete! Download link: encrypted archive ready.`, '#88ff88'); modal.classList.remove('active'); });
+    } 
+    else if (item.type === 'auction') {
+      modalContent.innerHTML = `
+        <h3>⚡ ${item.name} · AUCTION</h3>
+        <p>${item.description || 'Unique rare asset.'}</p>
+        <div style="background:#1a1f2e; padding:12px; border-radius:20px; margin:16px 0;">
+          <p>💰 Current bid: <strong style="color:#fbbf24;">${item.currentBid || item.price} EXO</strong></p>
+          <p>📊 Total bids: ${item.bids || 0}</p>
+          <p>⏰ Ends in: ${item.endsIn || '2 days'}</p>
+        </div>
+        <input type="number" class="bid-input" id="bidAmount" placeholder="Your bid (EXO)" value="${(item.currentBid || item.price) + 10}">
+        <div class="crypto-options" id="cryptoSelect">
+          <div class="crypto-option" data-currency="XMR">🟠 Monero (XMR)</div>
+          <div class="crypto-option" data-currency="EXO">⚡ EXO Token</div>
+        </div>
+        <button class="btn-primary" id="placeBidBtn">PLACE BID</button>
+        <button class="btn-secondary closeModal">Cancel</button>
+      `;
+      document.getElementById('placeBidBtn')?.addEventListener('click', () => { let bid = document.getElementById('bidAmount')?.value; showNotif(`✅ Bid placed: ${bid} EXO. You are the highest bidder!`, '#88ff88'); modal.classList.remove('active'); });
+    }
+    else if (item.type === 'rent') {
+      modalContent.innerHTML = `
+        <h3>🏗️ ${item.name} · RENTAL</h3>
+        <p>${item.description || 'Rent computing resources or game servers.'}</p>
+        <div class="rent-options" id="rentPeriodSelect">
+          ${item.rentPeriods.map(p => { let [period, price] = p.split(':'); return `<div class="rent-period" data-period="${period}" data-price="${price}">${period} — ${price} EXO</div>`; }).join('')}
+        </div>
+        <div class="crypto-options" id="cryptoSelect">
+          <div class="crypto-option" data-currency="XMR">🟠 Monero (XMR)</div>
+          <div class="crypto-option" data-currency="EXO">⚡ EXO</div>
+        </div>
+        <button class="btn-primary" id="rentNowBtn">RENT NOW</button>
+        <button class="btn-secondary closeModal">Cancel</button>
+      `;
+      let selectedPrice = null;
+      document.querySelectorAll('.rent-period').forEach(opt => opt.addEventListener('click', (e) => { document.querySelectorAll('.rent-period').forEach(o => o.classList.remove('selected')); opt.classList.add('selected'); selectedPrice = opt.dataset.price; showNotif(`Selected ${opt.dataset.period} rental for ${opt.dataset.price} EXO`, '#fbbf24'); }));
+      document.getElementById('rentNowBtn')?.addEventListener('click', () => { if(selectedPrice) { showNotif(`✅ Rental activated! Access granted for selected period.`, '#88ff88'); modal.classList.remove('active'); } else showNotif('Select rental period first', '#ff8888'); });
+    }
+    
+    document.querySelectorAll('.closeModal, .modal-overlay').forEach(el => el.addEventListener('click', (e) => { if(e.target === modal || e.target.classList?.contains('closeModal')) modal.classList.remove('active'); }));
+    modal.classList.add('active');
+  }
+
+  // Upload simulation
+  function renderUploadTab() {
+    const container = document.getElementById('archiveContainer');
+    container.innerHTML = `
+      <div style="grid-column:1/-1;">
+        <div class="upload-area" id="uploadZone">
+          📤 Drag & drop files here or click to upload<br>
+          <small style="color:#a0aec0;">Max 10GB · AES-256 encryption · Zstd compression</small>
+        </div>
+        <div style="background:rgba(20,20,24,0.6); border-radius:28px; padding:24px;">
+          <h3>📝 Metadata</h3>
+          <input type="text" id="uploadName" class="filter-input" style="width:100%; margin:8px 0;" placeholder="Asset name">
+          <select id="uploadCategory" class="filter-select" style="width:100%; margin:8px 0;"><option>3d</option><option>code</option><option>game</option><option>dataset</option><option>media</option></select>
+          <textarea id="uploadDesc" rows="3" class="filter-input" style="width:100%; margin:8px 0;" placeholder="Description"></textarea>
+          <input type="number" id="uploadPrice" class="filter-input" style="width:100%; margin:8px 0;" placeholder="Price (EXO)">
+          <select id="uploadType" class="filter-select" style="width:100%; margin:8px 0;"><option value="sale">Fixed Price</option><option value="auction">Auction</option><option value="rent">Rental</option></select>
+          <button class="btn-primary" id="submitUpload">UPLOAD TO VAULT</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('uploadZone')?.addEventListener('click', () => showNotif("📁 File selector would open here. Compression + encryption applied.", "#fbbf24"));
+    document.getElementById('submitUpload')?.addEventListener('click', () => {
+      let name = document.getElementById('uploadName')?.value;
+      if(!name) { showNotif("Enter asset name", "#ff8888"); return; }
+      let newId = archiveItems.length + 1;
+      archiveItems.push({ id: newId, name: name, category: document.getElementById('uploadCategory').value, type: document.getElementById('uploadType').value, price: parseFloat(document.getElementById('uploadPrice').value) || 100, owner: userWallet, tags: [], size: "~", compressed: "~", status: "active", description: document.getElementById('uploadDesc').value, imageIcon: "📦" });
+      showNotif(`✅ "${name}" uploaded to Archive! Encrypted & stored.`, "#88ff88");
+      document.getElementById('uploadName').value = '';
+      currentTab = "myitems";
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelector('.tab[data-tab="myitems"]').classList.add('active');
+      renderArchive();
+    });
+  }
+
+  function switchTab(tabId) {
+    currentTab = tabId;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+    if (tabId === 'upload') renderUploadTab();
+    else renderArchive();
+  }
+
+  // Event listeners
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  });
+  document.getElementById('searchArchive')?.addEventListener('input', renderArchive);
+  document.getElementById('categoryFilter')?.addEventListener('change', renderArchive);
+  document.getElementById('typeFilter')?.addEventListener('change', renderArchive);
+  document.getElementById('minPrice')?.addEventListener('input', renderArchive);
+  document.getElementById('maxPrice')?.addEventListener('input', renderArchive);
+  document.getElementById('resetFilters')?.addEventListener('click', () => {
+    document.getElementById('searchArchive').value = '';
+    document.getElementById('categoryFilter').value = 'all';
+    document.getElementById('typeFilter').value = 'all';
+    document.getElementById('minPrice').value = '';
+    document.getElementById('maxPrice').value = '';
+    renderArchive();
+  });
+
+  // Initial render
+  renderArchive();
+
+  // Add Monero payment simulation
+  setInterval(() => { if(Math.random() > 0.8) showNotif("🔒 New XMR transaction received: +2.5 XMR to vault", "#88ff88"); }, 45000);
+</script>
+</body>
+</html>
