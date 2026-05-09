@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Wellamatores Tribes Market — EXO Terminal | MagTechBioCyberPunk Bazaar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Orbitron:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: #030303; font-family: 'Inter', 'Space Mono', sans-serif; color: #e2e8ff; overflow-x: hidden; }
+    .grid-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 25% 40%, rgba(245, 158, 11, 0.08) 0%, rgba(0, 0, 0, 0) 55%); pointer-events: none; z-index: 0; }
+    .grid-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(245, 158, 11, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 158, 11, 0.02) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
+    .app-wrapper { display: flex; min-height: 100vh; position: relative; z-index: 2; }
+    .side-menu { width: 280px; background: rgba(10, 10, 12, 0.75); backdrop-filter: blur(16px); border-right: 1px solid #f59e0b40; padding: 24px 0 28px 0; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; z-index: 10; box-shadow: 8px 0 32px rgba(0, 0, 0, 0.6); }
+    .logo-area { padding: 0 20px 28px 20px; border-bottom: 1px solid #f59e0b60; margin-bottom: 24px; }
+    .logo-area h1 { font-size: 1.7rem; font-weight: 800; background: linear-gradient(135deg, #ffffff, #fbbf24, #f59e0b); -webkit-background-clip: text; background-clip: text; color: transparent; letter-spacing: -0.5px; font-family: 'Orbitron', monospace; }
+    .logo-area p { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
+    .nav-items { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 0 16px; }
+    .nav-item { padding: 10px 14px; font-size: 0.85rem; font-weight: 500; color: #e2e8ffcc; transition: all 0.2s ease; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+    .nav-item i { width: 26px; font-style: normal; font-weight: 700; color: #f59e0b; }
+    .nav-item.active { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border-left: 3px solid #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.3); }
+    .nav-item:hover:not(.active) { background: rgba(245, 158, 11, 0.05); color: #fbbf24; }
+    .side-btn { background: transparent; border: 1px solid #f59e0b; color: #fbbf24; padding: 10px; width: 100%; border-radius: 40px; font-weight: 600; margin-bottom: 10px; cursor: pointer; transition: 0.2s; font-family: 'Space Mono', monospace; }
+    .side-btn:hover { background: rgba(245, 158, 11, 0.2); box-shadow: 0 0 8px #f59e0b; transform: translateY(-1px); }
+    .main-btn { background: linear-gradient(135deg, #f59e0b, #fbbf24); border: none; color: #030303; font-weight: bold; }
+    .main-btn:hover { box-shadow: 0 0 16px #f59e0b; transform: translateY(-2px); }
+    .main-content { flex: 1; padding: 24px 32px; overflow-x: auto; }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; background: rgba(10, 10, 12, 0.7); backdrop-filter: blur(12px); padding: 12px 24px; border-radius: 60px; margin-bottom: 28px; position: sticky; top: 16px; z-index: 20; border: 1px solid #f59e0b30; }
+    .search-area { flex: 1; max-width: 500px; display: flex; align-items: center; background: rgba(0, 0, 0, 0.5); border-radius: 60px; padding: 6px 16px; border: 1px solid #fb923c60; position: relative; }
+    .search-area input { background: transparent; border: none; padding: 10px; width: 100%; color: #e2e8ff; outline: none; font-family: 'Space Mono', monospace; }
+    .clear-search { position: absolute; right: 16px; cursor: pointer; color: #f59e0b; font-weight: bold; }
+    .badge { background: #f59e0b; color: #030303; font-weight: bold; font-size: 0.7rem; padding: 2px 8px; border-radius: 20px; min-width: 20px; text-align: center; }
+    .ticker-bar { background: rgba(6, 12, 8, 0.7); border-bottom: 1px solid #f59e0b40; border-top: 1px solid #f59e0b40; padding: 8px 20px; font-family: 'Space Mono', monospace; font-size: 0.8rem; display: flex; gap: 32px; white-space: nowrap; overflow-x: auto; margin-bottom: 32px; backdrop-filter: blur(4px); border-radius: 40px; }
+    .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 28px; margin: 32px 0; }
+    .card { background: rgba(20, 20, 24, 0.6); backdrop-filter: blur(12px); border-radius: 24px; border: 1px solid #fb923c40; padding: 20px; transition: all 0.3s ease; }
+    .card:hover { border-color: #f59e0b; box-shadow: 0 0 16px rgba(245, 158, 11, 0.25); transform: translateY(-4px); }
+    .price-big { font-size: 1.6rem; font-weight: 700; font-family: 'Space Mono', monospace; color: #fbbf24; }
+    .btn-buy { background: #f59e0b; border: none; color: #030303; font-weight: bold; padding: 10px 18px; border-radius: 32px; cursor: pointer; width: 100%; transition: all 0.2s ease; font-family: 'Space Mono', monospace; }
+    .btn-buy:hover { background: #fbbf24; box-shadow: 0 0 12px #f59e0b; transform: scale(0.98); }
+    .live-dot { display: inline-block; width: 10px; height: 10px; background-color: #22c55e; border-radius: 50%; animation: pulse 1.5s infinite; margin-right: 6px; }
+    @keyframes pulse { 0% { opacity: 0.4; transform: scale(0.8);} 100% { opacity: 1; transform: scale(1.2);} }
+    .page { display: none; animation: fadeIn 0.3s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .list-view { display: flex; flex-direction: column; gap: 16px; }
+    .list-card { display: flex; align-items: center; gap: 20px; background: rgba(20,20,24,0.6); border-radius: 24px; padding: 16px; border: 1px solid #fb923c40; transition: 0.2s; }
+    .list-card:hover { border-color: #f59e0b; transform: translateX(4px); }
+    .list-icon { font-size: 3rem; min-width: 80px; text-align: center; }
+    .stepper { display: flex; gap: 16px; margin-bottom: 24px; justify-content: center; flex-wrap: wrap; }
+    .step { padding: 8px 20px; border-radius: 40px; background: #1a1f2e; color: #fbbf24; opacity: 0.6; transition: 0.2s; }
+    .step.active-step { opacity: 1; background: #f59e0b; color: black; transform: scale(1.05); }
+    .product-gallery { display: flex; gap: 16px; flex-wrap: wrap; }
+    .main-img { flex: 2; background: #111; border-radius: 24px; padding: 32px; text-align: center; font-size: 5rem; border: 1px solid #f59e0b; transition: 0.2s; }
+    .thumbnails { flex: 1; display: flex; gap: 12px; overflow-x: auto; }
+    .thumb { background: #1a1f2e; border-radius: 16px; padding: 12px; cursor: pointer; text-align: center; font-size: 2rem; min-width: 80px; border: 1px solid #f59e0b40; transition: 0.2s; }
+    .thumb:hover { border-color: #f59e0b; transform: scale(1.05); }
+    .rating-stars { color: #fbbf24; letter-spacing: 4px; }
+    @media (max-width: 860px) { .side-menu { width: 80px; } .nav-item span:not(.icon) { display: none; } .main-content { padding: 16px; } .step { font-size: 12px; padding: 6px 12px; } }
+    .skeleton { background: linear-gradient(90deg, #1a1f2e 25%, #2a2f3e 50%, #1a1f2e 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 16px; min-height: 120px; width: 100%; }
+    @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+    .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000; animation: fadeIn 0.2s ease; }
+    .modal-content { background: #0f0f14; border: 1px solid #f59e0b; border-radius: 32px; max-width: 500px; width: 90%; padding: 28px; box-shadow: 0 0 40px rgba(245,158,11,0.3); }
+    .search-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: #0a0a0c; border: 1px solid #f59e0b60; border-radius: 20px; margin-top: 8px; z-index: 50; backdrop-filter: blur(12px); max-height: 300px; overflow-y: auto; }
+    .suggestion-item { padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border-bottom: 1px solid #f59e0b20; transition: 0.1s; }
+    .suggestion-item:hover { background: #f59e0b20; }
+    .right-icons { display: flex; gap: 20px; align-items: center; cursor: pointer; }
+    .right-icons span { display: flex; align-items: center; gap: 6px; transition: 0.2s; }
+    .right-icons span:hover { color: #fbbf24; transform: scale(1.05); }
+    .footer-main { margin-top: 40px; text-align: center; padding: 24px; border-top: 1px solid #f59e0b30; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+<div class="grid-bg"></div><div class="grid-overlay"></div>
+<div class="app-wrapper">
+  <div class="side-menu">
+    <div class="logo-area"><h1>WELLAMATORES</h1><p>EXO NODE v.3 | JACKDAW</p></div>
+    <div class="nav-items">
+      <div class="nav-item active" data-page="home"><i>⌂</i><span>MARKETPLACE</span></div>
+      <div class="nav-item" data-page="catalog"><i>📦</i><span>CATALOG</span></div>
+      <div class="nav-item" data-page="product"><i>🎴</i><span>PRODUCT</span></div>
+      <div class="nav-item" data-page="seller"><i>👤</i><span>SELLER</span></div>
+      <div class="nav-item" data-page="cart"><i>🛒</i><span>CART</span></div>
+      <div class="nav-item" data-page="wishlist"><i>❤️</i><span>WISHLIST</span></div>
+      <div class="nav-item main-btn" id="mainPageBtn" style="margin-top: 20px; background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #030303; border: none;"><i>🏠</i><span>MAIN PAGE</span></div>
+    </div>
+    <div class="bottom-buttons" style="padding: 0 16px; margin-top: 20px;">
+      <button class="side-btn" id="startTourBtn">START TOUR</button>
+      <button class="side-btn" id="ambientBtn">AMBIENT ON</button>
+    </div>
+  </div>
+  <div class="main-content">
+    <div class="top-bar">
+      <div class="search-area" id="searchContainer">
+        <input type="text" placeholder="🔍 Search NFT, skin, artifact..." id="searchInput" autocomplete="off">
+        <span class="clear-search" id="clearSearch" style="display: none;">✕</span>
+        <div id="suggestionsBox" class="search-suggestions" style="display: none;"></div>
+      </div>
+      <div class="right-icons">
+        <span id="walletStatusSpan">🤖 <span class="badge">AI</span></span>
+        <span>❤️ <span class="badge" id="wishlistCount">0</span></span>
+        <span>🛒 <span class="badge" id="cartCount">0</span></span>
+        <span>👤</span>
+      </div>
+    </div>
+    <div class="ticker-bar" id="liveTicker">
+      <div class="ticker-item"><span class="live-dot"></span> EXO: $12.40 <span style="color:#ff8888;">▼ 0.2%</span></div>
+      <div class="ticker-item">🔥 APR Pool: <span class="badge-apr" style="color:#fbbf24;">184%</span></div>
+      <div class="ticker-item">🗿 NPC Realm: 12.4k traders</div>
+      <div class="ticker-item" id="npcFeedMsg">Kael bought Neural Whip</div>
+    </div>
+
+    <div id="homePage" class="page active">
+      <div class="hero-glow" style="background:rgba(20,20,24,0.6);border-radius:28px;padding:32px;margin-bottom:40px;text-align:center;">
+        <div class="hero-title" style="font-size:2rem; font-weight:800;">⚡ PROTEAN BAZAAR — Living Market</div>
+        <p style="margin-top:12px;opacity:0.8;">MagTechBioCyberPunk dimension • DAO-influenced prices</p>
+      </div>
+      <div><h3>🤖 Recommended by Wellamatores AI</h3><div class="bento-grid" id="aiRecommendations"></div></div>
+      <div class="bento-grid">
+        <div class="card"><h3>📊 EXO/USDT • LIVING ORDER BOOK</h3><div class="order-book"><div class="order-col"><div style="color:#22c55e">BUY</div><div class="order-row"><span>2,430 EXO</span><span>12.40</span></div></div><div class="order-col"><div style="color:#ff8888">SELL</div><div class="order-row"><span>2,460 EXO</span><span>12.42</span></div></div></div><button class="side-btn" id="buyExoBtn" style="margin-top:12px;">BUY EXO</button></div>
+        <div class="card"><h3>🔥 EXO STAKING POOL — 184% APR</h3><div class="price-big" style="font-size:3rem;">184%</div><button class="side-btn" id="stakeExoBtn" style="margin-top:12px;">STAKE EXO</button></div>
+      </div>
+      <div class="footer-main">
+        <p>© Wellamatores – JOG • Jackdaw Orbital Group</p>
+        <button class="side-btn main-btn" id="footerMainPageBtn" style="margin-top: 16px; width: auto; padding: 10px 24px;">🏠 Back to Main Portal</button>
+      </div>
+    </div>
+
+    <div id="catalogPage" class="page">
+      <div class="filters-sidebar" style="background:rgba(10,10,12,0.8);border-radius:24px;padding:20px;margin-bottom:24px;">
+        <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;">
+          <select id="sortSelect"><option value="default">Popularity</option><option value="price_asc">Price ↑</option><option value="price_desc">Price ↓</option><option value="rarity">Rarity</option></select>
+          <div><button class="side-btn" id="gridViewBtn" style="width:auto;">📱 Grid</button><button class="side-btn" id="listViewBtn" style="width:auto;">📄 List</button></div>
+          <select id="categoryFilter"><option value="all">All NFTs</option><option value="weapon">Weapon</option><option value="wearable">Wearable</option></select>
+          <select id="rarityFilter"><option value="all">Rarity</option><option value="common">Common</option><option value="rare">Rare</option><option value="epic">Epic</option><option value="legendary">Legendary</option></select>
+          <select id="sellerFilter"><option value="all">All Sellers</option><option value="0xK1r1ll">0xK1r1ll</option><option value="NeonVendor">NeonVendor</option><option value="TechPriest">TechPriest</option></select>
+          <select id="ratingFilter"><option value="0">Any Rating</option><option value="4">4+ ★</option><option value="4.5">4.5+ ★</option><option value="5">5 ★</option></select>
+          <div style="display:flex;align-items:center;gap:8px;"><span>Max:</span><input type="range" id="priceRangeFilter" min="0" max="5000" value="5000" style="width:150px;"><span id="priceRangeValue">5000 EXO</span></div>
+          <button class="btn-buy" id="resetFilterBtn" style="width:auto;">Reset</button>
+        </div>
+      </div>
+      <div id="catalogContainer"></div>
+      <button class="side-btn" id="loadMoreBtn" style="margin-top:20px;">➕ Load More</button>
+    </div>
+
+    <div id="productPage" class="page"><div id="dynamicProductView"></div></div>
+    <div id="sellerPage" class="page"><div id="sellerView"></div></div>
+    <div id="cartPage" class="page"><div id="checkoutStepper"></div></div>
+    <div id="wishlistPage" class="page"><div id="wishlistContainer"></div></div>
+  </div>
+</div>
+
+<script>
+// ===================== STATE =====================
+const fullCatalog = [
+  { id: 1, name: "Mantis Blades", category: "weapon", price: 2450, icon: "⚔️", rarity: "legendary", seller: "0xK1r1ll", rating: 4.9, stock: 3, verified: true, images: ["⚔️","🗡️","🔪"] },
+  { id: 2, name: "Cyber Mask", category: "wearable", price: 890, icon: "🎭", rarity: "rare", seller: "NeonVendor", rating: 4.5, stock: 12, verified: false, images: ["🎭","👺","😷"] },
+  { id: 3, name: "Bio-Implant X2", category: "wearable", price: 3200, icon: "🧬", rarity: "epic", seller: "0xK1r1ll", rating: 5.0, stock: 1, verified: true, images: ["🧬","💉","🔬"] },
+  { id: 4, name: "Shield of Ages", category: "weapon", price: 3100, icon: "🛡️", rarity: "legendary", seller: "TechPriest", rating: 4.8, stock: 2, verified: true, images: ["🛡️","🔮","💎"] },
+  { id: 5, name: "Neural Whip", category: "weapon", price: 1420, icon: "⚡", rarity: "rare", seller: "NeonVendor", rating: 4.2, stock: 7, verified: false, images: ["⚡","🔌","💫"] },
+  { id: 6, name: "Hacker Goggles", category: "wearable", price: 540, icon: "👓", rarity: "common", seller: "0xK1r1ll", rating: 4.0, stock: 20, verified: false, images: ["👓","📡","🕶️"] }
+];
+const reviewsDB = { 1: [{user:"CyberSam", rating:5, date:"2025-01-10", text:"Amazing blades! Best purchase ever!"}], 3: [{user:"Ghost", rating:5, date:"2025-02-01", text:"Bio core is revolutionary!"}] };
+const sellerReviews = [{user:"Alice", rating:5, text:"Fast delivery, trusted seller"},{user:"Bob", rating:4, text:"Good communication"}];
+let cart = [], wishlist = [], viewMode = "grid", currentProductId = 1, step = 1, deliveryMethod = "", paymentMethod = "", promoCodeApplied = "", promoDiscount = 0;
+let connectedWallet = localStorage.getItem("exo_wallet") || null;
+let lastPage = localStorage.getItem("exo_last_page") || "home";
+
+// ===================== HELPERS =====================
+function saveState() { localStorage.setItem("wellamatores_cart", JSON.stringify(cart)); localStorage.setItem("wellamatores_wishlist", JSON.stringify(wishlist)); localStorage.setItem("wellamatores_viewMode", viewMode); localStorage.setItem("exo_wallet", connectedWallet); }
+function loadState() { let c = localStorage.getItem("wellamatores_cart"); if(c) cart = JSON.parse(c); let w = localStorage.getItem("wellamatores_wishlist"); if(w) wishlist = JSON.parse(w); let v = localStorage.getItem("wellamatores_viewMode"); if(v) viewMode = v; updateCounters(); }
+function updateCounters() { 
+  const cartCountEl = document.getElementById('cartCount'); if(cartCountEl) cartCountEl.innerText = cart.length;
+  const wishlistCountEl = document.getElementById('wishlistCount'); if(wishlistCountEl) wishlistCountEl.innerText = wishlist.length;
+  saveState(); 
+}
+function showNotif(msg, color='#88ff88') { 
+  let d=document.createElement('div'); 
+  d.innerText=msg; 
+  d.style.cssText='position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,0.95);border-left:4px solid '+color+';padding:12px 20px;border-radius:16px;color:#fef3c7;z-index:9999;font-family:monospace;animation:slideIn 0.3s ease;'; 
+  document.body.appendChild(d); 
+  setTimeout(()=>d.remove(),2500); 
+}
+function addToCart(product) { 
+  cart.push({id:product.id, name:product.name, price:product.price}); 
+  updateCounters(); 
+  showNotif(`✅ ${product.name} added to cart`, '#88ff88'); 
+  if(document.getElementById('cartPage').classList.contains('active') && step===1) renderCheckout(); 
+}
+function addToWishlist(id) { 
+  if(!wishlist.includes(id)) { 
+    wishlist.push(id); 
+    updateCounters(); 
+    showNotif("❤️ Added to wishlist", '#ff8888'); 
+    renderWishlistPage(); 
+  } else { showNotif("⚠️ Already in wishlist", '#ffaa44'); }
+}
+function removeFromWishlist(id) { wishlist = wishlist.filter(i=> i!==id); updateCounters(); renderWishlistPage(); showNotif("Removed from wishlist", '#ff8888'); }
+
+// ===================== SKELETON =====================
+async function withSkeleton(containerId, renderFn, delay=300) {
+  const container = document.getElementById(containerId);
+  if(!container) return;
+  container.innerHTML = `<div class="skeleton" style="height:200px; margin-bottom:16px;"></div><div class="skeleton skeleton-text" style="height:20px; width:80%; margin:10px 0;"></div><div class="skeleton skeleton-text" style="height:20px; width:60%;"></div>`;
+  await new Promise(r => setTimeout(r, delay));
+  renderFn();
+}
+
+// ===================== SEARCH + SUGGESTIONS =====================
+function getFilteredProducts() {
+  let searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || "";
+  let category = document.getElementById('categoryFilter')?.value || 'all';
+  let rarity = document.getElementById('rarityFilter')?.value || 'all';
+  let maxPrice = parseInt(document.getElementById('priceRangeFilter')?.value || 5000);
+  let sellerVal = document.getElementById('sellerFilter')?.value || 'all';
+  let minRating = parseFloat(document.getElementById('ratingFilter')?.value || 0);
+  return fullCatalog.filter(p => {
+    if(searchTerm && !p.name.toLowerCase().includes(searchTerm) && !p.category.toLowerCase().includes(searchTerm) && !p.seller.toLowerCase().includes(searchTerm)) return false;
+    if(category !== 'all' && p.category !== category) return false;
+    if(rarity !== 'all' && p.rarity !== rarity) return false;
+    if(p.price > maxPrice) return false;
+    if(sellerVal !== 'all' && p.seller !== sellerVal) return false;
+    if(minRating > 0 && p.rating < minRating) return false;
+    return true;
+  });
+}
+function renderCatalogDynamic() {
+  let filtered = getFilteredProducts();
+  let container = document.getElementById('catalogContainer');
+  if(!container) return;
+  if(filtered.length === 0) { container.innerHTML = '<div class="card"><h3>🔍 NO MATCHES FOUND IN EXO GRID</h3><button class="btn-buy" id="resetFilterForceBtn" style="margin-top:16px;">Reset Filters</button></div>'; document.getElementById('resetFilterForceBtn')?.addEventListener('click',resetFilters); return; }
+  let sort = document.getElementById('sortSelect')?.value;
+  let sorted = [...filtered];
+  if(sort === 'price_asc') sorted.sort((a,b)=>a.price-b.price);
+  if(sort === 'price_desc') sorted.sort((a,b)=>b.price-a.price);
+  if(sort === 'rarity') { let rank = {legendary:4, epic:3, rare:2, common:1}; sorted.sort((a,b)=>rank[b.rarity]-rank[a.rarity]); }
+  if(viewMode === 'grid') container.innerHTML = `<div class="bento-grid">${sorted.map(p=>`<div class="card"><div style="font-size:3rem;">${p.icon}</div><span style="color:#f59e0b;">${p.rarity.toUpperCase()}</span><h3 style="margin:8px 0;">${p.name}</h3><div class="price-big">${p.price} EXO</div><button class="btn-buy add-cart-btn" data-id='${p.id}' style="margin-top:12px;">Buy Now</button><button class="side-btn view-product" data-id='${p.id}' style="margin-top:8px;">Details</button></div>`).join('')}</div>`;
+  else container.innerHTML = `<div class="list-view">${sorted.map(p=>`<div class="list-card"><div class="list-icon">${p.icon}</div><div><h3>${p.name}</h3><span style="color:#f59e0b;">${p.rarity}</span><div class="price-big" style="font-size:1.2rem;">${p.price} EXO</div></div><button class="btn-buy add-cart-btn" data-id='${p.id}'>Buy</button><button class="side-btn view-product" data-id='${p.id}'>View</button></div>`).join('')}</div>`;
+  attachCatalogEvents();
+}
+function attachCatalogEvents() {
+  document.querySelectorAll('.add-cart-btn').forEach(btn=>btn.addEventListener('click',(e)=>{let id=parseInt(btn.dataset.id); let prod=fullCatalog.find(p=>p.id===id); if(prod) addToCart(prod);}));
+  document.querySelectorAll('.view-product').forEach(btn=>btn.addEventListener('click',(e)=>{let id=parseInt(btn.dataset.id); showProductDetailById(id); navigateToPage('product');}));
+}
+function resetFilters() { 
+  if(document.getElementById('categoryFilter')) document.getElementById('categoryFilter').value='all'; 
+  if(document.getElementById('rarityFilter')) document.getElementById('rarityFilter').value='all'; 
+  if(document.getElementById('priceRangeFilter')) { document.getElementById('priceRangeFilter').value=5000; document.getElementById('priceRangeValue').innerText='5000 EXO'; }
+  if(document.getElementById('sellerFilter')) document.getElementById('sellerFilter').value='all'; 
+  if(document.getElementById('ratingFilter')) document.getElementById('ratingFilter').value='0'; 
+  if(document.getElementById('searchInput')) { document.getElementById('searchInput').value=''; document.getElementById('clearSearch').style.display='none'; }
+  withSkeleton('catalogContainer', ()=>renderCatalogDynamic(), 200); 
+}
+
+// Search suggestions
+const searchInput = document.getElementById('searchInput');
+const clearSearch = document.getElementById('clearSearch');
+if(searchInput) {
+  searchInput.addEventListener('input', (e) => {
+    let val = e.target.value.toLowerCase();
+    clearSearch.style.display = val.length ? 'block' : 'none';
+    let box = document.getElementById('suggestionsBox');
+    if(val.length < 1) { box.style.display = 'none'; renderCatalogDynamic(); return; }
+    let matches = fullCatalog.filter(p => p.name.toLowerCase().includes(val) || p.category.includes(val) || p.seller.toLowerCase().includes(val)).slice(0,5);
+    if(matches.length) { box.style.display = 'block'; box.innerHTML = matches.map(m => `<div class="suggestion-item" data-id="${m.id}">${m.icon} ${m.name} <span style="margin-left:auto; color:#f59e0b;">${m.price} EXO</span></div>`).join(''); 
+      document.querySelectorAll('.suggestion-item').forEach(el => el.addEventListener('click', ()=>{ let pid = parseInt(el.dataset.id); showProductDetailById(pid); navigateToPage('product'); box.style.display='none'; clearSearch.style.display='none'; searchInput.value=''; })); }
+    else box.style.display = 'none';
+    renderCatalogDynamic();
+  });
+  clearSearch?.addEventListener('click', () => { searchInput.value = ''; clearSearch.style.display = 'none'; renderCatalogDynamic(); });
+}
+
+// PRODUCT
+function showProductDetailById(id) {
+  let p = fullCatalog.find(x=>x.id===id);
+  if(!p) return;
+  currentProductId = id;
+  let reviewsHtml = (reviewsDB[p.id] || []).map(r=>`<div style="border-bottom:1px solid #f59e0b30;padding:12px;"><span class="rating-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span> <b>${r.user}</b> ${r.date||''}<p style="margin-top:6px;">${r.text}</p></div>`).join('');
+  let similar = fullCatalog.filter(x=>x.category===p.category && x.id!==p.id).slice(0,3);
+  let verifiedHtml = p.verified ? `<span id="verifiedBadge" style="cursor:pointer; background:#f59e0b20; padding:4px 12px; border-radius:40px; margin-left:12px;">✅ Verified on EXO Chain</span>` : '';
+  let html = `<div class="card"><div class="product-gallery"><div class="main-img" id="mainGalleryImg">${p.images[0]}</div><div class="thumbnails">${p.images.map((img,idx)=>`<div class="thumb" data-img="${img}">${img}</div>`).join('')}</div></div>
+  <div style="margin: 20px 0;"><h1 style="display:inline-block;">${p.name}</h1> ${verifiedHtml}</div>
+  <div class="price-big">${p.price} EXO</div>
+  <div style="margin: 12px 0;"><span>📁 ${p.category}</span> | <span>💎 ${p.rarity.toUpperCase()}</span> | <span>👤 ${p.seller}</span> | <span>📦 Stock: ${p.stock}</span></div>
+  <div class="rating-stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5-Math.floor(p.rating))} (${p.rating})</div>
+  <div style="display:flex; gap:12px; margin: 20px 0;">
+    <button class="btn-buy add-cart-product" style="flex:1;">🛒 Buy Now</button>
+    <button class="side-btn wishlist-product" style="flex:1;">❤️ Wishlist</button>
+  </div>
+  <div><h4>📝 Reviews</h4>${reviewsHtml || '<i>✨ No reviews yet — be the first!</i>'}</div>
+  <div><h4>🔄 Similar Items</h4><div class="bento-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));">${similar.map(s=>`<div class="card" style="cursor:pointer;"><div style="font-size:2rem;">${s.icon}</div><div>${s.name}</div><div class="price-big" style="font-size:1rem;">${s.price} EXO</div><button class="side-btn view-similar" data-id='${s.id}'>View</button></div>`).join('')}</div></div>`;
+  document.getElementById('dynamicProductView').innerHTML = html;
+  document.querySelectorAll('.thumb').forEach(th=>th.addEventListener('click',()=>{document.getElementById('mainGalleryImg').innerText=th.dataset.img;}));
+  document.querySelector('.add-cart-product')?.addEventListener('click',()=>addToCart(p));
+  document.querySelector('.wishlist-product')?.addEventListener('click',()=>addToWishlist(p.id));
+  document.querySelectorAll('.view-similar').forEach(btn=>btn.addEventListener('click',(e)=>{let sid=parseInt(btn.dataset.id); showProductDetailById(sid);}));
+  let verifSpan = document.getElementById('verifiedBadge');
+  if(verifSpan) verifSpan.addEventListener('click', ()=>showVerificationModal(p));
+}
+function showVerificationModal(p) {
+  let modalDiv = document.createElement('div'); modalDiv.className = 'modal';
+  modalDiv.innerHTML = `<div class="modal-content"><h3>🔗 EXO CHAIN VERIFIED</h3><p><strong>Hash:</strong> 0xA34F${Math.floor(Math.random()*10000)}B9C</p><p><strong>Minted:</strong> 2025-09-18</p><p><strong>Collection:</strong> JOG Genesis</p><p><strong>Asset:</strong> ${p.name}</p><button class="btn-buy closeModal" style="margin-top:16px;">Close</button></div>`;
+  document.body.appendChild(modalDiv); modalDiv.querySelector('.closeModal').addEventListener('click',()=>modalDiv.remove());
+}
+
+// SELLER
+function renderSeller() { 
+  let sellerName = "0xK1r1ll"; 
+  let products = fullCatalog.filter(p=>p.seller===sellerName); 
+  let html = `<div class="card" style="text-align:center;"><div style="font-size:4rem;">👤</div><h2>${sellerName} ✅</h2><span>⭐ 4.99 (1,204 reviews)</span><div style="display:flex; gap:12px; margin:20px 0;"><button class="side-btn" id="subscribeSeller" style="flex:1;">🔔 Subscribe</button><button class="side-btn" id="messageSellerBtn" style="flex:1;">💬 Message Seller</button></div></div>
+  <div class="bento-grid"><div class="card"><h4>Total Sales</h4><div class="price-big">342</div></div><div class="card"><h4>Response Time</h4><div class="price-big">2min</div></div><div class="card"><h4>Positive Feedback</h4><div class="price-big">98%</div></div><div class="card"><h4>Verified Since</h4><div class="price-big">2024</div></div></div>
+  <h3 style="margin-top:24px;">📦 Seller's Products</h3><div class="bento-grid">${products.map(p=>`<div class="card"><div style="font-size:2rem;">${p.icon}</div><h4>${p.name}</h4><div class="price-big" style="font-size:1.2rem;">${p.price} EXO</div><button class="side-btn view-product-seller" data-id='${p.id}'>View</button></div>`).join('')}</div>
+  <h3>⭐ Reviews about seller</h3>${sellerReviews.map(r=>`<div class="card"><b>${r.user}</b> ${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}<p>${r.text}</p></div>`).join('')}`;
+  document.getElementById('sellerView').innerHTML = html;
+  document.querySelectorAll('.view-product-seller').forEach(btn=>btn.addEventListener('click',()=>{let id=parseInt(btn.dataset.id); showProductDetailById(id); navigateToPage('product');}));
+  document.getElementById('subscribeSeller')?.addEventListener('click',()=>showNotif("🔔 Subscribed to seller updates!", '#88ff88'));
+  document.getElementById('messageSellerBtn')?.addEventListener('click',()=>showChatModal());
+}
+function showChatModal() {
+  let modalDiv = document.createElement('div'); modalDiv.className = 'modal';
+  modalDiv.innerHTML = `<div class="modal-content"><h3>💬 Chat with 0xK1r1ll</h3><div id="chatLog" style="background:#0a0a0c;padding:12px;border-radius:16px;margin:12px 0;height:150px;overflow-y:auto;font-size:0.85rem;"><p>🤖 EXO Assistant: Hello! I'm online. How can I help?</p></div><input type="text" id="chatInput" placeholder="Type your message..." style="width:100%;background:#111;border:1px solid #f59e0b;padding:10px;border-radius:8px;color:white;"><button id="sendChatMsg" class="btn-buy" style="margin-top:8px;">Send</button><button class="side-btn closeModal" style="margin-top:8px;">Close</button></div>`;
+  document.body.appendChild(modalDiv);
+  let chatLog = modalDiv.querySelector('#chatLog');
+  modalDiv.querySelector('#sendChatMsg').addEventListener('click',()=>{
+    let input = modalDiv.querySelector('#chatInput');
+    if(input.value.trim()) { chatLog.innerHTML += `<p><strong>You:</strong> ${input.value}</p>`; input.value=''; setTimeout(()=>{ chatLog.innerHTML += `<p><em>🤖 EXO Assistant: Thanks! Seller will respond within 2 minutes.</em></p>`; chatLog.scrollTop = chatLog.scrollHeight; }, 500); chatLog.scrollTop = chatLog.scrollHeight; }
+  });
+  modalDiv.querySelector('.closeModal').addEventListener('click',()=>modalDiv.remove());
+}
+
+// WISHLIST
+function renderWishlistPage() {
+  let container = document.getElementById('wishlistContainer');
+  if(!container) return;
+  if(wishlist.length===0) { container.innerHTML = `<div class="card" style="text-align:center;"><h3>💔 WISHLIST IS EMPTY</h3><button class="side-btn main-btn" id="goToCatalogWish" style="margin-top:16px;">Browse Catalog</button></div>`; document.getElementById('goToCatalogWish')?.addEventListener('click',()=>navigateToPage('catalog')); return; }
+  let items = wishlist.map(id=>fullCatalog.find(p=>p.id===id)).filter(Boolean);
+  container.innerHTML = `<div class="bento-grid">${items.map(p=>`<div class="card"><div style="font-size:3rem;">${p.icon}</div><h3>${p.name}</h3><div class="price-big">${p.price} EXO</div><div style="display:flex; gap:8px; margin-top:12px;"><button class="btn-buy add-cart-wish" data-id='${p.id}' style="flex:1;">Add to Cart</button><button class="side-btn remove-wish" data-id='${p.id}' style="flex:1;">Remove</button><button class="side-btn view-product-wish" data-id='${p.id}' style="flex:1;">View</button></div></div>`).join('')}</div>`;
+  document.querySelectorAll('.add-cart-wish').forEach(btn=>{ btn.addEventListener('click',()=>{ let prod=fullCatalog.find(p=>p.id===parseInt(btn.dataset.id)); if(prod) addToCart(prod); }); });
+  document.querySelectorAll('.remove-wish').forEach(btn=>{ btn.addEventListener('click',()=>{ removeFromWishlist(parseInt(btn.dataset.id)); renderWishlistPage(); }); });
+  document.querySelectorAll('.view-product-wish').forEach(btn=>{ btn.addEventListener('click',()=>{ let id=parseInt(btn.dataset.id); showProductDetailById(id); navigateToPage('product'); }); });
+}
+
+// CHECKOUT
+function renderCheckout() {
+  let total = cart.reduce((s,i)=>s+i.price,0);
+  let finalTotal = promoDiscount ? total * (1-promoDiscount/100) : total;
+  if(step===1) {
+    document.getElementById('checkoutStepper').innerHTML = `<div class="stepper"><div class="step active-step">📦 Cart</div><div class="step">🚚 Delivery</div><div class="step">💳 Payment</div><div class="step">✅ Confirm</div></div><div class="card"><h3>Your Cart</h3><div id="cartItemsList"></div><div style="margin: 16px 0;"><strong>Subtotal:</strong> ${total} EXO</div>${promoDiscount ? `<div style="color:#88ff88;"><strong>Discount (${promoDiscount}%):</strong> -${Math.round(total*promoDiscount/100)} EXO</div>` : ''}<div class="price-big">Total: ${finalTotal} EXO</div><div style="margin: 16px 0;"><input id="promoInput" placeholder="Promo code (EXO10 / JACKDAW)" style="background:#111;border:1px solid #f59e0b;padding:8px;border-radius:8px;color:white;width:100%;"><button class="side-btn" id="applyPromo" style="margin-top:8px;">Apply</button></div><button class="btn-buy" id="nextStep1">Next → Delivery</button></div>`;
+    let cartDiv = document.getElementById('cartItemsList'); if(cartDiv) cartDiv.innerHTML = cart.map((item,idx)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f59e0b20;"><span>${item.name}</span><span>${item.price} EXO</span><button class="side-btn" data-remove="${idx}" style="width:auto;padding:4px 12px;margin:0;">❌</button></div>`).join('');
+    document.querySelectorAll('[data-remove]').forEach(btn=>btn.addEventListener('click',(e)=>{cart.splice(parseInt(btn.dataset.remove),1); updateCounters(); renderCheckout();}));
+    document.getElementById('applyPromo')?.addEventListener('click',()=>{ let code=document.getElementById('promoInput')?.value.toUpperCase(); if(code==='EXO10') promoDiscount=10; else if(code==='JACKDAW') promoDiscount=15; else { promoDiscount=0; showNotif("Invalid promo code", '#ff8888'); } renderCheckout(); });
+    document.getElementById('nextStep1')?.addEventListener('click',()=>{ if(!cart.length){showNotif("Cart is empty", '#ff8888');return;} step=2; renderCheckout(); });
+  } else if(step===4) {
+    let orderId = "EXO-"+Math.floor(Math.random()*9999);
+    document.getElementById('checkoutStepper').innerHTML = `<div class="stepper"><div class="step">📦 Cart</div><div class="step">🚚 Delivery</div><div class="step">💳 Payment</div><div class="step active-step">✅ Confirm</div></div><div class="card" style="text-align:center;"><div style="font-size:4rem;">✅</div><h2>Order Confirmed!</h2><p><strong>Order ID:</strong> ${orderId}</p><p><strong>Total:</strong> ${finalTotal} EXO</p><p><strong>Delivery:</strong> ${deliveryMethod} | <strong>Payment:</strong> ${paymentMethod}</p><div style="display:flex; gap:12px; margin-top:20px;"><button class="btn-buy" id="downloadReceiptBtn" style="flex:1;">📄 Download Receipt</button><button class="side-btn" id="backHomeBtn" style="flex:1;">🏠 Back to Home</button></div></div>`;
+    document.getElementById('downloadReceiptBtn')?.addEventListener('click',()=>{
+      let receipt = `EXO TERMINAL RECEIPT\n━━━━━━━━━━━━━━━━━━━━━━━━━\nOrder ID: ${orderId}\nDate: ${new Date().toLocaleString()}\nItems: ${cart.map(i=>i.name).join(', ')}\nDelivery: ${deliveryMethod}\nPayment: ${paymentMethod}\nTotal: ${finalTotal} EXO\n━━━━━━━━━━━━━━━━━━━━━━━━━\nThank you for shopping at Wellamatores!`;
+      let blob = new Blob([receipt], {type: 'text/plain'}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `receipt_${orderId}.txt`; a.click(); URL.revokeObjectURL(a.href); showNotif("Receipt downloaded!", '#88ff88');
+    });
+    document.getElementById('backHomeBtn')?.addEventListener('click',()=>{ cart=[]; updateCounters(); step=1; promoDiscount=0; navigateToPage('home'); });
+  } else {
+    document.getElementById('checkoutStepper').innerHTML = `<div class="stepper"><div class="step">📦 Cart</div><div class="step ${step===2?'active-step':''}">🚚 Delivery</div><div class="step ${step===3?'active-step':''}">💳 Payment</div><div class="step">✅ Confirm</div></div><div class="card"><h3>${step===2?'Select Delivery Method':'Select Payment Method'}</h3>${step===2?'<select id="deliverySelect" style="width:100%;padding:12px;background:#111;border:1px solid #f59e0b;border-radius:8px;color:white;margin:16px 0;"><option>Instant EXO Transfer</option><option>Courier Delivery</option></select><button class="btn-buy" id="nextStep2">Next → Payment</button>':'<select id="paymentSelect" style="width:100%;padding:12px;background:#111;border:1px solid #f59e0b;border-radius:8px;color:white;margin:16px 0;"><option>MetaMask</option><option>Trust Wallet</option><option>WalletConnect</option><option>EXO Vault</option></select><button class="btn-buy" id="nextStep3">Place Order →</button>'}</div>`;
+    if(step===2) document.getElementById('nextStep2')?.addEventListener('click',()=>{ deliveryMethod=document.getElementById('deliverySelect').value; step=3; renderCheckout(); });
+    if(step===3) document.getElementById('nextStep3')?.addEventListener('click',()=>{ paymentMethod=document.getElementById('paymentSelect').value; step=4; renderCheckout(); });
+  }
+}
+
+// WALLET MODAL
+function showWalletModal() {
+  let modalDiv = document.createElement('div'); modalDiv.className = 'modal';
+  modalDiv.innerHTML = `<div class="modal-content"><h2>🔌 CONNECT WALLET</h2><p style="opacity:0.7;margin-bottom:16px;">Choose your preferred wallet</p><div style="display:flex;flex-direction:column;gap:10px;"><button class="side-btn walletOpt" data-wallet="MetaMask" style="margin:0;">🦊 MetaMask</button><button class="side-btn walletOpt" data-wallet="Trust Wallet" style="margin:0;">📱 Trust Wallet</button><button class="side-btn walletOpt" data-wallet="WalletConnect" style="margin:0;">🌐 WalletConnect</button><button class="side-btn walletOpt" data-wallet="EXO Vault" style="margin:0;">💎 EXO Vault</button></div><button class="btn-buy closeModal" style="margin-top:20px;">Close</button></div>`;
+  document.body.appendChild(modalDiv);
+  modalDiv.querySelectorAll('.walletOpt').forEach(btn=>btn.addEventListener('click',()=>{ let w = btn.dataset.wallet; connectedWallet = w; localStorage.setItem("exo_wallet", w); document.getElementById('walletStatusSpan').innerHTML = `🟢 ${w.substring(0,8)}`; showNotif(`✅ Connected to ${w}`, '#88ff88'); modalDiv.remove(); }));
+  modalDiv.querySelector('.closeModal').addEventListener('click',()=>modalDiv.remove());
+}
+function updateWalletUI() { if(connectedWallet) document.getElementById('walletStatusSpan').innerHTML = `🟢 ${connectedWallet.substring(0,8)}`; else document.getElementById('walletStatusSpan').innerHTML = `🤖 <span class="badge">AI</span>`; document.getElementById('walletStatusSpan')?.addEventListener('click', showWalletModal); }
+
+// ROUTING
+function navigateToPage(pageId) {
+  let pageMap = {home:'homePage', catalog:'catalogPage', product:'productPage', seller:'sellerPage', cart:'cartPage', wishlist:'wishlistPage'};
+  let pid = pageMap[pageId];
+  if(pid){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById(pid).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    let activeNav = document.querySelector(`.nav-item[data-page="${pageId}"]`);
+    if(activeNav) activeNav.classList.add('active');
+    if(pid==='catalogPage') withSkeleton('catalogContainer', ()=>renderCatalogDynamic(), 250);
+    if(pid==='sellerPage') withSkeleton('sellerView', ()=>renderSeller(), 250);
+    if(pid==='productPage') showProductDetailById(currentProductId);
+    if(pid==='cartPage') { step=1; renderCheckout(); }
+    if(pid==='wishlistPage') renderWishlistPage();
+    if(pid==='homePage') renderAI();
+    localStorage.setItem("exo_last_page", pageId);
+  }
+}
+function renderAI() { 
+  let aiRec = [...fullCatalog].sort(()=>0.5-Math.random()).slice(0,4); 
+  document.getElementById('aiRecommendations').innerHTML = aiRec.map(p=>`<div class="card"><div style="font-size:2.5rem;">${p.icon}</div><h4>${p.name}</h4><div class="price-big" style="font-size:1.2rem;">${p.price} EXO</div><button class="side-btn view-ai-product" data-id='${p.id}' style="margin-top:8px;">View →</button></div>`).join(''); 
+  document.querySelectorAll('.view-ai-product').forEach(btn=>btn.addEventListener('click',()=>{let id=parseInt(btn.dataset.id); showProductDetailById(id); navigateToPage('product');})); 
+}
+
+// MAIN PAGE BUTTON FUNCTION
+function goToMainPage() {
+  window.open('https://wellamatores-metaverse.vercel.app/', '_blank');
+}
+
+// INIT EVENTS
+function initEvents() {
+  document.querySelectorAll('.nav-item[data-page]').forEach(btn=>btn.addEventListener('click',()=>navigateToPage(btn.dataset.page)));
+  document.getElementById('mainPageBtn')?.addEventListener('click', goToMainPage);
+  document.getElementById('footerMainPageBtn')?.addEventListener('click', goToMainPage);
+  document.getElementById('gridViewBtn')?.addEventListener('click',()=>{ viewMode='grid'; withSkeleton('catalogContainer',()=>renderCatalogDynamic(),200); saveState(); });
+  document.getElementById('listViewBtn')?.addEventListener('click',()=>{ viewMode='list'; withSkeleton('catalogContainer',()=>renderCatalogDynamic(),200); saveState(); });
+  document.getElementById('priceRangeFilter')?.addEventListener('input',(e)=>{ document.getElementById('priceRangeValue').innerText=`${e.target.value} EXO`; withSkeleton('catalogContainer',()=>renderCatalogDynamic(),200); });
+  document.getElementById('categoryFilter')?.addEventListener('change',()=>withSkeleton('catalogContainer',()=>renderCatalogDynamic(),200));
+  document.getElementById('rarityFilter')?.addEventListener('change',()=>withSkeleton('catalogContainer',()=>renderCatalogDynamic(),200));
+  document.getElementById('sellerFilter')?.addEventListener('change',()=>withSkeleton('catalogContainer',()=>renderCatalogDynamic(),200));
+  document.getElementById('ratingFilter')?.addEventListener('change',()=>withSkeleton('catalogContainer',()=>renderCatalogDynamic(),200));
+  document.getElementById('sortSelect')?.addEventListener('change',()=>withSkeleton('catalogContainer',()=>renderCatalogDynamic(),200));
+  document.getElementById('resetFilterBtn')?.addEventListener('click',()=>{ resetFilters(); withSkeleton('catalogContainer',()=>renderCatalogDynamic(),200); });
+  document.getElementById('buyExoBtn')?.addEventListener('click',()=>showNotif("📈 Order placed to buy EXO!"));
+  document.getElementById('stakeExoBtn')?.addEventListener('click',()=>showNotif("🔥 Staking activated! Earn 184% APR"));
+  document.getElementById('startTourBtn')?.addEventListener('click',()=>showNotif("🚀 Tour started! Check out the CATALOG"));
+  document.getElementById('ambientBtn')?.addEventListener('click',()=>showNotif("🎵 Ambient mode ON"));
+}
+
+// INIT
+loadState(); initEvents(); updateWalletUI(); renderAI(); renderCatalogDynamic(); renderSeller(); showProductDetailById(1); navigateToPage(lastPage);
+
+// LIVE TICKER
+setInterval(()=>{ let msgs = ["Kael bought Neural Whip", "Z3R0 listed Bio Implant X2", "Pool liquidity +12%", "New EXO listing incoming", "NPC Realm: 342 active traders"]; let feedDiv = document.getElementById('npcFeedMsg'); if(feedDiv) feedDiv.innerText = msgs[Math.floor(Math.random()*msgs.length)]; }, 7000);
+</script>
+</body>
+</html>
