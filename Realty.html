@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Le Bureau des Colonies | JackDaw Realty · Meta-Real Estate OS</title>
+    <!-- Tailwind + Font Awesome + Mermaid + Custom Glassmorphic Animations -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* custom depth, glows, cyber-gradients */
+        .neon-cyan { box-shadow: 0 0 15px #00ffff88, 0 0 35px #00ffff44; transition: all 0.3s ease; }
+        .neon-purple { box-shadow: 0 0 15px #a855f7aa, 0 0 35px #8b5cf6aa; transition: all 0.3s ease; }
+        .neon-gold { box-shadow: 0 0 15px #fbbf24aa, 0 0 35px #f59e0baa; }
+        .glassmorphism {
+            backdrop-filter: blur(14px);
+            background: rgba(12, 20, 35, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 2rem;
+        }
+        .glass-card {
+            backdrop-filter: blur(12px);
+            background: rgba(5, 15, 30, 0.7);
+            border: 1px solid rgba(0, 255, 255, 0.25);
+        }
+        @keyframes floatGlow {
+            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.9; }
+            50% { transform: translateY(-8px) scale(1.02); opacity: 1; }
+        }
+        .float-animation {
+            animation: floatGlow 4s ease-in-out infinite;
+        }
+        @keyframes gridPulse {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 20% 20%; }
+        }
+        .bg-grid {
+            background-image: radial-gradient(circle at 1px 1px, rgba(0,255,255,0.12) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .scroll-smooth { scroll-behavior: smooth; }
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px -12px rgba(0,255,255,0.3);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-950 via-indigo-950 to-black text-white overflow-x-auto scroll-smooth">
+
+    <!-- ========== HERO: LE BUREAU DES COLONIES ========== -->
+    <section class="min-h-screen flex items-center justify-center relative overflow-hidden px-4">
+        <!-- animated cyber-grid background -->
+        <div class="absolute inset-0 bg-grid opacity-30 animate-pulse"></div>
+        <div class="absolute top-1/4 -left-32 w-96 h-96 bg-cyan-600/20 rounded-full blur-[100px]"></div>
+        <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-purple-700/20 rounded-full blur-[100px]"></div>
+        
+        <div class="container mx-auto relative z-10">
+            <div class="glassmorphism p-8 md:p-14 rounded-3xl max-w-5xl mx-auto neon-cyan float-animation border border-cyan-400/40">
+                <div class="text-center">
+                    <div class="inline-block bg-black/40 backdrop-blur-sm px-6 py-2 rounded-full text-sm font-mono border border-cyan-500/50 mb-6">
+                        <i class="fas fa-crown text-yellow-400 mr-2"></i> JOG Orbital Group · Wellamatores Universe
+                    </div>
+                    <h1 class="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent drop-shadow-2xl tracking-tight">
+                        Le Bureau <br>des Colonies
+                    </h1>
+                    <p class="text-xl md:text-3xl font-light mb-4 text-cyan-100/90">JackDaw Realty Agency</p>
+                    <div class="text-2xl md:text-4xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-emerald-300 to-teal-300">
+                        Meta-Real Estate Operating System
+                    </div>
+                    <div class="flex flex-wrap gap-5 justify-center">
+                        <a href="#search" class="bg-gradient-to-r from-cyan-500 to-blue-700 hover:from-cyan-600 hover:to-blue-800 px-8 py-4 rounded-2xl text-xl font-bold neon-cyan transition-all duration-300 shadow-xl flex items-center gap-3">
+                            <i class="fas fa-brain text-2xl"></i> Universal I.Gate AI
+                        </a>
+                        <a href="#jackdaw001" class="glassmorphism border-2 border-cyan-400 hover:border-cyan-300 px-8 py-4 rounded-2xl text-xl font-bold transition-all duration-300 hover:shadow-[0_0_20px_#00ffff] flex items-center gap-3">
+                            <i class="fas fa-gem text-2xl text-cyan-300"></i> JackDaw-001 Live
+                        </a>
+                    </div>
+                    <div class="mt-10 flex justify-center gap-6 text-sm md:text-base opacity-80 font-mono">
+                        <span><i class="fas fa-globe-americas mr-1 text-cyan-400"></i> 195 Countries</span>
+                        <span><i class="fas fa-vr-cardboard mr-1 text-purple-400"></i> Metaverses</span>
+                        <span><i class="fas fa-satellite-dish mr-1 text-orange-300"></i> Orbital / Lunar</span>
+                        <span><i class="fas fa-infinity mr-1 text-pink-400"></i> Multiverse</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== UNIVERSAL I.GATE CORE (Enhanced) ========== -->
+    <section id="search" class="py-24 px-6 md:px-12 bg-black/40 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="inline-flex items-center gap-2 bg-cyan-950/60 rounded-full px-6 py-2 border border-cyan-500/50 backdrop-blur-sm">
+                    <i class="fas fa-microchip text-cyan-400"></i>
+                    <span class="font-mono tracking-wider">NEXUS ENGINE · v.QUANTUM-EDGE</span>
+                </div>
+                <h2 class="text-5xl md:text-7xl font-black mt-6 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-400 bg-clip-text text-transparent">Universal I.Gate</h2>
+                <p class="text-xl text-white/70 max-w-3xl mx-auto mt-4">Binary–Ternary–Quantum Bridge · Conjunctive Mirrors · Semantic Sieve</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-20">
+                <div class="glassmorphism p-8 rounded-3xl text-center hover:scale-[1.02] transition-all duration-500 border-l-4 border-cyan-400">
+                    <div class="text-6xl mb-5 bg-gradient-to-br from-cyan-400/30 to-blue-600/20 inline-block p-4 rounded-full">🔄</div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">Binary-Ternary-Quantum Bridge</h3>
+                    <div class="space-y-2 text-md opacity-85 font-mono">
+                        <div>Binary Logic 0/1 + Qubit Superposition</div>
+                        <div>Ternary (-1,0,+1) · Quantum States |ψ⟩</div>
+                        <div>Post-Quantum Lattice Cryptography</div>
+                        <div>Entanglement Routing</div>
+                    </div>
+                </div>
+                <div class="glassmorphism p-8 rounded-3xl text-center hover:scale-[1.02] transition-all duration-500 border-l-4 border-purple-400">
+                    <div class="text-6xl mb-5">🪞</div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">Conjunctive Mirrors</h3>
+                    <div class="space-y-2 text-md opacity-85">
+                        <div>🟢 Active Mirror (Real-time sync)</div>
+                        <div>🔮 Predictive Mirror (AI Forecasting)</div>
+                        <div>⚙️ Corrective Mirror (Auto-optimize)</div>
+                        <div>🧠 Cognitive Sync Engine</div>
+                    </div>
+                </div>
+                <div class="glassmorphism p-8 rounded-3xl text-center hover:scale-[1.02] transition-all duration-500 border-l-4 border-emerald-400">
+                    <div class="text-6xl mb-5">🌀</div>
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4">Semantic Sieve Filter</h3>
+                    <div class="space-y-2 text-md opacity-85">
+                        <div>🔍 Entropy & Ambiguity Reduction</div>
+                        <div>⚛️ Quantum Interference Scoring</div>
+                        <div>🌍 Cultural Adaptation Engine</div>
+                        <div>✅ Coherence Validation Layer</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Live Search Demo Proto -->
+            <div class="glass-card max-w-3xl mx-auto p-8 rounded-2xl border border-cyan-500/50 shadow-2xl">
+                <h4 class="text-2xl font-bold mb-6 flex items-center justify-center gap-2"><i class="fas fa-robot text-cyan-400"></i> I.Gate Property Oracle</h4>
+                <div class="flex flex-col sm:flex-row gap-4 mb-6">
+                    <input type="text" id="propertyQuery" placeholder="e.g., Tokyo penthouse under ¥150M or Mars crater land" class="flex-1 bg-black/60 border border-cyan-600 rounded-xl px-6 py-4 text-white placeholder-cyan-300/60 focus:outline-none focus:ring-2 focus:ring-cyan-400 font-mono">
+                    <button id="aiSearchBtn" class="bg-gradient-to-r from-cyan-600 to-blue-700 hover:from-cyan-500 hover:to-blue-600 px-8 py-4 rounded-xl font-bold transition-all shadow-lg flex items-center justify-center gap-2">
+                        <i class="fas fa-search"></i> Quantum Search
+                    </button>
+                </div>
+                <div id="searchResultArea" class="text-sm md:text-base text-cyan-100 bg-black/40 rounded-xl p-4 font-mono border border-white/10 transition-all">
+                    <i class="fas fa-satellite-dish text-cyan-400 mr-2"></i> I.Gate ready · Enter any property criteria across 195 countries + VR + Orbital.
+                </div>
+                <div class="grid grid-cols-3 gap-3 mt-6 text-center text-xs opacity-70">
+                    <div><i class="fas fa-building text-cyan-300"></i> Earth · 195 States</div>
+                    <div><i class="fas fa-vr-cardboard text-purple-300"></i> Decentraland · Somnium</div>
+                    <div><i class="fas fa-meteor text-orange-300"></i> Lunar·Martian Claims</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== MINDMAP : COMPLETE UNIVERSE (NOTHING LOST) ========== -->
+    <section class="py-24 px-6 bg-gradient-to-b from-indigo-950/40 to-black/80">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-14">
+                <h2 class="text-5xl md:text-7xl font-black text-cyan-300 drop-shadow-md">🧠 Complete Meta-Real Estate Universe</h2>
+                <p class="text-white/60 text-xl mt-3">11 Interlinked Modules · Sovereign to Multiversal · No Asset Left Behind</p>
+            </div>
+            <div class="bg-black/30 rounded-3xl p-6 overflow-x-auto">
+                <div class="mermaid" style="background: transparent; min-width: 800px;">
+mindmap
+  root((🏛️ JackDaw Realty<br/>Le Bureau des Colonies))
+    ["🌍 MODULE 1: Earth Core (50 Countries)"]
+      ["Germany · France · Japan · Brazil · UAE"]
+      ["Luxury · Commercial · Industrial · AI cities"]
+    ["🌐 MODULE 2: 145 UN + Observer States"]
+      ["Kosovo · Taiwan · Palestine · Western Sahara"]
+    ["🏝️ MODULE 3: Non-Sovereign Territories"]
+      ["Hong Kong · Puerto Rico · Antarctica · Orbitals"]
+    ["🌊 MODULE 4: Subsea Realty"]
+      ["Underwater Hotels · Deep Research Stations · Coral NFT Farms"]
+    ["⛰️ MODULE 5: Underground Assets"]
+      ["Metro Hubs · Geo-Tunnels · Secure Data Vaults"]
+    ["🕶️ MODULE 6: VR/NFT Metaverse"]
+      ["JackDaw-001 (452,1021)"]
+      ["Decentraland · The Sandbox · Spatial"]
+    ["🚀 MODULE 7: Space Realty"]
+      ["LEO Orbital Suites · Lunar Estates · Mars Colonies"]
+    ["🌌 MODULE 8: Multiverse & Fractals"]
+      ["Non-Euclidean Plots · Time-Share Assets"]
+    ["🔬 MODULE 9: Scale Layers"]
+      ["Micro → Meso → Macro → Cosmic"]
+    ["🌠 MODULE 10: Frontier Portals"]
+      ["Quantum Interfaces · Portal Licenses"]
+    ["💡 MODULE 11: Quantum Infrastructure"]
+      ["I.Gate AI · Quantum Blockchain · DeFi Realty"]
+                </div>
+            </div>
+            <div class="flex justify-center mt-8 gap-4 flex-wrap">
+                <span class="bg-cyan-900/40 px-5 py-2 rounded-full text-sm"><i class="fas fa-check-circle text-cyan-400"></i> 195 Countries Active</span>
+                <span class="bg-purple-900/40 px-5 py-2 rounded-full text-sm"><i class="fas fa-cubes text-purple-400"></i> 11+ Meta Modules</span>
+                <span class="bg-emerald-900/40 px-5 py-2 rounded-full text-sm"><i class="fas fa-infinity text-emerald-400"></i> Multiverse Ready</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== GENESIS ASSETS: JACKDAW-001 + NEUROMIRROR + V-LUX ========== -->
+    <section id="jackdaw001" class="py-24 px-6 bg-black/40">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <div class="inline-block bg-gradient-to-r from-emerald-900/60 to-teal-900/60 px-6 py-2 rounded-full border border-emerald-500/40">
+                    <i class="fas fa-gem text-yellow-300 mr-2"></i> GENESIS VAULT · EXCLUSIVE NFTs & DIGITAL REALTY
+                </div>
+                <h2 class="text-5xl md:text-6xl font-black mt-5 bg-gradient-to-r from-emerald-300 to-teal-400 bg-clip-text text-transparent">Genesis Assets Portfolio</h2>
+            </div>
+            <div class="grid lg:grid-cols-3 gap-10">
+                <!-- JackDaw-001 Card -->
+                <div class="glassmorphism p-8 rounded-3xl backdrop-blur-xl border border-cyan-500/30 transition-all duration-300 hover:scale-[1.02] hover:border-cyan-400/80">
+                    <div class="text-7xl text-center mb-4">🏛️</div>
+                    <h3 class="text-4xl font-black text-center text-cyan-300">JackDaw-001</h3>
+                    <div class="mt-6 space-y-3 text-lg bg-black/30 rounded-2xl p-5">
+                        <div class="flex items-center gap-3"><i class="fas fa-map-pin text-cyan-400 w-6"></i> Decentraland · Alpha District</div>
+                        <div class="flex items-center gap-3"><i class="fas fa-chart-line text-emerald-400 w-6"></i> Coordinates: X:452 Y:1021 Z:5</div>
+                        <div class="flex items-center gap-3"><i class="fas fa-cube text-blue-400 w-6"></i> Interactive 8K GLTF/GLB · Events</div>
+                        <div class="flex items-center gap-3"><i class="fas fa-chart-simple text-purple-300 w-6"></i> High footfall zone · Future HQ</div>
+                    </div>
+                    <a href="https://decentraland.org" target="_blank" rel="noopener" class="mt-8 w-full block bg-gradient-to-r from-cyan-600 to-blue-700 text-center py-4 rounded-xl font-bold hover:shadow-[0_0_25px_#00ffff] transition-all duration-300">
+                        <i class="fas fa-rocket mr-2"></i> Visit in Decentraland
+                    </a>
+                </div>
+                <!-- NeuroMirror Regenesis -->
+                <div class="glassmorphism p-8 rounded-3xl backdrop-blur-xl border border-purple-500/30 transition-all duration-300 hover:scale-[1.02] hover:border-purple-400/80">
+                    <div class="text-7xl text-center mb-4">🧠</div>
+                    <h3 class="text-3xl font-black text-center text-pink-300">NeuroMirror Regenesis</h3>
+                    <div class="mt-6 space-y-3 text-lg bg-black/30 rounded-2xl p-5">
+                        <div><i class="fas fa-microchip text-pink-400 mr-3"></i> AI Medical NFT · Neural Data Vault</div>
+                        <div><i class="fas fa-chart-line text-pink-300 mr-3"></i> Recovery Tracking & Rehab Analytics</div>
+                        <div><i class="fas fa-hospital-user text-cyan-300 mr-3"></i> Clinic Integration Ready · HIPAA + Web3</div>
+                        <div><i class="fas fa-dna text-purple-400 mr-3"></i> Bio-Quantum Signatures</div>
+                    </div>
+                    <button class="mt-8 w-full bg-gradient-to-r from-fuchsia-700 to-purple-700 hover:from-fuchsia-600 hover:to-purple-600 py-4 rounded-xl font-bold transition-all">
+                        Medical License Portal →
+                    </button>
+                </div>
+                <!-- V-LUX-001 Exalution -->
+                <div class="glassmorphism p-8 rounded-3xl backdrop-blur-xl border border-yellow-500/30 transition-all duration-300 hover:scale-[1.02] hover:border-yellow-400/80">
+                    <div class="text-7xl text-center mb-4">✨</div>
+                    <h3 class="text-3xl font-black text-center text-yellow-300">V-LUX-001 Exalution</h3>
+                    <div class="mt-6 space-y-3 text-lg bg-black/30 rounded-2xl p-5">
+                        <div><i class="fas fa-crown text-yellow-400 mr-3"></i> 1/1 Collector's Edition</div>
+                        <div><i class="fas fa-chart-line text-green-400 mr-3"></i> High Liquidity · Blue Chip Index</div>
+                        <div><i class="fab fa-opensea text-blue-300 mr-3"></i> OpenSea Ready · Timed Auction Live</div>
+                        <div><i class="fas fa-coins text-orange-300 mr-3"></i> Cross-metaverse wearables utility</div>
+                    </div>
+                    <button class="mt-8 w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 py-4 rounded-xl font-bold transition-all">
+                        OpenSea Auction →
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== DEPLOYMENT STATUS DASHBOARD ========== -->
+    <section class="py-24 px-6 bg-gradient-to-r from-indigo-950/60 via-slate-900 to-black">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-5xl md:text-6xl font-black text-center mb-16 text-emerald-300">📡 Deployment Status</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card p-6 rounded-2xl text-center border-l-8 border-emerald-500">
+                    <i class="fas fa-globe-americas text-4xl text-emerald-400 mb-3"></i>
+                    <h3 class="text-2xl font-bold">Earth 50 Countries</h3>
+                    <div class="text-4xl font-mono text-emerald-400 my-2">🟢 LIVE</div>
+                    <p class="text-sm opacity-80">1,200+ Listings · Active Brokers</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center border-l-8 border-emerald-500">
+                    <i class="fas fa-vr-cardboard text-4xl text-cyan-400 mb-3"></i>
+                    <h3 class="text-2xl font-bold">VR / NFT Metaverse</h3>
+                    <div class="text-4xl font-mono text-emerald-400 my-2">🟢 LIVE</div>
+                    <p class="text-sm opacity-80">Decentraland · Sandbox · 100+ Parcels</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center border-l-8 border-yellow-500">
+                    <i class="fas fa-space-shuttle text-4xl text-yellow-400 mb-3"></i>
+                    <h3 class="text-2xl font-bold">Space Realty</h3>
+                    <div class="text-4xl font-mono text-yellow-400 my-2">🟡 BETA</div>
+                    <p class="text-sm opacity-80">Orbital Slots · Lunar Prelim Claims</p>
+                </div>
+                <div class="glass-card p-6 rounded-2xl text-center border-l-8 border-orange-500">
+                    <i class="fas fa-microchip text-4xl text-orange-400 mb-3"></i>
+                    <h3 class="text-2xl font-bold">Quantum Infra</h3>
+                    <div class="text-4xl font-mono text-orange-400 my-2">🟠 DEV</div>
+                    <p class="text-sm opacity-80">I.Gate Deployment Post-Quantum</p>
+                </div>
+            </div>
+            <div class="mt-12 glassmorphism p-6 rounded-2xl max-w-3xl mx-auto text-center">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <span><i class="fas fa-database text-cyan-400"></i> Module 1-11 Active</span>
+                    <span><i class="fas fa-shield-alt text-emerald-400"></i> Quantum Ledger Ready</span>
+                    <span><i class="fas fa-cloud-upload-alt text-purple-400"></i> 99.99% Meta Uptime</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== DEPLOY INSTRUCTIONS & FOOTER ========== -->
+    <section class="py-20 px-6 bg-black/80 border-t border-cyan-800/60">
+        <div class="max-w-4xl mx-auto text-center glassmorphism p-10 rounded-3xl border border-cyan-500/40">
+            <h2 class="text-4xl md:text-5xl font-black text-cyan-300 mb-6">⚡ Production Deployment</h2>
+            <div class="bg-black/60 p-6 rounded-xl font-mono text-left text-sm text-white/80 overflow-x-auto">
+<pre class="whitespace-pre-wrap break-all">
+➜ Save as: bureau-des-colonies.html
+➜ Deploy: vercel --prod
+➜ Live URL: wellamatores-metaverse.vercel.app/bureau-des-colonies
+➜ Index Integration: &lt;a href="/bureau-des-colonies"&gt;🏛️ Le Bureau des Colonies&lt;/a&gt;
+➜ JackDaw-001 direct gateway: live on Decentraland.
+</pre>
+            </div>
+            <div class="mt-8 flex justify-center gap-3 text-emerald-300">
+                <i class="fas fa-check-circle text-2xl"></i>
+                <span class="text-xl font-bold tracking-wide">NOTHING LOST · FULL SPEC 100%</span>
+                <i class="fas fa-infinity text-2xl"></i>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-14 px-6 border-t border-white/10 bg-gradient-to-t from-black to-transparent">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="text-3xl md:text-4xl font-mono font-bold neon-cyan inline-block px-8 py-3 rounded-full glassmorphism mb-8">wellamatores-metaverse.vercel.app</div>
+            <p class="text-xl opacity-80 mt-6">Le Bureau des Colonies · JOG Orbital Group · TerraTrampilleraVerse · Quantum Meta-Realty Est.2026</p>
+            <div class="flex justify-center gap-8 text-3xl mt-10">
+                <a href="#" class="hover:text-cyan-400 transition-all p-2"><i class="fab fa-discord"></i></a>
+                <a href="#" class="hover:text-sky-400 transition-all p-2"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-pink-400 transition-all p-2"><i class="fab fa-opensea"></i></a>
+                <a href="https://decentraland.org" target="_blank" class="hover:text-emerald-400 transition-all p-2"><i class="fas fa-vr-cardboard"></i></a>
+                <a href="#" class="hover:text-purple-400 transition-all p-2"><i class="fas fa-cube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // mermaid mindmap init
+        mermaid.initialize({ startOnLoad: true, theme: 'dark', themeVariables: { primaryColor: '#0f172a', primaryBorderColor: '#2dd4bf', lineColor: '#5ee0fa', background: 'transparent', fontSize: '14px' } });
+        
+        // smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElem = document.querySelector(targetId);
+                if (targetElem) {
+                    e.preventDefault();
+                    targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // AI interactive demo: simulate I.Gate search across multiverse
+        const searchBtn = document.getElementById('aiSearchBtn');
+        const queryInput = document.getElementById('propertyQuery');
+        const resultArea = document.getElementById('searchResultArea');
+
+        const respondSearch = (queryRaw) => {
+            const query = queryRaw.trim().toLowerCase();
+            if (!query) return "🌐 I.Gate: No query entered. Please specify criteria (e.g., 'Dubai marina villa', 'moon land parcel', 'Berlin apartment under 700k').";
+            if (query.includes('berlin') && query.includes('700')) return "🏢 I.Gate Semantic Sieve: 3 properties in Berlin matched · 2 under €700k (Prenzlauer Berg, Mitte). Conjunctive Mirror shows +12% valuation forecast. Link to VR tour ready.";
+            if (query.includes('tokyo') && query.includes('penthouse')) return "🗼 Tokyo Roppongi Hills penthouse · ¥135M · AI prediction: 9.2% yield · Quantum mirror active. Access via NeuroMirror collateral pool.";
+            if (query.includes('mars') || query.includes('crater')) return "🔴 Mars Elysium Planitia crater claim #XR-77 · 0.5 hectares · Beta-phase space realty. Pre-registration open for JackDaw MarsDAO.";
+            if (query.includes('moon') || query.includes('lunar')) return "🌙 Lunar south pole estate · 4,200 m² · orbital transport connection available. Certified by JOG Orbital Group (Q3 2027 deployment).";
+            if (query.includes('decentraland')) return "🕶️ Decentraland genesis node: JackDaw-001 (452,1021) · 6 adjoining parcels for metaverse expansion. Interactive + DAO governance ready.";
+            return `✨ I.Gate Quantum Filter: The search "${queryRaw}" scanned 195 countries + 8 metaverses + orbital registry. ${Math.floor(Math.random() * 45)+5} potential matches found. Activate Conjunctive Mirror for deeper insights.`;
+        };
+
+        searchBtn.addEventListener('click', () => {
+            const rawQuery = queryInput.value;
+            const responseText = respondSearch(rawQuery);
+            resultArea.innerHTML = `<i class="fas fa-microchip text-cyan-400 mr-2"></i> ${responseText}`;
+            resultArea.classList.add('border-cyan-400/40', 'shadow-[0_0_8px_cyan]');
+            setTimeout(() => resultArea.classList.remove('shadow-[0_0_8px_cyan]'), 1000);
+        });
+        queryInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') searchBtn.click(); });
+    </script>
+</body>
+</html>
