@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Le Bureau des Colonies | Colonial Administration • Wellamatores World</title>
+  <!-- Tailwind + Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Orbitron:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #020205;
+      background-image: radial-gradient(circle at 20% 30%, rgba(245,158,11,0.08) 0%, transparent 70%);
+      overflow-x: hidden;
+    }
+    .header-font { font-family: 'Orbitron', sans-serif; letter-spacing: -0.02em; }
+    .mono { font-family: 'Space Mono', monospace; }
+    .glass-panel {
+      background: rgba(8, 8, 12, 0.75);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(245,158,11,0.35);
+      box-shadow: 0 25px 40px -12px rgba(0,0,0,0.6);
+    }
+    .feature-card {
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(245,158,11,0.8);
+      background: rgba(20, 20, 28, 0.85);
+    }
+    .gold-glow {
+      text-shadow: 0 0 8px rgba(245,158,11,0.5);
+    }
+    .blink-green {
+      animation: pulseGreen 1.4s ease-in-out infinite;
+    }
+    @keyframes pulseGreen {
+      0%, 100% { opacity: 1; text-shadow: 0 0 2px #34d399; }
+      50% { opacity: 0.8; text-shadow: 0 0 6px #10b981; }
+    }
+    .map-marker-symbol {
+      transition: transform 0.2s, filter 0.2s;
+    }
+    .map-marker-symbol:hover {
+      transform: scale(1.25);
+      filter: drop-shadow(0 0 10px #f59e0b);
+    }
+    .timeline-dot {
+      transition: all 0.2s;
+    }
+    .timeline-dot:hover {
+      transform: scale(1.2);
+      background: #f59e0b;
+      box-shadow: 0 0 0 4px rgba(245,158,11,0.4);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0a0a0f; }
+    ::-webkit-scrollbar-thumb { background: #f59e0b; border-radius: 10px; }
+  </style>
+</head>
+<body class="text-stone-200">
+
+<main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-10">
+
+  <!-- top bar -->
+  <div class="flex justify-between items-center mb-10 flex-wrap gap-4">
+    <div class="flex gap-4">
+      <a href="#" onclick="history.back(); return false;" class="text-amber-400/80 hover:text-amber-300 mono text-sm flex items-center gap-2 transition-all border-b border-transparent hover:border-amber-400/30 pb-0.5">
+        ← BACK TO JOG NETWORK
+      </a>
+      <a href="#" class="text-amber-400/70 hover:text-amber-300 mono text-sm flex items-center gap-2 transition">
+        <i class="fa-regular fa-compass"></i> SECTOR MAP
+      </a>
+    </div>
+    <a href="https://wellamatores-metaverse.vercel.app/" target="_blank" 
+       class="inline-flex items-center gap-2 bg-black/70 border border-amber-500 hover:bg-amber-500 hover:text-black px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 shadow-lg shadow-amber-900/20">
+      🌐 ENTER METAVERSE
+    </a>
+  </div>
+
+  <!-- HERO -->
+  <div class="relative mb-20">
+    <div class="absolute -top-20 -right-16 w-[32rem] h-[32rem] bg-amber-600/5 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="inline-flex items-center gap-3 bg-black/40 border border-white/10 rounded-full px-5 py-2 mb-6 backdrop-blur-sm">
+      <span class="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse"></span>
+      <span class="mono text-[11px] md:text-xs tracking-[3px] text-amber-300 font-semibold">CODENAME: JACKDAW • YELLION SECTOR • ACTIVE</span>
+      <span class="w-2.5 h-2.5 bg-amber-500 rounded-full"></span>
+    </div>
+    <h1 class="header-font text-6xl md:text-8xl font-black tracking-tighter leading-none">
+      <span class="bg-gradient-to-r from-amber-200 via-amber-400 to-yellow-300 bg-clip-text text-transparent">LE BUREAU</span><br>
+      <span class="bg-gradient-to-r from-stone-200 via-white to-stone-300 bg-clip-text text-transparent">DES COLONIES</span>
+    </h1>
+    <p class="mt-8 text-xl md:text-2xl text-stone-300 max-w-3xl border-l-2 border-amber-500 pl-6 leading-relaxed">
+      Central colonial administration, economic expansion, and intelligence directorate of 
+      <span class="text-amber-400 font-semibold">Wellamatores World</span> in the strategic <span class="text-emerald-400">Yellion</span> sector.
+    </p>
+    <p class="text-amber-400/90 mt-3 flex items-center gap-2 text-sm mono"><i class="fa-regular fa-eye"></i> Direct command of the Lord Regent • Charter 9A-YL</p>
+  </div>
+
+  <!-- DUAL TRAILER / FEATURE CARDS (immersive preview) -->
+  <div class="grid md:grid-cols-2 gap-8 mb-20">
+    <div class="glass-panel p-6 rounded-3xl transition-all duration-500 hover:shadow-2xl hover:shadow-amber-900/20">
+      <h3 class="text-2xl font-bold flex items-center gap-3 mb-4"><span class="text-3xl">👑</span> REGENT'S RESIDENCE</h3>
+      <div class="aspect-video bg-black/80 rounded-xl overflow-hidden border border-amber-500/30 relative group">
+        <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0&modestbranding=1" title="Regent Estate Preview" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <p class="mono text-xs text-stone-400 text-center mt-4">YELLION PRIME • LORD REGENT'S SPIRE • COLONIAL COUNCIL</p>
+    </div>
+    <div class="glass-panel p-6 rounded-3xl transition-all duration-500">
+      <h3 class="text-2xl font-bold flex items-center gap-3 mb-4"><span class="text-3xl">🏭</span> JACKDAW INDUSTRIAL</h3>
+      <div class="aspect-video bg-black/80 rounded-xl overflow-hidden border border-amber-500/30">
+        <iframe class="w-full h-full" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0" title="Industrial Complex" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <p class="mono text-xs text-stone-400 text-center mt-4">SAIGA-ARCTIC • QUANTUM FORGES • BIOTECH FOUNDRIES</p>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE MAP SECTION (original SVG + enhanced tooltips) -->
+  <div class="mb-20">
+    <div class="flex flex-wrap justify-between items-end mb-6 gap-3">
+      <h2 class="text-3xl font-bold header-font flex items-center gap-3"><i class="fa-regular fa-map text-amber-400"></i> YELLION ASSET MAP · JACKDAW NODES</h2>
+      <span class="mono text-emerald-400 blink-green text-sm flex items-center gap-2"><i class="fa-solid fa-satellite-dish"></i> 6 ACTIVE GEOLOCATIONS</span>
+    </div>
+    <div class="relative bg-black/50 border border-amber-500/30 rounded-3xl overflow-hidden shadow-2xl">
+      <svg viewBox="0 0 1000 600" class="w-full h-auto drop-shadow-md" style="background: #0c0c14;">
+        <defs>
+          <radialGradient id="glowMark" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+            <feMerge><feMergeNode in="offsetblur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        <!-- terrain background -->
+        <path d="M50,100 L200,50 L400,80 L550,40 L750,70 L920,50 L960,150 L980,300 L950,450 L900,550 L750,580 L550,550 L400,570 L250,550 L100,520 L40,400 L30,250 Z" fill="#12131c" stroke="#2a2f44" stroke-width="2"/>
+        <path d="M120,200 L300,180 L450,210 L620,160 L800,190 L890,280 L870,420 L730,490 L520,510 L320,480 L190,430 L80,320 Z" fill="#151824" stroke="#2d324b" stroke-width="1.5" opacity="0.8"/>
+        <!-- rivers & forests decorative -->
+        <path d="M310,490 C340,380 410,320 480,280" stroke="#2c4c5e" stroke-width="4" fill="none" stroke-dasharray="6 6" opacity="0.6"/>
+        <circle cx="180" cy="270" r="55" fill="#1e2a2a" stroke="#2f6b47" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="750" cy="180" r="70" fill="#192d2a" stroke="#3f7e5a" stroke-width="1.5" opacity="0.5"/>
+        
+        <!-- MARKERS with tooltip interaction -->
+        <g class="map-marker-symbol" data-name="Yellion Prime · Bureau HQ" data-type="Admin">
+          <circle cx="485" cy="260" r="9" fill="#f59e0b" stroke="black" stroke-width="1.5" filter="url(#glow)"/>
+          <circle cx="485" cy="260" r="16" fill="url(#glowMark)" opacity="0.6"/>
+          <text x="480" y="248" class="text-[10px] mono font-bold fill-amber-200 text-shadow">HQ</text>
+        </g>
+        <g class="map-marker-symbol" data-name="JackDaw Industrial · Saiga-Arctic" data-type="Industry">
+          <circle cx="715" cy="325" r="8" fill="#f97316" stroke="black" stroke-width="1.5"/>
+          <circle cx="715" cy="325" r="14" fill="url(#glowMark)" opacity="0.5"/>
+          <text x="710" y="348" class="text-[8px] mono fill-orange-300">JAK</text>
+        </g>
+        <g class="map-marker-symbol" data-name="MIS Shadow Station · Cryptanalysis Hub" data-type="Intel">
+          <circle cx="285" cy="390" r="7" fill="#38bdf8" stroke="black" stroke-width="1.5"/>
+          <text x="276" y="408" class="text-[8px] mono fill-sky-300">MIS</text>
+        </g>
+        <g class="map-marker-symbol" data-name="PANDITA Tactical Command · Quantum Arrays" data-type="Military">
+          <circle cx="630" cy="465" r="8" fill="#9f7aea" stroke="black" stroke-width="1.5"/>
+          <text x="620" y="488" class="text-[8px] mono fill-purple-300">PND</text>
+        </g>
+        <g class="map-marker-symbol" data-name="Cereyellion · Human-Elven Admin Node" data-type="Admin">
+          <circle cx="415" cy="450" r="7" fill="#f59e0b" stroke="black" stroke-width="1.2"/>
+          <text x="408" y="468" class="text-[8px] mono fill-amber-300">C/Y</text>
+        </g>
+        <g class="map-marker-symbol" data-name="I.Gate PQC Vault · Data Sanctum" data-type="Intelligence">
+          <circle cx="865" cy="215" r="8" fill="#34d399" stroke="black" stroke-width="1.5"/>
+          <text x="855" y="235" class="text-[8px] mono fill-emerald-300">IGT</text>
+        </g>
+        
+        <!-- labels and aesthetic -->
+        <text x="480" y="560" fill="#a0a0b0" class="text-xs mono">YELLION CONTINENT · JACKDAW JURISDICTION</text>
+        <text x="740" y="520" fill="#f59e0b40" class="text-[9px] mono">⛏️ PLUTONIA SECTOR</text>
+      </svg>
+      <!-- interactive tooltip div -->
+      <div id="mapTooltip" class="tooltip-map hidden fixed z-50 pointer-events-none bg-black/90 border-l-4 border-amber-500 py-2 px-4 rounded-lg text-sm shadow-2xl backdrop-blur-sm"></div>
+      
+      <div class="absolute bottom-5 left-5 glass-panel p-4 text-xs mono rounded-2xl bg-black/70">
+        <div class="grid grid-cols-2 gap-x-6 gap-y-2">
+          <div><span class="inline-block w-3 h-3 bg-amber-500 rounded-full mr-2"></span>Administration</div>
+          <div><span class="inline-block w-3 h-3 bg-emerald-400 rounded-full mr-2"></span>Biotech / Labs</div>
+          <div><span class="inline-block w-3 h-3 bg-orange-500 rounded-full mr-2"></span>Military / PANDITA</div>
+          <div><span class="inline-block w-3 h-3 bg-sky-400 rounded-full mr-2"></span>Intelligence (MIS)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISSION & DOCTRINE BLOCK -->
+  <div class="grid md:grid-cols-3 gap-8 mb-20">
+    <div class="md:col-span-2 space-y-6">
+      <h2 class="text-3xl font-bold border-l-4 border-amber-500 pl-5"><i class="fa-regular fa-compass mr-2"></i> Mission & Doctrine</h2>
+      <p class="text-lg leading-relaxed text-stone-200">
+        <strong class="text-amber-400">Le Bureau des Colonies</strong> is the supreme colonial authority, economic development engine, and metaverse intelligence hub of the Wellamatores World. 
+        Headquartered in the resource-rich <span class="text-amber-300 font-mono">Yellion Sector</span> — the "Golden Vein" — the Bureau integrates administrative governance, commercial expansion, military defense, and digital counterintelligence.
+      </p>
+      <div class="grid sm:grid-cols-2 gap-6 pt-4">
+        <div class="feature-card glass-panel p-7 rounded-2xl">
+          <span class="text-5xl block mb-3">🛡️⚡</span>
+          <h4 class="text-xl font-semibold tracking-tight">Protection Covenant</h4>
+          <p class="text-stone-400 mt-2 text-sm">Safeguard humanity & allied species from KVA-class anomalies, void pirates, and extraplanar incursions.</p>
+        </div>
+        <div class="feature-card glass-panel p-7 rounded-2xl">
+          <span class="text-5xl block mb-3">📈🌌</span>
+          <h4 class="text-xl font-semibold tracking-tight">Expansion Protocol</h4>
+          <p class="text-stone-400 mt-2 text-sm">JackDaw Realty • EXO reserves • orbital slot claims • lunar extraction • meta-economics.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Regent's Decree Card -->
+    <div class="glass-panel p-8 rounded-3xl flex flex-col justify-between border-amber-500/40">
+      <div>
+        <div class="mono text-amber-400 text-sm mb-3"><i class="fa-regular fa-scroll"></i> /// LORD REGENT'S DECREE</div>
+        <p class="italic text-2xl leading-tight text-stone-100 font-light tracking-wide">
+          “Power through knowledge.<br>
+          Security through control.<br>
+          Prosperity through expansion.”
+        </p>
+      </div>
+      <div class="mt-10 pt-6 border-t border-amber-500/30 flex justify-between text-sm">
+        <span class="text-amber-300 font-semibold"><i class="fa-solid fa-crown"></i> Lord Regent</span>
+        <span class="mono text-emerald-400 text-xs">Yellion Colonial Charter • Ratified 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOVERNANCE + STRUCTURE + CAPHOLLIA TIMELINE (merged) -->
+  <div class="mb-20">
+    <h2 class="text-3xl font-bold border-l-4 border-amber-500 pl-4 mb-6 flex items-center gap-3"><i class="fa-regular fa-building"></i> 🏛️ Command & Historical Timeline</h2>
+    <div class="glass-panel p-6 md:p-8 rounded-3xl">
+      <pre class="mono text-sm text-emerald-300/90 overflow-x-auto whitespace-pre-wrap md:whitespace-pre leading-relaxed">
+REGENT (Supreme Authority)
+      ↓ Yellion Colonial Charter · Edict 09
+LE BUREAU DES COLONIES (Yellion Prime)
+├── 💼 JackDaw Realty          → 1,247+ orbital & lunar assets
+├── 🌐 JOG Network             → GEO-Prime #047 • LEO quantum swarm
+├── ⚔️ PANDITA Tactical        → Quantum Warfare • SAIGA-ARCTIC Forces
+├── 🔐 I.Gate PQC Security     → Post-Quantum Encryption Layer
+└── 🕵️ Metaverse Intelligence Service (MIS) → Total Awareness & Counterintel
+      </pre>
+      <!-- Compact Caphollia timeline integrated -->
+      <div class="mt-10 pt-6 border-t border-stone-700/60">
+        <h3 class="text-xl font-bold flex items-center gap-2"><i class="fa-regular fa-timeline"></i> <span class="mono">CAPHOLLIA · MODERN RECORDED HISTORY</span></h3>
+        <div class="grid md:grid-cols-2 gap-4 mt-5 text-sm">
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">2 AD</span> — Founding of Morvashara (Elven unification, Kingdom of Eyishara)</div>
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">10 AD</span> — Feth Boldhar, greatest dwarven hold</div>
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">93–98 AD</span> — Dragon Wars: metallic vs chromatic</div>
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">562 AD</span> — Torinswell, first major human city</div>
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">638 AD</span> — Formation of Achaea (unified city-states)</div>
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">764 AD</span> — Harnessed magic energy invented</div>
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">853–864 AD</span> — Southern border conflicts: Yellion vs Cerey</div>
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">974 AD</span> — Gunpowder weapons (Iron Helms)</div>
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">1035 AD</span> — Incident of Sir Geoffrey Carter (dark magic catastrophe)</div>
+          <div class="border-l-2 border-amber-500/70 pl-4 col-span-2 font-semibold text-amber-300 mt-1">⚔️ The War for Caphollia (1036–1046 AD)</div>
+          <div class="border-l-2 border-emerald-500/70 pl-4 col-span-2 text-stone-300 text-xs">1036 Invasion of the Gateways → 1046 Battle of Torinswell (~3M casualties) → Counter-Invasion & closing of vortexes. Total dead: ~11 million.</div>
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">1061 AD</span> — Cerey & Yellion merge → Cereyellion (Human-Elven city-state)</div>
+          <div class="border-l-2 border-amber-500/70 pl-4"><span class="text-amber-400 font-mono">1073–74 AD</span> — Achaean Civil War → Arcadian Imperium rises</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUANTUM STATS + GLOBAL INFLUENCE -->
+  <div class="grid md:grid-cols-3 gap-6 mb-20">
+    <div class="glass-panel p-8 text-center rounded-3xl transition-all hover:bg-black/40">
+      <span class="text-4xl block mb-3"><i class="fa-regular fa-coins text-amber-400"></i></span>
+      <div class="text-4xl font-mono text-amber-400 font-bold">142.8K EXO</div>
+      <div class="text-stone-400 text-sm mt-1">Treasury reserve · Bureau Liquid Assets</div>
+    </div>
+    <div class="glass-panel p-8 text-center rounded-3xl">
+      <span class="text-4xl block mb-3"><i class="fa-regular fa-users text-cyan-400"></i></span>
+      <div class="text-4xl font-mono text-cyan-400">48,900</div>
+      <div class="text-stone-400 text-sm mt-1">Active Stakeholders & Colonial Contractors</div>
+    </div>
+    <div class="glass-panel p-8 text-center rounded-3xl">
+      <span class="text-4xl block mb-3"><i class="fa-regular fa-space-station-moon text-orange-400"></i></span>
+      <div class="text-4xl font-mono text-orange-400">117</div>
+      <div class="text-stone-400 text-sm mt-1">Active Fleet Vessels + Orbital Platforms</div>
+    </div>
+  </div>
+
+  <!-- MIS Threat Report & Intelligence excerpt -->
+  <div class="glass-panel p-8 rounded-3xl mb-16 border-t-4 border-amber-500">
+    <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+      <h2 class="text-2xl header-font font-bold"><i class="fa-regular fa-shield-haltered"></i> MIS · Threat Assessment & Strategic Outlook</h2>
+      <span class="mono text-amber-400 text-xs bg-black/50 px-3 py-1 rounded-full">CLASSIFIED LEVEL: BUREAU INTERNAL</span>
+    </div>
+    <div class="grid md:grid-cols-2 gap-7">
+      <div class="space-y-3">
+        <div class="flex gap-3"><span class="text-red-400 text-xl">⚠️</span><span class="font-semibold">Anomalous KVA signatures</span> – Sporadic incursions near PlutonIA fringe. PANDITA tactical on standby.</div>
+        <div class="flex gap-3"><span class="text-orange-300 text-xl">🌌</span><span class="font-semibold">Dimensional instability</span> – Echoes of the Gateways War; monitoring Cereyellion rifts.</div>
+        <div class="flex gap-3"><span class="text-sky-400 text-xl">🕸️</span><span class="font-semibold">Metaverse infiltration attempts</span> – I.Gate PQC countermeasures active. 0 breaches this cycle.</div>
+      </div>
+      <div class="border-l border-amber-500/50 pl-5 flex flex-col gap-1 text-stone-300 text-sm">
+        <p class="italic">“By order of the Lord Regent, all colonial governors must submit quarterly intelligence reports to MIS division. The Bureau sees all.”</p>
+        <div class="mt-3 flex justify-end"><span class="mono text-xs text-stone-500">— Director of Intelligence, MIS</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div class="text-center mono text-xs text-stone-500 border-t border-white/10 pt-10 flex flex-col gap-2">
+    <div>LE BUREAU DES COLONIES — Colonial Administration of Wellamatores World in Yellion Sector</div>
+    <div class="flex justify-center gap-5 text-stone-400 text-[11px]"><span>📡 JOG Network secured</span><span>🔒 PQC encrypted channel</span><span>⚡ “Power through knowledge”</span></div>
+    <div class="mt-3 text-amber-700/50">© Wellamatores World · Lord Regent's Charter · ed. 2026</div>
+  </div>
+</main>
+
+<script>
+  (function() {
+    // interactive map tooltip system
+    const markers = document.querySelectorAll('.map-marker-symbol');
+    const tooltip = document.getElementById('mapTooltip');
+    if(tooltip) {
+      markers.forEach(marker => {
+        marker.addEventListener('mouseenter', (e) => {
+          const name = marker.getAttribute('data-name') || 'Unknown Asset';
+          const type = marker.getAttribute('data-type') || 'Facility';
+          let typeColor = '#f59e0b';
+          if(type === 'Intel') typeColor = '#38bdf8';
+          if(type === 'Military') typeColor = '#a855f7';
+          if(type === 'Industry') typeColor = '#f97316';
+          tooltip.innerHTML = `<div class="flex items-center gap-2"><span style="color:${typeColor}">●</span> <strong class="text-amber-200">${name}</strong></div><div class="text-xs text-stone-400">${type} node · active</div>`;
+          tooltip.classList.remove('hidden');
+        });
+        marker.addEventListener('mousemove', (e) => {
+          tooltip.style.left = (e.clientX + 18) + 'px';
+          tooltip.style.top = (e.clientY - 18) + 'px';
+        });
+        marker.addEventListener('mouseleave', () => {
+          tooltip.classList.add('hidden');
+        });
+      });
+    }
+    console.log("%cLe Bureau des Colonies — Enhanced version with Caphollia Timeline & interactive map", "color:#f59e0b; font-family:monospace; font-size:12px");
+  })();
+</script>
+</body>
+</html>
