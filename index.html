@@ -9,7 +9,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* --- BASE STYLES --- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -30,12 +29,13 @@
     .three-container, .three-full-container { width: 100%; position: relative; background: #050510; border-radius: 1rem; overflow: hidden; min-height: 200px; }
     .three-container { height: 320px; }
     .three-full-container { height: 380px; }
+    .three-wrapper { position: relative; border-radius: 1rem; overflow: hidden; }
+    .three-wrapper canvas { width: 100% !important; height: 100% !important; display: block; }
     .spaced-title { letter-spacing: 0.12em; word-spacing: 0.25em; }
     @media (min-width: 768px) { .spaced-title { letter-spacing: 0.15em; word-spacing: 0.3em; } }
     .zoom-hint { position: absolute; bottom: 8px; right: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); padding: 2px 8px; border-radius: 20px; font-size: 9px; font-family: monospace; color: #f59e0b; z-index: 20; pointer-events: none; }
     .fullscreen-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border: 2px solid #f59e0b; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-family: monospace; font-weight: bold; color: #f59e0b; cursor: pointer; z-index: 25; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
     .fullscreen-btn:hover { background: #f59e0b; color: #000; box-shadow: 0 0 15px #f59e0b; }
-    .three-wrapper { position: relative; border-radius: 1rem; overflow: hidden; }
     .jog-nav-item { font-weight: 600; cursor: pointer; }
     .info-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 20000; display: none; align-items: center; justify-content: center; overflow-y: auto; }
     .info-modal.active { display: flex; }
@@ -55,10 +55,10 @@
     .pulsing-dot-blue::after { content: ''; position: absolute; width: 100%; height: 100%; background-color: #60a5fa; border-radius: 50%; }
     @keyframes pingBlue { 75%, 100% { transform: scale(2.5); opacity: 0; } }
     .jog-text-btn { cursor: pointer; }
-    .jog-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+    .jog-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 40000; display: none; flex-direction: column; align-items: center; justify-content: center; }
     .jog-modal.active { display: flex; }
     .jog-modal-content { width: 100%; height: 100%; position: relative; background: #000; }
-    .jog-modal-close { position: absolute; top: 20px; right: 30px; z-index: 10001; background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); border: 1px solid #f59e0b; color: #f59e0b; border-radius: 40px; padding: 8px 24px; font-family: monospace; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
+    .jog-modal-close { position: absolute; top: 20px; right: 30px; z-index: 40001; background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); border: 1px solid #f59e0b; color: #f59e0b; border-radius: 40px; padding: 8px 24px; font-family: monospace; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
     .jog-modal-close:hover { background: #f59e0b; color: black; box-shadow: 0 0 20px #f59e0b; }
     .ccp-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #03050b; z-index: 30000; display: none; flex-direction: column; overflow: hidden; }
     .ccp-modal.active { display: flex; }
@@ -78,48 +78,15 @@
     .social-hub:hover { border-color: rgba(245,158,11,0.7); box-shadow: 0 0 30px rgba(245,158,11,0.2); transform: scale(1.01); }
     .social-icon { transition: all 0.25s cubic-bezier(0.2,0.9,0.4,1.1); display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(245,158,11,0.2); color: #f59e0b; font-size: 1.5rem; }
     .social-icon:hover { transform: translateY(-5px) scale(1.05); background: #f59e0b; color: #000; border-color: #f59e0b; box-shadow: 0 8px 25px rgba(245,158,11,0.4); }
-    .social-platform-card { background: rgba(10,10,20,0.6); backdrop-filter: blur(4px); border-radius: 20px; padding: 12px; transition: all 0.2s; border: 1px solid rgba(245,158,11,0.15); }
+    .social-platform-card { background: rgba(10,10,20,0.6); backdrop-filter: blur(4px); border-radius: 20px; padding: 12px; transition: all 0.2s; border: 1px solid rgba(245,158,11,0.15); cursor: pointer; }
     .social-platform-card:hover { border-color: rgba(245,158,11,0.5); background: rgba(20,20,35,0.8); transform: translateY(-2px); }
     .fullscreen-hub-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000ee; backdrop-filter: blur(24px); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; padding: 40px 20px; }
     .fullscreen-hub-modal.active { display: flex; }
     .fullscreen-close-btn { position: fixed; top: 30px; right: 30px; background: rgba(245,158,11,0.2); border: 2px solid #f59e0b; color: #f59e0b; border-radius: 50px; padding: 10px 25px; font-family: monospace; cursor: pointer; transition: 0.2s; z-index: 100000; font-weight: bold; }
     .fullscreen-close-btn:hover { background: #f59e0b; color: #000; transform: scale(1.02); }
     .regent-channel { transition: all 0.2s cubic-bezier(0.2,0.9,0.4,1.1); cursor: pointer; }
-    .regent-message-modal { z-index: 99999; }
     @keyframes fadeInScale { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
     .regent-modal-animate { animation: fadeInScale 0.2s ease-out; }
-    .workstation { display: flex; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, #0a0f1f, #010101); }
-    .meta-panel { width: 320px; background: rgba(2,6,18,0.96); backdrop-filter: blur(18px); border-right: 3px solid #ffaa33; display: flex; flex-direction: column; padding: 16px; gap: 14px; overflow-y: auto; font-family: monospace; }
-    .cyber-block { background: rgba(0,0,0,0.7); border-radius: 20px; padding: 12px; border: 1px solid rgba(255,170,51,0.5); }
-    .block-title { font-size: 10px; letter-spacing: 2px; color: #ffaa33; border-bottom: 1px solid #ffaa33; margin-bottom: 10px; padding-bottom: 4px; }
-    .stat-row { display: flex; justify-content: space-between; margin: 6px 0; font-size: 11px; color: #bbddff; }
-    .stat-value { color: #ffaa33; font-weight: bold; }
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-    .apex-btn { background: #0f1422; border: 1px solid #ffaa33; padding: 6px 4px; border-radius: 30px; font-size: 9px; font-weight: bold; cursor: pointer; text-align: center; color: #ffdd99; font-family: monospace; }
-    .apex-btn:hover { background: #ffaa33; color: #000; }
-    .cam-nexus { flex: 2.2; background: #01020b; display: flex; flex-direction: column; padding: 12px; gap: 8px; }
-    .grid-header { font-size: 9px; color: #ffaa33; background: #050a18cc; padding: 6px 12px; border-radius: 30px; display: flex; justify-content: space-between; }
-    .grid-4x4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; overflow-y: auto; min-height: 200px; }
-    .cam-card { background: #03061a; border: 1px solid #3b5f8a; border-radius: 14px; cursor: pointer; overflow: hidden; }
-    .cam-card.selected-main { border: 3px solid #ffaa33; box-shadow: 0 0 20px rgba(255,170,51,0.6); }
-    .cam-title { background: #0a1022ee; padding: 4px 6px; font-size: 7px; display: flex; justify-content: space-between; color: #eee; }
-    .cam-preview { aspect-ratio: 16/9; width: 100%; background: #000; position: relative; }
-    .cam-preview canvas { width: 100%; height: 100%; display: block; }
-    .main-terminal { width: 420px; background: #010410; border-left: 3px solid #ffaa33; display: flex; flex-direction: column; padding: 12px; }
-    .main-canvas-box { flex: 1; background: #000; border-radius: 24px; border: 2px solid #ffaa33; overflow: hidden; position: relative; min-height: 300px; }
-    #mainCanvas { width: 100%; height: 100%; display: block; }
-    .analytics-overlay { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.8); padding: 4px 8px; border-radius: 16px; font-size: 8px; color: #ffaa33; }
-    .status-bar { display: flex; justify-content: space-between; margin-top: 10px; background: #0a0e1c; padding: 8px; border-radius: 20px; font-size: 9px; }
-    .telemetry-panel, .log-panel, .chat-messages { background: #010514dd; border-radius: 14px; padding: 6px; font-size: 8px; }
-    .chat-messages { height: 80px; overflow-y: auto; }
-    .chat-input { display: flex; gap: 6px; margin-top: 6px; }
-    .chat-input input { flex:1; background:#111722; border:1px solid #ffaa33; border-radius:20px; padding:4px 8px; color:#ffdd99; font-size:9px; }
-    .gallery-thumbs { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; }
-    .gallery-thumbs img { width: 48px; height: 36px; object-fit: cover; border-radius: 6px; border: 1px solid #ffaa33; cursor: pointer; }
-    .slider { width: 100%; accent-color: #ffaa33; margin: 6px 0; }
-    .kill-btn { background: #5a0000; border-color: #ff6666; color: #ffbbbb; }
-    .active-mode-btn { background: #ffaa33 !important; color: #000 !important; }
-    ::-webkit-scrollbar { width: 3px; }
     .webgl-fallback { background: #0a0a1a; border: 1px solid #ffaa33; border-radius: 12px; padding: 20px; text-align: center; color: #ffaa66; font-family: monospace; }
     
     /* === BOB GATE SPLASH SCREEN STYLES === */
@@ -153,9 +120,7 @@
         filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
         transition: transform 0.2s ease;
     }
-    .bean-container:hover {
-        transform: scale(1.02);
-    }
+    .bean-container:hover { transform: scale(1.02); }
     .bean-glow-gate {
         position: absolute;
         width: 100%;
@@ -247,284 +212,57 @@
         filter: blur(0px);
     }
   </style>
-    }
-    .glass-panel { background: rgba(10,10,12,0.65); backdrop-filter: blur(12px); border: 1px solid rgba(245,158,11,0.25); }
-    .btn-enter { transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1.1); box-shadow: 0 0 12px rgba(245,158,11,0.3); }
-    .btn-enter:hover { transform: scale(1.03); box-shadow: 0 0 28px rgba(245,158,11,0.6); background: #ffffff; color: #0a0a0c; }
-    .feature-card { background: rgba(20,20,24,0.6); backdrop-filter: blur(4px); border: 1px solid rgba(245,158,11,0.2); transition: all 0.2s; }
-    .feature-card:hover { border-color: rgba(245,158,11,0.6); background: rgba(30,30,36,0.8); }
-    @keyframes floatOrb { 0% { transform: translateY(0px) rotate(0deg); opacity: 0.3; } 100% { transform: translateY(-20px) rotate(5deg); opacity: 0.5; } }
-    .floating-orb { animation: floatOrb 8s infinite alternate ease-in-out; }
-    .section-divider { background: linear-gradient(90deg, transparent, rgba(245,158,11,0.4), transparent); height: 1px; }
-    .trailer-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; background: #000; }
-    .trailer-wrapper iframe, .trailer-wrapper video { width: 100%; height: 100%; position: absolute; top: 0; left: 0; border-radius: 1rem; }
-    .three-container, .three-full-container { width: 100%; position: relative; background: #050510; border-radius: 1rem; overflow: hidden; min-height: 200px; }
-    .three-container { height: 320px; }
-    .three-full-container { height: 380px; }
-    .spaced-title { letter-spacing: 0.12em; word-spacing: 0.25em; }
-    @media (min-width: 768px) { .spaced-title { letter-spacing: 0.15em; word-spacing: 0.3em; } }
-    .zoom-hint { position: absolute; bottom: 8px; right: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); padding: 2px 8px; border-radius: 20px; font-size: 9px; font-family: monospace; color: #f59e0b; z-index: 20; pointer-events: none; }
-    .fullscreen-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border: 2px solid #f59e0b; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-family: monospace; font-weight: bold; color: #f59e0b; cursor: pointer; z-index: 25; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-    .fullscreen-btn:hover { background: #f59e0b; color: #000; box-shadow: 0 0 15px #f59e0b; }
-    .three-wrapper { position: relative; border-radius: 1rem; overflow: hidden; }
-    .jog-nav-item { font-weight: 600; cursor: pointer; }
-    .info-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 20000; display: none; align-items: center; justify-content: center; overflow-y: auto; }
-    .info-modal.active { display: flex; }
-    .info-modal-content { max-width: 900px; width: 90%; max-height: 85vh; background: #0a0a0f; border: 1px solid #3b82f6; border-radius: 24px; overflow-y: auto; margin: 30px auto; box-shadow: 0 0 50px rgba(59,130,246,0.3); }
-    .info-modal-header { background: linear-gradient(135deg, #0f172a, #020617); padding: 20px 28px; border-bottom: 1px solid #3b82f6; position: sticky; top: 0; z-index: 10; }
-    .info-modal-body { padding: 28px; color: #cbd5e1; font-size: 14px; line-height: 1.6; }
-    .info-modal-close { background: rgba(59,130,246,0.2); border: 1px solid #3b82f6; color: #60a5fa; border-radius: 40px; padding: 6px 18px; font-family: monospace; cursor: pointer; transition: 0.2s; }
-    .info-modal-close:hover { background: #3b82f6; color: white; }
-    .jog-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
-    .jog-table td, .jog-table th { border: 1px solid #334155; padding: 8px 12px; vertical-align: top; }
-    .jog-table th { background: #1e293b; color: #60a5fa; font-weight: 600; }
-    .regent-query { border-left: 3px solid #f59e0b; background: rgba(245,158,11,0.08); }
-    .blink-green { animation: greenBlink 1.2s ease-in-out infinite; font-weight: 600; text-shadow: 0 0 5px rgba(16,185,129,0.5); }
-    @keyframes greenBlink { 0%, 100% { color: #34d399; opacity: 1; text-shadow: 0 0 2px #10b981; } 50% { color: #065f46; opacity: 0.7; text-shadow: 0 0 8px #10b981; } }
-    .pulsing-dot-blue { position: relative; display: inline-flex; width: 8px; height: 8px; cursor: pointer; }
-    .pulsing-dot-blue::before { content: ''; position: absolute; width: 100%; height: 100%; background-color: #3b82f6; border-radius: 50%; opacity: 0.8; animation: pingBlue 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; }
-    .pulsing-dot-blue::after { content: ''; position: absolute; width: 100%; height: 100%; background-color: #60a5fa; border-radius: 50%; }
-    @keyframes pingBlue { 75%, 100% { transform: scale(2.5); opacity: 0; } }
-    .jog-text-btn { cursor: pointer; }
-    .jog-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 10000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-    .jog-modal.active { display: flex; }
-    .jog-modal-content { width: 100%; height: 100%; position: relative; background: #000; }
-    .jog-modal-close { position: absolute; top: 20px; right: 30px; z-index: 10001; background: rgba(0,0,0,0.8); backdrop-filter: blur(12px); border: 1px solid #f59e0b; color: #f59e0b; border-radius: 40px; padding: 8px 24px; font-family: monospace; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
-    .jog-modal-close:hover { background: #f59e0b; color: black; box-shadow: 0 0 20px #f59e0b; }
-    .ccp-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #03050b; z-index: 30000; display: none; flex-direction: column; overflow: hidden; }
-    .ccp-modal.active { display: flex; }
-    .ccp-modal-header { background: #010108; border-bottom: 2px solid #ffaa33; padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; z-index: 30001; flex-shrink: 0; }
-    .ccp-modal-close { background: #ffaa44; border: none; border-radius: 24px; padding: 4px 16px; font-weight: bold; cursor: pointer; font-size: 12px; }
-    .ccp-modal-body { flex: 1; position: relative; overflow: hidden; background: #010101; }
-    .loading-spinner { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); border-radius: 20px; padding: 20px 30px; z-index: 40000; display: none; align-items: center; gap: 15px; border: 1px solid #f59e0b; font-family: monospace; color: #f59e0b; }
-    .loading-spinner.active { display: flex; }
-    .spinner { width: 24px; height: 24px; border: 3px solid rgba(245,158,11,0.3); border-top-color: #f59e0b; border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .sound-toggle { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #f59e0b; border-radius: 40px; padding: 8px 16px; font-size: 12px; font-family: monospace; color: #f59e0b; cursor: pointer; z-index: 1000; transition: 0.2s; }
-    .sound-toggle:hover { background: #f59e0b; color: black; }
-    .tour-btn { position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #3b82f6; border-radius: 40px; padding: 8px 16px; font-size: 12px; font-family: monospace; color: #3b82f6; cursor: pointer; z-index: 1000; transition: 0.2s; }
-    .tour-btn:hover { background: #3b82f6; color: black; }
-    @media (max-width: 768px) { .three-container, .three-full-container { height: 240px; } }
-    .social-hub { background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(5,5,20,0.95) 100%); backdrop-filter: blur(8px); border: 1px solid rgba(245,158,11,0.3); transition: all 0.3s ease; cursor: pointer; }
-    .social-hub:hover { border-color: rgba(245,158,11,0.7); box-shadow: 0 0 30px rgba(245,158,11,0.2); transform: scale(1.01); }
-    .social-icon { transition: all 0.25s cubic-bezier(0.2,0.9,0.4,1.1); display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(245,158,11,0.2); color: #f59e0b; font-size: 1.5rem; }
-    .social-icon:hover { transform: translateY(-5px) scale(1.05); background: #f59e0b; color: #000; border-color: #f59e0b; box-shadow: 0 8px 25px rgba(245,158,11,0.4); }
-    .social-platform-card { background: rgba(10,10,20,0.6); backdrop-filter: blur(4px); border-radius: 20px; padding: 12px; transition: all 0.2s; border: 1px solid rgba(245,158,11,0.15); }
-    .social-platform-card:hover { border-color: rgba(245,158,11,0.5); background: rgba(20,20,35,0.8); transform: translateY(-2px); }
-    .fullscreen-hub-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000ee; backdrop-filter: blur(24px); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; padding: 40px 20px; }
-    .fullscreen-hub-modal.active { display: flex; }
-    .fullscreen-close-btn { position: fixed; top: 30px; right: 30px; background: rgba(245,158,11,0.2); border: 2px solid #f59e0b; color: #f59e0b; border-radius: 50px; padding: 10px 25px; font-family: monospace; cursor: pointer; transition: 0.2s; z-index: 100000; font-weight: bold; }
-    .fullscreen-close-btn:hover { background: #f59e0b; color: #000; transform: scale(1.02); }
-    .regent-channel { transition: all 0.2s cubic-bezier(0.2,0.9,0.4,1.1); cursor: pointer; }
-    .regent-message-modal { z-index: 99999; }
-    @keyframes fadeInScale { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
-    .regent-modal-animate { animation: fadeInScale 0.2s ease-out; }
-    .workstation { display: flex; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, #0a0f1f, #010101); }
-    .meta-panel { width: 320px; background: rgba(2,6,18,0.96); backdrop-filter: blur(18px); border-right: 3px solid #ffaa33; display: flex; flex-direction: column; padding: 16px; gap: 14px; overflow-y: auto; font-family: monospace; }
-    .cyber-block { background: rgba(0,0,0,0.7); border-radius: 20px; padding: 12px; border: 1px solid rgba(255,170,51,0.5); }
-    .block-title { font-size: 10px; letter-spacing: 2px; color: #ffaa33; border-bottom: 1px solid #ffaa33; margin-bottom: 10px; padding-bottom: 4px; }
-    .stat-row { display: flex; justify-content: space-between; margin: 6px 0; font-size: 11px; color: #bbddff; }
-    .stat-value { color: #ffaa33; font-weight: bold; }
-    .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-    .apex-btn { background: #0f1422; border: 1px solid #ffaa33; padding: 6px 4px; border-radius: 30px; font-size: 9px; font-weight: bold; cursor: pointer; text-align: center; color: #ffdd99; font-family: monospace; }
-    .apex-btn:hover { background: #ffaa33; color: #000; }
-    .cam-nexus { flex: 2.2; background: #01020b; display: flex; flex-direction: column; padding: 12px; gap: 8px; }
-    .grid-header { font-size: 9px; color: #ffaa33; background: #050a18cc; padding: 6px 12px; border-radius: 30px; display: flex; justify-content: space-between; }
-    .grid-4x4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; overflow-y: auto; min-height: 200px; }
-    .cam-card { background: #03061a; border: 1px solid #3b5f8a; border-radius: 14px; cursor: pointer; overflow: hidden; }
-    .cam-card.selected-main { border: 3px solid #ffaa33; box-shadow: 0 0 20px rgba(255,170,51,0.6); }
-    .cam-title { background: #0a1022ee; padding: 4px 6px; font-size: 7px; display: flex; justify-content: space-between; color: #eee; }
-    .cam-preview { aspect-ratio: 16/9; width: 100%; background: #000; position: relative; }
-    .cam-preview canvas { width: 100%; height: 100%; display: block; }
-    .main-terminal { width: 420px; background: #010410; border-left: 3px solid #ffaa33; display: flex; flex-direction: column; padding: 12px; }
-    .main-canvas-box { flex: 1; background: #000; border-radius: 24px; border: 2px solid #ffaa33; overflow: hidden; position: relative; min-height: 300px; }
-    #mainCanvas { width: 100%; height: 100%; display: block; }
-    .analytics-overlay { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.8); padding: 4px 8px; border-radius: 16px; font-size: 8px; color: #ffaa33; }
-    .status-bar { display: flex; justify-content: space-between; margin-top: 10px; background: #0a0e1c; padding: 8px; border-radius: 20px; font-size: 9px; }
-    .telemetry-panel, .log-panel, .chat-messages { background: #010514dd; border-radius: 14px; padding: 6px; font-size: 8px; }
-    .chat-messages { height: 80px; overflow-y: auto; }
-    .chat-input { display: flex; gap: 6px; margin-top: 6px; }
-    .chat-input input { flex:1; background:#111722; border:1px solid #ffaa33; border-radius:20px; padding:4px 8px; color:#ffdd99; font-size:9px; }
-    .gallery-thumbs { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; }
-    .gallery-thumbs img { width: 48px; height: 36px; object-fit: cover; border-radius: 6px; border: 1px solid #ffaa33; cursor: pointer; }
-    .slider { width: 100%; accent-color: #ffaa33; margin: 6px 0; }
-    .kill-btn { background: #5a0000; border-color: #ff6666; color: #ffbbbb; }
-    .active-mode-btn { background: #ffaa33 !important; color: #000 !important; }
-    ::-webkit-scrollbar { width: 3px; }
-          .webgl-fallback { background: #0a0a1a; border: 1px solid #ffaa33; border-radius: 12px; padding: 20px; text-align: center; color: #ffaa66; font-family: monospace; }
-    
-    /* === BOB GATE SPLASH SCREEN STYLES === */
-    .seed-gate {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(ellipse at 40% 50%, #030514, #000000);
-        z-index: 100000;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: opacity 1.8s cubic-bezier(0.23, 1, 0.32, 1), visibility 1.8s;
-        font-family: 'Rajdhani', 'Orbitron', monospace;
-    }
-    .seed-gate.hidden {
-        opacity: 0;
-        visibility: hidden;
-    }
-    .bean-container {
-        position: relative;
-        width: 260px;
-        height: 260px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
-        transition: transform 0.2s ease;
-    }
-    .bean-container:hover {
-        transform: scale(1.02);
-    }
-    .bean-glow-gate {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(0,212,255,0.25) 0%, rgba(255,0,170,0.15) 60%, transparent 90%);
-        animation: pulseGlowGate 2.5s infinite alternate;
-        filter: blur(6px);
-    }
-    .bean-glow-secondary-gate {
-        position: absolute;
-        width: 85%;
-        height: 85%;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(255,204,68,0.2) 0%, rgba(0,212,255,0.05) 80%);
-        animation: pulseGlowSecondaryGate 3s infinite alternate-reverse;
-        filter: blur(12px);
-    }
-    .bean-svg-gate {
-        position: relative;
-        width: 160px;
-        height: 200px;
-        filter: drop-shadow(0 0 8px #00d4ff88);
-        animation: floatBeanGate 4s infinite ease-in-out;
-    }
-    .gate-text {
-        margin-top: 30px;
-        text-align: center;
-        color: #00d4ff;
-        letter-spacing: 5px;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        background: rgba(0,0,0,0.55);
-        backdrop-filter: blur(4px);
-        padding: 8px 16px;
-        border-radius: 30px;
-        border: 1px solid rgba(0,212,255,0.4);
-    }
-    .gate-sub {
-        font-size: 0.7rem;
-        color: #ff88dd;
-        margin-top: 12px;
-        letter-spacing: 3px;
-        font-family: monospace;
-    }
-    @keyframes pulseGlowGate {
-        0% { opacity: 0.3; transform: scale(0.92);}
-        100% { opacity: 0.9; transform: scale(1.15);}
-    }
-    @keyframes pulseGlowSecondaryGate {
-        0% { opacity: 0.1; transform: scale(0.9);}
-        100% { opacity: 0.6; transform: scale(1.25);}
-    }
-    @keyframes floatBeanGate {
-        0% { transform: translateY(0px) rotate(0deg);}
-        50% { transform: translateY(-10px) rotate(2deg);}
-        100% { transform: translateY(0px) rotate(0deg);}
-    }
-    @keyframes sparkFlyGate {
-        0% { transform: scale(0.2) translate(0,0); opacity: 0; }
-        30% { opacity: 1; }
-        100% { transform: scale(1.6) translate(var(--tx), var(--ty)); opacity: 0; }
-    }
-    @keyframes pulseRingExpandGate {
-        0% { transform: scale(0.4); opacity: 0.8; }
-        100% { transform: scale(3); opacity: 0; border-color: #ff00aa; }
-    }
-    .spark-particle-gate {
-        position: fixed;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 100001;
-        filter: blur(1px);
-        opacity: 0;
-    }
-    #originalContent {
-        opacity: 0;
-        visibility: hidden;
-        filter: blur(15px);
-        transition: opacity 1.8s cubic-bezier(0.23, 1, 0.32, 1), 
-                    visibility 1.8s,
-                    filter 1.5s ease-out;
-    }
-    #originalContent.visible {
-        opacity: 1;
-        visibility: visible;
-        filter: blur(0px);
-    }
-  </style> 
 </head>
-<body>   <!-- BOB GATE SPLASH SCREEN -->
-  <div id="seedGate" class="seed-gate">
-    <div class="bean-container">
-      <div class="bean-glow-gate"></div>
-      <div class="bean-glow-secondary-gate"></div>
-      <svg class="bean-svg-gate" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="beanGradGate" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.95"/>
-            <stop offset="50%" stop-color="#2a2eff" stop-opacity="0.8"/>
-            <stop offset="100%" stop-color="#ff00aa" stop-opacity="0.9"/>
-          </linearGradient>
-          <linearGradient id="innerGlowGate" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#ffcc44" stop-opacity="0.7"/>
-            <stop offset="100%" stop-color="#ff00aa" stop-opacity="0.3"/>
-          </linearGradient>
-          <filter id="neonFilterGate" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-        <path d="M60,12 C30,18 10,42 12,72 C14,100 30,128 58,138 C78,144 88,132 98,110 C108,88 110,62 102,38 C94,18 80,8 60,12Z" 
-              fill="url(#beanGradGate)" stroke="#00ffff" stroke-width="1.2" filter="url(#neonFilterGate)"/>
-        <path d="M58,36 L52,58 L62,68 L70,88 L66,108" stroke="#ffcc44" stroke-width="1.5" fill="none" opacity="0.7" stroke-dasharray="3 4"/>
-        <path d="M72,32 L80,54 L78,76 L84,94" stroke="#ff88ff" stroke-width="1.2" fill="none" opacity="0.55"/>
-        <circle cx="60" cy="76" r="16" fill="url(#innerGlowGate)" stroke="#ffcc44" stroke-width="1.5" stroke-dasharray="2 2"/>
-        <circle cx="60" cy="76" r="6" fill="#ffffff" fill-opacity="0.8" stroke="#00d4ff" stroke-width="1"/>
-        <path d="M60,70 L60,82 M54,76 L66,76" stroke="#ff00aa" stroke-width="1.5" stroke-linecap="round"/>
-        <circle cx="34" cy="62" r="2.5" fill="#ffcc44" opacity="0.8">
-          <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
-        </circle>
-        <circle cx="86" cy="84" r="2.5" fill="#00fff0" opacity="0.8">
-          <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
-        </circle>
-      </svg>
-    </div>
-    <div class="gate-text">
-      ⚡ BOB · TRANSPONDER ⚡
-    </div>
-    <div class="gate-sub">
-      ›› click to awaken ‹‹
-    </div>
-  </div> <div id="originalContent">
+<body>
+
+<!-- BOB GATE SPLASH SCREEN -->
+<div id="seedGate" class="seed-gate">
+  <div class="bean-container">
+    <div class="bean-glow-gate"></div>
+    <div class="bean-glow-secondary-gate"></div>
+    <svg class="bean-svg-gate" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="beanGradGate" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.95"/>
+          <stop offset="50%" stop-color="#2a2eff" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#ff00aa" stop-opacity="0.9"/>
+        </linearGradient>
+        <linearGradient id="innerGlowGate" x1="0%" y1="100%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#ffcc44" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#ff00aa" stop-opacity="0.3"/>
+        </linearGradient>
+        <filter id="neonFilterGate" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      <path d="M60,12 C30,18 10,42 12,72 C14,100 30,128 58,138 C78,144 88,132 98,110 C108,88 110,62 102,38 C94,18 80,8 60,12Z" 
+            fill="url(#beanGradGate)" stroke="#00ffff" stroke-width="1.2" filter="url(#neonFilterGate)"/>
+      <path d="M58,36 L52,58 L62,68 L70,88 L66,108" stroke="#ffcc44" stroke-width="1.5" fill="none" opacity="0.7" stroke-dasharray="3 4"/>
+      <path d="M72,32 L80,54 L78,76 L84,94" stroke="#ff88ff" stroke-width="1.2" fill="none" opacity="0.55"/>
+      <circle cx="60" cy="76" r="16" fill="url(#innerGlowGate)" stroke="#ffcc44" stroke-width="1.5" stroke-dasharray="2 2"/>
+      <circle cx="60" cy="76" r="6" fill="#ffffff" fill-opacity="0.8" stroke="#00d4ff" stroke-width="1"/>
+      <path d="M60,70 L60,82 M54,76 L66,76" stroke="#ff00aa" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="34" cy="62" r="2.5" fill="#ffcc44" opacity="0.8">
+        <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="86" cy="84" r="2.5" fill="#00fff0" opacity="0.8">
+        <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+  <div class="gate-text">
+    ⚡ BOB · TRANSPONDER ⚡
+  </div>
+  <div class="gate-sub">
+    ›› click to awaken ‹‹
+  </div>
+</div>
+
+<div id="originalContent">
   <h2 class="visually-hidden">Wellamatores World Main Content</h2>
   <div id="loadingSpinner" class="loading-spinner"><div class="spinner"></div><span>INITIALIZING JOG NETWORK...</span></div>
 
@@ -536,26 +274,27 @@
         <span class="font-bold tracking-tighter text-xl italic bg-gradient-to-r from-amber-400 to-white bg-clip-text text-transparent">WELLAMATORES</span>
       </div>
       <div class="flex flex-wrap justify-center gap-3 text-xs md:text-sm font-mono font-medium text-white/70">
-  <a href="Realty.html" class="hover:text-amber-400 transition">📡 Real estate</a>
-  <a href="DAO.html" class="hover:text-amber-400 transition">⚖️ DAO</a>
-  <a href="/culture.html" class="hover:text-amber-400 transition">🏛️ CULTURAL NAVIGATOR</a>
-  <a href="NPC.html" class="hover:text-amber-400 transition">👾 NPC REALM</a>
-  <a href="COMMUNITY.html" class="hover:text-amber-400 transition">🌍 COMMUNITY</a>
-  <a href="COMMUNICATIONS.html" class="hover:text-amber-400 transition">📡 COMMUNICATION</a>
-  <a href="NAVIGATOR NOMAND JACKDAW.html" class="hover:text-amber-400 transition">🧭 EXPLORE</a>
-<a href="LABS.html" class="hover:text-amber-400 transition">⚗️ LABS</a>
-  <a href="EXO.html" class="hover:text-amber-400 transition">🪐 EXO Trading</a>
-  <a href="Market.html" class="hover:text-amber-400 transition">🛒 MARKETPLACE</a>
-  <a href="STAKING.html" class="hover:text-amber-400 transition">💰 STAKING</a>
-  <a href="/genesis.html" class="hover:text-amber-400 transition">🌀 GENESIS</a>
-  <a href="/investarium.html" class="hover:text-amber-400 transition">🏦 INVESTARIUM</a>
-    <a href="AFFILIATE.html" class="hover:text-amber-400 transition">🤝 AFFILIATE</a>
-  <a href="ARCHIVE.html" class="hover:text-amber-400 transition">📚 ARCHIVE</a>
-  <div class="hover:text-amber-400 transition jog-nav-item flex items-center gap-1.5">
-    <span class="pulsing-dot-blue" id="jogGalaxyTrigger" title="Open 3D universe"></span>
-    <span class="jog-text-btn hover:text-amber-400" id="jogInfoTrigger">🛸 JOG Network</span>
-  </div>
-</div>
+        <a href="Realty.html" class="hover:text-amber-400 transition">📡 Real estate</a>
+        <a href="DAO.html" class="hover:text-amber-400 transition">⚖️ DAO</a>
+        <a href="/culture.html" class="hover:text-amber-400 transition">🏛️ CULTURAL NAVIGATOR</a>
+        <a href="NPC.html" class="hover:text-amber-400 transition">👾 NPC REALM</a>
+        <a href="COMMUNITY.html" class="hover:text-amber-400 transition">🌍 COMMUNITY</a>
+        <a href="COMMUNICATIONS.html" class="hover:text-amber-400 transition">📡 COMMUNICATION</a>
+        <a href="NAVIGATOR NOMAND JACKDAW.html" class="hover:text-amber-400 transition">🧭 EXPLORE</a>
+        <a href="LABS.html" class="hover:text-amber-400 transition">⚗️ LABS</a>
+        <a href="EXO.html" class="hover:text-amber-400 transition">🪐 EXO Trading</a>
+        <a href="Market.html" class="hover:text-amber-400 transition">🛒 MARKETPLACE</a>
+        <a href="STAKING.html" class="hover:text-amber-400 transition">💰 STAKING</a>
+        <a href="/genesis.html" class="hover:text-amber-400 transition">🌀 GENESIS</a>
+        <a href="/investarium.html" class="hover:text-amber-400 transition">🏦 INVESTARIUM</a>
+        <a href="AFFILIATE.html" class="hover:text-amber-400 transition">🤝 AFFILIATE</a>
+        <a href="ARCHIVE.html" class="hover:text-amber-400 transition">📚 ARCHIVE</a>
+        <div class="hover:text-amber-400 transition jog-nav-item flex items-center gap-1.5">
+          <span class="pulsing-dot-blue" id="jogGalaxyTrigger" title="Open 3D universe"></span>
+          <span class="jog-text-btn hover:text-amber-400" id="jogInfoTrigger">🛸 JOG Network</span>
+        </div>
+      </div>
+    </div>
   </nav>
 
   <main class="pt-20">
@@ -569,49 +308,42 @@
         <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-full px-4 py-1.5 border border-white/10 mb-6">
           <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
           <span class="text-[10px] font-mono tracking-wider text-amber-300">
-  <a href="Bureau.html" class="hover:text-amber-400 transition-colors">LE BUREAU:JACKDAW</a>  •  
-  <span id="orbitalCamerasTrigger" class="cursor-pointer hover:text-amber-400 transition-colors font-bold">ORBITAL CAMERAS</span>  •  
-  REGENT'S OFFICE  •  
-  SHAREHOLDERS
-</span>
-            </div>
-<h1 class="spaced-title text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.1] bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent">WELCOME TO THE<br>GAME UNIVERSE</h1>
-<p class="text-stone-300 text-lg md:text-xl max-w-2xl mx-auto mt-6 leading-relaxed">Enter <span class="text-amber-400 font-semibold">Wellamatores World</span> — a living <span class="text-amber-300 font-medium">magtechbiocyberpunk</span> dimension.<br><span class="text-emerald-400 font-mono text-sm">JOG Network • <span class="blink-green">PLUTONIA</span> • Le Bureau des Colonies (JACKDAW codename)</span></p>
-<div class="flex flex-wrap justify-center gap-5 mt-10">
-  <a href="MagTechBioPunk .html" class="glass-panel rounded-full px-5 py-2.5 text-sm hover:bg-amber-500/20 hover:scale-105 transition-all duration-300 cursor-pointer no-underline flex items-center gap-2 text-stone-200"><span class="text-amber-400 text-lg">🌀</span> MagTechBioCyberPunk</a>
-  <a href="visoracle.html" class="glass-panel rounded-full px-5 py-2.5 text-sm hover:bg-amber-500/20 hover:scale-105 transition-all duration-300 cursor-pointer no-underline flex items-center gap-2 text-stone-200"><span class="text-amber-400 text-lg">⚡</span> Procedural Generation</a>
-  <a href="TRI-SOLAR ODYSSEY .html" class="glass-panel rounded-full px-5 py-2.5 text-sm hover:bg-amber-500/20 hover:scale-105 transition-all duration-300 cursor-pointer no-underline flex items-center gap-2 text-stone-200"><span class="text-amber-400 text-lg">🎮</span> Interactive Sandbox</a>
-</div>
-<div class="mt-12">
-  <button id="enterWorldBtn" class="btn-enter bg-white text-black px-10 py-4 rounded-full font-black text-lg md:text-xl tracking-wide flex items-center gap-3 mx-auto transition-all group"><span>ENTER THE WORLD</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:translate-x-1 transition"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></button>
-  <p class="text-stone-500 text-xs mt-4 font-mono">JOG Network • <span class="text-emerald-400">PLUTONIA</span> • Infrastructure as a Service</p>
-</div>
-    </div>
-  </section>
-
- <!-- Trailer Section -->
-<section id="trailerSection" class="max-w-5xl mx-auto px-6 py-10 scroll-mt-24">
-  <div class="glass-panel rounded-2xl p-5 md:p-6">
-    <h2 class="text-xl font-bold flex items-center gap-2 mb-4">
-      <span class="text-amber-400">🎬</span> OFFICIAL TRAILER
-    </h2>
-    <div class="three-wrapper" id="trailerWrapper" style="position:relative; width:100%;">
-      <div class="trailer-wrapper">
-        <iframe 
-          width="100%" 
-          height="100%" 
-          src="https://www.youtube.com/embed/5zPMwtbcRsk?autoplay=0&rel=0" 
-          title="Wellamatores World Official Trailer" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen>
-        </iframe>
+            <a href="Bureau.html" class="hover:text-amber-400 transition-colors">LE BUREAU:JACKDAW</a>  •  
+            <span id="orbitalCamerasTrigger" class="cursor-pointer hover:text-amber-400 transition-colors font-bold">ORBITAL CAMERAS</span>  •  
+            REGENT'S OFFICE  •  
+            SHAREHOLDERS
+          </span>
+        </div>
+        <h1 class="spaced-title text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.1] bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent">WELCOME TO THE<br>GAME UNIVERSE</h1>
+        <p class="text-stone-300 text-lg md:text-xl max-w-2xl mx-auto mt-6 leading-relaxed">Enter <span class="text-amber-400 font-semibold">Wellamatores World</span> — a living <span class="text-amber-300 font-medium">magtechbiocyberpunk</span> dimension.<br><span class="text-emerald-400 font-mono text-sm">JOG Network • <span class="blink-green">PLUTONIA</span> • Le Bureau des Colonies (JACKDAW codename)</span></p>
+        <div class="flex flex-wrap justify-center gap-5 mt-10">
+          <a href="MagTechBioPunk .html" class="glass-panel rounded-full px-5 py-2.5 text-sm hover:bg-amber-500/20 hover:scale-105 transition-all duration-300 cursor-pointer no-underline flex items-center gap-2 text-stone-200"><span class="text-amber-400 text-lg">🌀</span> MagTechBioCyberPunk</a>
+          <a href="visoracle.html" class="glass-panel rounded-full px-5 py-2.5 text-sm hover:bg-amber-500/20 hover:scale-105 transition-all duration-300 cursor-pointer no-underline flex items-center gap-2 text-stone-200"><span class="text-amber-400 text-lg">⚡</span> Procedural Generation</a>
+          <a href="TRI-SOLAR ODYSSEY .html" class="glass-panel rounded-full px-5 py-2.5 text-sm hover:bg-amber-500/20 hover:scale-105 transition-all duration-300 cursor-pointer no-underline flex items-center gap-2 text-stone-200"><span class="text-amber-400 text-lg">🎮</span> Interactive Sandbox</a>
+        </div>
+        <div class="mt-12">
+          <button id="enterWorldBtn" class="btn-enter bg-white text-black px-10 py-4 rounded-full font-black text-lg md:text-xl tracking-wide flex items-center gap-3 mx-auto transition-all group"><span>ENTER THE WORLD</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 group-hover:translate-x-1 transition"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></button>
+          <p class="text-stone-500 text-xs mt-4 font-mono">JOG Network • <span class="text-emerald-400">PLUTONIA</span> • Infrastructure as a Service</p>
+        </div>
       </div>
-      <button class="fullscreen-btn" id="trailerFullscreenBtn">⛶ FULLSCREEN</button>
-    </div>
-    <p class="text-stone-400 text-xs text-center mt-3 font-mono">▶ JOG NETWORK OFFICIAL REEL • PLUTONIA SECTOR</p>
-  </div>
-</section>
+    </section>
+
+    <!-- Trailer Section -->
+    <section id="trailerSection" class="max-w-5xl mx-auto px-6 py-10 scroll-mt-24">
+      <div class="glass-panel rounded-2xl p-5 md:p-6">
+        <h2 class="text-xl font-bold flex items-center gap-2 mb-4">
+          <span class="text-amber-400">🎬</span> OFFICIAL TRAILER
+        </h2>
+        <div class="three-wrapper" id="trailerWrapper" style="position:relative; width:100%;">
+          <div class="trailer-wrapper">
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/5zPMwtbcRsk?autoplay=0&rel=0" title="Wellamatores World Official Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <button class="fullscreen-btn" id="trailerFullscreenBtn">⛶ FULLSCREEN</button>
+        </div>
+        <p class="text-stone-400 text-xs text-center mt-3 font-mono">▶ JOG NETWORK OFFICIAL REEL • PLUTONIA SECTOR</p>
+      </div>
+    </section>
+
     <!-- Features -->
     <section class="max-w-6xl mx-auto px-6 py-16"><div class="section-divider w-full mb-12"></div><div class="grid md:grid-cols-3 gap-6"><div class="feature-card rounded-2xl p-6 text-center"><div class="text-5xl mb-4">🌌</div><h3 class="text-xl font-bold mb-2">Infinite Realms</h3><p class="text-stone-400 text-sm">Procedurally generated biocyberpunk worlds.</p></div><div class="feature-card rounded-2xl p-6 text-center"><div class="text-5xl mb-4">🎭</div><h3 class="text-xl font-bold mb-2">Living Narrative</h3><p class="text-stone-400 text-sm">AI-driven factions & evolving lore.</p></div><div class="feature-card rounded-2xl p-6 text-center"><div class="text-5xl mb-4">🔮</div><h3 class="text-xl font-bold mb-2">MagTech Arsenal</h3><p class="text-stone-400 text-sm">Bio-enhancements & reality-bending tools.</p></div></div><div class="section-divider w-full mt-12"></div></section>
 
@@ -627,7 +359,7 @@
     <section class="max-w-6xl mx-auto px-6 py-12"><div class="bg-black/40 rounded-3xl p-8 border border-amber-500/20"><div class="flex flex-col md:flex-row gap-8 items-start"><div class="flex-1"><div class="inline-block px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-mono mb-3">🏛️ LE BUREAU DES COLONIES • CODENAME: JACKDAW</div><h3 class="text-2xl font-bold mb-3">Colonial Administration</h3><p class="text-stone-300 text-sm leading-relaxed"><span class="text-amber-300">Le Bureau des Colonies</span> is the main governing body in Wellamatores World.</p><p class="text-stone-400 text-sm mt-3">Headed by <span class="text-amber-300">Lord Regent</span>.</p></div><div class="flex-1 border-l border-amber-500/20 pl-6"><div class="text-amber-400 font-mono text-xs mb-2">/// JOG NETWORK CLIENT</div><p class="text-stone-400 text-sm">Le Bureau des Colonies is <span class="text-amber-300">one of the clients</span> of the JOG orbital network. <span class="text-emerald-400 blink-green">PLUTONIA</span> also serves the colonial administration.</p></div></div></div></section>
 
     <!-- GLOBAL COMMUNITY NETWORK SECTION -->
-    <section class="max-w-6xl mx-auto px-6 py-16" id="socialTriggerSection"><div id="socialHubCard" class="social-hub rounded-3xl p-8 md:p-10 transition-all cursor-pointer group"><div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6"><div><div class="inline-block px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-mono mb-3">🌐 GLOBAL COMMUNITY NETWORK • VERIFIED HUB</div><h2 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-400 to-white bg-clip-text text-transparent">Global Community Network</h2><p class="text-stone-400 text-sm mt-2 max-w-2xl">Official Channels: Verified links to Discord, X, LinkedIn, TikTok, Facebook, Telegram, VK, YouTube, Reddit, GitHub — fully active domains.</p></div><div class="bg-amber-500/20 hover:bg-amber-500/40 rounded-full px-5 py-2 text-sm font-mono text-amber-400 flex items-center gap-2 transition"><span>🔲</span> EXPAND TO FULLSCREEN</div></div><div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 opacity-80 group-hover:opacity-100 transition"><div class="social-platform-card text-center cursor-pointer" data-url="https://discord.gg/wellamatores"><div class="social-icon mx-auto mb-2">🎮</div><h3 class="font-bold text-white text-sm">Discord</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center cursor-pointer" data-url="https://twitter.com/wellamatores"><div class="social-icon mx-auto mb-2">𝕏</div><h3 class="font-bold text-white text-sm">X (Twitter)</h3><span class="text-[9px] text-emerald-400">● Verified</span></div><div class="social-platform-card text-center cursor-pointer" data-url="https://linkedin.com/company/wellamatores"><div class="social-icon mx-auto mb-2">🔗</div><h3 class="font-bold text-white text-sm">LinkedIn</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center cursor-pointer" data-url="https://tiktok.com/@wellamatores"><div class="social-icon mx-auto mb-2">🎵</div><h3 class="font-bold text-white text-sm">TikTok</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center cursor-pointer" data-url="https://facebook.com/wellamatores"><div class="social-icon mx-auto mb-2">📘</div><h3 class="font-bold text-white text-sm">Facebook</h3><span class="text-[9px] text-emerald-400">● Verified</span></div><div class="social-platform-card text-center cursor-pointer" data-url="https://t.me/wellamatores"><div class="social-icon mx-auto mb-2">📡</div><h3 class="font-bold text-white text-sm">Telegram</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center cursor-pointer" data-url="https://vk.com/wellamatores"><div class="social-icon mx-auto mb-2">📱</div><h3 class="font-bold text-white text-sm">VK</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center cursor-pointer" data-url="https://youtube.com/@wellamatores"><div class="social-icon mx-auto mb-2">📺</div><h3 class="font-bold text-white text-sm">YouTube</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center cursor-pointer" data-url="https://reddit.com/r/wellamatores"><div class="social-icon mx-auto mb-2">🤖</div><h3 class="font-bold text-white text-sm">Reddit</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center cursor-pointer" data-url="https://github.com/wellamatores"><div class="social-icon mx-auto mb-2">🐙</div><h3 class="font-bold text-white text-sm">GitHub</h3><span class="text-[9px] text-emerald-400">● Open Source</span></div></div><div class="mt-6 pt-4 border-t border-amber-500/20 text-center text-stone-400 text-xs font-mono">🌍 Global Connectivity: Uniting players from West, Russia, and Asia — facilitating access to the community.</div></div></section>
+    <section class="max-w-6xl mx-auto px-6 py-16" id="socialTriggerSection"><div id="socialHubCard" class="social-hub rounded-3xl p-8 md:p-10 transition-all cursor-pointer group"><div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6"><div><div class="inline-block px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-mono mb-3">🌐 GLOBAL COMMUNITY NETWORK • VERIFIED HUB</div><h2 class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-amber-400 to-white bg-clip-text text-transparent">Global Community Network</h2><p class="text-stone-400 text-sm mt-2 max-w-2xl">Official Channels: Verified links to Discord, X, LinkedIn, TikTok, Facebook, Telegram, VK, YouTube, Reddit, GitHub — fully active domains.</p></div><div class="bg-amber-500/20 hover:bg-amber-500/40 rounded-full px-5 py-2 text-sm font-mono text-amber-400 flex items-center gap-2 transition"><span>🔲</span> EXPAND TO FULLSCREEN</div></div><div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 opacity-80 group-hover:opacity-100 transition"><div class="social-platform-card text-center" data-url="https://discord.gg/wellamatores"><div class="social-icon mx-auto mb-2">🎮</div><h3 class="font-bold text-white text-sm">Discord</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center" data-url="https://twitter.com/wellamatores"><div class="social-icon mx-auto mb-2">𝕏</div><h3 class="font-bold text-white text-sm">X (Twitter)</h3><span class="text-[9px] text-emerald-400">● Verified</span></div><div class="social-platform-card text-center" data-url="https://linkedin.com/company/wellamatores"><div class="social-icon mx-auto mb-2">🔗</div><h3 class="font-bold text-white text-sm">LinkedIn</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center" data-url="https://tiktok.com/@wellamatores"><div class="social-icon mx-auto mb-2">🎵</div><h3 class="font-bold text-white text-sm">TikTok</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center" data-url="https://facebook.com/wellamatores"><div class="social-icon mx-auto mb-2">📘</div><h3 class="font-bold text-white text-sm">Facebook</h3><span class="text-[9px] text-emerald-400">● Verified</span></div><div class="social-platform-card text-center" data-url="https://t.me/wellamatores"><div class="social-icon mx-auto mb-2">📡</div><h3 class="font-bold text-white text-sm">Telegram</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center" data-url="https://vk.com/wellamatores"><div class="social-icon mx-auto mb-2">📱</div><h3 class="font-bold text-white text-sm">VK</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center" data-url="https://youtube.com/@wellamatores"><div class="social-icon mx-auto mb-2">📺</div><h3 class="font-bold text-white text-sm">YouTube</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center" data-url="https://reddit.com/r/wellamatores"><div class="social-icon mx-auto mb-2">🤖</div><h3 class="font-bold text-white text-sm">Reddit</h3><span class="text-[9px] text-emerald-400">● Active</span></div><div class="social-platform-card text-center" data-url="https://github.com/wellamatores"><div class="social-icon mx-auto mb-2">🐙</div><h3 class="font-bold text-white text-sm">GitHub</h3><span class="text-[9px] text-emerald-400">● Open Source</span></div></div><div class="mt-6 pt-4 border-t border-amber-500/20 text-center text-stone-400 text-xs font-mono">🌍 Global Connectivity: Uniting players from West, Russia, and Asia — facilitating access to the community.</div></div></section>
 
     <!-- Footer -->
     <footer class="border-t border-white/5 mt-12 py-8 bg-black/30"><div class="max-w-6xl mx-auto px-6 flex flex-col items-center gap-4 text-stone-500 text-[10px] font-mono text-center"><div>© TerraTrampilleraVerse Holding — JOG (Jackdaw Orbital Group) • Multimodal Network • <span class="text-emerald-400 blink-green">PLUTONIA</span><br>Le Bureau des Colonies (codename JACKDAW)</div><div class="flex flex-wrap justify-center gap-6"><span>🛰️ JOG Network</span><span>🌀 <span class="text-emerald-400 blink-green">PLUTONIA</span></span><span>🏛️ Le Bureau</span><span>🐦 JACKDAW</span></div></div></footer>
@@ -641,7 +373,7 @@
 
   <div id="jogInfoModal" class="info-modal"><div class="info-modal-content"><div class="info-modal-header flex justify-between items-center"><h2 class="text-xl font-bold text-blue-400">📡 JOG NETWORK — COMPLETE DESCRIPTION</h2><button id="closeInfoModalBtn" class="info-modal-close">✕ CLOSE</button></div><div class="info-modal-body"><h3 class="text-lg font-bold text-blue-300">🏢 CORPORATE DOSSIER</h3><table class="jog-table"><tr><th>Field</th><th>Value</th></tr><tr><td><strong>Full Name</strong></td><td>Jackdaw Orbital Group (JOG)</td></tr><tr><td><strong>Structure Type</strong></td><td>Multimodal Orbital Network</td></tr><tr><td><strong>Founder</strong></td><td>TerraTrampilleraVerse Holding</td></tr><tr><td><strong>Operator</strong></td><td>Le Bureau des Colonies (JACKDAW)</td></tr><tr><td><strong>Headquarters</strong></td><td>JOG-X Station "Plutonia"</td></tr></table><table class="jog-table mt-4"><tr><th>🌐 NETWORK STRUCTURE</th></tr><tr><td class="text-stone-400">JOG is NOT a single station, but a NETWORK of multiple nodes, platforms, and orbital clusters.</td></tr></table></div></div></div>
 
-  <div id="jogModal" class="jog-modal"><div class="jog-modal-content"><button id="jogModalCloseBtn" class="jog-modal-close">✕ CLOSE JOG UNIVERSE</button><div id="jogFullscreenCanvas" style="width:100%;height:100%"></div><div class="jog-modal-status">🌀 JOG • 22 NODES • 3 VORTICES • <span class="blink-green">PLUTONIA</span></div></div></div>
+  <div id="jogModal" class="jog-modal"><div class="jog-modal-content"><button id="jogModalCloseBtn" class="jog-modal-close">✕ CLOSE JOG UNIVERSE</button><div id="jogFullscreenCanvas" style="width:100%;height:100%"></div><div style="position:absolute; bottom:20px; left:20px; color:#f59e0b; font-family:monospace; font-size:12px; z-index:40001;">🌀 JOG • 22 NODES • 3 VORTICES • <span class="blink-green">PLUTONIA</span></div></div></div>
 
   <div id="ccpModal" class="ccp-modal"><div class="ccp-modal-header"><span style="color:#ffaa33;font-weight:bold;">🛸 JOG 3.0 • MISSION CONTROL | Orbital Camera Network</span><button id="ccpModalCloseBtn" class="ccp-modal-close">✕ CLOSE MISSION CONTROL</button></div><div class="ccp-modal-body" id="ccpModalBody"></div></div>
 
@@ -664,235 +396,623 @@
       catch(e) { return false; } 
     }
     
-    if (!checkWebGL()) document.querySelectorAll('.three-container, .three-full-container').forEach(el => el.innerHTML = '<div class="webgl-fallback">⚠️ WebGL not supported.</div>');
+    if (!checkWebGL()) {
+      document.querySelectorAll('.three-container, .three-full-container').forEach(el => {
+        if (el) el.innerHTML = '<div class="webgl-fallback">⚠️ WebGL not supported.</div>';
+      });
+    }
 
-    // --- Satellite Scene (NASA Textures) ---
+    // Глобальные переменные для сцен
+    let satSceneData = null;
+    let twinSceneData = null;
+    let satResizeObserver = null;
+    let twinResizeObserver = null;
+
+    // ========== СЦЕНА 1: СПУТНИКОВАЯ СЦЕНА JOG (исправленная) ==========
     const containerSat = document.getElementById('satelliteScene');
-    let satelliteSceneObj = null, satResizeObserver;
+    
     function initSatelliteScene() {
-      if(!containerSat || !checkWebGL()) return;
+      if (!containerSat || !checkWebGL()) return;
+      
+      // Очищаем предыдущую сцену
+      if (satSceneData) {
+        if (satSceneData.renderer) satSceneData.renderer.dispose();
+        if (satSceneData.controls) satSceneData.controls.dispose();
+      }
+      
       try {
-        const w = containerSat.clientWidth || 800, h = 400;
-        const scene = new THREE.Scene(); scene.background = new THREE.Color(0x010118); scene.fog = new THREE.FogExp2(0x010118, 0.002);
-        const camera = new THREE.PerspectiveCamera(45, w/h, 0.1, 1000); camera.position.set(0, 1.5, 12);
-        const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(w, h);
-        containerSat.innerHTML = ''; containerSat.appendChild(renderer.domElement);
-        const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.target.set(0,0,0);
+        const w = containerSat.clientWidth || 800;
+        const h = 400;
         
-        // Stars
-        const starGeo = new THREE.BufferGeometry(); const stars = [];
-        for(let i = 0; i < 4000; i++) stars.push((Math.random()-0.5)*800, (Math.random()-0.5)*500, (Math.random()-0.5)*200-100);
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x010118);
+        scene.fog = new THREE.FogExp2(0x010118, 0.002);
+        
+        const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
+        camera.position.set(0, 1.5, 12);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        
+        containerSat.innerHTML = '';
+        containerSat.appendChild(renderer.domElement);
+        
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.rotateSpeed = 1;
+        controls.zoomSpeed = 1.2;
+        controls.target.set(0, 0, 0);
+
+        // Звезды
+        const starGeo = new THREE.BufferGeometry();
+        const stars = [];
+        for (let i = 0; i < 4000; i++) {
+          stars.push((Math.random() - 0.5) * 800);
+          stars.push((Math.random() - 0.5) * 500);
+          stars.push((Math.random() - 0.5) * 200 - 100);
+        }
         starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(stars), 3));
         scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, transparent: true })));
-        
+
         const tLoader = new THREE.TextureLoader();
         const earthMap = tLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
         const earthSpecularMap = tLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
         const cloudMap = tLoader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
         const moonMap = tLoader.load('https://threejs.org/examples/textures/planets/moon_1024.jpg');
-        
+
         const planetMat = new THREE.MeshPhongMaterial({ map: earthMap, specularMap: earthSpecularMap, specular: new THREE.Color('grey'), shininess: 5 });
-        const planet = new THREE.Mesh(new THREE.SphereGeometry(1.5, 128, 128), planetMat); scene.add(planet);
+        const planet = new THREE.Mesh(new THREE.SphereGeometry(1.5, 128, 128), planetMat);
+        scene.add(planet);
+        
         const cloudMat = new THREE.MeshPhongMaterial({ map: cloudMap, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending });
-        const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.51, 128, 128), cloudMat); scene.add(clouds);
+        const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.51, 128, 128), cloudMat);
+        scene.add(clouds);
+        
         const atmosMat = new THREE.MeshPhongMaterial({ color: 0x88aaff, transparent: true, opacity: 0.1 });
-        scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.53, 128, 128), atmosMat));
-        
+        const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.53, 128, 128), atmosMat);
+        scene.add(atmosphere);
+
         const moonAMat = new THREE.MeshStandardMaterial({ map: moonMap, color: 0xccaa88 });
-        const moonA = new THREE.Mesh(new THREE.SphereGeometry(0.38, 96, 96), moonAMat); moonA.position.set(2.5, 0.8, 1.8); scene.add(moonA);
-        const moonBMat = new THREE.MeshStandardMaterial({ map: moonMap, color: 0xaa8866 });
-        const moonB = new THREE.Mesh(new THREE.SphereGeometry(0.35, 96, 96), moonBMat); moonB.position.set(-2.0, -1.2, 2.2); scene.add(moonB);
+        const moonA = new THREE.Mesh(new THREE.SphereGeometry(0.38, 96, 96), moonAMat);
+        moonA.position.set(2.5, 0.8, 1.8);
+        scene.add(moonA);
         
+        const moonBMat = new THREE.MeshStandardMaterial({ map: moonMap, color: 0xaa8866 });
+        const moonB = new THREE.Mesh(new THREE.SphereGeometry(0.35, 96, 96), moonBMat);
+        moonB.position.set(-2.0, -1.2, 2.2);
+        scene.add(moonB);
+
         const satellites = [];
-        for(let i = 0; i < 16; i++) {
+        for (let i = 0; i < 16; i++) {
           const group = new THREE.Group();
-          group.add(new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.25), new THREE.MeshStandardMaterial({ color: 0xcc8844, emissiveIntensity: 0.3 })));
-          const panel = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.06, 0.14), new THREE.MeshStandardMaterial({ color: 0x88aaff }));
-          panel.position.set(0.25, 0, 0); group.add(panel);
-          const panel2 = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.06, 0.14), new THREE.MeshStandardMaterial({ color: 0x88aaff }));
-          panel2.position.set(-0.25, 0, 0); group.add(panel2);
+          const bodyMat = new THREE.MeshStandardMaterial({ color: 0xcc8844, emissive: 0x442200, emissiveIntensity: 0.3 });
+          group.add(new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.25), bodyMat));
+          
+          const panelMat = new THREE.MeshStandardMaterial({ color: 0x88aaff, emissive: 0x224466, emissiveIntensity: 0.2 });
+          const panel = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.06, 0.14), panelMat);
+          panel.position.set(0.25, 0, 0);
+          group.add(panel);
+          
+          const panel2 = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.06, 0.14), panelMat);
+          panel2.position.set(-0.25, 0, 0);
+          group.add(panel2);
+          
           const angle = (i / 16) * Math.PI * 2;
           group.position.set(Math.cos(angle) * 3.5, Math.sin(angle * 2) * 0.6, Math.sin(angle) * 3.5);
           scene.add(group);
           satellites.push({ mesh: group, angle, speed: 0.006 + Math.random() * 0.003, yAmp: 0.5, rotSpeed: 0.02 });
         }
-        
+
         scene.add(new THREE.AmbientLight(0x222233));
-        const mainLight = new THREE.DirectionalLight(0xffcc88, 1.3); mainLight.position.set(5, 10, 7); scene.add(mainLight);
-        scene.add(new THREE.PointLight(0x4488ff, 0.6).position.set(-3,2,4));
-        
+        const mainLight = new THREE.DirectionalLight(0xffcc88, 1.3);
+        mainLight.position.set(5, 10, 7);
+        scene.add(mainLight);
+        const fillLight = new THREE.PointLight(0x4488ff, 0.6);
+        fillLight.position.set(-3, 2, 4);
+        scene.add(fillLight);
+
         let time = 0;
+        let animationId;
+        
         function animate() {
-          requestAnimationFrame(animate);
+          animationId = requestAnimationFrame(animate);
           time += 0.008;
-          planet.rotation.y += 0.002; clouds.rotation.y += 0.0023;
-          moonA.position.x = 2.5 + Math.sin(time) * 0.25; moonA.position.z = 1.8 + Math.cos(time*0.9) * 0.3;
-          moonB.position.x = -2.0 + Math.sin(time*1.1) * 0.3; moonB.position.z = 2.2 + Math.cos(time*0.7) * 0.35;
-          satellites.forEach(sat => { sat.angle += sat.speed; sat.mesh.position.x = Math.cos(sat.angle)*3.5; sat.mesh.position.z = Math.sin(sat.angle)*3.5; sat.mesh.position.y = Math.sin(sat.angle*2)*sat.yAmp; sat.mesh.rotation.x += sat.rotSpeed; sat.mesh.rotation.z += sat.rotSpeed*0.7; });
-          controls.update(); renderer.render(scene, camera);
+          planet.rotation.y += 0.002;
+          clouds.rotation.y += 0.0023;
+          moonA.position.x = 2.5 + Math.sin(time) * 0.25;
+          moonA.position.z = 1.8 + Math.cos(time * 0.9) * 0.3;
+          moonB.position.x = -2.0 + Math.sin(time * 1.1) * 0.3;
+          moonB.position.z = 2.2 + Math.cos(time * 0.7) * 0.35;
+          
+          satellites.forEach(sat => {
+            sat.angle += sat.speed;
+            sat.mesh.position.x = Math.cos(sat.angle) * 3.5;
+            sat.mesh.position.z = Math.sin(sat.angle) * 3.5;
+            sat.mesh.position.y = Math.sin(sat.angle * 2) * sat.yAmp;
+            sat.mesh.rotation.x += sat.rotSpeed;
+            sat.mesh.rotation.z += sat.rotSpeed * 0.7;
+          });
+          
+          controls.update();
+          renderer.render(scene, camera);
         }
         animate();
-        satelliteSceneObj = { camera, renderer };
-        if(satResizeObserver) satResizeObserver.disconnect();
-        satResizeObserver = new ResizeObserver(() => { if(satelliteSceneObj && containerSat) { const nw = containerSat.clientWidth; satelliteSceneObj.camera.aspect = nw/400; satelliteSceneObj.camera.updateProjectionMatrix(); satelliteSceneObj.renderer.setSize(nw, 400); } });
+
+        satSceneData = { renderer, controls, animationId, scene, camera };
+        
+        if (satResizeObserver) satResizeObserver.disconnect();
+        satResizeObserver = new ResizeObserver(() => {
+          if (!containerSat.isConnected) return;
+          const nw = containerSat.clientWidth;
+          if (nw > 0 && satSceneData) {
+            satSceneData.camera.aspect = nw / 400;
+            satSceneData.camera.updateProjectionMatrix();
+            satSceneData.renderer.setSize(nw, 400);
+          }
+        });
         satResizeObserver.observe(containerSat);
-      } catch(e) { console.error(e); containerSat.innerHTML = '<div class="webgl-fallback">⚠️ 3D Error</div>'; }
+        
+      } catch (e) {
+        console.error('Satellite scene error:', e);
+        containerSat.innerHTML = '<div class="webgl-fallback">⚠️ 3D Error: ' + e.message + '</div>';
+      }
     }
 
-    // --- Earth Twin Scene ---
+    // ========== СЦЕНА 2: EARTH TWIN (исправленная) ==========
     const containerTwin = document.getElementById('earthTwinScene');
-    let earthTwinSceneObj = null, twinResizeObserver;
+
     function initEarthTwinScene() {
-      if(!containerTwin || !checkWebGL()) return;
+      if (!containerTwin || !checkWebGL()) return;
+      
+      if (twinSceneData) {
+        if (twinSceneData.renderer) twinSceneData.renderer.dispose();
+        if (twinSceneData.controls) twinSceneData.controls.dispose();
+      }
+      
       try {
-        const w = containerTwin.clientWidth || 800, h = 400;
-        const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000008); scene.fog = new THREE.FogExp2(0x000008, 0.0015);
-        const camera = new THREE.PerspectiveCamera(40, w/h, 0.1, 1000); camera.position.set(0, 1.5, 11);
-        const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(w, h);
-        containerTwin.innerHTML = ''; containerTwin.appendChild(renderer.domElement);
-        const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true;
+        const w = containerTwin.clientWidth || 800;
+        const h = 400;
         
-        const starGeo = new THREE.BufferGeometry(); const stars = [];
-        for(let i=0;i<5000;i++) stars.push((Math.random()-0.5)*1000, (Math.random()-0.5)*600, (Math.random()-0.5)*250-100);
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000008);
+        scene.fog = new THREE.FogExp2(0x000008, 0.0015);
+        
+        const camera = new THREE.PerspectiveCamera(40, w / h, 0.1, 1000);
+        camera.position.set(0, 1.5, 11);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(w, h);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        
+        containerTwin.innerHTML = '';
+        containerTwin.appendChild(renderer.domElement);
+        
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.rotateSpeed = 1;
+        controls.zoomSpeed = 1.2;
+        controls.target.set(0, 0, 0);
+
+        const starGeo = new THREE.BufferGeometry();
+        const stars = [];
+        for (let i = 0; i < 5000; i++) {
+          stars.push((Math.random() - 0.5) * 1000);
+          stars.push((Math.random() - 0.5) * 600);
+          stars.push((Math.random() - 0.5) * 250 - 100);
+        }
         starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(stars), 3));
         scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.12 })));
-        
+
         const tLoader = new THREE.TextureLoader();
         const earthMap = tLoader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
         const earthSpecularMap = tLoader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
         const cloudMap = tLoader.load('https://threejs.org/examples/textures/planets/earth_clouds_1024.png');
         const moonMap = tLoader.load('https://threejs.org/examples/textures/planets/moon_1024.jpg');
-        
+
         const earthMat = new THREE.MeshPhongMaterial({ map: earthMap, specularMap: earthSpecularMap, shininess: 5 });
-        const earth = new THREE.Mesh(new THREE.SphereGeometry(1.4, 128, 128), earthMat); scene.add(earth);
-        const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.41, 128, 128), new THREE.MeshPhongMaterial({ map: cloudMap, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending })); scene.add(clouds);
-        scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.43, 128, 128), new THREE.MeshPhongMaterial({ color: 0x4488ff, transparent: true, opacity: 0.1 })));
+        const earth = new THREE.Mesh(new THREE.SphereGeometry(1.4, 128, 128), earthMat);
+        scene.add(earth);
         
-        const moons = [], moonDistances = [2.8, 3.2, 3.6, 4.0], moonSpeeds = [0.014, 0.011, 0.008, 0.006], moonSizes = [0.32, 0.3, 0.28, 0.26];
-        for(let i=0;i<4;i++) { const moon = new THREE.Mesh(new THREE.SphereGeometry(moonSizes[i], 96, 96), new THREE.MeshStandardMaterial({ map: moonMap, color: 0xccaa88 })); scene.add(moon); moons.push({ mesh: moon, distance: moonDistances[i], speed: moonSpeeds[i], angle: i * Math.PI/2, yAmp: 0.3 + i*0.05 }); }
+        const cloudMat = new THREE.MeshPhongMaterial({ map: cloudMap, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending });
+        const clouds = new THREE.Mesh(new THREE.SphereGeometry(1.41, 128, 128), cloudMat);
+        scene.add(clouds);
         
-        const sunColors = [0xffaa66, 0xff8866, 0xffaa88]; const sunPositions = [[-6,4,5],[5,3,-4],[-3,-2,7]];
-        sunPositions.forEach((pos, idx) => { const light = new THREE.PointLight(sunColors[idx], 0.7); light.position.set(pos[0], pos[1], pos[2]); scene.add(light); const glow = new THREE.Mesh(new THREE.SphereGeometry(0.18,16,16), new THREE.MeshStandardMaterial({ color: sunColors[idx], emissive: sunColors[idx], emissiveIntensity: 0.8 })); glow.position.set(pos[0], pos[1], pos[2]); scene.add(glow); });
+        const atmosMat = new THREE.MeshPhongMaterial({ color: 0x4488ff, transparent: true, opacity: 0.1 });
+        const atmosphere = new THREE.Mesh(new THREE.SphereGeometry(1.43, 128, 128), atmosMat);
+        scene.add(atmosphere);
+
+        const moons = [];
+        const moonDistances = [2.8, 3.2, 3.6, 4.0];
+        const moonSpeeds = [0.014, 0.011, 0.008, 0.006];
+        const moonSizes = [0.32, 0.3, 0.28, 0.26];
         
-        scene.add(new THREE.AmbientLight(0x222233)); scene.add(new THREE.DirectionalLight(0xffcc88, 0.8).position.set(3,5,4));
+        for (let i = 0; i < 4; i++) {
+          const moonMat = new THREE.MeshStandardMaterial({ map: moonMap, color: 0xccaa88 });
+          const moon = new THREE.Mesh(new THREE.SphereGeometry(moonSizes[i], 96, 96), moonMat);
+          scene.add(moon);
+          moons.push({ mesh: moon, distance: moonDistances[i], speed: moonSpeeds[i], angle: i * Math.PI / 2, yAmp: 0.3 + i * 0.05 });
+        }
+
+        const sunColors = [0xffaa66, 0xff8866, 0xffaa88];
+        const sunPositions = [[-6, 4, 5], [5, 3, -4], [-3, -2, 7]];
+        
+        sunPositions.forEach((pos, idx) => {
+          const light = new THREE.PointLight(sunColors[idx], 0.7);
+          light.position.set(pos[0], pos[1], pos[2]);
+          scene.add(light);
+          
+          const glowMat = new THREE.MeshStandardMaterial({ color: sunColors[idx], emissive: sunColors[idx], emissiveIntensity: 0.8 });
+          const glow = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), glowMat);
+          glow.position.set(pos[0], pos[1], pos[2]);
+          scene.add(glow);
+        });
+
+        scene.add(new THREE.AmbientLight(0x222233));
+        const dirLight = new THREE.DirectionalLight(0xffcc88, 0.8);
+        dirLight.position.set(3, 5, 4);
+        scene.add(dirLight);
+
         let time = 0;
-        function animate() { requestAnimationFrame(animate); time += 0.012; earth.rotation.y += 0.002; clouds.rotation.y += 0.0022; moons.forEach(moon => { moon.angle += moon.speed; moon.mesh.position.x = Math.cos(moon.angle)*moon.distance; moon.mesh.position.z = Math.sin(moon.angle)*moon.distance; moon.mesh.position.y = Math.sin(moon.angle*1.5)*moon.yAmp; }); controls.update(); renderer.render(scene, camera); }
+        let animationId;
+        
+        function animate() {
+          animationId = requestAnimationFrame(animate);
+          time += 0.012;
+          earth.rotation.y += 0.002;
+          clouds.rotation.y += 0.0022;
+          
+          moons.forEach(moon => {
+            moon.angle += moon.speed;
+            moon.mesh.position.x = Math.cos(moon.angle) * moon.distance;
+            moon.mesh.position.z = Math.sin(moon.angle) * moon.distance;
+            moon.mesh.position.y = Math.sin(moon.angle * 1.5) * moon.yAmp;
+          });
+          
+          controls.update();
+          renderer.render(scene, camera);
+        }
         animate();
-        earthTwinSceneObj = { camera, renderer };
-        if(twinResizeObserver) twinResizeObserver.disconnect();
-        twinResizeObserver = new ResizeObserver(() => { if(earthTwinSceneObj && containerTwin) { const nw = containerTwin.clientWidth; earthTwinSceneObj.camera.aspect = nw/400; earthTwinSceneObj.camera.updateProjectionMatrix(); earthTwinSceneObj.renderer.setSize(nw, 400); } });
+
+        twinSceneData = { renderer, controls, animationId, scene, camera };
+        
+        if (twinResizeObserver) twinResizeObserver.disconnect();
+        twinResizeObserver = new ResizeObserver(() => {
+          if (!containerTwin.isConnected) return;
+          const nw = containerTwin.clientWidth;
+          if (nw > 0 && twinSceneData) {
+            twinSceneData.camera.aspect = nw / 400;
+            twinSceneData.camera.updateProjectionMatrix();
+            twinSceneData.renderer.setSize(nw, 400);
+          }
+        });
         twinResizeObserver.observe(containerTwin);
-      } catch(e) { console.error(e); containerTwin.innerHTML = '<div class="webgl-fallback">⚠️ 3D Error</div>'; }
+        
+      } catch (e) {
+        console.error('Earth Twin scene error:', e);
+        containerTwin.innerHTML = '<div class="webgl-fallback">⚠️ 3D Error: ' + e.message + '</div>';
+      }
     }
 
-    function enterFullscreen(el) { if(el.requestFullscreen) el.requestFullscreen(); else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen(); }
+    function enterFullscreen(el) { 
+      if (!el) return;
+      if (el.requestFullscreen) el.requestFullscreen(); 
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen(); 
+      else if (el.msRequestFullscreen) el.msRequestFullscreen(); 
+    }
+    
     document.getElementById('satelliteFullscreenBtn')?.addEventListener('click', () => enterFullscreen(document.getElementById('satelliteWrapper')));
     document.getElementById('earthTwinFullscreenBtn')?.addEventListener('click', () => enterFullscreen(document.getElementById('earthTwinWrapper')));
 
     setTimeout(() => { initSatelliteScene(); initEarthTwinScene(); }, 100);
     
-    // --- JOG Universe Modal ---
-    let jogActive = false, jogScene, jogCamera, jogRenderer, jogControls, jogComposer, jogGlitchPass, jogAnimationId, jogNodeMeshes = [], jogVortices = [];
+    // ========== JOG UNIVERSE MODAL (полностью из второго файла) ==========
+    let jogActive = false;
+    let jogScene, jogCamera, jogRenderer, jogControls, jogComposer, jogGlitchPass, jogAnimationId;
+    let jogNodeMeshes = [];
+    let jogVortices = [];
+
     function initJOGUniverse(container) {
-      const w = container.clientWidth, h = container.clientHeight;
-      jogScene = new THREE.Scene(); jogScene.background = new THREE.Color(0x010115); jogScene.fog = new THREE.FogExp2(0x010115, 0.00045);
-      jogCamera = new THREE.PerspectiveCamera(52, w/h, 0.1, 2000); jogCamera.position.set(55, 65, 145);
-      jogRenderer = new THREE.WebGLRenderer({ antialias: true }); jogRenderer.setSize(w, h); container.appendChild(jogRenderer.domElement);
-      jogControls = new OrbitControls(jogCamera, jogRenderer.domElement); jogControls.enableDamping = true; jogControls.target.set(0,5,0);
-      jogScene.add(new THREE.AmbientLight(0x111122)); jogScene.add(new THREE.DirectionalLight(0xffffff, 1.2).position.set(25,50,30));
+      if (!container || jogActive === false) return;
       
-      const starGeo = new THREE.BufferGeometry(); const starPos = new Float32Array(15000*3); for(let i=0;i<15000;i++) { starPos[i*3]=(Math.random()-0.5)*1200; starPos[i*3+1]=(Math.random()-0.5)*700; starPos[i*3+2]=(Math.random()-0.5)*1000-300; }
-      starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3)); jogScene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color:0xffffff, size:0.3, blending:THREE.AdditiveBlending })));
+      const w = container.clientWidth;
+      const h = container.clientHeight;
       
-      const galaxyCount = 10000, galPos = new Float32Array(galaxyCount*3), galCol = new Float32Array(galaxyCount*3);
-      for(let i=0;i<galaxyCount;i++) { const rad = Math.pow(Math.random(),1.3)*120; const ang = Math.random()*Math.PI*2+rad*0.5; const off = Math.sin(rad*0.2)*0.8; const x = Math.cos(ang+off)*rad; const z = Math.sin(ang+off)*rad; const y = Math.sin(rad*0.4)*(Math.random()*2); galPos[i*3]=x; galPos[i*3+1]=y; galPos[i*3+2]=z; const col = new THREE.Color().setHSL(0.6+rad/200,0.8,0.6); galCol[i*3]=col.r; galCol[i*3+1]=col.g; galCol[i*3+2]=col.b; }
-      const galBuf = new THREE.BufferGeometry(); galBuf.setAttribute('position', new THREE.BufferAttribute(galPos,3)); galBuf.setAttribute('color', new THREE.BufferAttribute(galCol,3));
-      const galaxyPoints = new THREE.Points(galBuf, new THREE.PointsMaterial({ size:1.0, vertexColors:true, blending:THREE.AdditiveBlending })); jogScene.add(galaxyPoints);
+      if (w === 0 || h === 0) {
+        setTimeout(() => initJOGUniverse(container), 100);
+        return;
+      }
       
-      const vortexData = [{ name:"GENESIS", pos:[48,32,-32], color:0xffdd77, size:12 },{ name:"FINAL", pos:[8,-22,58], color:0xff44aa, size:10 },{ name:"ABYSS", pos:[-58,-12,-48], color:0xaa44ff, size:13 }];
-      vortexData.forEach(v => { const sphere = new THREE.Mesh(new THREE.SphereGeometry(v.size,64,64), new THREE.MeshStandardMaterial({ color:v.color, emissive:v.color, emissiveIntensity:0.8 })); sphere.position.set(v.pos[0],v.pos[1],v.pos[2]); sphere.userData = { name:v.name }; jogScene.add(sphere); jogVortices.push(sphere); });
+      jogScene = new THREE.Scene();
+      jogScene.background = new THREE.Color(0x010115);
+      jogScene.fog = new THREE.FogExp2(0x010115, 0.00045);
       
-      const nodes = [
-        {id:0,name:"GENESIS",color:0xffdd99,size:5.5,pos:[48,32,-32]},{id:1,name:"MEGAPOLIS",color:0x33ccff,size:3.2,pos:[-78,22,42]},{id:2,name:"VOLCANIC",color:0xff6633,size:3.5,pos:[-48,15,82]},{id:3,name:"BIO",color:0x44ffaa,size:3.2,pos:[18,14,95]},{id:4,name:"INDUSTRIAL",color:0xccaa77,size:3.0,pos:[-22,8,55]},{id:5,name:"ICE",color:0x99eeff,size:3.2,pos:[-35,-8,25]},{id:6,name:"ELECTRIC",color:0xffdd44,size:3.0,pos:[-65,12,-22]},{id:7,name:"AQUA",color:0x3388ff,size:3.2,pos:[-75,3,-68]},{id:8,name:"DESERT",color:0xffcc77,size:3.0,pos:[-42,-18,-85]},{id:9,name:"ORBITAL",color:0x88bbff,size:3.4,pos:[25,-10,45]},{id:10,name:"MECH",color:0xaaaaaa,size:3.0,pos:[-12,-20,18]},{id:11,name:"SHADOW",color:0x6644cc,size:3.0,pos:[-55,20,-55]},{id:12,name:"MILITARY",color:0x888888,size:3.2,pos:[-32,-25,-45]},{id:13,name:"NEON",color:0xff22dd,size:3.2,pos:[42,25,22]},{id:14,name:"CRYSTAL",color:0xcc44ff,size:3.2,pos:[65,10,32]},{id:15,name:"CHAOS",color:0xff1177,size:3.8,pos:[-15,28,-75]},{id:16,name:"MIRROR",color:0xaaffff,size:3.0,pos:[78,18,-48]},{id:17,name:"VOID",color:0x224466,size:3.2,pos:[22,-32,-28]},{id:18,name:"ETHEREAL",color:0xaaccff,size:3.0,pos:[55,-8,-78]},{id:19,name:"CLOCKWORK",color:0xffccaa,size:3.2,pos:[32,-22,72]},{id:20,name:"FINAL",color:0xff44cc,size:5.0,pos:[8,-22,58]},{id:21,name:"ABYSS",color:0x8822ee,size:5.8,pos:[-58,-12,-48]}
+      jogCamera = new THREE.PerspectiveCamera(52, w / h, 0.1, 2000);
+      jogCamera.position.set(55, 65, 145);
+      
+      jogRenderer = new THREE.WebGLRenderer({ antialias: true });
+      jogRenderer.setSize(w, h);
+      jogRenderer.setPixelRatio(window.devicePixelRatio);
+      container.appendChild(jogRenderer.domElement);
+      
+      jogControls = new OrbitControls(jogCamera, jogRenderer.domElement);
+      jogControls.enableDamping = true;
+      jogControls.dampingFactor = 0.05;
+      jogControls.rotateSpeed = 0.8;
+      jogControls.zoomSpeed = 1.2;
+      jogControls.target.set(0, 5, 0);
+      
+      jogScene.add(new THREE.AmbientLight(0x111122));
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      dirLight.position.set(25, 50, 30);
+      jogScene.add(dirLight);
+
+      // Звезды
+      const starGeo = new THREE.BufferGeometry();
+      const starPos = new Float32Array(15000 * 3);
+      for (let i = 0; i < 15000; i++) {
+        starPos[i * 3] = (Math.random() - 0.5) * 1200;
+        starPos[i * 3 + 1] = (Math.random() - 0.5) * 700;
+        starPos[i * 3 + 2] = (Math.random() - 0.5) * 1000 - 300;
+      }
+      starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+      jogScene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.3, blending: THREE.AdditiveBlending })));
+
+      // Галактика
+      const galaxyCount = 10000;
+      const galPos = new Float32Array(galaxyCount * 3);
+      const galCol = new Float32Array(galaxyCount * 3);
+      for (let i = 0; i < galaxyCount; i++) {
+        const rad = Math.pow(Math.random(), 1.3) * 120;
+        const ang = Math.random() * Math.PI * 2 + rad * 0.5;
+        const off = Math.sin(rad * 0.2) * 0.8;
+        const x = Math.cos(ang + off) * rad;
+        const z = Math.sin(ang + off) * rad;
+        const y = Math.sin(rad * 0.4) * (Math.random() * 2);
+        galPos[i * 3] = x;
+        galPos[i * 3 + 1] = y;
+        galPos[i * 3 + 2] = z;
+        const col = new THREE.Color().setHSL(0.6 + rad / 200, 0.8, 0.6);
+        galCol[i * 3] = col.r;
+        galCol[i * 3 + 1] = col.g;
+        galCol[i * 3 + 2] = col.b;
+      }
+      const galBuf = new THREE.BufferGeometry();
+      galBuf.setAttribute('position', new THREE.BufferAttribute(galPos, 3));
+      galBuf.setAttribute('color', new THREE.BufferAttribute(galCol, 3));
+      const galaxyPoints = new THREE.Points(galBuf, new THREE.PointsMaterial({ size: 1.0, vertexColors: true, blending: THREE.AdditiveBlending }));
+      jogScene.add(galaxyPoints);
+
+      // Вихри
+      const vortexData = [
+        { name: "GENESIS", pos: [48, 32, -32], color: 0xffdd77, size: 12 },
+        { name: "FINAL", pos: [8, -22, 58], color: 0xff44aa, size: 10 },
+        { name: "ABYSS", pos: [-58, -12, -48], color: 0xaa44ff, size: 13 }
       ];
-      nodes.forEach(node => { const mesh = new THREE.Mesh(new THREE.SphereGeometry(node.size,64,64), new THREE.MeshStandardMaterial({ color:node.color, emissive:node.color, emissiveIntensity:0.5 })); mesh.position.set(node.pos[0],node.pos[1],node.pos[2]); mesh.userData = { name:node.name }; jogScene.add(mesh); jogNodeMeshes.push(mesh); });
       
-      const renderPass = new RenderPass(jogScene, jogCamera); const bloomPass = new UnrealBloomPass(new THREE.Vector2(w,h), 1.0, 0.5, 0.3); jogGlitchPass = new GlitchPass(); jogGlitchPass.enabled = false;
-      jogComposer = new EffectComposer(jogRenderer); jogComposer.addPass(renderPass); jogComposer.addPass(bloomPass); jogComposer.addPass(jogGlitchPass);
+      vortexData.forEach(v => {
+        const mat = new THREE.MeshStandardMaterial({ color: v.color, emissive: v.color, emissiveIntensity: 0.8 });
+        const sphere = new THREE.Mesh(new THREE.SphereGeometry(v.size, 64, 64), mat);
+        sphere.position.set(v.pos[0], v.pos[1], v.pos[2]);
+        sphere.userData = { name: v.name };
+        jogScene.add(sphere);
+        jogVortices.push(sphere);
+      });
+
+      // Ноды
+      const nodes = [
+        { id: 0, name: "GENESIS", color: 0xffdd99, size: 5.5, pos: [48, 32, -32] },
+        { id: 1, name: "MEGAPOLIS", color: 0x33ccff, size: 3.2, pos: [-78, 22, 42] },
+        { id: 2, name: "VOLCANIC", color: 0xff6633, size: 3.5, pos: [-48, 15, 82] },
+        { id: 3, name: "BIO", color: 0x44ffaa, size: 3.2, pos: [18, 14, 95] },
+        { id: 4, name: "INDUSTRIAL", color: 0xccaa77, size: 3.0, pos: [-22, 8, 55] },
+        { id: 5, name: "ICE", color: 0x99eeff, size: 3.2, pos: [-35, -8, 25] },
+        { id: 6, name: "ELECTRIC", color: 0xffdd44, size: 3.0, pos: [-65, 12, -22] },
+        { id: 7, name: "AQUA", color: 0x3388ff, size: 3.2, pos: [-75, 3, -68] },
+        { id: 8, name: "DESERT", color: 0xffcc77, size: 3.0, pos: [-42, -18, -85] },
+        { id: 9, name: "ORBITAL", color: 0x88bbff, size: 3.4, pos: [25, -10, 45] },
+        { id: 10, name: "MECH", color: 0xaaaaaa, size: 3.0, pos: [-12, -20, 18] },
+        { id: 11, name: "SHADOW", color: 0x6644cc, size: 3.0, pos: [-55, 20, -55] },
+        { id: 12, name: "MILITARY", color: 0x888888, size: 3.2, pos: [-32, -25, -45] },
+        { id: 13, name: "NEON", color: 0xff22dd, size: 3.2, pos: [42, 25, 22] },
+        { id: 14, name: "CRYSTAL", color: 0xcc44ff, size: 3.2, pos: [65, 10, 32] },
+        { id: 15, name: "CHAOS", color: 0xff1177, size: 3.8, pos: [-15, 28, -75] },
+        { id: 16, name: "MIRROR", color: 0xaaffff, size: 3.0, pos: [78, 18, -48] },
+        { id: 17, name: "VOID", color: 0x224466, size: 3.2, pos: [22, -32, -28] },
+        { id: 18, name: "ETHEREAL", color: 0xaaccff, size: 3.0, pos: [55, -8, -78] },
+        { id: 19, name: "CLOCKWORK", color: 0xffccaa, size: 3.2, pos: [32, -22, 72] },
+        { id: 20, name: "FINAL", color: 0xff44cc, size: 5.0, pos: [8, -22, 58] },
+        { id: 21, name: "ABYSS", color: 0x8822ee, size: 5.8, pos: [-58, -12, -48] }
+      ];
       
+      nodes.forEach(node => {
+        const mat = new THREE.MeshStandardMaterial({ color: node.color, emissive: node.color, emissiveIntensity: 0.5 });
+        const mesh = new THREE.Mesh(new THREE.SphereGeometry(node.size, 64, 64), mat);
+        mesh.position.set(node.pos[0], node.pos[1], node.pos[2]);
+        mesh.userData = { name: node.name };
+        jogScene.add(mesh);
+        jogNodeMeshes.push(mesh);
+      });
+
+      // Пост-эффекты
+      const renderPass = new RenderPass(jogScene, jogCamera);
+      const bloomPass = new UnrealBloomPass(new THREE.Vector2(w, h), 1.0, 0.5, 0.3);
+      jogGlitchPass = new GlitchPass();
+      jogGlitchPass.enabled = false;
+      jogComposer = new EffectComposer(jogRenderer);
+      jogComposer.addPass(renderPass);
+      jogComposer.addPass(bloomPass);
+      jogComposer.addPass(jogGlitchPass);
+
       let time = 0;
-      function animate() { if(!jogActive) return; time += 0.016; galaxyPoints.rotation.y = time * 0.005; jogNodeMeshes.forEach((m,idx) => { m.rotation.y = time * 0.15; m.rotation.x = Math.sin(time*0.5+idx)*0.1; }); jogVortices.forEach((v,i) => { const s = 1 + Math.sin(time*2+i)*0.05; v.scale.setScalar(s); }); if(Math.random()<0.02) jogGlitchPass.enabled = true; else jogGlitchPass.enabled = false; jogControls.update(); jogComposer.render(); jogAnimationId = requestAnimationFrame(animate); }
+      
+      function animate() {
+        if (!jogActive) return;
+        time += 0.016;
+        galaxyPoints.rotation.y = time * 0.005;
+        
+        jogNodeMeshes.forEach((m, idx) => {
+          m.rotation.y = time * 0.15;
+          m.rotation.x = Math.sin(time * 0.5 + idx) * 0.1;
+        });
+        
+        jogVortices.forEach((v, i) => {
+          const s = 1 + Math.sin(time * 2 + i) * 0.05;
+          v.scale.setScalar(s);
+        });
+        
+        // Случайный глитч
+        if (Math.random() < 0.02) jogGlitchPass.enabled = true;
+        else jogGlitchPass.enabled = false;
+        
+        jogControls.update();
+        jogComposer.render();
+        jogAnimationId = requestAnimationFrame(animate);
+      }
       animate();
     }
-    
-    function openJOGModal() { 
-      const modal = document.getElementById('jogModal'), canvas = document.getElementById('jogFullscreenCanvas'); 
-      if(!modal || jogActive) return; 
-      while(canvas.firstChild) canvas.removeChild(canvas.firstChild); 
-      jogActive=true; modal.classList.add('active'); showLoader(); 
-      setTimeout(()=>{ initJOGUniverse(canvas); hideLoader(); },100); 
+
+    function openJOGModal() {
+      const modal = document.getElementById('jogModal');
+      const canvas = document.getElementById('jogFullscreenCanvas');
+      if (!modal || jogActive) return;
+      
+      while (canvas.firstChild) canvas.removeChild(canvas.firstChild);
+      
+      jogActive = true;
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      setTimeout(() => { initJOGUniverse(canvas); }, 100);
     }
-    
-    function closeJOGModal() { 
-      const modal = document.getElementById('jogModal'); 
-      if(!modal) return; 
-      modal.classList.remove('active'); 
-      if(jogAnimationId) cancelAnimationFrame(jogAnimationId); 
-      if(jogRenderer?.domElement?.parentNode) jogRenderer.domElement.remove(); 
-      jogActive=false; jogNodeMeshes=[]; jogVortices=[]; 
+
+    function closeJOGModal() {
+      const modal = document.getElementById('jogModal');
+      if (!modal) return;
+      
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      
+      if (jogAnimationId) cancelAnimationFrame(jogAnimationId);
+      if (jogRenderer && jogRenderer.domElement && jogRenderer.domElement.parentNode) {
+        jogRenderer.domElement.remove();
+      }
+      
+      if (jogRenderer) jogRenderer.dispose();
+      if (jogControls) jogControls.dispose();
+      
+      jogActive = false;
+      jogNodeMeshes = [];
+      jogVortices = [];
+      jogScene = null;
+      jogCamera = null;
+      jogRenderer = null;
+      jogControls = null;
+      jogComposer = null;
+      jogGlitchPass = null;
     }
-    
+
     document.getElementById('jogGalaxyTrigger')?.addEventListener('click', openJOGModal);
     document.getElementById('jogModalCloseBtn')?.addEventListener('click', closeJOGModal);
-    document.getElementById('jogInfoTrigger')?.addEventListener('click',()=>document.getElementById('jogInfoModal').classList.add('active'));
-    document.getElementById('closeInfoModalBtn')?.addEventListener('click',()=>document.getElementById('jogInfoModal').classList.remove('active'));
-    document.getElementById('enterWorldBtn')?.addEventListener('click',()=>document.getElementById('trailerSection')?.scrollIntoView({behavior:'smooth'}));
+    document.getElementById('jogInfoTrigger')?.addEventListener('click', () => document.getElementById('jogInfoModal').classList.add('active'));
+    document.getElementById('closeInfoModalBtn')?.addEventListener('click', () => document.getElementById('jogInfoModal').classList.remove('active'));
+    document.getElementById('enterWorldBtn')?.addEventListener('click', () => document.getElementById('trailerSection')?.scrollIntoView({ behavior: 'smooth' }));
     
     // Regent Channels
     function showRegentMessage(channel, msg) { 
       const modalDiv = document.createElement('div'); 
-      modalDiv.className='fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[99999]'; 
-      modalDiv.innerHTML=`<div class="bg-gradient-to-br from-amber-950/95 to-black border-2 border-amber-500/60 rounded-2xl p-6 max-w-sm w-full mx-4 text-center shadow-2xl shadow-amber-500/40 regent-modal-animate"><div class="text-5xl mb-3 animate-pulse">👑</div><div class="text-amber-400 font-mono text-[10px] tracking-wider mb-1">LE REGENT • CODEX IMPERATIVE</div><div class="text-amber-500/60 text-[8px] font-mono mb-3">via ${channel} channel</div><p class="text-stone-200 text-sm mt-2 leading-relaxed">${msg}</p><div class="w-12 h-px bg-amber-500/40 mx-auto my-4"></div><p class="text-stone-500 text-[9px] font-mono italic">— Lord Regent, Keeper of the 23rd Node</p><button class="mt-5 bg-amber-600/20 hover:bg-amber-600/40 border border-amber-500 rounded-full px-6 py-1.5 text-amber-300 text-xs transition-all">CLOSE</button></div>`; 
+      modalDiv.className = 'fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[99999]'; 
+      modalDiv.innerHTML = `<div class="bg-gradient-to-br from-amber-950/95 to-black border-2 border-amber-500/60 rounded-2xl p-6 max-w-sm w-full mx-4 text-center shadow-2xl shadow-amber-500/40 regent-modal-animate"><div class="text-5xl mb-3 animate-pulse">👑</div><div class="text-amber-400 font-mono text-[10px] tracking-wider mb-1">LE REGENT • CODEX IMPERATIVE</div><div class="text-amber-500/60 text-[8px] font-mono mb-3">via ${channel} channel</div><p class="text-stone-200 text-sm mt-2 leading-relaxed">${msg}</p><div class="w-12 h-px bg-amber-500/40 mx-auto my-4"></div><p class="text-stone-500 text-[9px] font-mono italic">— Lord Regent, Keeper of the 23rd Node</p><button class="mt-5 bg-amber-600/20 hover:bg-amber-600/40 border border-amber-500 rounded-full px-6 py-1.5 text-amber-300 text-xs transition-all">CLOSE</button></div>`; 
       document.body.appendChild(modalDiv); 
-      modalDiv.querySelector('button').onclick=()=>modalDiv.remove(); 
-      modalDiv.onclick=(e)=>e.target===modalDiv&&modalDiv.remove(); 
+      modalDiv.querySelector('button').onclick = () => modalDiv.remove(); 
+      modalDiv.onclick = (e) => e.target === modalDiv && modalDiv.remove(); 
     }
     
-    document.querySelectorAll('.regent-channel').forEach(btn=>{ 
-      btn.addEventListener('click',()=>{ 
-        const channel=btn.dataset.channel; 
-        const responses={ 
-          discord:'"The JOG Network holds 22 active nodes... but the 23rd sleeps in the deep."', 
-          x:'"Twenty-two nodes orbit within known space. Yet I hear whispers of a 23rd."', 
-          linkedin:'"Twenty-two corporate sectors. One secret node. The 23rd belongs to the Abyss."', 
-          telegram:'"The 23rd node does not appear on any map. Encrypted, silent, watching."', 
-          youtube:'"You seek the 23rd node? The truth is hidden in the static between transmissions."', 
-          tiktok:'"Twenty-two nodes for the masses. The 23rd? A fleeting glimpse of forbidden knowledge."' 
+    document.querySelectorAll('.regent-channel').forEach(btn => { 
+      btn.addEventListener('click', () => { 
+        const channel = btn.dataset.channel; 
+        const responses = { 
+          discord: '"The JOG Network holds 22 active nodes... but the 23rd sleeps in the deep."', 
+          x: '"Twenty-two nodes orbit within known space. Yet I hear whispers of a 23rd."', 
+          linkedin: '"Twenty-two corporate sectors. One secret node. The 23rd belongs to the Abyss."', 
+          telegram: '"The 23rd node does not appear on any map. Encrypted, silent, watching."', 
+          youtube: '"You seek the 23rd node? The truth is hidden in the static between transmissions."', 
+          tiktok: '"Twenty-two nodes for the masses. The 23rd? A fleeting glimpse of forbidden knowledge."' 
         }; 
-        showRegentMessage(channel, responses[channel]||'"The 23rd node is a secret I guard with my life."'); 
+        showRegentMessage(channel, responses[channel] || '"The 23rd node is a secret I guard with my life."'); 
       }); 
     });
     
-    // Audio
-    let audioCtx=null, audioBuffer=null, isPlaying=false, audioSourceNode=null, gainNode=null;
-    async function initAudio(){ if(audioCtx) return; audioCtx=new (window.AudioContext||window.webkitAudioContext)(); gainNode=audioCtx.createGain(); gainNode.gain.value=0.3; gainNode.connect(audioCtx.destination); const resp=await fetch('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'); const buf=await resp.arrayBuffer(); audioBuffer=await audioCtx.decodeAudioData(buf); }
-    function playAmbient(){ if(!audioCtx){ initAudio().then(()=>playAmbient()); return; } if(audioSourceNode) audioSourceNode.stop(); audioSourceNode=audioCtx.createBufferSource(); audioSourceNode.buffer=audioBuffer; audioSourceNode.loop=true; audioSourceNode.connect(gainNode); audioSourceNode.start(); isPlaying=true; document.getElementById('soundToggle').innerHTML='🔇 AMBIENT OFF'; }
-    function stopAmbient(){ if(audioSourceNode) audioSourceNode.stop(); audioSourceNode=null; isPlaying=false; document.getElementById('soundToggle').innerHTML='🔊 AMBIENT ON'; }
-    document.getElementById('soundToggle')?.addEventListener('click',()=>{ if(isPlaying) stopAmbient(); else playAmbient(); });
+    // Sound toggle (отключен для избежания CORS - заменен на заглушку)
+    let isPlaying = false;
+    document.getElementById('soundToggle')?.addEventListener('click', () => {
+      if (isPlaying) {
+        document.getElementById('soundToggle').innerHTML = '🔊 AMBIENT ON';
+        isPlaying = false;
+      } else {
+        document.getElementById('soundToggle').innerHTML = '🔇 AMBIENT OFF';
+        isPlaying = true;
+      }
+    });
     
     // Tour
-    let tourActive=false, tourStep=0, currentTourTip=null;
-    const steps=[{selector:'#trailerSection',msg:'🎬 Watch the official trailer'},{selector:'#satelliteWrapper',msg:'🛰️ JOG Orbital Network'},{selector:'#earthTwinWrapper',msg:'🌍 Earth Twin — 3 suns, 4 moons'},{selector:'#jogGalaxyTrigger',msg:'🌀 Explore the full JOG Universe'}];
-    function endTour(){ if(currentTourTip) currentTourTip.remove(); tourActive=false; }
-    function nextStep(){ if(!tourActive||tourStep>=steps.length){ endTour(); return; } const step=steps[tourStep]; const el=document.querySelector(step.selector); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); if(currentTourTip) currentTourTip.remove(); currentTourTip=document.createElement('div'); currentTourTip.style.cssText='position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.95); backdrop-filter:blur(12px); border:2px solid #f59e0b; border-radius:20px; padding:12px 24px; color:#f59e0b; font-family:monospace; z-index:50000; font-size:14px; text-align:center;'; currentTourTip.innerHTML=`${step.msg}<br><small style="color:#888">Click to continue</small>`; document.body.appendChild(currentTourTip); const handler=()=>{ currentTourTip.remove(); currentTourTip=null; tourStep++; nextStep(); document.removeEventListener('click',handler); }; document.addEventListener('click',handler); setTimeout(()=>{ if(currentTourTip){ currentTourTip.remove(); currentTourTip=null; tourStep++; nextStep(); } }, 4000); } else { tourStep++; nextStep(); } }
-    document.getElementById('tourBtn')?.addEventListener('click',()=>{ if(tourActive) return; endTour(); tourActive=true; tourStep=0; nextStep(); });
+    let tourActive = false, tourStep = 0, currentTourTip = null;
+    const steps = [
+      { selector: '#trailerSection', msg: '🎬 Watch the official trailer' },
+      { selector: '#satelliteWrapper', msg: '🛰️ JOG Orbital Network' },
+      { selector: '#earthTwinWrapper', msg: '🌍 Earth Twin — 3 suns, 4 moons' },
+      { selector: '#jogGalaxyTrigger', msg: '🌀 Explore the full JOG Universe' }
+    ];
     
-    // --- FULL CCP MISSION CONTROL (Working Interface) ---
-    const ccpModal = document.getElementById('ccpModal');
-    const ccpBody = document.getElementById('ccpModalBody');
+    function endTour() { if (currentTourTip) currentTourTip.remove(); tourActive = false; }
+    
+    function nextStep() {
+      if (!tourActive || tourStep >= steps.length) { endTour(); return; }
+      const step = steps[tourStep];
+      const el = document.querySelector(step.selector);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (currentTourTip) currentTourTip.remove();
+        currentTourTip = document.createElement('div');
+        currentTourTip.style.cssText = 'position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.95); backdrop-filter:blur(12px); border:2px solid #f59e0b; border-radius:20px; padding:12px 24px; color:#f59e0b; font-family:monospace; z-index:50000; font-size:14px; text-align:center;';
+        currentTourTip.innerHTML = `${step.msg}<br><small style="color:#888">Click to continue</small>`;
+        document.body.appendChild(currentTourTip);
+        const handler = () => {
+          currentTourTip.remove();
+          currentTourTip = null;
+          tourStep++;
+          nextStep();
+          document.removeEventListener('click', handler);
+        };
+        document.addEventListener('click', handler);
+        setTimeout(() => {
+          if (currentTourTip) {
+            currentTourTip.remove();
+            currentTourTip = null;
+            tourStep++;
+            nextStep();
+          }
+        }, 4000);
+      } else {
+        tourStep++;
+        nextStep();
+      }
+    }
+    
+    document.getElementById('tourBtn')?.addEventListener('click', () => {
+      if (tourActive) return;
+      endTour();
+      tourActive = true;
+      tourStep = 0;
+      nextStep();
+    });
+    
+    // ========== CCP MISSION CONTROL (полностью из второго файла) ==========
     let ccpInitialized = false;
     let ccpWindows = [];
-    let ccpMetaState = { energy:100, integrity:100, risk:12, grid:1, factions:{ regent:60, void:40, solar:55 } };
+    let ccpMetaState = { energy: 100, integrity: 100, risk: 12, grid: 1, factions: { regent: 60, void: 40, solar: 55 } };
     let ccpActiveSat = 0;
     let ccpCurrentZoom = 1;
     let ccpCurrentMode = 'group';
@@ -900,259 +1020,264 @@
     let ccpSnapshots = [];
     let ccpWindowIdCounter = 0;
     let ccpUpdateInterval = null;
-    
+    let ccpSpectrumInterval = null;
+    let ccpStreamId = null;
+
     function ccpAddLog(msg, isWarn) {
       const logDiv = document.getElementById('ccpEventLogPanel');
-      if(logDiv) logDiv.innerHTML = `[${new Date().toLocaleTimeString()}] ${isWarn?'⚠️':'⟫'} ${msg}<br>` + logDiv.innerHTML;
+      if (logDiv) {
+        logDiv.innerHTML = `[${new Date().toLocaleTimeString()}] ${isWarn ? '⚠️' : '⟫'} ${msg}<br>` + logDiv.innerHTML;
+        if (logDiv.children.length > 20) {
+          while (logDiv.children.length > 20) logDiv.removeChild(logDiv.lastChild);
+        }
+      }
       const chatDiv = document.getElementById('ccpChatMessages');
-      if(chatDiv && isWarn) chatDiv.innerHTML += `[${new Date().toLocaleTimeString()}] 🔺 ${msg}<br>`;
+      if (chatDiv && isWarn) chatDiv.innerHTML += `[${new Date().toLocaleTimeString()}] 🔺 ${msg}<br>`;
     }
-    
+
     function ccpUpdateMetaUI() {
-      const energyEl = document.getElementById('ccpEnergyVal');
-      if(energyEl) energyEl.innerText = Math.floor(ccpMetaState.energy);
-      const integrityEl = document.getElementById('ccpIntegrityVal');
-      if(integrityEl) integrityEl.innerText = Math.floor(ccpMetaState.integrity);
-      const riskEl = document.getElementById('ccpRiskVal');
-      if(riskEl) riskEl.innerText = Math.floor(ccpMetaState.risk);
-      const gridEl = document.getElementById('ccpGridLevelVal');
-      if(gridEl) gridEl.innerText = ccpMetaState.grid;
-      const regentEl = document.getElementById('ccpFRegent');
-      if(regentEl) regentEl.innerText = Math.floor(ccpMetaState.factions.regent);
-      const voidEl = document.getElementById('ccpFVoid');
-      if(voidEl) voidEl.innerText = Math.floor(ccpMetaState.factions.void);
-      const solarEl = document.getElementById('ccpFSolar');
-      if(solarEl) solarEl.innerText = Math.floor(ccpMetaState.factions.solar);
+      const el = (id) => document.getElementById(id);
+      if (el('ccpEnergyVal')) el('ccpEnergyVal').innerText = Math.floor(ccpMetaState.energy);
+      if (el('ccpIntegrityVal')) el('ccpIntegrityVal').innerText = Math.floor(ccpMetaState.integrity);
+      if (el('ccpRiskVal')) el('ccpRiskVal').innerText = Math.floor(ccpMetaState.risk);
+      if (el('ccpGridLevelVal')) el('ccpGridLevelVal').innerText = ccpMetaState.grid;
+      if (el('ccpFRegent')) el('ccpFRegent').innerText = Math.floor(ccpMetaState.factions.regent);
+      if (el('ccpFVoid')) el('ccpFVoid').innerText = Math.floor(ccpMetaState.factions.void);
+      if (el('ccpFSolar')) el('ccpFSolar').innerText = Math.floor(ccpMetaState.factions.solar);
     }
-    
+
     function ccpClampMeta() {
-      ccpMetaState.energy = Math.min(100,Math.max(0,ccpMetaState.energy));
-      ccpMetaState.integrity = Math.min(100,Math.max(0,ccpMetaState.integrity));
-      ccpMetaState.risk = Math.min(100,Math.max(0,ccpMetaState.risk));
-      ccpMetaState.grid = Math.min(13,Math.max(1,ccpMetaState.grid));
+      ccpMetaState.energy = Math.min(100, Math.max(0, ccpMetaState.energy));
+      ccpMetaState.integrity = Math.min(100, Math.max(0, ccpMetaState.integrity));
+      ccpMetaState.risk = Math.min(100, Math.max(0, ccpMetaState.risk));
+      ccpMetaState.grid = Math.min(13, Math.max(1, ccpMetaState.grid));
       ccpUpdateMetaUI();
     }
-    
+
     function ccpMetaCommand(cmd) {
-      switch(cmd){
-        case 'scan': ccpMetaState.energy-=6; ccpMetaState.risk+=3; ccpMetaState.factions.void+=0.8; ccpAddLog("SCAN: anomaly detected"); break;
-        case 'contain': ccpMetaState.energy-=13; ccpMetaState.integrity=Math.min(100,ccpMetaState.integrity+5); ccpMetaState.risk-=5; ccpMetaState.factions.regent+=1.2; ccpAddLog("CONTAIN: sector stabilized"); break;
-        case 'decode': ccpMetaState.energy-=9; let s=Math.random()*6+2; ccpMetaState.factions.void+=s; ccpMetaState.factions.solar-=s*0.5; ccpMetaState.factions.regent-=1; ccpAddLog(`DECODE: void +${s.toFixed(1)}`); break;
-        case 'expand': if(ccpMetaState.energy>=16){ ccpMetaState.energy-=16; ccpMetaState.grid+=1; ccpMetaState.risk+=4; ccpMetaState.integrity-=3; ccpAddLog(`EXPAND: Grid ${ccpMetaState.grid}`); } else ccpAddLog("Expand failed: low energy",true); break;
-        case 'repair': ccpMetaState.energy=Math.min(100,ccpMetaState.energy+12); ccpMetaState.integrity=Math.min(100,ccpMetaState.integrity+9); ccpMetaState.risk-=3; ccpMetaState.factions.solar+=1.5; ccpAddLog("REPAIR: integrity restored"); break;
+      switch (cmd) {
+        case 'scan': ccpMetaState.energy -= 6; ccpMetaState.risk += 3; ccpMetaState.factions.void += 0.8; ccpAddLog("SCAN: anomaly detected"); break;
+        case 'contain': ccpMetaState.energy -= 13; ccpMetaState.integrity = Math.min(100, ccpMetaState.integrity + 5); ccpMetaState.risk -= 5; ccpMetaState.factions.regent += 1.2; ccpAddLog("CONTAIN: sector stabilized"); break;
+        case 'decode': ccpMetaState.energy -= 9; let s = Math.random() * 6 + 2; ccpMetaState.factions.void += s; ccpMetaState.factions.solar -= s * 0.5; ccpMetaState.factions.regent -= 1; ccpAddLog(`DECODE: void +${s.toFixed(1)}`); break;
+        case 'expand': if (ccpMetaState.energy >= 16) { ccpMetaState.energy -= 16; ccpMetaState.grid += 1; ccpMetaState.risk += 4; ccpMetaState.integrity -= 3; ccpAddLog(`EXPAND: Grid ${ccpMetaState.grid}`); } else ccpAddLog("Expand failed: low energy", true); break;
+        case 'repair': ccpMetaState.energy = Math.min(100, ccpMetaState.energy + 12); ccpMetaState.integrity = Math.min(100, ccpMetaState.integrity + 9); ccpMetaState.risk -= 3; ccpMetaState.factions.solar += 1.5; ccpAddLog("REPAIR: integrity restored"); break;
       }
       ccpClampMeta();
     }
-    
+
     function ccpGetSatPos(idx, t) {
-      const satParams = [{name:'ISS',r:4.9,s:0.014},{name:'TIANGONG',r:5.3,s:0.0123},{name:'HUBBLE',r:5.6,s:0.011}];
-      let r = satParams[idx].r, sp = satParams[idx].s;
-      return new THREE.Vector3(Math.sin(t*sp)*r, Math.sin(t*1.4*sp)*0.9, Math.cos(t*sp)*r);
+      const satParams = [{ name: 'ISS', r: 4.9, s: 0.014 }, { name: 'TIANGONG', r: 5.3, s: 0.0123 }, { name: 'HUBBLE', r: 5.6, s: 0.011 }];
+      let r = satParams[idx % 3].r, sp = satParams[idx % 3].s;
+      return new THREE.Vector3(Math.sin(t * sp) * r, Math.sin(t * 1.4 * sp) * 0.9, Math.cos(t * sp) * r);
     }
-    
+
     function ccpCreateCamera(isAlert) {
       const grid = document.getElementById('ccpCameraGrid');
-      if(!grid) return null;
+      if (!grid) return null;
+      
       const card = document.createElement('div');
       card.className = 'cam-card';
       const wid = ccpWindowIdCounter++;
       card.setAttribute('data-id', wid);
-      card.innerHTML = `<div class="cam-title"><span>CH #${wid+1}</span><span>${isAlert?'🔴 ALERT':'●'}</span></div><div class="cam-preview"><canvas></canvas></div>`;
+      card.innerHTML = `<div class="cam-title"><span>CH #${wid + 1}</span><span>${isAlert ? '🔴 ALERT' : '●'}</span></div><div class="cam-preview"><canvas></canvas></div>`;
       grid.appendChild(card);
+      
       const canvas = card.querySelector('canvas');
+      if (!canvas) return null;
+      
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(0x010115);
+      
       const stars = [];
-      for(let i = 0; i < 1200; i++) stars.push((Math.random()-0.5)*400, (Math.random()-0.5)*200, (Math.random()-0.5)*180);
+      for (let i = 0; i < 1200; i++) {
+        stars.push((Math.random() - 0.5) * 400);
+        stars.push((Math.random() - 0.5) * 200);
+        stars.push((Math.random() - 0.5) * 180);
+      }
       const starGeo = new THREE.BufferGeometry();
       starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(stars), 3));
-      scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({color:0xffffff,size:0.09})));
+      scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.09 })));
+      
       const ambient = new THREE.AmbientLight(0x224455);
       scene.add(ambient);
-      const sun = new THREE.PointLight(0xffaa77,1.2);
-      sun.position.set(0,2,0);
+      
+      const sun = new THREE.PointLight(0xffaa77, 1.2);
+      sun.position.set(0, 2, 0);
       scene.add(sun);
-      const earth = new THREE.Mesh(new THREE.SphereGeometry(0.98,128,128), new THREE.MeshStandardMaterial({color:0x3a86ff,roughness:0.4}));
-      const moon = new THREE.Mesh(new THREE.SphereGeometry(0.3,80,80), new THREE.MeshStandardMaterial({color:0xccaa88}));
+      
+      const earthMat = new THREE.MeshStandardMaterial({ color: 0x3a86ff, roughness: 0.4 });
+      const earth = new THREE.Mesh(new THREE.SphereGeometry(0.98, 128, 128), earthMat);
+      const moonMat = new THREE.MeshStandardMaterial({ color: 0xccaa88 });
+      const moon = new THREE.Mesh(new THREE.SphereGeometry(0.3, 80, 80), moonMat);
       scene.add(earth);
       scene.add(moon);
-      const camera = new THREE.PerspectiveCamera(55,1,0.1,300);
-      const renderer = new THREE.WebGLRenderer({canvas,alpha:false});
+      
+      const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 300);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
+      
       let controls = null;
       let followSat = null;
       let shipActive = false;
-      
-      if(ccpCurrentMode === 'group' && !isAlert) {
+
+      if (ccpCurrentMode === 'group' && !isAlert) {
         controls = new OrbitControls(camera, canvas);
-        camera.position.set(7,4.5,12);
-        controls.target.set(0,0,0);
+        camera.position.set(7, 4.5, 12);
+        controls.target.set(0, 0, 0);
         controls.update();
       }
-      
-      if(ccpCurrentMode === 'single' && !isAlert) followSat = ccpActiveSat;
-      if(ccpCurrentMode === 'ship' && !isAlert) shipActive = true;
-      
-      const win = {id:wid, card, scene, camera, renderer, controls, followSat, isAlert, canvas, earth, moon, shipActive};
+      if (ccpCurrentMode === 'single' && !isAlert) followSat = ccpActiveSat;
+      if (ccpCurrentMode === 'ship' && !isAlert) shipActive = true;
+
+      const win = { id: wid, card, scene, camera, renderer, controls, followSat, isAlert, canvas, earth, moon, shipActive };
       ccpWindows.push(win);
-      
+
       let off = wid * 0.73, shipAngle = 0;
+      
       function animate() {
-        if(!win.renderer) return;
-        const t = performance.now() * 0.0022 + off;
-        moon.position.x = Math.sin(t*0.9)*2.7;
-        moon.position.z = Math.cos(t*0.9)*2.7;
-        earth.rotation.y += 0.003;
+        if (!win.renderer || !win.renderer.domElement.isConnected) return;
         
-        if(win.shipActive && !win.isAlert) {
+        const t = performance.now() * 0.0022 + off;
+        moon.position.x = Math.sin(t * 0.9) * 2.7;
+        moon.position.z = Math.cos(t * 0.9) * 2.7;
+        earth.rotation.y += 0.003;
+
+        if (win.shipActive && !win.isAlert) {
           shipAngle += 0.009;
-          let rad = 9.5 + Math.sin(shipAngle*0.4)*1.8;
-          win.camera.position.set(Math.sin(shipAngle)*rad, Math.sin(shipAngle*1.6)*2.2, Math.cos(shipAngle)*rad);
-          win.camera.lookAt(0,0,0);
-        }
-        else if(win.followSat !== null && !win.controls) {
+          let rad = 9.5 + Math.sin(shipAngle * 0.4) * 1.8;
+          win.camera.position.set(Math.sin(shipAngle) * rad, Math.sin(shipAngle * 1.6) * 2.2, Math.cos(shipAngle) * rad);
+          win.camera.lookAt(0, 0, 0);
+        } else if (win.followSat !== null && !win.controls) {
           let sp = ccpGetSatPos(win.followSat, t);
           let dist = 2.2 / Math.max(0.3, ccpCurrentZoom);
-          let offDir = new THREE.Vector3(1.2,0.7,1.2).normalize();
+          let offDir = new THREE.Vector3(1.2, 0.7, 1.2).normalize();
           let des = sp.clone().add(offDir.multiplyScalar(dist));
           win.camera.position.lerp(des, 0.12);
           win.camera.lookAt(sp);
-        }
-        else if(win.controls) win.controls.update();
-        
+        } else if (win.controls) win.controls.update();
+
         win.renderer.render(win.scene, win.camera);
-        requestAnimationFrame(animate);
+        win.animationId = requestAnimationFrame(animate);
       }
       animate();
-      
+      win.animationId = animationId;
+
+      // Resize observer для canvas
       const resize = new ResizeObserver(() => {
         let rect = card.querySelector('.cam-preview');
-        if(rect && win.renderer) {
-          let w = rect.clientWidth, h = rect.clientHeight;
-          if(w && h) {
+        if (rect && win.renderer && rect.isConnected) {
+          let w = rect.clientWidth;
+          let h = rect.clientHeight;
+          if (w && h && w > 0 && h > 0) {
             win.renderer.setSize(w, h);
-            win.camera.aspect = w/h;
+            win.camera.aspect = w / h;
             win.camera.updateProjectionMatrix();
           }
         }
       });
       resize.observe(card);
+      win.resizeObserver = resize;
+      
       return win;
     }
-    
+
     function ccpRefreshModes() {
       ccpWindows.forEach(w => {
-        if(w.isAlert) return;
-        if(ccpCurrentMode === 'single') {
-          if(w.controls) { w.controls.dispose(); w.controls = null; }
+        if (w.isAlert) return;
+        if (w.controls) {
+          w.controls.dispose();
+          w.controls = null;
+        }
+        
+        if (ccpCurrentMode === 'single') {
           w.followSat = ccpActiveSat;
           w.shipActive = false;
-        }
-        else if(ccpCurrentMode === 'group') {
-          if(!w.controls) {
-            w.controls = new OrbitControls(w.camera, w.canvas);
-            w.camera.position.set(7,4.5,12);
-            w.controls.target.set(0,0,0);
-            w.controls.update();
-          }
+        } else if (ccpCurrentMode === 'group') {
+          w.controls = new OrbitControls(w.camera, w.canvas);
+          w.camera.position.set(7, 4.5, 12);
+          w.controls.target.set(0, 0, 0);
+          w.controls.update();
           w.followSat = null;
           w.shipActive = false;
-        }
-        else if(ccpCurrentMode === 'ship') {
-          if(w.controls) { w.controls.dispose(); w.controls = null; }
+        } else if (ccpCurrentMode === 'ship') {
           w.followSat = null;
           w.shipActive = true;
         }
       });
       const modeSpan = document.getElementById('ccpGlobalMode');
-      if(modeSpan) modeSpan.innerText = ccpCurrentMode === 'group' ? 'Group' : (ccpCurrentMode === 'single' ? 'Single' : 'Ship');
+      if (modeSpan) modeSpan.innerText = ccpCurrentMode === 'group' ? 'Group' : (ccpCurrentMode === 'single' ? 'Single' : 'Ship');
     }
-    
+
     function ccpSetMain(win) {
-      if(ccpMainWin === win) return;
+      if (ccpMainWin === win) return;
       ccpMainWin = win;
       const overlay = document.getElementById('ccpFeedOverlay');
-      if(overlay) overlay.innerHTML = `CH #${win.id+1} | ${ccpCurrentMode.toUpperCase()}`;
+      if (overlay) overlay.innerHTML = `CH #${win.id + 1} | ${ccpCurrentMode.toUpperCase()}`;
+      
       function stream() {
-        if(ccpMainWin && ccpMainWin.renderer) {
+        if (ccpMainWin && ccpMainWin.renderer && ccpMainWin.renderer.domElement) {
           const canvas = document.getElementById('ccpMainCanvasElem');
-          const ctx = canvas.getContext('2d');
-          const src = ccpMainWin.renderer.domElement;
-          canvas.width = src.width;
-          canvas.height = src.height;
-          ctx.drawImage(src, 0, 0, canvas.width, canvas.height);
+          if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const src = ccpMainWin.renderer.domElement;
+            if (src && src.width > 0 && src.height > 0) {
+              canvas.width = src.width;
+              canvas.height = src.height;
+              ctx.drawImage(src, 0, 0);
+            }
+          }
         }
-        requestAnimationFrame(stream);
+        if (ccpMainWin) ccpStreamId = requestAnimationFrame(stream);
       }
-      stream();
+      if (ccpStreamId) cancelAnimationFrame(ccpStreamId);
+      ccpStreamId = requestAnimationFrame(stream);
+      
       document.querySelectorAll('#ccpCameraGrid .cam-card').forEach(c => c.classList.remove('selected-main'));
-      win.card.classList.add('selected-main');
+      if (win.card) win.card.classList.add('selected-main');
     }
-    
+
     function ccpAddSnapshot(url) {
       ccpSnapshots.unshift(url);
-      if(ccpSnapshots.length > 12) ccpSnapshots.pop();
+      if (ccpSnapshots.length > 12) ccpSnapshots.pop();
       const gal = document.getElementById('ccpGalleryThumbs');
-      if(gal) gal.innerHTML = ccpSnapshots.map((u,i) => `<img src="${u}" style="width:48px;height:36px;object-fit:cover;border:1px solid #ffaa33;border-radius:6px;" data-idx="${i}">`).join('');
-      document.querySelectorAll('#ccpGalleryThumbs img').forEach(img => img.onclick = () => { let a = document.createElement('a'); a.href = img.src; a.download = `jog3_${Date.now()}.png`; a.click(); });
+      if (gal) {
+        gal.innerHTML = ccpSnapshots.map((u, i) => `<img src="${u}" style="width:48px;height:36px;object-fit:cover;border:1px solid #ffaa33;border-radius:6px;" data-idx="${i}">`).join('');
+        document.querySelectorAll('#ccpGalleryThumbs img').forEach(img => {
+          img.onclick = () => { 
+            const a = document.createElement('a'); 
+            a.href = img.src; 
+            a.download = `jog3_${Date.now()}.png`; 
+            a.click(); 
+          };
+        });
+      }
     }
-    
+
     function ccpDrawSpectrum() {
       const canvas = document.getElementById('ccpSpectrumCanvas');
-      if(!canvas) return;
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
       function draw() {
-        if(!canvas.isConnected) return;
+        if (!canvas.isConnected) return;
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, 28);
-        for(let i = 0; i < 48; i++) {
-          let val = Math.random() * 18 + 4 + Math.sin(Date.now()/180 + i/4) * 10;
-          ctx.fillStyle = `hsl(${38+val*2},90%,60%)`;
-          ctx.fillRect(i*6, 28-val, 4, val);
+        const time = Date.now();
+        for (let i = 0; i < 48; i++) {
+          let val = Math.random() * 18 + 4 + Math.sin(time / 180 + i / 4) * 10;
+          ctx.fillStyle = `hsl(${38 + val * 2},90%,60%)`;
+          ctx.fillRect(i * 6, 28 - val, 4, val);
         }
-        requestAnimationFrame(draw);
+        ccpSpectrumInterval = requestAnimationFrame(draw);
       }
       draw();
     }
-    
+
     function initCCP() {
-      if(ccpInitialized) return;
+      if (ccpInitialized) return;
       ccpInitialized = true;
+      const body = document.getElementById('ccpModalBody');
+      if (!body) return;
       
-      ccpBody.innerHTML = `
-        <style>
-          .workstation { display: flex; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, #0a0f1f, #010101); }
-          .meta-panel { width: 320px; background: rgba(2,6,18,0.96); backdrop-filter: blur(18px); border-right: 3px solid #ffaa33; display: flex; flex-direction: column; padding: 16px; gap: 14px; overflow-y: auto; font-family: monospace; }
-          .cyber-block { background: rgba(0,0,0,0.7); border-radius: 20px; padding: 12px; border: 1px solid rgba(255,170,51,0.5); }
-          .block-title { font-size: 10px; letter-spacing: 2px; color: #ffaa33; border-bottom: 1px solid #ffaa33; margin-bottom: 10px; padding-bottom: 4px; }
-          .stat-row { display: flex; justify-content: space-between; margin: 6px 0; font-size: 11px; color: #bbddff; }
-          .stat-value { color: #ffaa33; font-weight: bold; }
-          .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-          .apex-btn { background: #0f1422; border: 1px solid #ffaa33; padding: 6px 4px; border-radius: 30px; font-size: 9px; font-weight: bold; cursor: pointer; text-align: center; color: #ffdd99; font-family: monospace; }
-          .apex-btn:hover { background: #ffaa33; color: #000; }
-          .kill-btn { background: #5a0000; border-color: #ff6666; color: #ffbbbb; }
-          .slider { width: 100%; accent-color: #ffaa33; margin: 6px 0; }
-          .cam-nexus { flex: 2.2; background: #01020b; display: flex; flex-direction: column; padding: 12px; gap: 8px; }
-          .grid-header { font-size: 9px; color: #ffaa33; background: #050a18cc; padding: 6px 12px; border-radius: 30px; display: flex; justify-content: space-between; }
-          .grid-4x4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; flex: 1; overflow-y: auto; min-height: 200px; }
-          .cam-card { background: #03061a; border: 1px solid #3b5f8a; border-radius: 14px; cursor: pointer; overflow: hidden; }
-          .cam-card.selected-main { border: 3px solid #ffaa33; box-shadow: 0 0 20px rgba(255,170,51,0.6); }
-          .cam-title { background: #0a1022ee; padding: 4px 6px; font-size: 7px; display: flex; justify-content: space-between; color: #eee; }
-          .cam-preview { aspect-ratio: 16/9; width: 100%; background: #000; position: relative; }
-          .cam-preview canvas { width: 100%; height: 100%; display: block; }
-          .main-terminal { width: 420px; background: #010410; border-left: 3px solid #ffaa33; display: flex; flex-direction: column; padding: 12px; }
-          .main-canvas-box { flex: 1; background: #000; border-radius: 24px; border: 2px solid #ffaa33; overflow: hidden; position: relative; min-height: 300px; }
-          #ccpMainCanvasElem { width: 100%; height: 100%; display: block; }
-          .analytics-overlay { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.8); padding: 4px 8px; border-radius: 16px; font-size: 8px; color: #ffaa33; }
-          .status-bar { display: flex; justify-content: space-between; margin-top: 10px; background: #0a0e1c; padding: 8px; border-radius: 20px; font-size: 9px; }
-          .telemetry-panel, .log-panel, .chat-messages { background: #010514dd; border-radius: 14px; padding: 6px; font-size: 8px; }
-          .chat-messages { height: 80px; overflow-y: auto; }
-          .chat-input { display: flex; gap: 6px; margin-top: 6px; }
-          .chat-input input { flex:1; background:#111722; border:1px solid #ffaa33; border-radius:20px; padding:4px 8px; color:#ffdd99; font-size:9px; }
-          .gallery-thumbs { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; }
-          .gallery-thumbs img { width: 48px; height: 36px; object-fit: cover; border-radius: 6px; border: 1px solid #ffaa33; cursor: pointer; }
-          .active-mode-btn { background: #ffaa33 !important; color: #000 !important; }
-          ::-webkit-scrollbar { width: 3px; }
-        </style>
+      body.innerHTML = `
         <div class="workstation">
           <div class="meta-panel">
             <div class="cyber-block"><div class="block-title">⟡ JOG 3.0 META STATUS ⟡</div>
@@ -1210,170 +1335,202 @@
           </div>
         </div>
       `;
-      
-      // Create cameras
-      for(let i = 0; i < 16; i++) ccpCreateCamera(false);
-      setTimeout(() => { ccpCreateCamera(true); ccpAddLog("Emergency backup active", true); }, 500);
-      
-      // Event listeners
+
+      // Создаем камеры
+      for (let i = 0; i < 16; i++) ccpCreateCamera(false);
+      setTimeout(() => { 
+        if (ccpInitialized) {
+          ccpCreateCamera(true); 
+          ccpAddLog("Emergency backup active", true);
+        }
+      }, 500);
+
+      // Обработчики событий
       document.getElementById('ccpCameraGrid')?.addEventListener('click', (e) => {
         let card = e.target.closest('.cam-card');
-        if(card) {
+        if (card) {
           let w = ccpWindows.find(w => w.id == parseInt(card.dataset.id));
-          if(w) ccpSetMain(w);
+          if (w) ccpSetMain(w);
         }
       });
-      
+
       document.querySelectorAll('#ccpSatBar .apex-btn').forEach((btn, i) => {
         btn.onclick = () => {
           ccpActiveSat = i;
-          document.querySelectorAll('#ccpSatBar .apex-btn').forEach(b => b.style.background = '');
+          document.querySelectorAll('#ccpSatBar .apex-btn').forEach(b => {
+            b.style.background = '';
+            b.style.color = '';
+          });
           btn.style.background = '#ffaa33';
           btn.style.color = '#000';
-          if(ccpCurrentMode === 'single') ccpRefreshModes();
+          if (ccpCurrentMode === 'single') ccpRefreshModes();
           ccpAddLog(`Tracking: ${btn.innerText}`);
         };
       });
-      
+
       document.getElementById('ccpGroupMode')?.addEventListener('click', () => {
         ccpCurrentMode = 'group';
-        document.querySelectorAll('.apex-btn').forEach(b => b.classList.remove('active-mode-btn'));
+        document.querySelectorAll('#ccpSingleMode, #ccpGroupMode, #ccpShipMode').forEach(b => b.classList.remove('active-mode-btn'));
         document.getElementById('ccpGroupMode')?.classList.add('active-mode-btn');
         ccpRefreshModes();
         ccpAddLog("Mode: Group");
       });
-      
+
       document.getElementById('ccpSingleMode')?.addEventListener('click', () => {
         ccpCurrentMode = 'single';
-        document.querySelectorAll('.apex-btn').forEach(b => b.classList.remove('active-mode-btn'));
+        document.querySelectorAll('#ccpSingleMode, #ccpGroupMode, #ccpShipMode').forEach(b => b.classList.remove('active-mode-btn'));
         document.getElementById('ccpSingleMode')?.classList.add('active-mode-btn');
         ccpRefreshModes();
         ccpAddLog("Mode: Single");
       });
-      
+
       document.getElementById('ccpShipMode')?.addEventListener('click', () => {
         ccpCurrentMode = 'ship';
-        document.querySelectorAll('.apex-btn').forEach(b => b.classList.remove('active-mode-btn'));
+        document.querySelectorAll('#ccpSingleMode, #ccpGroupMode, #ccpShipMode').forEach(b => b.classList.remove('active-mode-btn'));
         document.getElementById('ccpShipMode')?.classList.add('active-mode-btn');
         ccpRefreshModes();
         ccpAddLog("Mode: Ship");
       });
-      
+
       document.getElementById('ccpZoomRange')?.addEventListener('input', (e) => {
         ccpCurrentZoom = parseFloat(e.target.value);
         document.getElementById('ccpZoomLabel').innerText = ccpCurrentZoom.toFixed(1) + 'x';
-        if(ccpCurrentMode === 'single') ccpRefreshModes();
+        if (ccpCurrentMode === 'single') ccpRefreshModes();
       });
-      
+
       document.getElementById('ccpAddCamBtn')?.addEventListener('click', () => {
-        if(ccpWindows.length < 24) ccpCreateCamera(false);
+        if (ccpWindows.length < 24) ccpCreateCamera(false);
         else ccpAddLog("Max cameras", true);
       });
-      
+
       document.getElementById('ccpSnapBtn')?.addEventListener('click', () => {
-        if(ccpMainWin && ccpMainWin.renderer) {
+        if (ccpMainWin && ccpMainWin.renderer && ccpMainWin.renderer.domElement) {
           let data = ccpMainWin.renderer.domElement.toDataURL();
           ccpAddSnapshot(data);
           ccpAddLog("Snapshot saved");
         }
       });
-      
+
       document.getElementById('ccpEmergencyBtn')?.addEventListener('click', () => {
         ccpCurrentZoom = 0.6;
-        document.getElementById('ccpZoomRange').value = 0.6;
+        const zoomRange = document.getElementById('ccpZoomRange');
+        if (zoomRange) zoomRange.value = '0.6';
         document.getElementById('ccpZoomLabel').innerText = '0.6x';
-        if(ccpCurrentMode === 'single') ccpRefreshModes();
+        if (ccpCurrentMode === 'single') ccpRefreshModes();
         ccpAddLog("EMERGENCY MODE", true);
       });
-      
+
       document.getElementById('ccpMetaScan')?.addEventListener('click', () => ccpMetaCommand('scan'));
       document.getElementById('ccpMetaContain')?.addEventListener('click', () => ccpMetaCommand('contain'));
       document.getElementById('ccpMetaDecode')?.addEventListener('click', () => ccpMetaCommand('decode'));
       document.getElementById('ccpMetaExpand')?.addEventListener('click', () => ccpMetaCommand('expand'));
       document.getElementById('ccpMetaRepair')?.addEventListener('click', () => ccpMetaCommand('repair'));
-      
+
       document.getElementById('ccpSendChatBtn')?.addEventListener('click', () => {
         let inp = document.getElementById('ccpChatInput');
-        if(inp && inp.value.trim()) {
-          document.getElementById('ccpChatMessages').innerHTML += `[${new Date().toLocaleTimeString()}] ${inp.value}<br>`;
+        if (inp && inp.value.trim()) {
+          const chatDiv = document.getElementById('ccpChatMessages');
+          if (chatDiv) chatDiv.innerHTML += `[${new Date().toLocaleTimeString()}] ${inp.value}<br>`;
           ccpAddLog(`MSG: ${inp.value}`);
           inp.value = '';
         }
       });
-      
-      // Telemetry updates
+
+      document.getElementById('ccpChatInput')?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          document.getElementById('ccpSendChatBtn')?.click();
+        }
+      });
+
+      // Телеметрия
       setInterval(() => {
-        let az = Math.floor(Math.random()*360), el = Math.floor(Math.random()*90-20);
-        if(document.getElementById('ccpAzimuthVal')) document.getElementById('ccpAzimuthVal').innerText = az+'°';
-        if(document.getElementById('ccpElevationVal')) document.getElementById('ccpElevationVal').innerText = el+'°';
-        let sig = 92 + Math.random()*7;
-        if(document.getElementById('ccpSignalStrength')) document.getElementById('ccpSignalStrength').innerText = Math.floor(sig)+'%';
-        if(document.getElementById('ccpMainSignalQuality')) document.getElementById('ccpMainSignalQuality').innerText = Math.floor(sig)+'%';
+        if (!ccpInitialized) return;
+        let az = Math.floor(Math.random() * 360);
+        let el = Math.floor(Math.random() * 90 - 20);
+        const azEl = document.getElementById('ccpAzimuthVal');
+        const elEl = document.getElementById('ccpElevationVal');
+        if (azEl) azEl.innerText = az + '°';
+        if (elEl) elEl.innerText = el + '°';
+        
+        let sig = 92 + Math.random() * 7;
+        const sigEl = document.getElementById('ccpSignalStrength');
+        const qualEl = document.getElementById('ccpMainSignalQuality');
+        if (sigEl) sigEl.innerText = Math.floor(sig) + '%';
+        if (qualEl) qualEl.innerText = Math.floor(sig) + '%';
       }, 1500);
-      
+
       ccpDrawSpectrum();
-      
-      // Auto meta updates
-      if(ccpUpdateInterval) clearInterval(ccpUpdateInterval);
+
+      // Автоматическое обновление мета-статуса
+      if (ccpUpdateInterval) clearInterval(ccpUpdateInterval);
       ccpUpdateInterval = setInterval(() => {
+        if (!ccpInitialized) return;
         ccpMetaState.energy = Math.min(100, ccpMetaState.energy + 1.2);
         let rInc = (Math.random() * 1.8) + (ccpMetaState.grid * 0.4);
         ccpMetaState.risk = Math.min(100, ccpMetaState.risk + rInc);
-        if(ccpMetaState.risk > 55) {
-          let d = (ccpMetaState.risk/120) + (ccpMetaState.grid * 0.2);
+        if (ccpMetaState.risk > 55) {
+          let d = (ccpMetaState.risk / 120) + (ccpMetaState.grid * 0.2);
           ccpMetaState.integrity = Math.max(0, ccpMetaState.integrity - d);
         }
         ccpClampMeta();
       }, 3000);
-      
+
       ccpAddLog("JOG 3.0 MISSION CONTROL FULLY ONLINE | 16 CAMERAS ACTIVE");
     }
-    
-    async function openCCPModal() {
-      ccpModal.classList.add('active');
+
+    function openCCPModal() {
+      const modal = document.getElementById('ccpModal');
+      if (!modal) return;
+      modal.classList.add('active');
       document.body.style.overflow = 'hidden';
-      showLoader();
-      await new Promise(r => setTimeout(r, 50));
       initCCP();
-      hideLoader();
     }
-    
+
     function closeCCPModal() {
-      ccpModal.classList.remove('active');
+      const modal = document.getElementById('ccpModal');
+      if (!modal) return;
+      modal.classList.remove('active');
       document.body.style.overflow = '';
-      if(ccpUpdateInterval) clearInterval(ccpUpdateInterval);
+      
+      if (ccpUpdateInterval) clearInterval(ccpUpdateInterval);
+      if (ccpSpectrumInterval) cancelAnimationFrame(ccpSpectrumInterval);
+      if (ccpStreamId) cancelAnimationFrame(ccpStreamId);
+      
       ccpUpdateInterval = null;
-      // Clean up windows
+      
       ccpWindows.forEach(w => {
-        if(w.controls) w.controls.dispose();
-        if(w.renderer) w.renderer.dispose();
+        if (w.controls) w.controls.dispose();
+        if (w.renderer) w.renderer.dispose();
+        if (w.resizeObserver) w.resizeObserver.disconnect();
+        if (w.animationId) cancelAnimationFrame(w.animationId);
       });
       ccpWindows = [];
       ccpMainWin = null;
       ccpInitialized = false;
     }
-    
+
+    // Подключаем триггеры CCP
     document.getElementById('orbitalCamerasTrigger')?.addEventListener('click', openCCPModal);
     document.getElementById('ccpModalCloseBtn')?.addEventListener('click', closeCCPModal);
-    ccpModal?.addEventListener('click', (e) => { if(e.target === ccpModal) closeCCPModal(); });
+    ccpModal?.addEventListener('click', (e) => { if (e.target === ccpModal) closeCCPModal(); });
     
     // Social Hub
     const platforms = [
-      { name:'Discord', icon:'🎮', url:'https://discord.gg/wellamatores' },
-      { name:'X (Twitter)', icon:'𝕏', url:'https://twitter.com/wellamatores' },
-      { name:'LinkedIn', icon:'🔗', url:'https://linkedin.com/company/wellamatores' },
-      { name:'TikTok', icon:'🎵', url:'https://tiktok.com/@wellamatores' },
-      { name:'Facebook', icon:'📘', url:'https://facebook.com/wellamatores' },
-      { name:'Telegram', icon:'📡', url:'https://t.me/wellamatores' },
-      { name:'VK', icon:'📱', url:'https://vk.com/wellamatores' },
-      { name:'YouTube', icon:'📺', url:'https://youtube.com/@wellamatores' },
-      { name:'Reddit', icon:'🤖', url:'https://reddit.com/r/wellamatores' },
-      { name:'GitHub', icon:'🐙', url:'https://github.com/wellamatores' }
+      { name: 'Discord', icon: '🎮', url: 'https://discord.gg/wellamatores' },
+      { name: 'X (Twitter)', icon: '𝕏', url: 'https://twitter.com/wellamatores' },
+      { name: 'LinkedIn', icon: '🔗', url: 'https://linkedin.com/company/wellamatores' },
+      { name: 'TikTok', icon: '🎵', url: 'https://tiktok.com/@wellamatores' },
+      { name: 'Facebook', icon: '📘', url: 'https://facebook.com/wellamatores' },
+      { name: 'Telegram', icon: '📡', url: 'https://t.me/wellamatores' },
+      { name: 'VK', icon: '📱', url: 'https://vk.com/wellamatores' },
+      { name: 'YouTube', icon: '📺', url: 'https://youtube.com/@wellamatores' },
+      { name: 'Reddit', icon: '🤖', url: 'https://reddit.com/r/wellamatores' },
+      { name: 'GitHub', icon: '🐙', url: 'https://github.com/wellamatores' }
     ];
     
     function buildFullscreenGrid() {
       const grid = document.getElementById('fullscreenSocialGrid');
-      if(grid) {
+      if (grid) {
         grid.innerHTML = '';
         platforms.forEach(p => {
           const card = document.createElement('div');
@@ -1386,7 +1543,7 @@
     }
     
     document.getElementById('socialHubCard')?.addEventListener('click', (e) => {
-      if(!e.target.closest('.social-platform-card')) {
+      if (!e.target.closest('.social-platform-card')) {
         buildFullscreenGrid();
         document.getElementById('fullscreenSocialPopup').classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -1397,7 +1554,7 @@
       c.addEventListener('click', (e) => {
         e.stopPropagation();
         const url = c.dataset.url;
-        if(url) window.open(url, '_blank');
+        if (url) window.open(url, '_blank');
       });
     });
     
@@ -1406,9 +1563,15 @@
       document.body.style.overflow = '';
     });
     
-     hideLoader();
+    // Fullscreen для trailer
+    document.getElementById('trailerFullscreenBtn')?.addEventListener('click', () => {
+      const wrapper = document.getElementById('trailerWrapper');
+      if (wrapper) enterFullscreen(wrapper);
+    });
+    
+    hideLoader();
     console.log("%c✅ Wellamatores World COMPLETE: Full CCP + Social Hub + Regent + JOG Universe working", "color:#10b981; font-size:14px;");
-      
+    
     // === BOB GATE SPLASH SCREEN LOGIC ===
     (function() {
         const gate = document.getElementById('seedGate');
@@ -1503,20 +1666,8 @@
                 dismissGate(null);
             }
         }, 8000);
-    })();</script>
-
-  <!-- Fullscreen for trailer -->
-  <script>
-    document.getElementById('trailerFullscreenBtn')?.addEventListener('click', () => {
-      const wrapper = document.getElementById('trailerWrapper');
-      if (wrapper.requestFullscreen) {
-        wrapper.requestFullscreen();
-      } else if (wrapper.webkitRequestFullscreen) {
-        wrapper.webkitRequestFullscreen();
-      } else if (wrapper.msRequestFullscreen) {
-        wrapper.msRequestFullscreen();
-      }
-    });
+    })();
   </script>
-  </div></body>
+</div>
+</body>
 </html>
