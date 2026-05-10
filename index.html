@@ -479,7 +479,52 @@
     }
   </style> 
 </head>
-<body>  <div id="originalContent">
+<body>   <!-- BOB GATE SPLASH SCREEN -->
+  <div id="seedGate" class="seed-gate">
+    <div class="bean-container">
+      <div class="bean-glow-gate"></div>
+      <div class="bean-glow-secondary-gate"></div>
+      <svg class="bean-svg-gate" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="beanGradGate" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.95"/>
+            <stop offset="50%" stop-color="#2a2eff" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#ff00aa" stop-opacity="0.9"/>
+          </linearGradient>
+          <linearGradient id="innerGlowGate" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#ffcc44" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#ff00aa" stop-opacity="0.3"/>
+          </linearGradient>
+          <filter id="neonFilterGate" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <path d="M60,12 C30,18 10,42 12,72 C14,100 30,128 58,138 C78,144 88,132 98,110 C108,88 110,62 102,38 C94,18 80,8 60,12Z" 
+              fill="url(#beanGradGate)" stroke="#00ffff" stroke-width="1.2" filter="url(#neonFilterGate)"/>
+        <path d="M58,36 L52,58 L62,68 L70,88 L66,108" stroke="#ffcc44" stroke-width="1.5" fill="none" opacity="0.7" stroke-dasharray="3 4"/>
+        <path d="M72,32 L80,54 L78,76 L84,94" stroke="#ff88ff" stroke-width="1.2" fill="none" opacity="0.55"/>
+        <circle cx="60" cy="76" r="16" fill="url(#innerGlowGate)" stroke="#ffcc44" stroke-width="1.5" stroke-dasharray="2 2"/>
+        <circle cx="60" cy="76" r="6" fill="#ffffff" fill-opacity="0.8" stroke="#00d4ff" stroke-width="1"/>
+        <path d="M60,70 L60,82 M54,76 L66,76" stroke="#ff00aa" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="34" cy="62" r="2.5" fill="#ffcc44" opacity="0.8">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="86" cy="84" r="2.5" fill="#00fff0" opacity="0.8">
+          <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+      </svg>
+    </div>
+    <div class="gate-text">
+      ⚡ BOB · TRANSPONDER ⚡
+    </div>
+    <div class="gate-sub">
+      ›› click to awaken ‹‹
+    </div>
+  </div> <div id="originalContent">
   <h2 class="visually-hidden">Wellamatores World Main Content</h2>
   <div id="loadingSpinner" class="loading-spinner"><div class="spinner"></div><span>INITIALIZING JOG NETWORK...</span></div>
 
