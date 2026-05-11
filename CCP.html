@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>JOG Mission Control | CCP Nexus • Orbital Camera Network</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none; /* better UI feeling */
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 30%, #0a0f1f, #010101);
+      font-family: 'Inter', 'JetBrains Mono', monospace;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* main workstation layout */
+    .workstation {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+      background: radial-gradient(circle at 20% 30%, #0a0f1f, #010101);
+    }
+
+    /* left meta panel */
+    .meta-panel {
+      width: 320px;
+      background: rgba(2, 6, 18, 0.96);
+      backdrop-filter: blur(18px);
+      border-right: 3px solid #ffaa33;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      gap: 14px;
+      overflow-y: auto;
+      font-family: 'JetBrains Mono', monospace;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .cyber-block {
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 20px;
+      padding: 12px;
+      border: 1px solid rgba(255, 170, 51, 0.5);
+      transition: all 0.2s;
+    }
+
+    .block-title {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #ffaa33;
+      border-bottom: 1px solid #ffaa33;
+      margin-bottom: 10px;
+      padding-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 6px 0;
+      font-size: 11px;
+      color: #bbddff;
+    }
+
+    .stat-value {
+      color: #ffaa33;
+      font-weight: bold;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .apex-btn {
+      background: #0f1422;
+      border: 1px solid #ffaa33;
+      padding: 6px 4px;
+      border-radius: 30px;
+      font-size: 9px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      color: #ffdd99;
+      font-family: monospace;
+      transition: all 0.15s;
+    }
+
+    .apex-btn:hover {
+      background: #ffaa33;
+      color: #000;
+      transform: scale(0.97);
+    }
+
+    .kill-btn {
+      background: #5a0000;
+      border-color: #ff6666;
+      color: #ffbbbb;
+    }
+
+    .slider {
+      width: 100%;
+      accent-color: #ffaa33;
+      margin: 6px 0;
+    }
+
+    .cam-nexus {
+      flex: 2.2;
+      background: #01020b;
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .grid-header {
+      font-size: 9px;
+      color: #ffaa33;
+      background: #050a18cc;
+      padding: 6px 12px;
+      border-radius: 30px;
+      display: flex;
+      justify-content: space-between;
+      letter-spacing: 1px;
+    }
+
+    .grid-4x4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      flex: 1;
+      overflow-y: auto;
+      min-height: 220px;
+      padding-bottom: 4px;
+    }
+
+    .cam-card {
+      background: #03061a;
+      border: 1px solid #3b5f8a;
+      border-radius: 14px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.12s linear;
+    }
+
+    .cam-card.selected-main {
+      border: 3px solid #ffaa33;
+      box-shadow: 0 0 20px rgba(255, 170, 51, 0.6);
+    }
+
+    .cam-title {
+      background: #0a1022ee;
+      padding: 4px 6px;
+      font-size: 7px;
+      display: flex;
+      justify-content: space-between;
+      color: #eee;
+      font-weight: 500;
+    }
+
+    .cam-preview {
+      aspect-ratio: 16/9;
+      width: 100%;
+      background: #000;
+      position: relative;
+    }
+
+    .cam-preview canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .main-terminal {
+      width: 420px;
+      background: #010410;
+      border-left: 3px solid #ffaa33;
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      flex-shrink: 0;
+    }
+
+    .main-canvas-box {
+      flex: 1;
+      background: #000;
+      border-radius: 24px;
+      border: 2px solid #ffaa33;
+      overflow: hidden;
+      position: relative;
+      min-height: 280px;
+    }
+
+    #mainCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: black;
+    }
+
+    .analytics-overlay {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 4px 8px;
+      border-radius: 16px;
+      font-size: 8px;
+      color: #ffaa33;
+      font-family: monospace;
+      pointer-events: none;
+    }
+
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      background: #0a0e1c;
+      padding: 8px;
+      border-radius: 20px;
+      font-size: 9px;
+    }
+
+    .telemetry-panel, .log-panel, .chat-messages {
+      background: #010514dd;
+      border-radius: 14px;
+      padding: 6px;
+      font-size: 8px;
+    }
+
+    .chat-messages {
+      height: 90px;
+      overflow-y: auto;
+      font-size: 8px;
+      color: #bbddff;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      background: #111722;
+      border: 1px solid #ffaa33;
+      border-radius: 20px;
+      padding: 4px 8px;
+      color: #ffdd99;
+      font-size: 9px;
+      font-family: monospace;
+    }
+
+    .chat-input input:focus {
+      outline: none;
+      border-color: #ffaa88;
+    }
+
+    .gallery-thumbs {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      overflow-x: auto;
+    }
+
+    .gallery-thumbs img {
+      width: 48px;
+      height: 36px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #ffaa33;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+    .active-mode-btn {
+      background: #ffaa33 !important;
+      color: #000 !important;
+    }
+
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #010101;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ffaa33;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+<div class="workstation">
+  <!-- LEFT: Meta / Status Panel -->
+  <div class="meta-panel">
+    <div class="cyber-block">
+      <div class="block-title">⟡ JOG 3.0 META STATUS ⟡</div>
+      <div class="stat-row"><span>⚡ ENERGY</span><span id="energyVal" class="stat-value">100</span></div>
+      <div class="stat-row"><span>🔰 INTEGRITY</span><span id="integrityVal" class="stat-value">100</span></div>
+      <div class="stat-row"><span>🌀 RISK</span><span id="riskVal" class="stat-value">12</span></div>
+      <div class="stat-row"><span>🌐 GRID</span><span id="gridVal" class="stat-value">1</span></div>
+      <div class="stat-row"><span>👑 REGENT</span><span id="fRegent" class="stat-value">60</span><span>🌑 VOID</span><span id="fVoid" class="stat-value">40</span><span>☀️ SOLAR</span><span id="fSolar" class="stat-value">55</span></div>
+    </div>
+
+    <div class="cyber-block">
+      <div class="block-title">🛰️ COMMS & MODES</div>
+      <div style="display:flex;gap:6px;margin-bottom:8px;">
+        <div id="singleCamMode" class="apex-btn">SINGLE CAM</div>
+        <div id="groupCamMode" class="apex-btn active-mode-btn">GROUP VIEW</div>
+        <div id="shipModeBtn" class="apex-btn">SHIP MODE</div>
+      </div>
+      <div><label style="font-size:9px;">ZOOM <span id="zoomLabel">1.0x</span></label><input type="range" id="zoomRange" min="0.4" max="18" step="0.1" value="1.0" class="slider"></div>
+      <div class="action-grid" style="margin-top: 10px;">
+        <div id="addCamBtn" class="apex-btn">+ ADD CAMERA</div>
+        <div id="snapBtn" class="apex-btn">📸 SNAPSHOT</div>
+        <div id="emergencyBtn" class="apex-btn kill-btn">⚠️ EMERG RESET</div>
+      </div>
+    </div>
+
+    <div class="cyber-block">
+      <div class="block-title">⚙️ META COMMANDS</div>
+      <div class="action-grid">
+        <div id="cmdScan" class="apex-btn">SCAN</div>
+        <div id="cmdContain" class="apex-btn">CONTAIN</div>
+        <div id="cmdDecode" class="apex-btn">DECODE</div>
+        <div id="cmdExpand" class="apex-btn">EXPAND</div>
+        <div id="cmdRepair" class="apex-btn">REPAIR</div>
+      </div>
+    </div>
+
+    <div class="cyber-block">
+      <div class="block-title">📡 TELEMETRY</div>
+      <div class="telemetry-panel">
+        <div class="stat-row"><span>Azimuth</span><span id="azimuthVal">0°</span><span>Elevation</span><span id="elevationVal">0°</span></div>
+        <div class="stat-row"><span>Signal Strength</span><span id="signalStrength">99%</span></div>
+      </div>
+      <canvas id="spectrumCanvas" width="280" height="28" style="width:100%; background:#000; border-radius:8px; margin-top:6px;"></canvas>
+    </div>
+
+    <div class="cyber-block">
+      <div class="block-title">💬 CHANNEL LOG</div>
+      <div class="chat-messages" id="chatMessages">[JOG 3.0] Mission Core online.<br></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="transmit...">
+        <button id="sendChatBtn" style="background:#ffaa33;border:none;border-radius:20px;padding:2px 10px;cursor:pointer;">⬆️</button>
+      </div>
+    </div>
+    <div class="log-panel" id="eventLogPanel">🚀 JOG MISSION CONTROL ACTIVE</div>
+    <div class="gallery-thumbs" id="galleryThumbs"></div>
+  </div>
+
+  <!-- CENTER: Camera Nexus 4x4 grid -->
+  <div class="cam-nexus">
+    <div class="grid-header"><span>🌀 JOG OPTICAL NET • 4x4 MATRIX</span><span>🔮 LIVE FEEDS</span></div>
+    <div class="grid-4x4" id="cameraGrid"></div>
+  </div>
+
+  <!-- RIGHT: Main Terminal / Active Camera View -->
+  <div class="main-terminal">
+    <div style="color:#ffaa33;font-size:10px;margin-bottom:6px;">🎥 PRIMARY CONSOLE</div>
+    <div class="main-canvas-box">
+      <canvas id="mainCanvas"></canvas>
+      <div class="analytics-overlay" id="feedOverlay">select any camera</div>
+    </div>
+    <div class="status-bar">
+      <span>MODE: <span id="globalModeLabel">Group</span></span>
+      <span>FEED QUALITY: <span id="mainQuality">99%</span></span>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+    }
+  }
+</script>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  // ---------- META STATE ----------
+  let meta = {
+    energy: 100,
+    integrity: 100,
+    risk: 12,
+    grid: 1,
+    factions: { regent: 60, void: 40, solar: 55 }
+  };
+
+  let currentMode = 'group';     // 'group', 'single', 'ship'
+  let activeSatIndex = 0;        // satellite tracking index
+  let currentZoom = 1.0;
+  let snapshots = [];
+
+  // store all camera window objects
+  let cameraWindows = [];         // each: { id, card, scene, camera, renderer, controls, followSat, isAlert, canvas, earth, moon, shipActive }
+  let mainActiveWindow = null;
+  let nextCamId = 0;
+  let telemetryInterval = null;
+  let spectrumInterval = null;
+
+  // Helper: update UI meta values
+  function updateMetaUI() {
+    document.getElementById('energyVal').innerText = Math.floor(meta.energy);
+    document.getElementById('integrityVal').innerText = Math.floor(meta.integrity);
+    document.getElementById('riskVal').innerText = Math.floor(meta.risk);
+    document.getElementById('gridVal').innerText = meta.grid;
+    document.getElementById('fRegent').innerText = Math.floor(meta.factions.regent);
+    document.getElementById('fVoid').innerText = Math.floor(meta.factions.void);
+    document.getElementById('fSolar').innerText = Math.floor(meta.factions.solar);
+  }
+
+  function clampMeta() {
+    meta.energy = Math.min(100, Math.max(0, meta.energy));
+    meta.integrity = Math.min(100, Math.max(0, meta.integrity));
+    meta.risk = Math.min(100, Math.max(0, meta.risk));
+    meta.grid = Math.min(13, Math.max(1, meta.grid));
+    meta.factions.regent = Math.min(100, Math.max(0, meta.factions.regent));
+    meta.factions.void = Math.min(100, Math.max(0, meta.factions.void));
+    meta.factions.solar = Math.min(100, Math.max(0, meta.factions.solar));
+    updateMetaUI();
+  }
+
+  function addLog(msg, isWarn = false) {
+    const logDiv = document.getElementById('eventLogPanel');
+    if (logDiv) {
+      const prefix = isWarn ? '⚠️ ' : '⟫ ';
+      logDiv.innerHTML = `[${new Date().toLocaleTimeString()}] ${prefix}${msg}<br>` + logDiv.innerHTML;
+      if (logDiv.children.length > 18) logDiv.innerHTML = logDiv.innerHTML.split('<br>').slice(0, 25).join('<br>');
+    }
+    const chatDiv = document.getElementById('chatMessages');
+    if (chatDiv && isWarn) {
+      chatDiv.innerHTML += `[${new Date().toLocaleTimeString()}] 🔺 ${msg}<br>`;
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+  }
+
+  function addChatMessage(userMsg) {
+    const chatDiv = document.getElementById('chatMessages');
+    if (chatDiv) {
+      chatDiv.innerHTML += `[${new Date().toLocaleTimeString()}] 📡 ${userMsg}<br>`;
+      chatDiv.scrollTop = chatDiv.scrollHeight;
+    }
+    addLog(`MSG: ${userMsg}`);
+  }
+
+  function runCommand(cmd) {
+    switch (cmd) {
+      case 'scan':
+        meta.energy = Math.max(0, meta.energy - 6);
+        meta.risk = Math.min(100, meta.risk + 3);
+        meta.factions.void = Math.min(100, meta.factions.void + 0.8);
+        addLog("SCAN: anomaly detected, risk increased");
+        break;
+      case 'contain':
+        meta.energy = Math.max(0, meta.energy - 13);
+        meta.integrity = Math.min(100, meta.integrity + 5);
+        meta.risk = Math.max(0, meta.risk - 5);
+        meta.factions.regent = Math.min(100, meta.factions.regent + 1.2);
+        addLog("CONTAIN: sector stabilised, integrity +5");
+        break;
+      case 'decode':
+        meta.energy = Math.max(0, meta.energy - 9);
+        let val = Math.random() * 6 + 2;
+        meta.factions.void = Math.min(100, meta.factions.void + val);
+        meta.factions.solar = Math.max(0, meta.factions.solar - val * 0.5);
+        meta.factions.regent = Math.max(0, meta.factions.regent - 1);
+        addLog(`DECODE: void influence +${val.toFixed(1)}`);
+        break;
+      case 'expand':
+        if (meta.energy >= 16) {
+          meta.energy -= 16;
+          meta.grid = Math.min(13, meta.grid + 1);
+          meta.risk = Math.min(100, meta.risk + 4);
+          meta.integrity = Math.max(0, meta.integrity - 3);
+          addLog(`EXPAND: Grid level now ${meta.grid}`);
+        } else {
+          addLog("Expand failed: insufficient energy", true);
+        }
+        break;
+      case 'repair':
+        meta.energy = Math.min(100, meta.energy + 12);
+        meta.integrity = Math.min(100, meta.integrity + 9);
+        meta.risk = Math.max(0, meta.risk - 3);
+        meta.factions.solar = Math.min(100, meta.factions.solar + 1.5);
+        addLog("REPAIR: integrity restored");
+        break;
+      default: break;
+    }
+    clampMeta();
+  }
+
+  // Satellite position helper
+  function getSatPos(idx, t) {
+    const params = [
+      { name: 'ISS', r: 4.9, s: 0.014 },
+      { name: 'TIANGONG', r: 5.3, s: 0.0123 },
+      { name: 'HUBBLE', r: 5.6, s: 0.011 }
+    ];
+    let p = params[idx % params.length];
+    let r = p.r;
+    let sp = p.s;
+    return new THREE.Vector3(Math.sin(t * sp) * r, Math.sin(t * 1.4 * sp) * 0.9, Math.cos(t * sp) * r);
+  }
+
+  // Create a single 3D camera feed (orbital scene)
+  function createCameraFeed(isAlert = false, forcedId = null) {
+    const grid = document.getElementById('cameraGrid');
+    if (!grid) return null;
+    const card = document.createElement('div');
+    const camId = forcedId !== null ? forcedId : nextCamId++;
+    card.className = 'cam-card';
+    card.setAttribute('data-id', camId);
+    card.innerHTML = `<div class="cam-title"><span>CH #${camId+1}</span><span>${isAlert ? '🔴 ALERT' : '● ACTIVE'}</span></div><div class="cam-preview"><canvas></canvas></div>`;
+    grid.appendChild(card);
+    const canvas = card.querySelector('canvas');
+    
+    // create 3D scene
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x010115);
+    // stars background
+    const starGeo = new THREE.BufferGeometry();
+    const starsPos = [];
+    for (let i = 0; i < 1800; i++) starsPos.push((Math.random()-0.5)*380, (Math.random()-0.5)*200, (Math.random()-0.5)*200);
+    starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starsPos), 3));
+    scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.12 })));
+    const ambient = new THREE.AmbientLight(0x224466);
+    scene.add(ambient);
+    const sunLight = new THREE.PointLight(0xffaa77, 1.1);
+    sunLight.position.set(0, 2, 0);
+    scene.add(sunLight);
+    const earth = new THREE.Mesh(new THREE.SphereGeometry(0.98, 128, 128), new THREE.MeshStandardMaterial({ color: 0x3a86ff, roughness: 0.4, metalness: 0.2 }));
+    const moon = new THREE.Mesh(new THREE.SphereGeometry(0.3, 80, 80), new THREE.MeshStandardMaterial({ color: 0xccaa88 }));
+    scene.add(earth);
+    scene.add(moon);
+    const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 300);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: false });
+    
+    let controls = null;
+    let followSat = null;
+    let shipActive = false;
+    
+    if (currentMode === 'group' && !isAlert) {
+      controls = new OrbitControls(camera, canvas);
+      camera.position.set(7, 4.5, 12);
+      controls.target.set(0, 0, 0);
+      controls.update();
+    }
+    if (currentMode === 'single' && !isAlert) followSat = activeSatIndex;
+    if (currentMode === 'ship' && !isAlert) shipActive = true;
+    
+    const winObj = {
+      id: camId,
+      card,
+      scene,
+      camera,
+      renderer,
+      controls,
+      followSat,
+      isAlert: isAlert || false,
+      canvas,
+      earth,
+      moon,
+      shipActive
+    };
+    cameraWindows.push(winObj);
+    
+    let timeOffset = camId * 0.67;
+    let shipAngle = 0;
+    function animateCam() {
+      if (!winObj.renderer) return;
+      const t = performance.now() * 0.0022 + timeOffset;
+      moon.position.x = Math.sin(t * 0.9) * 2.7;
+      moon.position.z = Math.cos(t * 0.9) * 2.7;
+      earth.rotation.y += 0.003;
+      
+      if (winObj.shipActive && !winObj.isAlert) {
+        shipAngle += 0.009;
+        let rad = 9.5 + Math.sin(shipAngle * 0.4) * 1.8;
+        winObj.camera.position.set(Math.sin(shipAngle) * rad, Math.sin(shipAngle * 1.6) * 2.2, Math.cos(shipAngle) * rad);
+        winObj.camera.lookAt(0, 0, 0);
+      }
+      else if (winObj.followSat !== null && !winObj.controls) {
+        let sp = getSatPos(winObj.followSat, t);
+        let dist = 2.2 / Math.max(0.3, currentZoom);
+        let offDir = new THREE.Vector3(1.2, 0.7, 1.2).normalize();
+        let desired = sp.clone().add(offDir.multiplyScalar(dist));
+        winObj.camera.position.lerp(desired, 0.12);
+        winObj.camera.lookAt(sp);
+      }
+      else if (winObj.controls) {
+        winObj.controls.update();
+      }
+      // resize handling
+      const container = winObj.card.querySelector('.cam-preview');
+      if (container) {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        if (w && h && (winObj.renderer.domElement.width !== w || winObj.renderer.domElement.height !== h)) {
+          winObj.renderer.setSize(w, h);
+          winObj.camera.aspect = w / h;
+          winObj.camera.updateProjectionMatrix();
+        }
+      }
+      winObj.renderer.render(winObj.scene, winObj.camera);
+      requestAnimationFrame(animateCam);
+    }
+    animateCam();
+    
+    // resize observer
+    const resizeObs = new ResizeObserver(() => {
+      const rect = card.querySelector('.cam-preview');
+      if (rect && winObj.renderer) {
+        const w = rect.clientWidth, h = rect.clientHeight;
+        if (w && h) {
+          winObj.renderer.setSize(w, h);
+          winObj.camera.aspect = w / h;
+          winObj.camera.updateProjectionMatrix();
+        }
+      }
+    });
+    resizeObs.observe(card);
+    return winObj;
+  }
+
+  function refreshAllModes() {
+    cameraWindows.forEach(win => {
+      if (win.isAlert) return;
+      if (currentMode === 'single') {
+        if (win.controls) { win.controls.dispose(); win.controls = null; }
+        win.followSat = activeSatIndex;
+        win.shipActive = false;
+      }
+      else if (currentMode === 'group') {
+        if (!win.controls) {
+          win.controls = new OrbitControls(win.camera, win.canvas);
+          win.camera.position.set(7, 4.5, 12);
+          win.controls.target.set(0, 0, 0);
+          win.controls.update();
+        }
+        win.followSat = null;
+        win.shipActive = false;
+      }
+      else if (currentMode === 'ship') {
+        if (win.controls) { win.controls.dispose(); win.controls = null; }
+        win.followSat = null;
+        win.shipActive = true;
+      }
+    });
+    document.getElementById('globalModeLabel').innerText = currentMode === 'group' ? 'Group' : (currentMode === 'single' ? 'Single' : 'Ship');
+  }
+
+  function setMainCamera(win) {
+    if (mainActiveWindow === win) return;
+    mainActiveWindow = win;
+    document.getElementById('feedOverlay').innerHTML = `CH #${win.id+1} | ${currentMode.toUpperCase()}`;
+    function stream() {
+      if (mainActiveWindow && mainActiveWindow.renderer) {
+        const mainCanvas = document.getElementById('mainCanvas');
+        const ctx = mainCanvas.getContext('2d');
+        const srcCanvas = mainActiveWindow.renderer.domElement;
+        if (srcCanvas.width && srcCanvas.height) {
+          mainCanvas.width = srcCanvas.width;
+          mainCanvas.height = srcCanvas.height;
+          ctx.drawImage(srcCanvas, 0, 0, mainCanvas.width, mainCanvas.height);
+          document.getElementById('mainQuality').innerText = Math.floor(85 + Math.random() * 14) + '%';
+        }
+      }
+      requestAnimationFrame(stream);
+    }
+    stream();
+    document.querySelectorAll('.cam-card').forEach(c => c.classList.remove('selected-main'));
+    win.card.classList.add('selected-main');
+  }
+
+  function addSnapshot(url) {
+    snapshots.unshift(url);
+    if (snapshots.length > 12) snapshots.pop();
+    const gallery = document.getElementById('galleryThumbs');
+    if (gallery) {
+      gallery.innerHTML = snapshots.map((u, i) => `<img src="${u}" data-idx="${i}" style="width:48px;height:36px;object-fit:cover;">`).join('');
+      document.querySelectorAll('#galleryThumbs img').forEach(img => {
+        img.onclick = () => { let a = document.createElement('a'); a.href = img.src; a.download = `jog_shot_${Date.now()}.png`; a.click(); };
+      });
+    }
+  }
+
+  // spectrum draw
+  function drawSpectrum() {
+    const canvas = document.getElementById('spectrumCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    function draw() {
+      if (!canvas.isConnected) return;
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, 28);
+      for (let i = 0; i < 48; i++) {
+        let val = Math.random() * 18 + 4 + Math.sin(Date.now() / 180 + i / 4) * 10;
+        ctx.fillStyle = `hsl(${38 + val * 2}, 90%, 60%)`;
+        ctx.fillRect(i * 6, 28 - val, 4, val);
+      }
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  // telemetry update
+  function startTelemetry() {
+    setInterval(() => {
+      let az = Math.floor(Math.random() * 360);
+      let el = Math.floor(Math.random() * 90 - 20);
+      document.getElementById('azimuthVal').innerText = az + '°';
+      document.getElementById('elevationVal').innerText = el + '°';
+      let sig = 88 + Math.random() * 11;
+      document.getElementById('signalStrength').innerText = Math.floor(sig) + '%';
+      document.getElementById('mainQuality').innerText = Math.floor(85 + Math.random() * 14) + '%';
+    }, 1800);
+  }
+
+  // bootstrap 16 cameras (4x4)
+  function initGrid() {
+    for (let i = 0; i < 16; i++) {
+      createCameraFeed(false, i);
+    }
+    setTimeout(() => {
+      createCameraFeed(true, 99);
+      addLog("Emergency backup camera online", true);
+    }, 400);
+    // set first camera as main after short delay
+    setTimeout(() => {
+      if (cameraWindows.length) setMainCamera(cameraWindows[0]);
+    }, 200);
+  }
+
+  // event binding
+  document.getElementById('cameraGrid')?.addEventListener('click', (e) => {
+    let card = e.target.closest('.cam-card');
+    if (card) {
+      let id = parseInt(card.getAttribute('data-id'));
+      let win = cameraWindows.find(w => w.id === id);
+      if (win) setMainCamera(win);
+    }
+  });
+
+  document.getElementById('groupCamMode')?.addEventListener('click', () => {
+    currentMode = 'group';
+    document.querySelectorAll('.apex-btn').forEach(b => b.classList.remove('active-mode-btn'));
+    document.getElementById('groupCamMode').classList.add('active-mode-btn');
+    refreshAllModes();
+    addLog("Mode: GROUP VIEW (all cameras orbital)");
+  });
+  document.getElementById('singleCamMode')?.addEventListener('click', () => {
+    currentMode = 'single';
+    document.querySelectorAll('.apex-btn').forEach(b => b.classList.remove('active-mode-btn'));
+    document.getElementById('singleCamMode').classList.add('active-mode-btn');
+    refreshAllModes();
+    addLog("Mode: SINGLE CAM (tracking sat)");
+  });
+  document.getElementById('shipModeBtn')?.addEventListener('click', () => {
+    currentMode = 'ship';
+    document.querySelectorAll('.apex-btn').forEach(b => b.classList.remove('active-mode-btn'));
+    document.getElementById('shipModeBtn').classList.add('active-mode-btn');
+    refreshAllModes();
+    addLog("Mode: SHIP MODE (freefly)");
+  });
+  document.getElementById('zoomRange')?.addEventListener('input', (e) => {
+    currentZoom = parseFloat(e.target.value);
+    document.getElementById('zoomLabel').innerText = currentZoom.toFixed(1) + 'x';
+    if (currentMode === 'single') refreshAllModes();
+  });
+  document.getElementById('addCamBtn')?.addEventListener('click', () => {
+    if (cameraWindows.length < 28) createCameraFeed(false);
+    else addLog("Max camera limit reached", true);
+  });
+  document.getElementById('snapBtn')?.addEventListener('click', () => {
+    if (mainActiveWindow && mainActiveWindow.renderer) {
+      let dataURL = mainActiveWindow.renderer.domElement.toDataURL();
+      addSnapshot(dataURL);
+      addLog("Snapshot captured");
+    }
+  });
+  document.getElementById('emergencyBtn')?.addEventListener('click', () => {
+    currentZoom = 0.6;
+    document.getElementById('zoomRange').value = 0.6;
+    document.getElementById('zoomLabel').innerText = '0.6x';
+    if (currentMode === 'single') refreshAllModes();
+    addLog("EMERGENCY PROTOCOL: zoom override", true);
+  });
+  document.getElementById('cmdScan')?.addEventListener('click', () => runCommand('scan'));
+  document.getElementById('cmdContain')?.addEventListener('click', () => runCommand('contain'));
+  document.getElementById('cmdDecode')?.addEventListener('click', () => runCommand('decode'));
+  document.getElementById('cmdExpand')?.addEventListener('click', () => runCommand('expand'));
+  document.getElementById('cmdRepair')?.addEventListener('click', () => runCommand('repair'));
+  document.getElementById('sendChatBtn')?.addEventListener('click', () => {
+    let input = document.getElementById('chatInput');
+    if (input.value.trim()) {
+      addChatMessage(input.value.trim());
+      input.value = '';
+    }
+  });
+  document.getElementById('chatInput')?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') document.getElementById('sendChatBtn').click();
+  });
+
+  // periodic meta auto drift
+  setInterval(() => {
+    meta.energy = Math.min(100, meta.energy + 0.9);
+    let rInc = (Math.random() * 1.5) + (meta.grid * 0.3);
+    meta.risk = Math.min(100, meta.risk + rInc);
+    if (meta.risk > 55) meta.integrity = Math.max(0, meta.integrity - (meta.risk / 100 + meta.grid * 0.1));
+    clampMeta();
+  }, 4200);
+
+  initGrid();
+  drawSpectrum();
+  startTelemetry();
+  addLog("JOG Mission Control — Full CCP online. 16 live feeds ready.");
+</script>
+</body>
+</html>
