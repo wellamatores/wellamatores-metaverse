@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>JOG Universe — 22 Nodes | Vortices | Glitch Nexus</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Inter', 'JetBrains Mono', monospace;
+    }
+    /* UI Overlay */
+    #info-panel {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(12px);
+      border-left: 4px solid #f59e0b;
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      pointer-events: none;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    #info-panel h1 {
+      margin: 0 0 4px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #f59e0b;
+      letter-spacing: 1px;
+    }
+    #info-panel p {
+      margin: 0;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+    #status-badge {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      padding: 6px 14px;
+      border-radius: 40px;
+      border: 1px solid #f59e0b;
+      font-family: monospace;
+      font-size: 10px;
+      color: #f59e0b;
+      pointer-events: none;
+      font-weight: bold;
+    }
+    .controls-hint {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(5px);
+      padding: 8px 14px;
+      border-radius: 24px;
+      font-family: monospace;
+      font-size: 10px;
+      color: #cbd5e1;
+      border: 1px solid #3b82f6;
+      pointer-events: none;
+      letter-spacing: 0.3px;
+    }
+    @keyframes pulseNode {
+      0% { text-shadow: 0 0 0px rgba(245,158,11,0); }
+      100% { text-shadow: 0 0 6px rgba(245,158,11,0.7); }
+    }
+    .glitch-trigger {
+      animation: pulseNode 1.2s infinite alternate;
+    }
+    @media (max-width: 700px) {
+      .controls-hint { display: none; }
+      #info-panel { transform: scale(0.85); transform-origin: left bottom; bottom: 8px; left: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="info-panel">
+    <h1>🌀 JOG UNIVERSE · 22 NODES · 3 VORTICES</h1>
+    <p>Jackdaw Orbital Group | PLUTONIA sector | Glitch/Bloom active</p>
+  </div>
+  <div id="status-badge">
+    ⚡ NEXUS ONLINE | 22 WORLD CORES
+  </div>
+  <div class="controls-hint">
+    🖱️ Drag to orbit · Right-click pan · Scroll zoom
+  </div>
+
+  <!-- Import maps and Three.js modules -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { GlitchPass } from 'three/addons/postprocessing/GlitchPass.js';
+    
+    // --- setup scene, camera, renderer (fullscreen immersive) ---
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x010115);
+    scene.fog = new THREE.FogExp2(0x010115, 0.00045);
+    
+    const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 2000);
+    camera.position.set(55, 65, 145);
+    camera.lookAt(0, 5, 0);
+    
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    document.body.appendChild(renderer.domElement);
+    
+    // --- Controls for exploration ---
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.rotateSpeed = 0.8;
+    controls.zoomSpeed = 1.2;
+    controls.panSpeed = 0.8;
+    controls.target.set(0, 5, 0);
+    
+    // --- Lighting (dramatic celestial) ---
+    const ambientLight = new THREE.AmbientLight(0x111122, 0.55);
+    scene.add(ambientLight);
+    const mainDirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    mainDirLight.position.set(25, 50, 30);
+    scene.add(mainDirLight);
+    const fillLight = new THREE.PointLight(0x4466cc, 0.6);
+    fillLight.position.set(-20, 15, 40);
+    scene.add(fillLight);
+    const backRim = new THREE.PointLight(0xffaa66, 0.5);
+    backRim.position.set(-15, 20, -55);
+    scene.add(backRim);
+    
+    // --- Starfield: dense, layered ---
+    const starCount = 22000;
+    const starGeometry = new THREE.BufferGeometry();
+    const starPositions = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+      starPositions[i*3] = (Math.random() - 0.5) * 1400;
+      starPositions[i*3+1] = (Math.random() - 0.5) * 800;
+      starPositions[i*3+2] = (Math.random() - 0.5) * 700 - 200;
+    }
+    starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+    const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.28, transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending });
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+    
+    // secondary tiny stars (far distant)
+    const starGeo2 = new THREE.BufferGeometry();
+    const starPos2 = new Float32Array(15000 * 3);
+    for (let i = 0; i < 15000; i++) {
+      starPos2[i*3] = (Math.random() - 0.5) * 2000;
+      starPos2[i*3+1] = (Math.random() - 0.5) * 1000;
+      starPos2[i*3+2] = (Math.random() - 0.5) * 800 - 400;
+    }
+    starGeo2.setAttribute('position', new THREE.BufferAttribute(starPos2, 3));
+    const stars2 = new THREE.Points(starGeo2, new THREE.PointsMaterial({ color: 0xaaccff, size: 0.13, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending }));
+    scene.add(stars2);
+    
+    // --- GLOWING GALAXY SPIRAL (background nebula effect) ---
+    const galaxyCount = 14000;
+    const galPositions = new Float32Array(galaxyCount * 3);
+    const galColors = new Float32Array(galaxyCount * 3);
+    for (let i = 0; i < galaxyCount; i++) {
+      const radius = Math.pow(Math.random(), 1.2) * 130;
+      const angle = Math.random() * Math.PI * 2 + radius * 0.45;
+      const offsetY = Math.sin(radius * 0.2) * (Math.random() - 0.5) * 4.5;
+      const x = Math.cos(angle) * radius;
+      const z = Math.sin(angle) * radius;
+      const y = offsetY + (Math.random() - 0.5) * 2.2;
+      galPositions[i*3] = x;
+      galPositions[i*3+1] = y;
+      galPositions[i*3+2] = z;
+      const hue = 0.58 + (radius / 280) * 0.4; // blue to purple/orange
+      const saturation = 0.65;
+      const lightness = 0.55 + Math.random() * 0.3;
+      const color = new THREE.Color().setHSL(hue, saturation, lightness);
+      galColors[i*3] = color.r;
+      galColors[i*3+1] = color.g;
+      galColors[i*3+2] = color.b;
+    }
+    const galaxyGeometry = new THREE.BufferGeometry();
+    galaxyGeometry.setAttribute('position', new THREE.BufferAttribute(galPositions, 3));
+    galaxyGeometry.setAttribute('color', new THREE.BufferAttribute(galColors, 3));
+    const galaxyPoints = new THREE.Points(galaxyGeometry, new THREE.PointsMaterial({ size: 0.65, vertexColors: true, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.85 }));
+    scene.add(galaxyPoints);
+    
+    // --- VORTICES (wormholes / dimensional rifts) ---
+    const vortexData = [
+      { name: "GENESIS VORTEX", pos: [48, 32, -32], color: 0xffdd77, size: 12.5, emissiveIntensity: 0.95 },
+      { name: "FINAL VORTEX", pos: [8, -22, 58], color: 0xff44aa, size: 10.4, emissiveIntensity: 0.9 },
+      { name: "ABYSS VORTEX", pos: [-58, -12, -48], color: 0xaa44ff, size: 13.2, emissiveIntensity: 1.0 }
+    ];
+    const vortices = [];
+    vortexData.forEach(v => {
+      const geometry = new THREE.SphereGeometry(v.size, 96, 96);
+      const material = new THREE.MeshStandardMaterial({
+        color: v.color,
+        emissive: v.color,
+        emissiveIntensity: v.emissiveIntensity,
+        roughness: 0.25,
+        metalness: 0.7,
+        transparent: true,
+        opacity: 0.92
+      });
+      const vortex = new THREE.Mesh(geometry, material);
+      vortex.position.set(v.pos[0], v.pos[1], v.pos[2]);
+      vortex.userData = { name: v.name, isVortex: true };
+      scene.add(vortex);
+      vortices.push(vortex);
+      
+      // add inner swirling particle ring around each vortex
+      const ringParticles = 800;
+      const ringGeo = new THREE.BufferGeometry();
+      const ringPos = [];
+      for (let i = 0; i < ringParticles; i++) {
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        const r = v.size + 0.8 + Math.random() * 1.8;
+        const px = v.pos[0] + r * Math.sin(phi) * Math.cos(theta);
+        const py = v.pos[1] + r * Math.sin(phi) * Math.sin(theta) * 0.6;
+        const pz = v.pos[2] + r * Math.cos(phi);
+        ringPos.push(px, py, pz);
+      }
+      ringGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(ringPos), 3));
+      const ringPoints = new THREE.Points(ringGeo, new THREE.PointsMaterial({ color: v.color, size: 0.12, blending: THREE.AdditiveBlending }));
+      scene.add(ringPoints);
+      vortex.userData.ring = ringPoints;
+    });
+    
+    // --- 22 NODES (worlds / orbital cores) ---
+    const nodesList = [
+      { id:0, name:"GENESIS NODE", color:0xffdd99, size:5.5, pos:[48,32,-32], emissive:0x442200 },
+      { id:1, name:"MEGAPOLIS", color:0x33ccff, size:3.2, pos:[-78,22,42], emissive:0x004466 },
+      { id:2, name:"VOLCANIC REALM", color:0xff6633, size:3.5, pos:[-48,15,82], emissive:0x441100 },
+      { id:3, name:"BIO-LABYRINTH", color:0x44ffaa, size:3.2, pos:[18,14,95], emissive:0x226633 },
+      { id:4, name:"INDUSTRIAL RING", color:0xccaa77, size:3.0, pos:[-22,8,55], emissive:0x553322 },
+      { id:5, name:"ICE CITADEL", color:0x99eeff, size:3.2, pos:[-35,-8,25], emissive:0x226688 },
+      { id:6, name:"ELECTRIC NEXUS", color:0xffdd44, size:3.0, pos:[-65,12,-22], emissive:0x664400 },
+      { id:7, name:"AQUA CORE", color:0x3388ff, size:3.2, pos:[-75,3,-68], emissive:0x003366 },
+      { id:8, name:"DESERT WANDERER", color:0xffcc77, size:3.0, pos:[-42,-18,-85], emissive:0x553300 },
+      { id:9, name:"ORBITAL HUB", color:0x88bbff, size:3.4, pos:[25,-10,45], emissive:0x004477 },
+      { id:10, name:"MECHADROME", color:0xaaaaaa, size:3.0, pos:[-12,-20,18], emissive:0x333333 },
+      { id:11, name:"SHADOW KEEP", color:0x6644cc, size:3.0, pos:[-55,20,-55], emissive:0x331177 },
+      { id:12, name:"MILITARY SECTOR", color:0x888888, size:3.2, pos:[-32,-25,-45], emissive:0x222222 },
+      { id:13, name:"NEON PARADOX", color:0xff22dd, size:3.2, pos:[42,25,22], emissive:0x551155 },
+      { id:14, name:"CRYSTAL REFUGE", color:0xcc44ff, size:3.2, pos:[65,10,32], emissive:0x440066 },
+      { id:15, name:"CHAOS FRAGMENT", color:0xff1177, size:3.8, pos:[-15,28,-75], emissive:0x661122 },
+      { id:16, name:"MIRROR DOMAIN", color:0xaaffff, size:3.0, pos:[78,18,-48], emissive:0x226666 },
+      { id:17, name:"VOID MONOLITH", color:0x224466, size:3.2, pos:[22,-32,-28], emissive:0x112233 },
+      { id:18, name:"ETHEREAL PLAINS", color:0xaaccff, size:3.0, pos:[55,-8,-78], emissive:0x224466 },
+      { id:19, name:"CLOCKWORK", color:0xffccaa, size:3.2, pos:[32,-22,72], emissive:0x664422 },
+      { id:20, name:"FINAL NODE", color:0xff44cc, size:5.0, pos:[8,-22,58], emissive:0x551133 },
+      { id:21, name:"ABYSS CORE", color:0x8822ee, size:5.8, pos:[-58,-12,-48], emissive:0x331166 }
+    ];
+    
+    const nodeMeshes = [];
+    nodesList.forEach(node => {
+      const geometry = new THREE.SphereGeometry(node.size, 128, 128);
+      const material = new THREE.MeshStandardMaterial({
+        color: node.color,
+        emissive: node.emissive,
+        emissiveIntensity: 0.45,
+        roughness: 0.3,
+        metalness: 0.75,
+        flatShading: false
+      });
+      const sphere = new THREE.Mesh(geometry, material);
+      sphere.position.set(node.pos[0], node.pos[1], node.pos[2]);
+      sphere.userData = { name: node.name, id: node.id, isNode: true };
+      scene.add(sphere);
+      nodeMeshes.push(sphere);
+      
+      // tiny orbiting particles around each major node
+      const orbitCount = 180;
+      const orbGeo = new THREE.BufferGeometry();
+      const orbPositions = [];
+      for (let i = 0; i < orbitCount; i++) {
+        const rad = node.size + 0.65;
+        const angle = Math.random() * Math.PI * 2;
+        const height = (Math.random() - 0.5) * 1.6;
+        const px = node.pos[0] + Math.cos(angle) * rad;
+        const pz = node.pos[2] + Math.sin(angle) * rad;
+        const py = node.pos[1] + height;
+        orbPositions.push(px, py, pz);
+      }
+      orbGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(orbPositions), 3));
+      const orbParticles = new THREE.Points(orbGeo, new THREE.PointsMaterial({ color: node.color, size: 0.09, blending: THREE.AdditiveBlending }));
+      scene.add(orbParticles);
+      sphere.userData.orbitalDust = orbParticles;
+    });
+    
+    // --- ADD CONNECTING LINES between major clusters? subtle energy lines between vortices and special nodes ---
+    const linePoints = [
+      [[48,32,-32], [8,-22,58]],   // genesis to final
+      [[8,-22,58], [-58,-12,-48]], // final to abyss
+      [[-58,-12,-48], [48,32,-32]],
+      [[-78,22,42], [-55,20,-55]],
+      [[42,25,22], [65,10,32]],
+      [[-35,-8,25], [-12,-20,18]]
+    ];
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x77aaff, transparent: true, opacity: 0.2 });
+    linePoints.forEach(pair => {
+      const pointsArray = [
+        new THREE.Vector3(pair[0][0], pair[0][1], pair[0][2]),
+        new THREE.Vector3(pair[1][0], pair[1][1], pair[1][2])
+      ];
+      const geometry = new THREE.BufferGeometry().setFromPoints(pointsArray);
+      const line = new THREE.Line(geometry, lineMaterial);
+      scene.add(line);
+    });
+    
+    // --- glowing halo effect for each vortex (glow sprites not needed, bloom will cover) ---
+    
+    // --- POST PROCESSING (Bloom + Glitch) ---
+    const renderScene = new RenderPass(scene, camera);
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.5, 0.4);
+    bloomPass.threshold = 0.15;
+    bloomPass.strength = 1.0;
+    bloomPass.radius = 0.8;
+    const glitchPass = new GlitchPass();
+    glitchPass.goWild = false;
+    glitchPass.enabled = true;
+    // random glitch flicker (but not overwhelming)
+    setInterval(() => {
+      if (Math.random() < 0.18) {
+        glitchPass.enabled = true;
+        setTimeout(() => { glitchPass.enabled = false; }, 120);
+      } else {
+        glitchPass.enabled = false;
+      }
+    }, 2800);
+    
+    const effectComposer = new EffectComposer(renderer);
+    effectComposer.addPass(renderScene);
+    effectComposer.addPass(bloomPass);
+    effectComposer.addPass(glitchPass);
+    
+    // --- ANIMATION LOOP: nodes rotation, vortices pulsation, galaxy drift ---
+    let time = 0;
+    function animate() {
+      requestAnimationFrame(animate);
+      time += 0.018;
+      
+      // rotate each node slowly and make them breathe
+      nodeMeshes.forEach((mesh, idx) => {
+        mesh.rotation.y = time * 0.12;
+        mesh.rotation.x = Math.sin(time * 0.32 + idx) * 0.08;
+        // subtle scale pulse
+        const scaleFactor = 1 + Math.sin(time * 1.3 + idx) * 0.015;
+        mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+        if (mesh.userData.orbitalDust) {
+          mesh.userData.orbitalDust.rotation.y = time * 0.2;
+        }
+      });
+      
+      // vortices animated: pulsate and rotate inner ring
+      vortices.forEach((v, vi) => {
+        const s = 1 + Math.sin(time * 1.8 + vi) * 0.04;
+        v.scale.set(s, s, s);
+        if (v.userData.ring) {
+          v.userData.ring.rotation.y = time * 0.35;
+          v.userData.ring.rotation.x = Math.sin(time * 0.5) * 0.2;
+        }
+      });
+      
+      // galaxy spiral rotation
+      galaxyPoints.rotation.y = time * 0.02;
+      galaxyPoints.rotation.x = Math.sin(time * 0.07) * 0.05;
+      stars.rotation.y = time * 0.001;
+      stars2.rotation.x = time * 0.0008;
+      
+      controls.update(); // update orbit controls
+      effectComposer.render();
+    }
+    
+    animate();
+    
+    // --- RESIZE HANDLER ---
+    window.addEventListener('resize', onWindowResize, false);
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      effectComposer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    
+    // small flying orbs effect: extra meteoric dust (cosmetic)
+    const dustCount = 1800;
+    const dustGeo = new THREE.BufferGeometry();
+    const dustPositions = [];
+    for (let i = 0; i < dustCount; i++) {
+      dustPositions.push((Math.random() - 0.5) * 200, (Math.random() - 0.5) * 140, (Math.random() - 0.5) * 180);
+    }
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(dustPositions), 3));
+    const dustMat = new THREE.PointsMaterial({ color: 0xffaa55, size: 0.06, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
+    const dustPoints = new THREE.Points(dustGeo, dustMat);
+    scene.add(dustPoints);
+    
+    // drifting dust animation
+    function animateDust() {
+      requestAnimationFrame(animateDust);
+      dustPoints.rotation.y += 0.0008;
+      dustPoints.rotation.x += 0.0004;
+    }
+    animateDust();
+    
+    // optional: interactive glitch boost? small random glitch events on click for fun
+    window.addEventListener('click', (e) => {
+      // if user clicks somewhere, tiny glitch effect
+      if (Math.random() > 0.6) {
+        glitchPass.enabled = true;
+        setTimeout(() => { glitchPass.enabled = false; }, 80);
+      }
+    });
+    
+    // console info
+    console.log('🌀 JOG Universe — 22 Nodes + 3 Vortices | Bloom & Glitch active | PLUTONIA sector');
+    
+    // small label to show in overlay - no need extra
+    const style = document.createElement('style');
+    style.textContent = `
+      body { margin: 0; overflow: hidden; background: #000; }
+      canvas { display: block; }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
