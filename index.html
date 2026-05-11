@@ -7,99 +7,49 @@
   <meta name="description" content="Wellamatores World — living magtechbiocyberpunk dimension. JOG (Jackdaw Orbital Group) — multimodal orbital network. PLUTONIA. Le Bureau des Colonies under Regent's command.">
   <meta name="keywords" content="Wellamatores, game, universe, biocyberpunk, MagTech, procedural generation, Three.js, 13 worlds, JOG, Jackdaw, Le Bureau des Colonies, Regent, Plutonia">
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
+  <!-- FIX #7: Added missing Rajdhani and Orbitron fonts used in .seed-gate CSS -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  
   <style>
     .seed-gate {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: radial-gradient(ellipse at 40% 50%, #030514, #000000);
-      z-index: 100000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
+      z-index: 100000; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; cursor: pointer;
       transition: opacity 1.8s cubic-bezier(0.23, 1, 0.32, 1), visibility 1.8s;
       font-family: 'Rajdhani', 'Orbitron', monospace;
     }
-    .seed-gate.hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
+    .seed-gate.hidden { opacity: 0; visibility: hidden; }
     .bean-container {
-      position: relative;
-      width: 260px;
-      height: 260px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative; width: 260px; height: 260px;
+      display: flex; align-items: center; justify-content: center;
       filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
       transition: transform 0.2s ease;
     }
     .bean-container:hover { transform: scale(1.02); }
     .bean-glow {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
+      position: absolute; width: 100%; height: 100%; border-radius: 50%;
       background: radial-gradient(circle, rgba(0,212,255,0.25) 0%, rgba(255,0,170,0.15) 60%, transparent 90%);
-      animation: pulseGlowBean 2.5s infinite alternate;
-      filter: blur(6px);
+      animation: pulseGlowBean 2.5s infinite alternate; filter: blur(6px);
     }
     .bean-svg {
-      position: relative;
-      width: 160px;
-      height: 200px;
+      position: relative; width: 160px; height: 200px;
       filter: drop-shadow(0 0 8px #00d4ff88);
       animation: floatBean 4s infinite ease-in-out;
     }
-    .gate-text {
-      margin-top: 30px;
-      text-align: center;
-      color: #00d4ff;
-      letter-spacing: 5px;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-    }
-    .gate-sub {
-      font-size: 0.7rem;
-      color: #ff00aa;
-      margin-top: 10px;
-      letter-spacing: 3px;
-    }
-    @keyframes pulseGlowBean {
-      0% { opacity: 0.3; transform: scale(0.92); }
-      100% { opacity: 0.9; transform: scale(1.15); }
-    }
-    @keyframes floatBean {
-      0% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-10px) rotate(2deg); }
-      100% { transform: translateY(0px) rotate(0deg); }
-    }
-    #originalContent {
-      opacity: 0;
-      visibility: hidden;
-      filter: blur(15px);
-      transition: opacity 1.8s cubic-bezier(0.23, 1, 0.32, 1),
-                  visibility 1.8s,
-                  filter 1.5s ease-out;
-    }
-    #originalContent.visible {
-      opacity: 1;
-      visibility: visible;
-      filter: blur(0px);
-    }
+    .gate-text { margin-top: 30px; text-align: center; color: #00d4ff; letter-spacing: 5px; font-size: 0.85rem; text-transform: uppercase; }
+    .gate-sub { font-size: 0.7rem; color: #ff00aa; margin-top: 10px; letter-spacing: 3px; }
+    @keyframes pulseGlowBean { 0% { opacity: 0.3; transform: scale(0.92);} 100% { opacity: 0.9; transform: scale(1.15);} }
+    @keyframes floatBean { 0% { transform: translateY(0px) rotate(0deg);} 50% { transform: translateY(-10px) rotate(2deg);} 100% { transform: translateY(0px) rotate(0deg);} }
+    .spark-particle { position: fixed; width: 6px; height: 6px; border-radius: 50%; pointer-events: none; z-index: 100001; filter: blur(1px); opacity: 0; }
+    @keyframes sparkFly { 0% { transform: scale(0.2) translate(0,0); opacity: 0; } 30% { opacity: 1; } 100% { transform: scale(1.6) translate(var(--tx), var(--ty)); opacity: 0; } }
+    #originalContent { opacity: 0; visibility: hidden; filter: blur(15px); transition: opacity 1.8s cubic-bezier(0.23, 1, 0.32, 1), visibility 1.8s, filter 1.5s ease-out; }
+    #originalContent.visible { opacity: 1; visibility: visible; filter: blur(0px); }
+  </style>
+  
+  <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background-color: #030303;
-      background-image: radial-gradient(circle at 25% 40%, rgba(245, 158, 11, 0.08) 0%, rgba(0,0,0,0) 55%);
-      overflow-x: hidden;
-    }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #030303; background-image: radial-gradient(circle at 25% 40%, rgba(245, 158, 11, 0.08) 0%, rgba(0,0,0,0) 55%); overflow-x: hidden; }
     .glass-panel { background: rgba(10,10,12,0.65); backdrop-filter: blur(12px); border: 1px solid rgba(245,158,11,0.25); }
     .btn-enter { transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1.1); box-shadow: 0 0 12px rgba(245,158,11,0.3); }
     .btn-enter:hover { transform: scale(1.03); box-shadow: 0 0 28px rgba(245,158,11,0.6); background: #ffffff; color: #0a0a0c; }
@@ -119,18 +69,65 @@
     .fullscreen-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border: 2px solid #f59e0b; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-family: monospace; font-weight: bold; color: #f59e0b; cursor: pointer; z-index: 25; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
     .fullscreen-btn:hover { background: #f59e0b; color: #000; box-shadow: 0 0 15px #f59e0b; }
     .three-wrapper { position: relative; border-radius: 1rem; overflow: hidden; }
-    .loading-spinner { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); border-radius: 20px; padding: 20px 30px; z-index: 40000; display: none; align-items: center; gap: 15px; border: 1px solid #f59e0b; font-family: monospace; color: #f59e0b; }
-    .loading-spinner.active { display: flex; }
-    .spinner { width: 24px; height: 24px; border: 3px solid rgba(245,158,11,0.3); border-top-color: #f59e0b; border-radius: 50%; animation: spin 0.8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .jog-nav-item { font-weight: 600; cursor: pointer; }
+    .info-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 20000; display: none; align-items: center; justify-content: center; overflow-y: auto; }
+    .info-modal.active { display: flex; }
+    .info-modal-content { max-width: 900px; width: 90%; max-height: 85vh; background: #0a0a0f; border: 1px solid #3b82f6; border-radius: 24px; overflow-y: auto; margin: 30px auto; box-shadow: 0 0 50px rgba(59,130,246,0.3); }
+    .info-modal-header { background: linear-gradient(135deg, #0f172a, #020617); padding: 20px 28px; border-bottom: 1px solid #3b82f6; position: sticky; top: 0; z-index: 10; }
+    .info-modal-body { padding: 28px; color: #cbd5e1; font-size: 14px; line-height: 1.6; }
+    .info-modal-close { background: rgba(59,130,246,0.2); border: 1px solid #3b82f6; color: #60a5fa; border-radius: 40px; padding: 6px 18px; font-family: monospace; cursor: pointer; transition: 0.2s; }
+    .info-modal-close:hover { background: #3b82f6; color: white; }
+    .jog-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+    .jog-table td, .jog-table th { border: 1px solid #334155; padding: 8px 12px; vertical-align: top; }
+    .jog-table th { background: #1e293b; color: #60a5fa; font-weight: 600; }
+    .regent-query { border-left: 3px solid #f59e0b; background: rgba(245,158,11,0.08); }
+    .blink-green { animation: greenBlink 1.2s ease-in-out infinite; font-weight: 600; text-shadow: 0 0 5px rgba(16,185,129,0.5); }
+    @keyframes greenBlink { 0%, 100% { color: #34d399; opacity: 1; text-shadow: 0 0 2px #10b981; } 50% { color: #065f46; opacity: 0.7; text-shadow: 0 0 8px #10b981; } }
+    .pulsing-dot-blue { position: relative; display: inline-flex; width: 8px; height: 8px; cursor: pointer; }
+    .pulsing-dot-blue::before { content: ''; position: absolute; width: 100%; height: 100%; background-color: #3b82f6; border-radius: 50%; opacity: 0.8; animation: pingBlue 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; }
+    .pulsing-dot-blue::after { content: ''; position: absolute; width: 100%; height: 100%; background-color: #60a5fa; border-radius: 50%; }
+    @keyframes pingBlue { 75%, 100% { transform: scale(2.5); opacity: 0; } }
+    .jog-text-btn { cursor: pointer; }
     .sound-toggle { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #f59e0b; border-radius: 40px; padding: 8px 16px; font-size: 12px; font-family: monospace; color: #f59e0b; cursor: pointer; z-index: 1000; transition: 0.2s; }
     .sound-toggle:hover { background: #f59e0b; color: black; }
     .tour-btn { position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #3b82f6; border-radius: 40px; padding: 8px 16px; font-size: 12px; font-family: monospace; color: #3b82f6; cursor: pointer; z-index: 1000; transition: 0.2s; }
     .tour-btn:hover { background: #3b82f6; color: black; }
+    @media (max-width: 768px) { .three-container, .three-full-container { height: 240px; } }
+    .social-hub { background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(5,5,20,0.95) 100%); backdrop-filter: blur(8px); border: 1px solid rgba(245,158,11,0.3); transition: all 0.3s ease; cursor: pointer; }
+    .social-hub:hover { border-color: rgba(245,158,11,0.7); box-shadow: 0 0 30px rgba(245,158,11,0.2); transform: scale(1.01); }
+    .social-icon { transition: all 0.25s cubic-bezier(0.2,0.9,0.4,1.1); display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(245,158,11,0.2); color: #f59e0b; font-size: 1.5rem; }
+    .social-icon:hover { transform: translateY(-5px) scale(1.05); background: #f59e0b; color: #000; border-color: #f59e0b; box-shadow: 0 8px 25px rgba(245,158,11,0.4); }
+    .social-platform-card { background: rgba(10,10,20,0.6); backdrop-filter: blur(4px); border-radius: 20px; padding: 12px; transition: all 0.2s; border: 1px solid rgba(245,158,11,0.15); }
+    .social-platform-card:hover { border-color: rgba(245,158,11,0.5); background: rgba(20,20,35,0.8); transform: translateY(-2px); }
+    .fullscreen-hub-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000ee; backdrop-filter: blur(24px); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; overflow-y: auto; padding: 40px 20px; }
+    .fullscreen-hub-modal.active { display: flex; }
+    .fullscreen-close-btn { position: fixed; top: 30px; right: 30px; background: rgba(245,158,11,0.2); border: 2px solid #f59e0b; color: #f59e0b; border-radius: 50px; padding: 10px 25px; font-family: monospace; cursor: pointer; transition: 0.2s; z-index: 100000; font-weight: bold; }
+    .fullscreen-close-btn:hover { background: #f59e0b; color: #000; transform: scale(1.02); }
+    .regent-channel { transition: all 0.2s cubic-bezier(0.2,0.9,0.4,1.1); cursor: pointer; }
+    .loading-spinner { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); border-radius: 20px; padding: 20px 30px; z-index: 40000; display: none; align-items: center; gap: 15px; border: 1px solid #f59e0b; font-family: monospace; color: #f59e0b; }
+    .loading-spinner.active { display: flex; }
+    .spinner { width: 24px; height: 24px; border: 3px solid rgba(245,158,11,0.3); border-top-color: #f59e0b; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .jog-placeholder-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.97); backdrop-filter: blur(12px); z-index: 15000; display: none; align-items: center; justify-content: center; }
+    .jog-placeholder-modal.active { display: flex; }
+    .jog-placeholder-content { background: linear-gradient(135deg, #0a0a1a, #020210); border: 2px solid #f59e0b; border-radius: 32px; padding: 40px 50px; max-width: 500px; text-align: center; box-shadow: 0 0 60px rgba(245,158,11,0.3); }
+    .jog-placeholder-content h2 { color: #f59e0b; font-size: 28px; margin-bottom: 16px; font-family: monospace; }
+    .jog-placeholder-content p { color: #cbd5e1; margin-bottom: 24px; }
+    .jog-placeholder-close { background: #f59e0b; border: none; padding: 10px 28px; border-radius: 40px; font-weight: bold; cursor: pointer; font-family: monospace; }
+    .jog-placeholder-close:hover { background: #ffcc44; transform: scale(1.02); }
+    .ccp-placeholder-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000000dd; backdrop-filter: blur(15px); z-index: 15001; display: none; align-items: center; justify-content: center; }
+    .ccp-placeholder-modal.active { display: flex; }
+    .ccp-placeholder-content { background: radial-gradient(circle at 30% 20%, #0a0a2a, #010108); border: 3px solid #ffaa33; border-radius: 40px; padding: 45px 55px; max-width: 550px; text-align: center; box-shadow: 0 0 70px rgba(255,170,51,0.5); }
+    .ccp-placeholder-content h2 { color: #ffaa33; font-size: 32px; margin-bottom: 20px; font-family: 'Orbitron', monospace; letter-spacing: 2px; }
+    .ccp-placeholder-content p { color: #bbddff; margin-bottom: 28px; line-height: 1.6; }
+    .ccp-placeholder-close { background: #ffaa33; border: none; padding: 12px 32px; border-radius: 60px; font-weight: bold; font-size: 16px; cursor: pointer; font-family: monospace; transition: 0.2s; }
+    .ccp-placeholder-close:hover { background: #ffdd88; transform: scale(1.02); box-shadow: 0 0 20px #ffaa33; }
+    .webgl-fallback { display: flex; align-items: center; justify-content: center; height: 100%; color: #f59e0b; font-family: monospace; font-size: 14px; background: #050510; }
   </style>
 </head>
 <body>
 
+<!-- GATE LAYER -->
 <div id="seedGate" class="seed-gate">
   <div class="bean-container">
     <div class="bean-glow"></div>
@@ -156,16 +153,61 @@
   <div class="gate-sub">›› click for resonance ‹‹</div>
 </div>
 
+<!-- ORIGINAL CONTENT -->
 <div id="originalContent">
   <div id="loadingSpinner" class="loading-spinner"><div class="spinner"></div><span>INITIALIZING JOG NETWORK...</span></div>
 
+  <!-- FIX #1: Corrected nav div nesting — removed spurious extra closing divs -->
+  <nav class="fixed top-0 left-0 w-full z-50 py-4 px-6 bg-black/40 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></div>
+        <span class="font-bold tracking-tighter text-xl italic bg-gradient-to-r from-amber-400 to-white bg-clip-text text-transparent">WELLAMATORES</span>
+      </div>
+      <div class="flex flex-wrap justify-center gap-3 text-xs md:text-sm font-mono font-medium text-white/70">
+        <a href="Realty.html" class="hover:text-amber-400 transition">📡 Real estate</a>
+        <a href="DAO.html" class="hover:text-amber-400 transition">⚖️ DAO</a>
+        <a href="culture.html" class="hover:text-amber-400 transition">🏛️ CULTURAL NAVIGATOR</a>
+        <a href="NPC.html" class="hover:text-amber-400 transition">👾 NPC REALM</a>
+        <a href="COMMUNITY.html" class="hover:text-amber-400 transition">🌍 COMMUNITY</a>
+        <a href="COMMUNICATIONS.html" class="hover:text-amber-400 transition">📡 COMMUNICATION</a>
+        <a href="NAVIGATOR%20NOMAND%20JACKDAW.html" class="hover:text-amber-400 transition">🧭 EXPLORE</a>
+        <a href="LABS.html" class="hover:text-amber-400 transition">⚗️ LABS</a>
+        <a href="EXO.html" class="hover:text-amber-400 transition">🪐 EXO Trading</a>
+        <a href="Market.html" class="hover:text-amber-400 transition">🛒 MARKETPLACE</a>
+        <a href="STAKING.html" class="hover:text-amber-400 transition">💰 STAKING</a>
+        <a href="genesis.html" class="hover:text-amber-400 transition">🌀 GENESIS</a>
+        <a href="investarium.html" class="hover:text-amber-400 transition">🏦 INVESTARIUM</a>
+        <a href="AFFILIATE.html" class="hover:text-amber-400 transition">🤝 AFFILIATE</a>
+        <a href="ARCHIVE.html" class="hover:text-amber-400 transition">📚 ARCHIVE</a>
+        <!-- FIX #3: Separated the pulsing dot trigger from the nav link to avoid conflicting UX -->
+        <div class="flex items-center gap-1.5 jog-nav-item">
+          <span class="pulsing-dot-blue" id="jogGalaxyTrigger" title="Open JOG Network info"></span>
+          <a href="Nodes.html" class="hover:text-amber-400 transition">💰 JOG Network</a>
+        </div>
+        <!-- FIX #2: Added explicit "JOG INFO" button that actually triggers the jogInfoModal -->
+        <span id="jogInfoTrigger" class="hover:text-amber-400 transition cursor-pointer jog-text-btn" title="Open JOG Network dossier">📡 JOG INFO</span>
+      </div>
+    </div>
+  </nav>
+
   <main class="pt-20">
+    <!-- Hero Section -->
     <section class="relative overflow-hidden px-6 py-20 md:py-28">
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-1/4 left-1/3 w-96 h-96 rounded-full bg-amber-500/5 blur-[80px] floating-orb"></div>
+        <div class="absolute bottom-10 right-5 w-80 h-80 rounded-full bg-orange-600/10 blur-[100px] animate-pulse"></div>
+      </div>
       <div class="max-w-5xl mx-auto text-center relative z-10">
-        <h1 class="spaced-title text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.1] bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent">WELCOME TO THE<br>GAME UNIVERSE</h1>
-        <p class="text-stone-300 text-lg md:text-xl max-w-2xl mx-auto mt-6 leading-relaxed">Enter <span class="text-amber-400 font-semibold">Wellamatores World</span> — a living <span class="text-amber-300 font-medium">magtechbiocyberpunk</span> dimension.<br><span class="text-emerald-400 font-mono text-sm">JOG Network • <span class="blink-green">PLUTONIA</span> • Le Bureau des Colonies (JACKDAW codename)</span></p>
-        <div class="mt-12">
-          <button id="enterWorldBtn" class="btn-enter bg-white text-black px-10 py-4 rounded-full font-black text-lg md:text-xl tracking-wide flex items-center gap-3 mx-auto transition-all group">
+        <div class="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm rounded-full px-4 py-1.5 border border-white/10 mb-6">
+          <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+          <span class="text-[10px] font-mono tracking-wider text-amber-300">
+            <a href="Bureau.html" class="hover:text-amber-400 transition-colors">LE BUREAU:JACKDAW</a>  •  
+            <span id="orbitalCamerasTrigger" class="cursor-pointer hover:text-amber-400 transition-colors font-bold">ORBITAL CAMERAS</span>  •  
+            REGENT'S OFFICE  •  
+            SHAREHOLDERS
+          </span>
+    items-center gap-3 mx-auto transition-all group">
             <span>ENTER THE WORLD</span>
           </button>
         </div>
