@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title> TerraTrampilleraVerse Holding JOG NETWORK — COMPLETE DESCRIPTION | Interstellar Corporate Database</title>
+  <!-- Tailwind + Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@300;400;500;600&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: radial-gradient(circle at 20% 30%, #020617, #000000);
+      font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
+    }
+    
+    /* custom sci-fi glows & borders */
+    .glow-border {
+      position: relative;
+      border: 1px solid rgba(59,130,246,0.4);
+      background: rgba(2,6,23,0.65);
+      backdrop-filter: blur(3px);
+      transition: all 0.2s ease;
+    }
+    
+    .glow-border:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 0 12px rgba(59,130,246,0.4);
+    }
+    
+    .neon-text-blue {
+      text-shadow: 0 0 6px #3b82f6, 0 0 12px #2563eb;
+    }
+    
+    .scanlines {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .scanlines::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(0deg, rgba(0,255,255,0.02) 0px, rgba(0,255,255,0.02) 2px, transparent 2px, transparent 6px);
+      pointer-events: none;
+      z-index: 2;
+    }
+    
+    .crt-effect {
+      animation: flicker 0.15s infinite;
+    }
+    
+    @keyframes flicker {
+      0% { opacity: 0.97; }
+      100% { opacity: 1; }
+    }
+    
+    .side-deco {
+      background: linear-gradient(135deg, #0f172a 0%, #030712 100%);
+      border-right: 1px solid #1e293b;
+    }
+    
+    .badge-glint {
+      background: linear-gradient(120deg, #1e293b, #0f172a, #1e1e3f);
+      border-left: 3px solid #3b82f6;
+    }
+    
+    .archive-badge {
+      font-family: 'Orbitron', monospace;
+      letter-spacing: 2px;
+    }
+    
+    /* custom table styles */
+    .info-table tr td:first-child {
+      font-weight: 500;
+      color: #93c5fd;
+      letter-spacing: 0.3px;
+      border-right: 1px solid #1e293b;
+      background: rgba(15, 23, 42, 0.6);
+    }
+    
+    .info-table tr td {
+      padding: 0.85rem 1.25rem;
+      border-bottom: 1px solid #1e293b;
+    }
+    
+    .info-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .status-active {
+      background: #022c22;
+      color: #4ade80;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 6px #22c55e60;
+    }
+    
+    /* division grid pills */
+    .division-pill {
+      background: rgba(37, 99, 235, 0.2);
+      border: 0.5px solid #3b82f6;
+      border-radius: 40px;
+      padding: 0.2rem 1rem;
+      font-size: 0.7rem;
+      font-weight: 500;
+      backdrop-filter: blur(2px);
+    }
+    
+    .platform-pill {
+      background: rgba(100, 116, 139, 0.3);
+      border-left: 2px solid #60a5fa;
+      padding: 0.2rem 0.8rem;
+      font-size: 0.7rem;
+    }
+    
+    @keyframes pulse-border {
+      0% { border-color: #3b82f670; box-shadow: 0 0 0px #3b82f6; }
+      100% { border-color: #60a5fa; box-shadow: 0 0 10px #3b82f6; }
+    }
+    
+    .live-data {
+      animation: pulse-border 2s infinite alternate;
+    }
+  </style>
+</head>
+<body class="min-h-screen p-5 md:p-8 crt-effect scanlines">
+
+  <div class="max-w-7xl mx-auto relative">
+    
+    <!-- MAIN DOSSIER CARD -->
+    <div class="rounded-2xl overflow-hidden shadow-2xl shadow-blue-950/60 border border-blue-500/40 bg-black/40 backdrop-blur-sm">
+      
+      <!-- HEADER: JOG ARCHIVE -->
+      <div class="bg-gradient-to-r from-[#030712] via-[#0f172a] to-[#030712] px-6 py-5 border-b border-blue-500/50 flex flex-col md:flex-row justify-between md:items-center gap-3">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center border border-blue-500">
+            <span class="text-blue-400 font-bold text-xl">J</span>
+          </div>
+          <div>
+            <p class="text-[10px] tracking-[0.3em] text-blue-400 font-mono">// JOG NETWORK ARCHIVE //</p>
+            <h1 class="text-2xl md:text-3xl font-bold tracking-tighter text-white"><span class="text-blue-400 neon-text-blue">JOG NETWORK</span> — COMPLETE DESCRIPTION</h1>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="flex gap-2 items-center justify-end">
+            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-[11px] font-mono text-emerald-300">LIVE FEED | ENCRYPTED</span>
+          </div>
+          <p class="text-xs text-blue-300/70 mt-1 font-mono">DOSSIER ID: JOG-NET-0001-A // CLEARANCE: OMEGA-7</p>
+        </div>
+      </div>
+      
+      <!-- 2-COLUMN layout: sidebar + main -->
+      <div class="grid grid-cols-1 lg:grid-cols-12">
+        
+        <!-- LEFT SIDEBAR: corporate association + network structure (from second image data) -->
+        <div class="lg:col-span-3 bg-[#020617]/80 border-r border-blue-500/30 p-5 space-y-6">
+          <div class="space-y-1">
+            <p class="text-[11px] font-mono text-blue-400 tracking-wider">CORPORATE ASSOCIATION</p>
+            <div class="space-y-2 text-sm">
+              <div><span class="text-blue-300 text-xs">Full Name</span><br><span class="text-white font-medium">Network Orbital Group (JOG)</span></div>
+              <div><span class="text-blue-300 text-xs">Structure Type</span><br><span class="text-gray-200">Multimodal Orbital Network</span></div>
+              <div><span class="text-blue-300 text-xs">Founder / Operator</span><br><span class="text-gray-200">TerraTrampilleraVerse Holding / Le Bureau des Colonies (JACKDAW)</span></div>
+              <div><span class="text-blue-300 text-xs">Headquarters (alternate)</span><br><span class="text-gray-200">JOG-X Station "Plutonia"</span></div>
+            </div>
+          </div>
+          
+          <div class="border-t border-blue-500/30 pt-4">
+            <p class="text-[11px] font-mono text-blue-400 tracking-wider">NETWORK STRUCTURE</p>
+            <p class="text-sm text-gray-300 mt-1 leading-relaxed">JOG is <span class="text-blue-300 font-semibold">NOT</span> a single station, but a <span class="text-blue-300">NETWORK</span> of multiple nodes, platforms, and orbital clusters spanning known space.</p>
+          </div>
+          
+          <div class="border-t border-blue-500/30 pt-4">
+            <p class="text-[11px] font-mono text-blue-400 tracking-wider">PRIMARY DIVISIONS</p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <span class="division-pill">JOG Studios</span>
+              <span class="division-pill">JOG Entertainment</span>
+              <span class="division-pill">JOG Originals</span>
+              <span class="division-pill">JOG Animation</span>
+              <span class="division-pill">JOG Music</span>
+              <span class="division-pill">JOG Gaming</span>
+              <span class="division-pill">JOG Education</span>
+              <span class="division-pill">JOG Live</span>
+            </div>
+          </div>
+          
+          <div class="border-t border-blue-500/30 pt-4">
+            <p class="text-[11px] font-mono text-blue-400 tracking-wider">KEY PLATFORMS</p>
+            <div class="flex flex-wrap gap-2 mt-2">
+              <span class="platform-pill text-xs">YouTube</span>
+              <span class="platform-pill text-xs">JOG OS (Proprietary)</span>
+              <span class="platform-pill text-xs">JOG Hub</span>
+              <span class="platform-pill text-xs">HoloNet Channels</span>
+              <span class="platform-pill text-xs">Partner Networks</span>
+            </div>
+          </div>
+          
+          <div class="bg-blue-950/30 p-3 rounded-lg border-l-4 border-blue-500 mt-2">
+            <p class="text-[10px] uppercase tracking-wider text-blue-300">MOTTO</p>
+            <p class="text-white italic text-sm">"One Network. Infinite Stories."</p>
+          </div>
+        </div>
+        
+        <!-- MAIN CONTENT: RIGHT side (9 cols) -->
+        <div class="lg:col-span-9 p-6">
+          
+          <!-- 1. NETWORK OVERVIEW TABLE -->
+          <div class="mb-8">
+            <div class="flex items-center gap-2 mb-3">
+              <div class="w-1 h-5 bg-blue-500 rounded-full"></div>
+              <h2 class="text-blue-400 text-sm font-mono font-semibold tracking-wider">1. NETWORK OVERVIEW</h2>
+            </div>
+            <div class="glow-border rounded-xl overflow-hidden">
+              <table class="w-full info-table text-sm">
+                <tr><td class="w-2/5">NAME</td><td class="font-medium text-white">JOG Network</td></tr>
+                <tr><td>TYPE</td><td class="text-white">Interstellar Media & Entertainment Network</td></tr>
+                <tr><td>FOUNDED</td><td class="text-white">Stardate 2471.33.14</td></tr>
+                <tr><td>FOUNDER / CEO</td><td class="text-white">JOG (Yurii I. Z.)</td></tr>
+                <tr><td>HEADQUARTERS</td><td class="text-white">JOG Prime Station, Helios Belt, Sol Sector</td></tr>
+                <tr><td>NETWORK SLOGAN</td><td class="text-white italic">"Stories Beyond Worlds. Unity Beyond Limits."</td></tr>
+                <tr><td>STATUS</td><td><span class="status-active">● ACTIVE</span></td></tr>
+                <tr><td>SCOPE</td><td class="text-white">Multiversal Reach (Physical & Digital)</td></tr>
+                <tr><td>CORE PURPOSE</td><td class="text-white">To entertain, inspire, and connect civilizations through immersive storytelling.</td></tr>
+              </table>
+            </div>
+          </div>
+          
+          <!-- 2. OFFICIAL TRAILER SECTION (YOUTUBE) + Signature slogan -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div>
+              <div class="flex items-center gap-2 mb-3">
+                <div class="w-1 h-5 bg-blue-500 rounded-full"></div>
+                <h2 class="text-blue-400 text-sm font-mono font-semibold tracking-wider">2. OFFICIAL TRAILER (YOUTUBE)</h2>
+              </div>
+              <div class="rounded-xl overflow-hidden border border-blue-500/60 shadow-lg shadow-blue-900/40">
+                <iframe class="w-full aspect-video" 
+                        src="https://www.youtube.com/embed/DHX1yP8Tz-w?si=PPR6QO80HJXgjGfV" 
+                        title="JOG Network official cinematic trailer" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen></iframe>
+              </div>
+              <p class="text-[11px] text-blue-400/70 mt-2 text-center font-mono">/// INTERSTELLAR PREVIEW: "STORIES BEYOND WORLDS" ///</p>
+            </div>
+            
+            <!-- Audience + signature block -->
+            <div class="bg-black/30 rounded-xl border border-blue-500/30 p-4 flex flex-col justify-between">
+              <div>
+                <p class="text-xs text-blue-300 uppercase tracking-wider">Audience Coverage</p>
+                <p class="text-lg font-bold text-white mt-1">All Sapient Beings Across Known Space</p>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  <span class="text-xs px-2 py-1 bg-blue-950/40 rounded-full text-blue-300">Human & Transhuman</span>
+                  <span class="text-xs px-2 py-1 bg-blue-950/40 rounded-full text-blue-300">Synthetic Lifeforms</span>
+                  <span class="text-xs px-2 py-1 bg-blue-950/40 rounded-full text-blue-300">Xenocivilizations</span>
+                  <span class="text-xs px-2 py-1 bg-blue-950/40 rounded-full text-blue-300">HoloNet Subscribers</span>
+                </div>
+              </div>
+              <div class="mt-5 pt-3 border-t border-blue-500/20">
+                <p class="text-xs text-blue-400 uppercase">signature</p>
+                <p class="text-sm text-gray-300 italic">High-quality, cinematic content with a vision of unity, imagination, and exploration.</p>
+                <p class="text-right text-blue-300 text-sm font-mono mt-2">— JOG Directorate</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 3. NOTES & DESIGN SCHEMATICS (Combining schematics + notes + 'three suns' dark griffin nod) -->
+          <div>
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-1 h-5 bg-blue-500 rounded-full"></div>
+              <h2 class="text-blue-400 text-sm font-mono font-semibold tracking-wider">3. NOTES &amp; DESIGN SCHEMATICS</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <!-- Notes block -->
+              <div class="md:col-span-2 glow-border rounded-xl p-5">
+                <h3 class="text-blue-300 text-sm font-semibold mb-3 flex items-center gap-2"><span class="w-2 h-2 bg-blue-500 rounded-full"></span> ARCHIVE NOTES</h3>
+                <ul class="space-y-3 text-gray-200 text-sm">
+                  <li class="flex gap-2"><span class="text-blue-400">⟶</span> JOG Network serves as a bridge between worlds through content.</li>
+                  <li class="flex gap-2"><span class="text-blue-400">⟶</span> We believe in creativity, freedom, and the power of story.</li>
+                  <li class="flex gap-2"><span class="text-blue-400">⟶</span> Every project is a mission. Every viewer is family.</li>
+                  <li class="flex gap-2"><span class="text-blue-400">⟶</span> The JOG Network will continue to expand across galaxies.</li>
+                  <li class="flex gap-2"><span class="text-blue-400">⟶</span> Multiversal content distribution via JOG OS + HoloNet relays.</li>
+                </ul>
+                <div class="mt-5 bg-blue-950/30 p-3 rounded-md">
+                  <p class="text-[11px] font-mono text-blue-300">// FOUNDER'S NOTE</p>
+                  <p class="italic text-blue-100 text-sm">“Stories shape civilizations. We build the bridge.” — J.O.G.</p>
+                </div>
+              </div>
+              
+              <!-- Design Schematics + Dark Griffons imagery (from third file: тёмных, мощных, чёрных грифонов с переливчатыми крыльями) -->
+              <div class="space-y-4">
+                <div class="glow-border rounded-xl p-3">
+                  <p class="text-[10px] font-mono text-blue-400 mb-1">SCHEMATIC REF: JOG-PRIME / NODE-ALPHA</p>
+                  <div class="bg-gradient-to-br from-slate-900 to-black rounded-lg overflow-hidden border border-blue-400/40 p-2">
+                    <div class="rounded-md h-32 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMjAwIj48cGF0aCBmaWxsPSIjMTQyYzUwIiBmaWxsLW9wYWNpdHk9IjAuNyIgZD0iTTAsMGw0MDAsMTYwdjQwSDB6Ii8+PHJlY3QgeD0iMTUwIiB5PSI0MCIgd2lkdGg9IjEwMCIgaGVpZ2h0PSI4MCIgZmlsbD0iIzFhMzA2MCIgc3Ryb2tlPSIjM2I4MmY2IiBzdHJva2Utd2lkdGg9IjIiLz48Y2lyY2xlIGN4PSIyMDAiIGN5PSI4MCIgcj0iMTgiIGZpbGw9IiMyMjQ0ODAiLz48L3N2Zz4=')] bg-cover bg-center"></div>
+                  </div>
+                  <p class="text-[11px] text-gray-400 mt-2 text-center">JOG Prime Station — Orbital Hub (Front View, Holographic Render)</p>
+                </div>
+                
+                <!-- Dark Griffons: "тёмных, мощных, черных грифонов с переливчатыми крыльями" integrated as concept art -->
+                <div class="glow-border rounded-xl p-3 relative group overflow-hidden">
+                  <p class="text-[10px] font-mono text-blue-400 mb-1">SIGNATURE ARTIFACT // DARK GRIFFIN CLASS</p>
+                  <div class="rounded-lg h-28 w-full bg-black/70 flex items-center justify-center border border-indigo-500/30 relative">
+                    <div class="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent"></div>
+                    <div class="text-center z-10">
+                      <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">🪶</div>
+                      <p class="text-[10px] tracking-wider text-indigo-300 font-bold mt-1">BLACK GRIFFIN — IRIDESCENT WINGS</p>
+                    </div>
+                    <!-- Feather shimmer effect -->
+                    <div class="absolute bottom-1 right-2 text-[8px] text-blue-400/70 font-mono">[CODEX: NIGHT-CLADE]</div>
+                  </div>
+                  <p class="text-[10px] text-gray-400 mt-2 italic">"Dark, powerful griffins with shimmering iridescent wings — emblem of JOG's mythic division."<br> <span class="text-blue-400">(inspired by deep lore: three suns & celestial beasts)</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- ADDITIONAL: holographic channel grid / partner networks / extra lore snippet -->
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="bg-[#0b1120]/70 rounded-xl p-4 border border-blue-500/30 flex flex-col">
+              <div class="flex items-center gap-2"><span class="text-blue-400 text-sm">🌌</span><span class="text-xs font-mono text-blue-300">HOLONET CHANNEL GRID</span></div>
+              <div class="grid grid-cols-3 gap-1 mt-3 text-center text-[10px]">
+                <div class="border border-blue-800/50 p-1 rounded">JOG Dramatica</div>
+                <div class="border border-blue-800/50 p-1 rounded">JOG Cosmos</div>
+                <div class="border border-blue-800/50 p-1 rounded">JOG Pulse</div>
+                <div class="border border-blue-800/50 p-1 rounded">JOG Nexus</div>
+                <div class="border border-blue-800/50 p-1 rounded">JOG Immersion</div>
+                <div class="border border-blue-800/50 p-1 rounded">JOG Infinite</div>
+              </div>
+              <p class="text-[10px] mt-3 text-blue-400/60">Reach: 14.7 billion active nodes across 3 galactic sectors</p>
+            </div>
+            
+            <div class="bg-[#0b1120]/70 rounded-xl p-4 border border-blue-500/30">
+              <div class="flex items-center gap-2"><span class="text-blue-400 text-sm">⚡</span><span class="text-xs font-mono text-blue-300">NETWORK EXPANSION PROTOCOL</span></div>
+              <p class="text-xs text-gray-300 mt-2 leading-relaxed">JOG Network collaborates with <span class="text-blue-300">Interstellar Guild of Storytellers</span> and <span class="text-blue-300">Helios Belt Alliance</span>. Upcoming relay nodes: Andromeda Outpost, Kepler-186f HoloHub.</p>
+              <div class="mt-3 flex items-center gap-2 flex-wrap">
+                <span class="text-[10px] bg-blue-950/40 px-2 py-0.5 rounded-full">JOG OS 5.2</span>
+                <span class="text-[10px] bg-blue-950/40 px-2 py-0.5 rounded-full">Multiversal Encoding</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- corporate secret: footer warning / final statement -->
+          <div class="mt-8 text-center border-t border-dashed border-blue-500/30 pt-5">
+            <div class="flex justify-center items-center gap-4 text-[11px] font-mono text-blue-400/80">
+              <span>🔒 ENCRYPTED CHANNEL</span>
+              <span>◆</span>
+              <span>JOG NETWORK ARCHIVE v.2471</span>
+              <span>◆</span>
+              <span>GLOBAL ACCESS: OMEGA-7</span>
+            </div>
+            <p class="text-[10px] text-red-400/70 mt-2 tracking-widest">UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED — ALL NODES MONITORED BY JACKDAW PROTOCOL</p>
+            <p class="text-[10px] text-gray-500 mt-1">THIS FILE IS PROPERTY OF JOG NETWORK. VIOLATIONS RESULT IN IMMEDIATE INTERSTELLAR SANCTION.</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- bottom bar -->
+      <div class="bg-black/70 border-t border-blue-500/40 px-6 py-3 flex flex-wrap justify-between items-center text-[10px] text-blue-400/70 font-mono">
+        <div>JOG NETWORK — Stories Beyond Worlds. Unity Beyond Limits.</div>
+        <div>DOSSIER EXPOSURE: LEVEL 2 // LAST SYNC: 2471.33.14</div>
+      </div>
+    </div>
+    
+    <!-- floating "active" badge -->
+    <div class="absolute -top-3 right-6 bg-black border border-blue-500 rounded-full px-3 py-0.5 text-[10px] text-cyan-300 font-mono tracking-wider shadow-lg shadow-blue-500/20">
+      ✦ LIVE TRANSMISSION ✦
+    </div>
+  </div>
+</body>
+</html>
