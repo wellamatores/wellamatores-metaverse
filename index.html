@@ -8,8 +8,7 @@
   <meta name="keywords" content="Wellamatores, game, universe, biocyberpunk, MagTech, procedural generation, Three.js, 13 worlds, JOG, Jackdaw, Le Bureau des Colonies, Regent, Plutonia">
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Seed Gate — full-screen gate layer -->
+
   <style>
     .seed-gate {
       position: fixed;
@@ -35,6 +34,540 @@
       position: relative;
       width: 260px;
       height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
+      transition: transform 0.2s ease;
+    }
+    .bean-container:hover { transform: scale(1.02); }
+    .bean-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,212,255,0.25) 0%, rgba(255,0,170,0.15) 60%, transparent 90%);
+      animation: pulseGlowBean 2.5s infinite alternate;
+      filter: blur(6px);
+    }
+    .bean-svg {
+      position: relative;
+      width: 160px;
+      height: 200px;
+      filter: drop-shadow(0 0 8px #00d4ff88);
+      animation: floatBean 4s infinite ease-in-out;
+    }
+    .gate-text {
+      margin-top: 30px;
+      text-align: center;
+      color: #00d4ff;
+      letter-spacing: 5px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+    .gate-sub {
+      font-size: 0.7rem;
+      color: #ff00aa;
+      margin-top: 10px;
+      letter-spacing: 3px;
+    }
+    @keyframes pulseGlowBean {
+      0% { opacity: 0.3; transform: scale(0.92); }
+      100% { opacity: 0.9; transform: scale(1.15); }
+    }
+    @keyframes floatBean {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    #originalContent {
+      opacity: 0;
+      visibility: hidden;
+      filter: blur(15px);
+      transition: opacity 1.8s cubic-bezier(0.23, 1, 0.32, 1),
+                  visibility 1.8s,
+                  filter 1.5s ease-out;
+    }
+    #originalContent.visible {
+      opacity: 1;
+      visibility: visible;
+      filter: blur(0px);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #030303;
+      background-image: radial-gradient(circle at 25% 40%, rgba(245, 158, 11, 0.08) 0%, rgba(0,0,0,0) 55%);
+      overflow-x: hidden;
+    }
+    .glass-panel { background: rgba(10,10,12,0.65); backdrop-filter: blur(12px); border: 1px solid rgba(245,158,11,0.25); }
+    .btn-enter { transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1.1); box-shadow: 0 0 12px rgba(245,158,11,0.3); }
+    .btn-enter:hover { transform: scale(1.03); box-shadow: 0 0 28px rgba(245,158,11,0.6); background: #ffffff; color: #0a0a0c; }
+    .feature-card { background: rgba(20,20,24,0.6); backdrop-filter: blur(4px); border: 1px solid rgba(245,158,11,0.2); transition: all 0.2s; }
+    .feature-card:hover { border-color: rgba(245,158,11,0.6); background: rgba(30,30,36,0.8); }
+    @keyframes floatOrb { 0% { transform: translateY(0px) rotate(0deg); opacity: 0.3; } 100% { transform: translateY(-20px) rotate(5deg); opacity: 0.5; } }
+    .floating-orb { animation: floatOrb 8s infinite alternate ease-in-out; }
+    .section-divider { background: linear-gradient(90deg, transparent, rgba(245,158,11,0.4), transparent); height: 1px; }
+    .trailer-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; background: #000; }
+    .trailer-wrapper iframe, .trailer-wrapper video { width: 100%; height: 100%; position: absolute; top: 0; left: 0; border-radius: 1rem; }
+    .three-container, .three-full-container { width: 100%; position: relative; background: #050510; border-radius: 1rem; overflow: hidden; min-height: 200px; }
+    .three-container { height: 320px; }
+    .three-full-container { height: 380px; }
+    .spaced-title { letter-spacing: 0.12em; word-spacing: 0.25em; }
+    @media (min-width: 768px) { .spaced-title { letter-spacing: 0.15em; word-spacing: 0.3em; } }
+    .zoom-hint { position: absolute; bottom: 8px; right: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); padding: 2px 8px; border-radius: 20px; font-size: 9px; font-family: monospace; color: #f59e0b; z-index: 20; pointer-events: none; }
+    .fullscreen-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border: 2px solid #f59e0b; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-family: monospace; font-weight: bold; color: #f59e0b; cursor: pointer; z-index: 25; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+    .fullscreen-btn:hover { background: #f59e0b; color: #000; box-shadow: 0 0 15px #f59e0b; }
+    .three-wrapper { position: relative; border-radius: 1rem; overflow: hidden; }
+    .loading-spinner { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); border-radius: 20px; padding: 20px 30px; z-index: 40000; display: none; align-items: center; gap: 15px; border: 1px solid #f59e0b; font-family: monospace; color: #f59e0b; }
+    .loading-spinner.active { display: flex; }
+    .spinner { width: 24px; height: 24px; border: 3px solid rgba(245,158,11,0.3); border-top-color: #f59e0b; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .sound-toggle { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #f59e0b; border-radius: 40px; padding: 8px 16px; font-size: 12px; font-family: monospace; color: #f59e0b; cursor: pointer; z-index: 1000; transition: 0.2s; }
+    .sound-toggle:hover { background: #f59e0b; color: black; }
+    .tour-btn { position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #3b82f6; border-radius: 40px; padding: 8px 16px; font-size: 12px; font-family: monospace; color: #3b82f6; cursor: pointer; z-index: 1000; transition: 0.2s; }
+    .tour-btn:hover { background: #3b82f6; color: black; }
+  </style>
+</head>
+<body>
+
+<div id="seedGate" class="seed-gate">
+  <div class="bean-container">
+    <div class="bean-glow"></div>
+    <svg class="bean-svg" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="beanGradGate" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.95"/>
+          <stop offset="50%" stop-color="#2a2eff" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#ff00aa" stop-opacity="0.9"/>
+        </linearGradient>
+        <filter id="neonFilterGate" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <path d="M60,12 C30,18 10,42 12,72 C14,100 30,128 58,138 C78,144 88,132 98,110 C108,88 110,62 102,38 C94,18 80,8 60,12Z" fill="url(#beanGradGate)" stroke="#00ffff" stroke-width="1.2" filter="url(#neonFilterGate)"/>
+      <path d="M58,36 L52,58 L62,68 L70,88 L66,108" stroke="#ffcc44" stroke-width="1.5" fill="none" opacity="0.7" stroke-dasharray="3 4"/>
+      <circle cx="60" cy="76" r="16" fill="#ffcc4422" stroke="#ffcc44" stroke-width="1.5" stroke-dasharray="2 2"/>
+      <circle cx="60" cy="76" r="6" fill="#ffffff" fill-opacity="0.8" stroke="#00d4ff" stroke-width="1"/>
+    </svg>
+  </div>
+  <div class="gate-text">⚘ BEAN · TRANSPONDER ⚘</div>
+  <div class="gate-sub">›› click for resonance ‹‹</div>
+</div>
+
+<div id="originalContent">
+  <div id="loadingSpinner" class="loading-spinner"><div class="spinner"></div><span>INITIALIZING JOG NETWORK...</span></div>
+
+  <main class="pt-20">
+    <section class="relative overflow-hidden px-6 py-20 md:py-28">
+      <div class="max-w-5xl mx-auto text-center relative z-10">
+        <h1 class="spaced-title text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.1] bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent">WELCOME TO THE<br>GAME UNIVERSE</h1>
+        <p class="text-stone-300 text-lg md:text-xl max-w-2xl mx-auto mt-6 leading-relaxed">Enter <span class="text-amber-400 font-semibold">Wellamatores World</span> — a living <span class="text-amber-300 font-medium">magtechbiocyberpunk</span> dimension.<br><span class="text-emerald-400 font-mono text-sm">JOG Network • <span class="blink-green">PLUTONIA</span> • Le Bureau des Colonies (JACKDAW codename)</span></p>
+        <div class="mt-12">
+          <button id="enterWorldBtn" class="btn-enter bg-white text-black px-10 py-4 rounded-full font-black text-lg md:text-xl tracking-wide flex items-center gap-3 mx-auto transition-all group">
+            <span>ENTER THE WORLD</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="trailerSection" class="max-w-5xl mx-auto px-6 py-10 scroll-mt-24">
+      <div class="glass-panel rounded-2xl p-5 md:p-6">
+        <h2 class="text-xl font-bold flex items-center gap-2 mb-4"><span class="text-amber-400">🎬</span> OFFICIAL TRAILER</h2>
+        <div class="three-wrapper" id="trailerWrapper">
+          <div class="trailer-wrapper">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/5zPMwtbcRsk?autoplay=1&mute=1&rel=0&enablejsapi=1"
+              title="Wellamatores World Official Trailer"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <button class="fullscreen-btn" id="trailerFullscreenBtn">⛶ FULLSCREEN</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-12">
+      <div class="bg-black/40 rounded-2xl p-2 border border-white/10 relative">
+        <div class="three-wrapper" id="earthTwinWrapper">
+          <div class="three-full-container" id="earthTwinScene"></div>
+          <button class="fullscreen-btn" id="earthTwinFullscreenBtn">⛶ FULLSCREEN</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button id="soundToggle" class="sound-toggle">🔊 AMBIENT ON</button>
+  <button id="tourBtn" class="tour-btn">🎬 START TOUR</button>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  const seedGate = document.getElementById('seedGate');
+  const originalContent = document.getElementById('originalContent');
+  const enterWorldBtn = document.getElementById('enterWorldBtn');
+  const loadingSpinner = document.getElementById('loadingSpinner');
+
+  function showLoader() { loadingSpinner.classList.add('active'); }
+  function hideLoader() { loadingSpinner.classList.remove('active'); }
+
+  function checkWebGL() {
+    try {
+      const canvas = document.createElement('canvas');
+      return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function revealWorld() {
+    seedGate.classList.add('hidden');
+    originalContent.classList.add('visible');
+  }
+
+  seedGate.addEventListener('click', revealWorld);
+  enterWorldBtn.addEventListener('click', revealWorld);
+
+  if (!checkWebGL()) {
+    document.getElementById('earthTwinScene').innerHTML = '<div style="color:#f59e0b;padding:24px;font-family:monospace;">⚠️ WebGL not supported.</div>';
+  }
+
+  function initEarthTwinScene() {
+    const container = document.getElementById('earthTwinScene');
+    if (!container || !checkWebGL()) return;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050510);
+    scene.fog = new THREE.Fog(0x050510, 6, 20);
+
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(0, 2.5, 7);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    const geometry = new THREE.SphereGeometry(1.5, 48, 48);
+    const material = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.7, metalness: 0.1, emissive: 0x111122 });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    const light = new THREE.DirectionalLight(0xffffff, 2);
+    light.position.set(5, 4, 5);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x6677ff, 1.2));
+
+    function resize() {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+
+    window.addEventListener('resize', resize);
+
+    function animate() {
+      sphere.rotation.y += 0.003;
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+
+  function fitIframeToFullscreen(iframe) {
+    if (!iframe) return;
+    if (iframe.requestFullscreen) iframe.requestFullscreen();
+  }
+
+  document.getElementById('trailerFullscreenBtn')?.addEventListener('click', () => {
+    const iframe = document.querySelector('#trailerWrapper iframe');
+    fitIframeToFullscreen(iframe);
+  });
+
+  document.getElementById('earthTwinFullscreenBtn')?.addEventListener('click', () => {
+    const el = document.getElementById('earthTwinScene');
+    if (el?.requestFullscreen) el.requestFullscreen();
+  });
+
+  initEarthTwinScene();
+</script>
+</body>
+        </html>      text-transform: uppercase;
+    }
+    .gate-sub {
+      font-size: 0.7rem;
+      color: #ff00aa;
+      margin-top: 10px;
+      letter-spacing: 3px;
+    }
+    @keyframes pulseGlowBean {
+      0% { opacity: 0.3; transform: scale(0.92); }
+      100% { opacity: 0.9; transform: scale(1.15); }
+    }
+    @keyframes floatBean {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    #originalContent {
+      opacity: 0;
+      visibility: hidden;
+      filter: blur(15px);
+      transition: opacity 1.8s cubic-bezier(0.23, 1, 0.32, 1),
+                  visibility 1.8s,
+                  filter 1.5s ease-out;
+    }
+    #originalContent.visible {
+      opacity: 1;
+      visibility: visible;
+      filter: blur(0px);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #030303;
+      background-image: radial-gradient(circle at 25% 40%, rgba(245, 158, 11, 0.08) 0%, rgba(0,0,0,0) 55%);
+      overflow-x: hidden;
+    }
+    .glass-panel { background: rgba(10,10,12,0.65); backdrop-filter: blur(12px); border: 1px solid rgba(245,158,11,0.25); }
+    .btn-enter { transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1.1); box-shadow: 0 0 12px rgba(245,158,11,0.3); }
+    .btn-enter:hover { transform: scale(1.03); box-shadow: 0 0 28px rgba(245,158,11,0.6); background: #ffffff; color: #0a0a0c; }
+    .feature-card { background: rgba(20,20,24,0.6); backdrop-filter: blur(4px); border: 1px solid rgba(245,158,11,0.2); transition: all 0.2s; }
+    .feature-card:hover { border-color: rgba(245,158,11,0.6); background: rgba(30,30,36,0.8); }
+    @keyframes floatOrb { 0% { transform: translateY(0px) rotate(0deg); opacity: 0.3; } 100% { transform: translateY(-20px) rotate(5deg); opacity: 0.5; } }
+    .floating-orb { animation: floatOrb 8s infinite alternate ease-in-out; }
+    .section-divider { background: linear-gradient(90deg, transparent, rgba(245,158,11,0.4), transparent); height: 1px; }
+    .trailer-wrapper { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 1rem; background: #000; }
+    .trailer-wrapper iframe, .trailer-wrapper video { width: 100%; height: 100%; position: absolute; top: 0; left: 0; border-radius: 1rem; }
+    .three-container, .three-full-container { width: 100%; position: relative; background: #050510; border-radius: 1rem; overflow: hidden; min-height: 200px; }
+    .three-container { height: 320px; }
+    .three-full-container { height: 380px; }
+    .spaced-title { letter-spacing: 0.12em; word-spacing: 0.25em; }
+    @media (min-width: 768px) { .spaced-title { letter-spacing: 0.15em; word-spacing: 0.3em; } }
+    .zoom-hint { position: absolute; bottom: 8px; right: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); padding: 2px 8px; border-radius: 20px; font-size: 9px; font-family: monospace; color: #f59e0b; z-index: 20; pointer-events: none; }
+    .fullscreen-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border: 2px solid #f59e0b; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-family: monospace; font-weight: bold; color: #f59e0b; cursor: pointer; z-index: 25; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+    .fullscreen-btn:hover { background: #f59e0b; color: #000; box-shadow: 0 0 15px #f59e0b; }
+    .three-wrapper { position: relative; border-radius: 1rem; overflow: hidden; }
+    .loading-spinner { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); border-radius: 20px; padding: 20px 30px; z-index: 40000; display: none; align-items: center; gap: 15px; border: 1px solid #f59e0b; font-family: monospace; color: #f59e0b; }
+    .loading-spinner.active { display: flex; }
+    .spinner { width: 24px; height: 24px; border: 3px solid rgba(245,158,11,0.3); border-top-color: #f59e0b; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .sound-toggle { position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #f59e0b; border-radius: 40px; padding: 8px 16px; font-size: 12px; font-family: monospace; color: #f59e0b; cursor: pointer; z-index: 1000; transition: 0.2s; }
+    .sound-toggle:hover { background: #f59e0b; color: black; }
+    .tour-btn { position: fixed; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #3b82f6; border-radius: 40px; padding: 8px 16px; font-size: 12px; font-family: monospace; color: #3b82f6; cursor: pointer; z-index: 1000; transition: 0.2s; }
+    .tour-btn:hover { background: #3b82f6; color: black; }
+  </style>
+</head>
+<body>
+
+<div id="seedGate" class="seed-gate">
+  <div class="bean-container">
+    <div class="bean-glow"></div>
+    <svg class="bean-svg" viewBox="0 0 120 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="beanGradGate" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.95"/>
+          <stop offset="50%" stop-color="#2a2eff" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#ff00aa" stop-opacity="0.9"/>
+        </linearGradient>
+        <filter id="neonFilterGate" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <path d="M60,12 C30,18 10,42 12,72 C14,100 30,128 58,138 C78,144 88,132 98,110 C108,88 110,62 102,38 C94,18 80,8 60,12Z" fill="url(#beanGradGate)" stroke="#00ffff" stroke-width="1.2" filter="url(#neonFilterGate)"/>
+      <path d="M58,36 L52,58 L62,68 L70,88 L66,108" stroke="#ffcc44" stroke-width="1.5" fill="none" opacity="0.7" stroke-dasharray="3 4"/>
+      <circle cx="60" cy="76" r="16" fill="#ffcc4422" stroke="#ffcc44" stroke-width="1.5" stroke-dasharray="2 2"/>
+      <circle cx="60" cy="76" r="6" fill="#ffffff" fill-opacity="0.8" stroke="#00d4ff" stroke-width="1"/>
+    </svg>
+  </div>
+  <div class="gate-text">⚘ BEAN · TRANSPONDER ⚘</div>
+  <div class="gate-sub">›› click for resonance ‹‹</div>
+</div>
+
+<div id="originalContent">
+  <div id="loadingSpinner" class="loading-spinner"><div class="spinner"></div><span>INITIALIZING JOG NETWORK...</span></div>
+
+  <main class="pt-20">
+    <section class="relative overflow-hidden px-6 py-20 md:py-28">
+      <div class="max-w-5xl mx-auto text-center relative z-10">
+        <h1 class="spaced-title text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.1] bg-gradient-to-br from-white via-amber-100 to-amber-500 bg-clip-text text-transparent">WELCOME TO THE<br>GAME UNIVERSE</h1>
+        <p class="text-stone-300 text-lg md:text-xl max-w-2xl mx-auto mt-6 leading-relaxed">Enter <span class="text-amber-400 font-semibold">Wellamatores World</span> — a living <span class="text-amber-300 font-medium">magtechbiocyberpunk</span> dimension.<br><span class="text-emerald-400 font-mono text-sm">JOG Network • <span class="blink-green">PLUTONIA</span> • Le Bureau des Colonies (JACKDAW codename)</span></p>
+        <div class="mt-12">
+          <button id="enterWorldBtn" class="btn-enter bg-white text-black px-10 py-4 rounded-full font-black text-lg md:text-xl tracking-wide flex items-center gap-3 mx-auto transition-all group">
+            <span>ENTER THE WORLD</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="trailerSection" class="max-w-5xl mx-auto px-6 py-10 scroll-mt-24">
+      <div class="glass-panel rounded-2xl p-5 md:p-6">
+        <h2 class="text-xl font-bold flex items-center gap-2 mb-4"><span class="text-amber-400">🎬</span> OFFICIAL TRAILER</h2>
+        <div class="three-wrapper" id="trailerWrapper">
+          <div class="trailer-wrapper">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/5zPMwtbcRsk?autoplay=1&mute=1&rel=0&enablejsapi=1"
+              title="Wellamatores World Official Trailer"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <button class="fullscreen-btn" id="trailerFullscreenBtn">⛶ FULLSCREEN</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-12">
+      <div class="bg-black/40 rounded-2xl p-2 border border-white/10 relative">
+        <div class="three-wrapper" id="earthTwinWrapper">
+          <div class="three-full-container" id="earthTwinScene"></div>
+          <button class="fullscreen-btn" id="earthTwinFullscreenBtn">⛶ FULLSCREEN</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button id="soundToggle" class="sound-toggle">🔊 AMBIENT ON</button>
+  <button id="tourBtn" class="tour-btn">🎬 START TOUR</button>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  const seedGate = document.getElementById('seedGate');
+  const originalContent = document.getElementById('originalContent');
+  const enterWorldBtn = document.getElementById('enterWorldBtn');
+  const loadingSpinner = document.getElementById('loadingSpinner');
+
+  function showLoader() { loadingSpinner.classList.add('active'); }
+  function hideLoader() { loadingSpinner.classList.remove('active'); }
+
+  function checkWebGL() {
+    try {
+      const canvas = document.createElement('canvas');
+      return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function revealWorld() {
+    seedGate.classList.add('hidden');
+    originalContent.classList.add('visible');
+  }
+
+  seedGate.addEventListener('click', revealWorld);
+  enterWorldBtn.addEventListener('click', revealWorld);
+
+  if (!checkWebGL()) {
+    document.getElementById('earthTwinScene').innerHTML = '<div style="color:#f59e0b;padding:24px;font-family:monospace;">⚠️ WebGL not supported.</div>';
+  }
+
+  function initEarthTwinScene() {
+    const container = document.getElementById('earthTwinScene');
+    if (!container || !checkWebGL()) return;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050510);
+    scene.fog = new THREE.Fog(0x050510, 6, 20);
+
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(0, 2.5, 7);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    const geometry = new THREE.SphereGeometry(1.5, 48, 48);
+    const material = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.7, metalness: 0.1, emissive: 0x111122 });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    const light = new THREE.DirectionalLight(0xffffff, 2);
+    light.position.set(5, 4, 5);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x6677ff, 1.2));
+
+    function resize() {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }
+
+    window.addEventListener('resize', resize);
+
+    function animate() {
+      sphere.rotation.y += 0.003;
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+
+  function fitIframeToFullscreen(iframe) {
+    if (!iframe) return;
+    if (iframe.requestFullscreen) iframe.requestFullscreen();
+  }
+
+  document.getElementById('trailerFullscreenBtn')?.addEventListener('click', () => {
+    const iframe = document.querySelector('#trailerWrapper iframe');
+    fitIframeToFullscreen(iframe);
+  });
+
+  document.getElementById('earthTwinFullscreenBtn')?.addEventListener('click', () => {
+    const el = document.getElementById('earthTwinScene');
+    if (el?.requestFullscreen) el.requestFullscreen();
+  });
+
+  initEarthTwinScene();
+</script>
+</body>
+  </html>      height: 260px;
       display: flex;
       align-items: center;
       justify-content: center;
