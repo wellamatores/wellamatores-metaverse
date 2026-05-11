@@ -629,18 +629,7 @@
 
     setTimeout(() => { initSatelliteScene(); initEarthTwinScene(); }, 100);
 
-    // --- JOG Placeholder ---
-    const jogPlaceholderModal = document.getElementById('jogPlaceholderModal');
-    document.getElementById('jogGalaxyTrigger')?.addEventListener('click', () => jogPlaceholderModal?.classList.add('active'));
-    document.getElementById('jogPlaceholderCloseBtn')?.addEventListener('click', () => jogPlaceholderModal?.classList.remove('active'));
-    jogPlaceholderModal?.addEventListener('click', e => { if (e.target === jogPlaceholderModal) jogPlaceholderModal.classList.remove('active'); });
-
-    // --- CCP Placeholder ---
-    const ccpPlaceholderModal = document.getElementById('ccpPlaceholderModal');
-    document.getElementById('orbitalCamerasTrigger')?.addEventListener('click', () => ccpPlaceholderModal?.classList.add('active'));
-    document.getElementById('ccpPlaceholderCloseBtn')?.addEventListener('click', () => ccpPlaceholderModal?.classList.remove('active'));
-    ccpPlaceholderModal?.addEventListener('click', e => { if (e.target === ccpPlaceholderModal) ccpPlaceholderModal.classList.remove('active'); });
-
+ 
     // FIX #2 & #5: jogInfoModal now properly wired to the real #jogInfoTrigger element in the nav
     const jogInfoModal = document.getElementById('jogInfoModal');
     document.getElementById('jogInfoTrigger')?.addEventListener('click', () => jogInfoModal?.classList.add('active'));
