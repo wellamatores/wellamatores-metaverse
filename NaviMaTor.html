@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>NaviMaTog — Modular Navigation Platform | Global & Offline-Ready</title>
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #1a2c3e;
+            line-height: 1.5;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2c7a4d;
+            border-radius: 10px;
+        }
+
+        /* header hero */
+        .hero {
+            background: linear-gradient(135deg, #0a2f2a 0%, #1b4d3e 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom-left-radius: 32px;
+            border-bottom-right-radius: 32px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+        .hero h1 span {
+            background: #f5b042;
+            padding: 0 8px;
+            border-radius: 24px;
+            color: #1e2f2a;
+            font-size: 2rem;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 1rem auto 0;
+            opacity: 0.9;
+        }
+        .badge-container {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem;
+            border-left: 6px solid #2c7a4d;
+            padding-left: 1rem;
+        }
+        .subsection {
+            margin: 2rem 0;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+            margin-top: 1rem;
+        }
+        .version-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+            border: 1px solid #e9edf2;
+        }
+        .version-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.12);
+        }
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .version-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .version-sub {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            color: #2c7a4d;
+            margin-bottom: 1rem;
+        }
+        .price {
+            font-weight: 800;
+            font-size: 1.3rem;
+            margin: 1rem 0;
+            color: #1e4620;
+        }
+        .feature-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+        .feature-list li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+        }
+        .feature-list li i {
+            color: #2c7a4d;
+            width: 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .roadmap {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            margin: 1.5rem 0;
+        }
+        .roadmap-phase {
+            border-bottom: 1px solid #eef2f6;
+            padding: 1.5rem;
+        }
+        .phase-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+        .phase-months {
+            background: #eef2ff;
+            border-radius: 60px;
+            padding: 0.2rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1f4f3c;
+        }
+        .phase-desc {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+        .phase-desc span {
+            background: #f0f4f9;
+            padding: 0.25rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+        }
+
+        .matrix-table {
+            overflow-x: auto;
+            background: white;
+            border-radius: 28px;
+            padding: 1rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background-color: #eef2f0;
+            font-weight: 700;
+        }
+        .price-tag {
+            font-weight: 700;
+            color: #1f5e3f;
+        }
+
+        .feature-highlight {
+            background: linear-gradient(120deg, #fef9e3 0%, #fff4e0 100%);
+            border-left: 4px solid #e6b422;
+            padding: 0.8rem 1.5rem;
+            border-radius: 24px;
+            margin: 1.5rem 0;
+        }
+
+        .cta-button {
+            background: #2c7a4d;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .cta-button:hover {
+            background: #1f5e3f;
+            transform: scale(0.98);
+        }
+
+        footer {
+            background: #0f2120;
+            color: #9aa9af;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+        }
+
+        @media (max-width: 700px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>NaviMa<span>tog</span></h1>
+    <p>Modular navigation platform · Offline-first OsmAnd core · Tactical precision · Team collaboration</p>
+    <div class="badge-container">
+        <div class="badge"><i class="fas fa-map"></i> OSM + Topo maps</div>
+        <div class="badge"><i class="fas fa-mountain"></i> 3D terrain / slopes</div>
+        <div class="badge"><i class="fas fa-shield-alt"></i> MGRS / MIL-STD-2525</div>
+        <div class="badge"><i class="fas fa-broadcast-tower"></i> Mesh / BFT ready</div>
+        <div class="badge"><i class="fas fa-sync-alt"></i> Cross-version compatibility</div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Edition line-up -->
+    <div class="section-title"><i class="fas fa-layer-group" style="margin-right: 12px;"></i> Capability packs — one ecosystem</div>
+    <div class="cards-grid">
+        <!-- 1. Citizen Base -->
+        <div class="version-card">
+            <div class="card-icon"><i class="fas fa-user-friends"></i></div>
+            <div class="version-title">Citizen Base</div>
+            <div class="version-sub">Freemium</div>
+            <div class="price">$0 / Free</div>
+            <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> Offline regional maps</li>
+                <li><i class="fas fa-check-circle"></i> Lat/Lon, UTM search</li>
+                <li><i class="fas fa-check-circle"></i> GPX import/export</li>
+                <li><i class="fas fa-check-circle"></i> Basic tracking & POI</li>
+                <li><i class="fas fa-charging-station"></i> Optional map store</li>
+            </ul>
+        </div>
+        <!-- 2. Citizen Pro -->
+        <div class="version-card">
+            <div class="card-icon"><i class="fas fa-star-of-life"></i></div>
+            <div class="version-title">Citizen Pro</div>
+            <div class="version-sub">Paid / subscription</div>
+            <div class="price">$4.99/year or $19.99 lifetime</div>
+            <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> Hillshade / 3D terrain / slopes</li>
+                <li><i class="fas fa-check-circle"></i> Custom styles + plugins</li>
+                <li><i class="fas fa-check-circle"></i> Advanced routing (vehicle dimensions)</li>
+                <li><i class="fas fa-check-circle"></i> Hourly OSM updates</li>
+                <li><i class="fas fa-cloud-sun"></i> Offline weather layers</li>
+            </ul>
+        </div>
+        <!-- 3. Emergency & SAR -->
+        <div class="version-card">
+            <div class="card-icon"><i class="fas fa-truck-medical"></i></div>
+            <div class="version-title">Emergency & SAR</div>
+            <div class="version-sub">SAR / Civil Defence / Geologists</div>
+            <div class="price">from $99/year (org)</div>
+            <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> Blue Force Tracking (real-time)</li>
+                <li><i class="fas fa-check-circle"></i> Geotagged chat + messenger</li>
+                <li><i class="fas fa-check-circle"></i> Hazard layers (fires, floods)</li>
+                <li><i class="fas fa-check-circle"></i> Meshtastic / mesh integration</li>
+                <li><i class="fas fa-check-circle"></i> Team zones & evacuation routes</li>
+            </ul>
+        </div>
+        <!-- 4. Tactical Base (Entry) -->
+        <div class="version-card">
+            <div class="card-icon"><i class="fas fa-user-secret"></i></div>
+            <div class="version-title">Tactical Base</div>
+            <div class="version-sub">Entry level</div>
+            <div class="price">$19.99/year</div>
+            <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> Full MGRS (4–10 digit)</li>
+                <li><i class="fas fa-check-circle"></i> NATO APP-6 (basic)</li>
+                <li><i class="fas fa-check-circle"></i> Tactical drawing tools</li>
+                <li><i class="fas fa-check-circle"></i> Low emission mode</li>
+                <li><i class="fas fa-check-circle"></i> Dead reckoning, pace count</li>
+            </ul>
+        </div>
+        <!-- 5. Tactical Pro / Command -->
+        <div class="version-card">
+            <div class="card-icon"><i class="fas fa-fist-raised"></i></div>
+            <div class="version-title">Tactical Pro / Command</div>
+            <div class="version-sub">Full TAK-class capabilities</div>
+            <div class="price">from $499/year (unit)</div>
+            <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> MIL-STD-2525 full symbology</li>
+                <li><i class="fas fa-check-circle"></i> LOS / slope / dead zones analysis</li>
+                <li><i class="fas fa-check-circle"></i> Drone integration (MAVLink, video)</li>
+                <li><i class="fas fa-check-circle"></i> CONOPs mission planner</li>
+                <li><i class="fas fa-check-circle"></i> Full encryption + enterprise server</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- unified ecosystem highlight -->
+    <div class="feature-highlight">
+        <i class="fas fa-cube" style="margin-right: 12px; font-size: 1.4rem;"></i> 
+        <strong>One ecosystem, unlimited profiles</strong> — Single account, modular purchases, cross-version compatibility. Civilian view can open tactical GPX (with automated data sanitization).<br>
+        <i class="fas fa-robot" style="margin-right: 6px;"></i> AI assistant: risk analysis, tactical positioning, object recognition.
+    </div>
+
+    <!-- product matrix & pricing -->
+    <div class="section-title"><i class="fas fa-chart-simple"></i> Product matrix & pricing (global)</div>
+    <div class="matrix-table">
+        <table>
+            <thead>
+                <tr><th>Capability Pack</th><th>Key modules</th><th>Price</th><th>Target audience</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Core (Base)</strong></td><td>Offline OSM, GPX, Lat/Lon/UTM, basic routing, night mode</td><td class="price-tag">Free</td><td>Everyone</td></tr>
+                <tr><td><strong>Pro Outdoor</strong></td><td>Hillshade, 3D terrain, custom styles, weather plugins</td><td class="price-tag">$4.99/year or $19.99 lifetime</td><td>Hikers, bikers, adventurers</td></tr>
+                <tr><td><strong>SAR & Field Pack</strong></td><td>BFT, geochat, hazard layers, mesh, offline sync</td><td class="price-tag">$99/year (organization)</td><td>Civil defence, SAR teams, geologists</td></tr>
+                <tr><td><strong>Tactical Core</strong></td><td>MGRS 4–10 digits, APP-6 basic, low emission, dead reckoning</td><td class="price-tag">$19.99/year</td><td> instructors, tactical enthusiasts</td></tr>
+                <tr><td><strong>Tactical Pro</strong></td><td>MIL-STD-2525, LOS analysis, drone feed, mission planning, encrypted</td><td class="price-tag">$499/year / unit</td><td>Defense, command posts, SOF</td></tr>
+                <tr><td><strong>Vertical solutions</strong></td><td>Marine charts, AR mode, aviation, agriculture analytics</td><td class="price-tag">from $9.99/month</td><td>Professional operators</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Global Roadmap -->
+    <div class="section-title"><i class="fas fa-road"></i> Global roadmap (12 months)</div>
+    <div class="roadmap">
+        <div class="roadmap-phase">
+            <div class="phase-title"><i class="fas fa-microchip"></i> Months 1–3 <span class="phase-months">Core MVP</span></div>
+            <div>Offline OSM, coordinate search, GPX, contours, night mode, account system (Android/iOS beta).</div>
+            <div class="phase-desc"><span>📱 500 beta testers</span><span>🗺️ Global maps + focus regions</span><span>🔐 Encrypted cloud sync</span></div>
+        </div>
+        <div class="roadmap-phase">
+            <div class="phase-title"><i class="fas fa-mountain"></i> Months 4–6 <span class="phase-months">Pro Outdoor + MGRS</span></div>
+            <div>Hillshade, 3D terrain, custom styling, MGRS foundation, sensor plugins, in-app store.</div>
+            <div class="phase-desc"><span>🎨 Map themes</span><span>🧭 MGRS coordinates</span><span>📡 External GPS/BLE support</span></div>
+        </div>
+        <div class="roadmap-phase">
+            <div class="phase-title"><i class="fas fa-hands-helping"></i> Months 7–9 <span class="phase-months">SAR & Field Pack</span></div>
+            <div>Blue Force Tracking, geotagged chat, hazard layers, Meshtastic integration, team synchronization.</div>
+            <div class="phase-desc"><span>🚁 BFT server</span><span>🔥 Global hazard layers</span><span>📡 Mesh options</span><span>🤝 NGO pilot program</span></div>
+        </div>
+        <div class="roadmap-phase">
+            <div class="phase-title"><i class="fas fa-tactical"></i> Months 10–12 <span class="phase-months">Tactical Pro + Enterprise</span></div>
+            <div>Full MIL-STD-2525, LOS/slope analysis, mission planning, drone integration (MAVLink), on-premise server.</div>
+            <div class="phase-desc"><span>🛸 MAVLink / video</span><span>🔒 End-to-end encryption</span><span>💼 On-premise backend</span><span>📋 CONOPs editor</span></div>
+        </div>
+    </div>
+
+    <!-- Platform advantages -->
+    <div class="section-title"><i class="fas fa-gem"></i> Why NaviMatog leads the market</div>
+    <div class="cards-grid" style="margin-bottom: 1rem;">
+        <div class="version-card" style="background: #fefcf5;">
+            <i class="fas fa-puzzle-piece" style="font-size: 2rem; color:#2c7a4d;"></i>
+            <h3 style="margin: 0.5rem 0;">True modularity</h3>
+            <p>Single core engine + Capability Packs. Interface adapts seamlessly from casual outdoor to tactical command.</p>
+        </div>
+        <div class="version-card" style="background: #fefcf5;">
+            <i class="fas fa-globe-asia" style="font-size: 2rem; color:#2c7a4d;"></i>
+            <h3 style="margin: 0.5rem 0;">Global-first design</h3>
+            <p>Multilingual UI, worldwide OSM coverage, local topo maps for any region, disaster layers, neutral brand for worldwide adoption.</p>
+        </div>
+        <div class="version-card" style="background: #fefcf5;">
+            <i class="fas fa-shield-hooded" style="font-size: 2rem; color:#2c7a4d;"></i>
+            <h3 style="margin: 0.5rem 0;">Security & Offline-first</h3>
+            <p>Low emission mode, encrypted communication, full offline functionality, mesh networking, dead reckoning when GPS denied.</p>
+        </div>
+    </div>
+
+    <!-- Global CTA / Beta access -->
+    <div style="text-align: center; margin: 2.5rem 0 1rem;">
+        <button class="cta-button" id="betaButton"><i class="fas fa-envelope"></i> Join global closed beta (Core)</button>
+        <p style="margin-top: 1rem; font-size: 0.85rem; color: #4b5f6e;">First 500 users receive 1 year free Citizen Pro after launch</p>
+    </div>
+
+    <!-- unified account info (cross-version) -->
+    <div style="background: #eef4ea; border-radius: 28px; padding: 1.5rem; margin: 1rem 0;">
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
+            <div><i class="fas fa-cloud-upload-alt" style="font-size: 1.8rem; margin-right: 8px;"></i> <strong>Single account, global license</strong> — Buy once, use modules across editions (with role-based limitations). Civilian app can open tactical packages with sensitive data redacted automatically. Cross-version collaboration guaranteed.</div>
+            <div><i class="fas fa-battery-full"></i> Power-efficient · <i class="fas fa-moon"></i> Night & red-filter modes</div>
+        </div>
+    </div>
+
+    <!-- closing statement -->
+    <div style="margin: 2rem 0; text-align: center; font-style: italic; background: white; border-radius: 32px; padding: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+        ⚡ "One map, one account, unlimited missions" — Ecosystem without fragmentation. Global, secure, modular.
+    </div>
+</div>
+
+<footer>
+    <p><i class="fas fa-copyright"></i> NaviMatog — next-gen modular navigation platform. Built for world responders, adventurers, and teams.</p>
+    <p style="margin-top: 8px;">OsmAnd core · Tactical NAV standards · TAK-inspired synergy · OpenStreetMap ❤️</p>
+</footer>
+
+<script>
+    document.getElementById('betaButton').addEventListener('click', function() {
+        alert('🌍 Global beta program launches Q3 2026. Request early access: beta@navimatog.global (demo access after registration).\n\nThank you for supporting unified navigation ecosystem!');
+    });
+</script>
+</body>
+</html>
