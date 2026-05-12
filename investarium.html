@@ -608,21 +608,20 @@
     new ResizeObserver(() => { if (activeRenderer === renderer && sceneContainer.clientWidth) { camera.aspect = sceneContainer.clientWidth / sceneContainer.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(sceneContainer.clientWidth, sceneContainer.clientHeight); } }).observe(sceneContainer);
   }
   
-  function openModal(fn) { stopCurrentScene(); modal.classList.add('active'); document.body.style.overflow = 'hidden'; setTimeout(fn, 50); }
-  function closeModal() { stopCurrentScene(); modal.classList.remove('active'); document.body.style.overflow = ''; }
-  function toggleFullscreen() { if (!modal.classList.contains('active')) return; if (!document.fullscreenElement) modal.requestFullscreen(); else document.exitFullscreen(); }
-  
-  openScene1.addEventListener('click', () => openModal(initScene1));
-  openScene2.addEventListener('click', () => openModal(initScene2));
-  openScene3.addEventListener('click', () => openModal(initScene3));
-  closeBtn.addEventListener('click', closeModal);
-  fullscreenToggle.addEventListener('click', toggleFullscreen);
-  modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
-  
  <script>
+function openModal(fn) { stopCurrentScene(); modal.classList.add('active'); document.body.style.overflow = 'hidden'; setTimeout(fn, 50); }
+function closeModal() { stopCurrentScene(); modal.classList.remove('active'); document.body.style.overflow = ''; }
+function toggleFullscreen() { if (!modal.classList.contains('active')) return; if (!document.fullscreenElement) modal.requestFullscreen(); else document.exitFullscreen(); }
+
+openScene1.addEventListener('click', () => openModal(initScene1));
+openScene2.addEventListener('click', () => openModal(initScene2));
+openScene3.addEventListener('click', () => openModal(initScene3));
+closeBtn.addEventListener('click', closeModal);
+fullscreenToggle.addEventListener('click', toggleFullscreen);
+modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
+
 document.getElementById('whitepaperBtn').addEventListener('click', () => window.location.href = 'DECK.html');
 document.getElementById('registerBtn').addEventListener('click', () => alert("📅 Shareholder meeting registration: Cycle 127, Day 42, Regent's Chamber. (simulated)"));
 </script>
 </body>
-</html>
