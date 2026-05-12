@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>INVESTOR DECK · TerraTrampillera & Le Bureau des Colonies</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c12;
+            font-family: 'Inter', sans-serif;
+            color: #e6e7f0;
+            line-height: 1.5;
+        }
+
+        .deck-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 25% 40%, rgba(30, 35, 48, 0.6) 0%, #0a0c12 100%),
+                              repeating-linear-gradient(45deg, rgba(80, 70, 50, 0.08) 0px, rgba(80, 70, 50, 0.08) 2px, transparent 2px, transparent 8px);
+            z-index: -2;
+        }
+
+        .deck-bg::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(65, 55, 40, 0.2) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(65, 55, 40, 0.2) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .deck-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(200, 180, 120, 0.4);
+            padding-bottom: 1rem;
+        }
+        .title-section h1 {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 2rem;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #f5e7c8, #c7b28b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .title-section p {
+            color: #9a8e6e;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0.25rem;
+        }
+        .entity-badge {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .entity-tag {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid;
+        }
+        .entity-tag.realia-entity { border-color: #6f9e3f; color: #b3d99b; }
+        .entity-tag.unrealia-entity { border-color: #7f6bc9; color: #b7a6ff; }
+
+        .section-divider {
+            margin: 2rem 0 1.5rem 0;
+            position: relative;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .section-title-main {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 1.8rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .holding-badge {
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        .holding-terra {
+            background: #1e2a1e;
+            border: 1px solid #6f9e3f;
+            color: #b3d99b;
+        }
+        .holding-bureau {
+            background: #23203b;
+            border: 1px solid #7f6bc9;
+            color: #b7a6ff;
+        }
+        .section-desc {
+            color: #9a8e6e;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid #5a4a2e;
+        }
+
+        .filter-bar {
+            background: rgba(12, 14, 20, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 60px;
+            border: 1px solid rgba(180, 150, 80, 0.4);
+            padding: 0.8rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: none;
+            border: 1px solid #5a4a2e;
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            color: #bcb29b;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: #2a241a;
+            border-color: #c7a55b;
+            color: #f2e2b0;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.4);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            border: 1px solid #5a4a2e;
+        }
+        .search-box input {
+            background: none;
+            border: none;
+            color: #e6e7f0;
+            padding: 0.4rem 0;
+            outline: none;
+            font-size: 0.85rem;
+            width: 180px;
+        }
+        .search-box input::placeholder {
+            color: #7e735a;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 1.8rem;
+            margin-top: 1rem;
+        }
+        .invest-card {
+            background: rgba(16, 18, 22, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(150, 120, 70, 0.4);
+            border-radius: 32px;
+            padding: 1.5rem;
+            transition: transform 0.2s ease, border-color 0.2s;
+            box-shadow: 0 12px 28px -8px rgba(0,0,0,0.5);
+        }
+        .invest-card:hover {
+            transform: translateY(-4px);
+            border-color: #c7a55b;
+            background: rgba(20, 22, 28, 0.85);
+        }
+        .invest-card.hidden {
+            display: none;
+        }
+        .card-entity {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.5px;
+        }
+        .card-entity.realia { background: #1e2a1e; color: #b3d99b; border-left: 3px solid #6f9e3f; }
+        .card-entity.unrealia { background: #23203b; color: #b7a6ff; border-left: 3px solid #7f6bc9; }
+        .card-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            background: #2a241a;
+            color: #e5cf8a;
+            margin-left: 0.5rem;
+        }
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 0.5rem 0 0.2rem;
+            letter-spacing: -0.3px;
+        }
+        .card-tagline {
+            color: #bcb29b;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            border-left: 2px solid #7f6a42;
+            padding-left: 10px;
+        }
+        .investment-terms {
+            background: rgba(0,0,0,0.4);
+            border-radius: 20px;
+            padding: 0.7rem 1rem;
+            margin: 1rem 0;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .detail-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: 1px solid #8f7a52;
+            padding: 0.5rem 1.2rem;
+            border-radius: 100px;
+            color: #ece3cf;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            margin-right: 0.5rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .detail-btn:hover {
+            background: #7f673e30;
+            border-color: #e4c683;
+            color: #ffe2a4;
+        }
+        .prospectus-note {
+            font-size: 0.7rem;
+            text-align: right;
+            margin-top: 0.8rem;
+            color: #876e42;
+        }
+        .feature-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            background: #1e1b16;
+            padding: 0.15rem 0.5rem;
+            border-radius: 12px;
+            margin-right: 0.3rem;
+            margin-bottom: 0.3rem;
+            color: #c7b28b;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 1.5rem;
+            padding: 0.5rem 0;
+            margin-bottom: 1rem;
+            font-size: 0.75rem;
+            color: #9a8e6e;
+            border-bottom: 1px dashed #3f3524;
+            flex-wrap: wrap;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050608dd;
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-prospectus {
+            background: #14161f;
+            border: 1px solid #b9944e;
+            border-radius: 40px;
+            width: 90%;
+            max-width: 950px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 1.8rem;
+            position: relative;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.6);
+        }
+        .close-modal {
+            position: absolute;
+            top: 18px;
+            right: 24px;
+            font-size: 28px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #ccb27c;
+        }
+        hr { border-color: #2f2a20; margin: 1rem 0; }
+        .version-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+        .version-card {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 0.8rem;
+            border-left: 3px solid;
+        }
+
+        .back-btn {
+            background: rgba(20, 18, 24, 0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid #5e4b32;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            color: #d8c99e;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn:hover {
+            background: #2a241a;
+            border-color: #b4915c;
+            color: #f2e2b0;
+        }
+        .footnote {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.75rem;
+            border-top: 1px dashed #3f3524;
+            padding-top: 2rem;
+            color: #7e735a;
+        }
+
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .grid-cards { grid-template-columns: 1fr; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+<div class="deck-bg"></div>
+<div class="container">
+    <div class="deck-header">
+        <div class="title-section">
+            <h1>🏛️ INVESTOR DECK</h1>
+            <p>OFFICIAL PROPOSAL REGISTRY · LE BUREAU DES COLONIES & TERRATRAMPILLERA HOLDING</p>
+            <div class="entity-badge">
+                <span class="entity-tag realia-entity">🏭 REALIA · TerraTrampillera Holding</span>
+                <span class="entity-tag unrealia-entity">🎭 UNREALIA · Le Bureau des Colonies · JackDaw</span>
+            </div>
+        </div>
+        <button class="back-btn" id="backToInvestariumBtn">← Back to INVESTARIUM</button>
+    </div>
+
+    <div class="filter-bar">
+        <div class="filter-group">
+            <button class="filter-btn active" data-filter="all">🌍 All Projects</button>
+            <button class="filter-btn" data-filter="realia">🏭 REALIA · TerraTrampillera</button>
+            <button class="filter-btn" data-filter="unrealia">🎭 UNREALIA · Le Bureau · JackDaw</button>
+        </div>
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="searchInput" placeholder="Search project...">
+        </div>
+    </div>
+
+    <div class="stats-bar" id="statsBar"></div>
+
+    <!-- REALIA SECTION -->
+    <div class="section-divider" id="realiaSection">
+        <div class="section-header">
+            <div class="section-title-main">
+                🏭 REALIA
+                <span class="holding-badge holding-terra">TerraTrampillera Holding</span>
+            </div>
+        </div>
+        <div class="section-desc">
+            Physical assets · real economy · land tokenization · geothermal energy · carbon credits · navigation infrastructure · GIS mapping
+        </div>
+        <div class="grid-cards" id="realiaGrid"></div>
+    </div>
+
+    <!-- UNREALIA SECTION -->
+    <div class="section-divider" id="unrealiaSection">
+        <div class="section-header">
+            <div class="section-title-main">
+                🎭 UNREALIA
+                <span class="holding-badge holding-bureau">Le Bureau des Colonies · JackDaw</span>
+            </div>
+        </div>
+        <div class="section-desc">
+            Digital assets · metaverse · gamefi · virtual cartography · NFT ecosystems · immersive experiences · dream archives
+        </div>
+        <div class="grid-cards" id="unrealiaGrid"></div>
+    </div>
+
+    <div class="footnote">
+        ⚡ All investments subject to Regent's approval. Minimum lock period: 30 cycles.<br>
+        REALIA: managed by TerraTrampillera Holding · UNREALIA: managed by Le Bureau des Colonies (JackDaw codename)<br>
+        Full prospectus available for each proposal. Click “📜 Prospectus” for detailed pitch deck.
+    </div>
+</div>
+
+<div id="prospectusModal" class="modal-overlay">
+    <div class="modal-prospectus">
+        <button class="close-modal" id="closeModalBtn">✕</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // PROJECTS DATABASE (FULL ENGLISH CONTENT)
+    // ============================================================
+    const projects = {
+        realia: [
+            {
+                name: "Swamp Data DAO",
+                badge: "data cooperative",
+                tagline: "Licensing geodata for drones and agrotech. Decentralized geospatial oracle.",
+                raise: "120k WELLIA",
+                equity: "20% equity",
+                roi: "IRR 24% p.a.",
+                risk: "Moderate",
+                status: "MVP with 3 enterprise pilots",
+                features: ["GIS data", "Drone integration", "DAO governance"],
+                deckContent: `
+                    <h2>🏭 Swamp Data DAO – TerraTrampillera Holding</h2>
+                    <p><strong>Problem:</strong> Geodata market is fragmented, small landowners lose 80% of potential revenue.</p>
+                    <p><strong>Solution:</strong> DAO-cooperative aggregating swamp territory data. Smart contracts for licensing.</p>
+                    <p><strong>Market:</strong> TAM $2.1B (precision agriculture + environmental monitoring).</p>
+                    <p><strong>Team:</strong> GIS engineers, ex-Planet Labs.</p>
+                    <p><strong>Ask:</strong> 120k WELLIA for platform development and first 5 pilot contracts.</p>
+                    <hr><p>📊 Projected EBITDA within 18 months. Exit: strategic acquisition.</p>
+                `
+            },
+            {
+                name: "Plutonia Geothermal",
+                badge: "infrastructure bond",
+                tagline: "Mini-geothermal plants in Iceland. Tokenized bonds.",
+                raise: "500k WELLIA",
+                equity: "Bond 9.8% APY",
+                roi: "min lock 12 cycles",
+                risk: "Low",
+                status: "Land secured, permits ready",
+                features: ["Renewable energy", "Tokenized bonds", "EU regulated"],
+                deckContent: `
+                    <h2>⚡ Plutonia Geothermal – TerraTrampillera Holding</h2>
+                    <p><strong>Problem:</strong> High energy prices in remote data centers and mining farms.</p>
+                    <p><strong>Solution:</strong> 3.2MW geothermal plant with feed-in tariff. Tokenized debt shares.</p>
+                    <p><strong>Unit economics:</strong> LCOE €0.024/kWh, payback period 5 years.</p>
+                    <p><strong>Team:</strong> Reykjavik Geothermal engineers, EU legal structure.</p>
+                    <p>🎯 Round closes Cycle 130.</p>
+                `
+            },
+            {
+                name: "Fern Bioreactors",
+                badge: "climatetech",
+                tagline: "Modular bioreactors for CO₂ capture in tropical regions.",
+                raise: "300k WELLIA",
+                equity: "18% SAFE",
+                roi: "projected 32% IRR",
+                risk: "High",
+                status: "Laboratory prototype validated",
+                features: ["Carbon credits", "Biotechnology", "Tropical deployment"],
+                deckContent: `
+                    <h2>🌿 Fern Bioreactors – TerraTrampillera Holding</h2>
+                    <p><strong>Problem:</strong> Industry needs high-quality decentralized carbon units.</p>
+                    <p><strong>Solution:</strong> Bioreactors using hyperaccumulator ferns, carbon credit as a service.</p>
+                    <p><strong>Market:</strong> Voluntary carbon market to reach $50B by 2030.</p>
+                    <p><strong>Team:</strong> PhD biotech + ex-Terraformation.</p>
+                    <p><strong>Use of funds:</strong> 5 reactors in Costa Rica, international certifications.</p>
+                `
+            },
+            {
+                name: "Tidal Atlas Protocol",
+                badge: "marine cartography",
+                tagline: "Decentralized nautical charts & tide prediction oracles for shipping.",
+                raise: "250k WELLIA",
+                equity: "bond 11% APY + warrants",
+                roi: "projected 19% net margin",
+                risk: "Moderate",
+                status: "Coastal testnet live: Indonesia",
+                features: ["Marine data", "Shipping optimization", "Carbon routing"],
+                deckContent: `
+                    <h2>🌊 Tidal Atlas – TerraTrampillera Holding</h2>
+                    <p><strong>Challenge:</strong> 60% of global trade routes lack high-resolution bathymetry.</p>
+                    <p><strong>Solution:</strong> Crowd-sourced sonar + satellite data anchored on IPFS, rewarded via ATLAS tokens.</p>
+                    <p><strong>Navigation Use:</strong> Real-time tide predictions, dynamic carbon routing.</p>
+                    <p><strong>Team:</strong> Ex-NOAA cartographers + blockchain engineers.</p>
+                `
+            },
+            {
+                name: "NaviMaTog",
+                badge: "flagship · hybrid navigation",
+                tagline: "Modular navigation platform from tourist to special forces. OsmAnd + Tactical NAV + ATAK.",
+                raise: "2.5M WELLIA",
+                equity: "15% equity + royalty pool",
+                roi: "projected 45% IRR by year 3",
+                risk: "Moderate",
+                status: "Architecture design · seeking seed",
+                features: ["Offline first", "MGRS/UTM/LatLon", "NATO symbology", "Team tracking", "Mesh support", "Cross-platform"],
+                deckContent: `
+                    <h2>🗺️ NaviMaTog – Modular Navigation Ecosystem</h2>
+                    <p><strong>The Vision:</strong> One unified navigation platform serving everyone — from civilian hikers to special forces operators. A true hybrid of OsmAnd, Tactical NAV, TacticMap, and ATAK-Civ.</p>
+                    
+                    <h3>🏗️ Core Architecture</h3>
+                    <p><strong>Unified Base:</strong> OpenStreetMap + official topographic maps (including military/EMERCOM where available). Full offline capability, MGRS/UTM/LatLon support, GPX import/export, overlays, 3D terrain, contours, slopes, external sensors.</p>
+                    <p><strong>Modular System:</strong> Core functions are free/common. Advanced features via in-app purchases or separate version licenses.</p>
+                    <p><strong>Cross-platform:</strong> Android + iOS with optional encrypted cloud sync.</p>
+                    
+                    <h3>📱 Version Lineup (Simple to Advanced)</h3>
+                    <div class="version-list">
+                        <div class="version-card" style="border-left-color: #6f9e3f;">
+                            <strong>🥾 1. Civilian Base (Freemium)</strong><br>
+                            Simple Google Maps-like UI + light OsmAnd. Offline maps, basic navigation, POI, tracking, contours, LatLon/UTM search, GPX. For tourists, cyclists, drivers.
+                        </div>
+                        <div class="version-card" style="border-left-color: #c7a55b;">
+                            <strong>⭐ 2. Civilian Pro (Paid)</strong><br>
+                            "OsmAnd on steroids" — advanced map styles, hillshade/slopes, 3D, plugins (weather, Wikipedia offline, sensors), vehicle dimensions, slope guidance, hourly OSM updates.
+                        </div>
+                        <div class="version-card" style="border-left-color: #e09833;">
+                            <strong>🚑 3. Emergency Services (SAR/EMS/Geology)</strong><br>
+                            Blue Force Tracking, team positioning, encrypted comms, hazard layers, medical POI, operation planning tools, Meshtastic/mesh support for no-coverage zones.
+                        </div>
+                        <div class="version-card" style="border-left-color: #7f6bc9;">
+                            <strong>🎖️ 4. Military Basic (Tactical Entry)</strong><br>
+                            Full MGRS (4–10 digit), NATO APP-6/MIL-STD-2525 symbology, tactical drawing, offline-first, low emission mode, dead reckoning, pace count tools.
+                        </div>
+                        <div class="version-card" style="border-left-color: #9b4d96;">
+                            <strong>⚔️ 5. Military Pro (Tactical Assault Kit)</strong><br>
+                            Full ATAK-level capability: Blue/Red Force Tracking, mission planning (CONOPs), drone/sensor integration (FMV), encrypted comms, line-of-sight analysis, dead zone mapping.
+                        </div>
+                    </div>
+                    
+                    <h3>✨ Premium "Delicious" Features</h3>
+                    <p><strong>Unified Account:</strong> Buy Pro once — unlock modules across all versions.<br>
+                    <strong>AI Assistant:</strong> Route risk analysis, automatic tactical position suggestions, object recognition.<br>
+                    <strong>Subscription Modules:</strong> Nautical charts, aviation maps, agriculture, AR mode (camera overlay).<br>
+                    <strong>Cross-version Compatibility:</strong> Civilian can open military files (with sensitive data redacted).<br>
+                    <strong>Reliability:</strong> Battery saver, night mode (red filter), external GPS/compass integration.</p>
+                    
+                    <h3>📊 Market Opportunity</h3>
+                    <p><strong>TAM:</strong> $4.8B (global navigation & mapping software)<br>
+                    <strong>Target Verticals:</strong> Outdoor recreation, logistics, emergency services, defense, agriculture, marine<br>
+                    <strong>Competitive Edge:</strong> No single product spans civilian to tactical with modular architecture. OsmAnd (powerful but complex), Tactical NAV (accurate but niche), ATAK (military-only). NaviMaTog bridges all gaps.</p>
+                    
+                    <h3>💰 Use of Funds (2.5M WELLIA)</h3>
+                    <ul>
+                        <li>Core engine development (cross-platform) — 800k</li>
+                        <li>UI/UX for 5 version tiers — 400k</li>
+                        <li>Map data acquisition & processing pipeline — 500k</li>
+                        <li>Cloud infrastructure (sync, accounts, optional encrypted storage) — 300k</li>
+                        <li>Security audits & certifications — 250k</li>
+                        <li>Marketing & pilot programs — 250k</li>
+                    </ul>
+                    
+                    <h3>🚀 Roadmap</h3>
+                    <p><strong>Q2 2026:</strong> Civilian Base + Pro beta<br>
+                    <strong>Q4 2026:</strong> Full Civilian release + Emergency Services beta<br>
+                    <strong>Q2 2027:</strong> Military Basic release, pilot with SAR teams<br>
+                    <strong>Q4 2027:</strong> Military Pro release, partnership with defense contractors</p>
+                    
+                    <hr>
+                    <p><strong>🎯 Strategic Exit:</strong> Acquisition by defense tech company (Palantir, Anduril) or navigation leader (Garmin, Trimble). Projected valuation at exit: $50-80M.</p>
+                    <p style="margin-top: 1rem;">🌍 <em>"From grandmother to special forces — one app, infinite terrains."</em></p>
+                `
+            }
+        ],
+        unrealia: [
+            {
+                name: "Meganeura Racetrack",
+                badge: "gamefi / esports",
+                tagline: "Cybersport arena with NFT dragonflies. Survival racing.",
+                raise: "80k WELLIA",
+                equity: "15% royalty pool + token allocation",
+                roi: "TGE Q4 2025",
+                risk: "High",
+                status: "Playable alpha on Unity",
+                features: ["NFT racing", "Token rewards", "Esports"],
+                deckContent: `
+                    <h2>🐉 Meganeura Racetrack – Le Bureau des Colonies · JackDaw</h2>
+                    <p><strong>Concept:</strong> Cybersport in a world of giant dragonflies. Customization, upgrades, spectacular races.</p>
+                    <p><strong>Game economy:</strong> 2% commission per race, 60% to player rewards. 500+ WL already.</p>
+                    <p><strong>Market:</strong> Web3 racing (compared to Tiny Racing but deeper metaverse integration).</p>
+                    <p><strong>Team:</strong> Game designers from studios that worked on The Sandbox.</p>
+                    <p>🚀 Roadmap: Q3 2025 – open tests, Q1 2026 – tournaments with $FERN prize pool.</p>
+                `
+            },
+            {
+                name: "Mirage Trace: Atlas",
+                badge: "spatial computing",
+                tagline: "Interoperable cartographic layer for 12+ virtual worlds. Dynamic portals.",
+                raise: "320k WELLIA",
+                equity: "DAO governance token + rev share",
+                roi: "TGE Q3 2025",
+                risk: "Moderate",
+                status: "Alpha bridge: Decentraland ↔ Somnium Space",
+                features: ["Cross-metaverse", "Portal network", "Wayfinder NFTs"],
+                deckContent: `
+                    <h2>🌐 Mirage Trace – Le Bureau des Colonies · JackDaw</h2>
+                    <p><strong>Cartography Innovation:</strong> Unified coordinate system (UTM-X) allowing teleportation between metaverses with preserved location context.</p>
+                    <p><strong>Navigation Assets:</strong> NFT "Wayfinder Compass" licenses generating yield from cross-world routing fees.</p>
+                    <p><strong>Economy:</strong> 0.5% transaction fee per portal jump, 30% redistributed to map node validators.</p>
+                    <p>🚪 Beta launch with gliding mechanics - 1.2k waitlist.</p>
+                `
+            },
+            {
+                name: "Croak Compass: Wayfinding",
+                badge: "audio navigation",
+                tagline: "Voice-coordinated 3D maps for blind accessibility & virtual expeditions.",
+                raise: "140k WELLIA",
+                equity: "royalty pool 10%",
+                roi: "Q4 launch on Steam",
+                risk: "Moderate",
+                status: "VR prototype tested",
+                features: ["Audio-first", "Accessibility", "Echolocation"],
+                deckContent: `
+                    <h2>🐸 Croak Compass – Le Bureau des Colonies · JackDaw</h2>
+                    <p>Audio-first navigation: explore a mystical swamp using echolocation. Procedurally generated topography based on sound frequency mapping.</p>
+                    <p>Open-world metagame where players map hidden territories through sonic pulses. Invest in "Croak Locator" NFT series.</p>
+                    <p>Partnerships with accessibility institutes.</p>
+                `
+            },
+            {
+                name: "Glow Oracle",
+                badge: "generative AI art",
+                tagline: "AI installation whose price changes based on DAO chat sentiment.",
+                raise: "10k WELLIA",
+                equity: "patronage model / NFT drop",
+                roi: "live demo on Vercel",
+                risk: "Low",
+                status: "prompt engineering + diffusion model",
+                features: ["Generative art", "DAO sentiment", "Living NFT"],
+                deckContent: `
+                    <h2>✨ Glow Oracle – Le Bureau des Colonies · JackDaw</h2>
+                    <p>Artificial intelligence generates unique glowing totems in real-time based on participant moods.</p>
+                    <p>How to invest: collect "vision fragments", owners influence color palette.</p>
+                    <p>Exhibition tour in Decentraland + physical holograms.</p>
+                `
+            },
+            {
+                name: "Dream Archive",
+                badge: "neuro-cartography",
+                tagline: "Eternal dream archive, tokenized via EEG oracles.",
+                raise: "25k WELLIA",
+                equity: "patron NFT",
+                roi: "conceptual + artist residency",
+                risk: "High",
+                status: "1 EEG dataset collected",
+                features: ["Neuro art", "EEG integration", "Dream mapping"],
+                deckContent: `
+                    <h2>🌙 Dream Archive – Le Bureau des Colonies · JackDaw</h2>
+                    <p>Collection of anonymous sleep signals via headsets, generation of "dream landscapes". NFT owners get archive access.</p>
+                    <p>Partnership with neuroaesthetics laboratory.</p>
+                `
+            },
+            {
+                name: "Sonic Croaks Layer",
+                badge: "mesh communication",
+                tagline: "Data transmission protocol via ultrasound without internet.",
+                raise: "40k WELLIA",
+                equity: "open source + token grants",
+                roi: "lab prototype ready",
+                risk: "High",
+                status: "RF stage, SDK for apps",
+                features: ["Offline mesh", "Ultrasound", "No-coverage zones"],
+                deckContent: `
+                    <h2>📡 Sonic Croaks – Le Bureau des Colonies · JackDaw</h2>
+                    <p>Using the 18-22 kHz range to transmit short messages between mobile phones up to 30 meters.</p>
+                    <p>Applications: poor connectivity zones, emergency notifications, zero-traffic micropayments.</p>
+                    <p>Round: 40k WELLIA for ASIC prototype and SDK development.</p>
+                `
+            }
+        ]
+    };
+
+    function createCardElement(project, entityType) {
+        const cardDiv = document.createElement("div");
+        cardDiv.className = "invest-card";
+        cardDiv.setAttribute("data-entity", entityType);
+        cardDiv.setAttribute("data-name", project.name.toLowerCase());
+        
+        const entityClass = entityType === "realia" ? "realia" : "unrealia";
+        const entityLabel = entityType === "realia" ? "🏭 TerraTrampillera Holding" : "🎭 Le Bureau des Colonies · JackDaw";
+        
+        const featuresHtml = project.features ? project.features.map(f => `<span class="feature-tag">${f}</span>`).join('') : '';
+        
+        cardDiv.innerHTML = `
+            <div class="card-entity ${entityClass}">${entityLabel}</div>
+            <div class="card-badge">${project.badge}</div>
+            <div class="card-title">${project.name}</div>
+            <div class="card-tagline">${project.tagline}</div>
+            <div class="investment-terms">
+                <span>🎯 ${project.raise}</span>
+                <span>🔹 ${project.equity}</span>
+                <span>📈 ${project.roi}</span>
+            </div>
+            <div style="margin-bottom: 8px;">${featuresHtml}</div>
+            <div style="font-size:0.75rem; margin-bottom:8px;">⚙️ ${project.status}</div>
+            <div style="font-size:0.7rem; margin-bottom:8px; color:#a0926e;">⚠️ Risk: ${project.risk}</div>
+            <button class="detail-btn" data-project='${JSON.stringify(project)}' data-entity="${entityType}">📜 Prospectus (full deck)</button>
+            <div class="prospectus-note">full Investor Deck: problem, market, team, financials</div>
+        `;
+        
+        const btn = cardDiv.querySelector(".detail-btn");
+        btn.addEventListener("click", () => {
+            const proj = JSON.parse(btn.getAttribute("data-project"));
+            showModalWithDeck(proj.deckContent, proj.name, entityType);
+        });
+        return cardDiv;
+    }
+
+    function renderAll() {
+        const realiaGrid = document.getElementById("realiaGrid");
+        const unrealiaGrid = document.getElementById("unrealiaGrid");
+        
+        realiaGrid.innerHTML = '';
+        unrealiaGrid.innerHTML = '';
+        
+        projects.realia.forEach(proj => {
+            realiaGrid.appendChild(createCardElement(proj, "realia"));
+        });
+        projects.unrealia.forEach(proj => {
+            unrealiaGrid.appendChild(createCardElement(proj, "unrealia"));
+        });
+        
+        updateStats();
+    }
+
+    function updateStats() {
+        const realiaCount = projects.realia.length;
+        const unrealiaCount = projects.unrealia.length;
+        
+        const parseRaise = (raise) => {
+            const match = raise.match(/(\d+(?:\.\d+)?)/);
+            return match ? parseFloat(match[1]) : 0;
+        };
+        
+        const totalRaiseRealia = projects.realia.reduce((sum, p) => sum + parseRaise(p.raise), 0);
+        const totalRaiseUnrealia = projects.unrealia.reduce((sum, p) => sum + parseRaise(p.raise), 0);
+        
+        document.getElementById("statsBar").innerHTML = `
+            <span>🏭 REALIA: ${realiaCount} projects · ${totalRaiseRealia}k WELLIA total raise</span>
+            <span>🎭 UNREALIA: ${unrealiaCount} projects · ${totalRaiseUnrealia}k WELLIA total raise</span>
+            <span>📊 TOTAL: ${realiaCount + unrealiaCount} active proposals</span>
+        `;
+    }
+
+    let currentFilter = "all";
+    let currentSearch = "";
+
+    function applyFilters() {
+        const realiaCards = document.querySelectorAll("#realiaGrid .invest-card");
+        const unrealiaCards = document.querySelectorAll("#unrealiaGrid .invest-card");
+        const realiaSection = document.getElementById("realiaSection");
+        const unrealiaSection = document.getElementById("unrealiaSection");
+        
+        let realiaVisible = false;
+        let unrealiaVisible = false;
+        
+        const checkCard = (card, entity) => {
+            const name = card.getAttribute("data-name") || "";
+            const matchesFilter = currentFilter === "all" || currentFilter === entity;
+            const matchesSearch = name.includes(currentSearch.toLowerCase());
+            const isVisible = matchesFilter && matchesSearch;
+            card.classList.toggle("hidden", !isVisible);
+            return isVisible;
+        };
+        
+        realiaCards.forEach(card => {
+            if (checkCard(card, "realia")) realiaVisible = true;
+        });
+        unrealiaCards.forEach(card => {
+            if (checkCard(card, "unrealia")) unrealiaVisible = true;
+        });
+        
+        realiaSection.style.display = realiaVisible || (currentFilter === "all" || currentFilter === "realia") ? "block" : "none";
+        unrealiaSection.style.display = unrealiaVisible || (currentFilter === "all" || currentFilter === "unrealia") ? "block" : "none";
+    }
+
+    const modal = document.getElementById("prospectusModal");
+    const modalContentDiv = document.getElementById("modalContent");
+    
+    function showModalWithDeck(contentHTML, projectName, entityType) {
+        const entityLabel = entityType === "realia" ? "TerraTrampillera Holding" : "Le Bureau des Colonies · JackDaw";
+        modalContentDiv.innerHTML = `
+            <h2>📘 ${projectName} · Full Investor Deck</h2>
+            <p style="color:#b7a6ff; margin-bottom:1rem;">${entityLabel}</p>
+            ${contentHTML}
+            <hr>
+            <p style="font-size:0.75rem; margin-top:1rem;">🔒 LEVEL 4 CLEARANCE · For accredited investors only. Confidential and proprietary.</p>
+        `;
+        modal.classList.add("active");
+    }
+    
+    function closeModal() {
+        modal.classList.remove("active");
+    }
+    
+    document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+    });
+    
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+            btn.classList.add("active");
+            currentFilter = btn.getAttribute("data-filter");
+            applyFilters();
+        });
+    });
+    
+    document.getElementById("searchInput").addEventListener("input", (e) => {
+        currentSearch = e.target.value;
+        applyFilters();
+    });
+    
+    document.getElementById("backToInvestariumBtn").addEventListener("click", () => {
+        window.location.href = "https://wellamatores-metaverse.vercel.app/investarium.html";
+    });
+    
+    renderAll();
+    applyFilters();
+</script>
+</body>
+</html>
