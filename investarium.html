@@ -620,8 +620,9 @@
   modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
   
-  document.getElementById('whitepaperBtn').addEventListener('click', () => alert("📘 INVESTOR DECK (preview):\n\nLE BUREAU : JACKDAW offers gamified yield via Swamp staking pools, governance tokens, and metaverse land deeds. Total supply: 100M $FERN.\n\nFor full deck with tokenomics, contact bureau@jackdaw.io (simulated)."));
-  document.getElementById('registerBtn').addEventListener('click', () => alert("📅 Shareholder meeting registration: Cycle 127, Day 42, Regent's Chamber. (simulated)"));
+ <script>
+document.getElementById('whitepaperBtn').addEventListener('click', () => window.location.href = 'DECK.html');
+document.getElementById('registerBtn').addEventListener('click', () => alert("📅 Shareholder meeting registration: Cycle 127, Day 42, Regent's Chamber. (simulated)"));
 </script>
 </body>
 </html>
