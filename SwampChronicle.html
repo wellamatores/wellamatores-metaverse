@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Swamp Chronicle | Corporate Tales from the Old Swamp Collective Farm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a0f;
+            font-family: 'Georgia', 'Times New Roman', Times, serif;
+        }
+
+        /* ========== UNIFIED NAVIGATION FRAMEWORK ========== */
+        .swamp-nav {
+            background: #0d1f0a;
+            border-bottom: 3px solid #b87c4f;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 2rem;
+            gap: 1rem;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #ecd9a3;
+            text-decoration: none;
+            font-family: monospace;
+        }
+        .nav-brand:hover { color: #ffefb9; }
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: #d6c48a;
+            text-decoration: none;
+            font-family: monospace;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 30px;
+            transition: 0.2s;
+            background: rgba(30,40,15,0.6);
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background: #b87c4f;
+            color: #0d1f0a;
+        }
+        .license-badge {
+            background: #2c3e1f;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-family: monospace;
+            color: #ffdfaa;
+        }
+
+        /* Main content wrapper */
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ========== NEWSPAPER STYLES ========== */
+        .newspaper {
+            background: #fffcf0;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .header {
+            text-align: center;
+            padding: 2rem 1rem 0.8rem;
+            border-bottom: 4px double #7d5d3a;
+            background: #fef7e0;
+        }
+        .header h1 {
+            font-size: 3rem;
+            font-family: 'Times New Roman', serif;
+            letter-spacing: -1px;
+            color: #2f2c1f;
+        }
+        .subhead {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 10px;
+            color: #7a5a3a;
+        }
+        .issue-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 22px;
+            background: #e8dccc;
+            font-family: monospace;
+            font-size: 0.75rem;
+            border-bottom: 1px solid #cbbd96;
+        }
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 22px;
+            background: #1e2a1a;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .investarium-link, .download-issue-btn {
+            background: #dbbc87;
+            color: #1e2a0e;
+            padding: 6px 18px;
+            text-decoration: none;
+            font-family: monospace;
+            font-weight: bold;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .investarium-link:hover, .download-issue-btn:hover {
+            background: #ffdfa5;
+        }
+
+        /* Grid layout */
+        .grid-master {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            padding: 2rem 1.8rem;
+            background: #fffcf0;
+        }
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .article-block {
+            border-bottom: 1px solid #e0cfaa;
+            padding-bottom: 1rem;
+        }
+        .rubric {
+            font-family: monospace;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #bc8f5a;
+            margin-bottom: 6px;
+        }
+        .article-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 6px;
+            color: #2a3e1a;
+        }
+        .byline {
+            font-family: monospace;
+            font-size: 0.65rem;
+            color: #8f7652;
+            margin-bottom: 8px;
+        }
+        .article-text {
+            font-size: 0.85rem;
+            line-height: 1.45;
+            color: #1f2818;
+        }
+        .full-width {
+            grid-column: span 4;
+            background: #f6efdd;
+            padding: 1.5rem;
+            margin: 0 0 1rem 0;
+            border: 1px solid #e2cf9c;
+        }
+        .footer-links {
+            background: #262113;
+            color: #ddca97;
+            padding: 20px;
+            text-align: center;
+            font-family: monospace;
+        }
+
+        /* YouTube widget styles */
+        .yt-widget {
+            margin-top: 12px;
+            background: #e2d5bb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .yt-btn {
+            background: #aa2e1c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-family: monospace;
+            cursor: pointer;
+            font-size: 0.7rem;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .yt-btn:hover {
+            background: #cc3f2a;
+        }
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .video-modal.active {
+            display: flex;
+        }
+        .video-container {
+            width: 90%;
+            max-width: 1200px;
+            background: #000;
+            position: relative;
+        }
+        .video-container iframe {
+            width: 100%;
+            height: 70vh;
+            border: none;
+        }
+        .close-video {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: white;
+            border: none;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+        }
+        .fullscreen-btn {
+            background: #2c3e1f;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            margin-left: 8px;
+            cursor: pointer;
+            font-family: monospace;
+        }
+
+        /* Generator styles (existing) */
+        .generator-full {
+            background: #1e2418;
+            color: #e2e7d5;
+            padding: 2rem;
+            border-top: 3px solid #b87c4f;
+            font-family: monospace;
+        }
+        .generator-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #2a3022;
+            padding: 1.8rem;
+            border-radius: 16px;
+        }
+        .license-panel {
+            background: #0f130c;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+        .generator-input-group {
+            margin-bottom: 1.2rem;
+        }
+        .generator-input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #ecd9a3;
+        }
+        input, select, textarea, button {
+            background: #2b3422;
+            border: 1px solid #9caf78;
+            color: #f6f5e8;
+            padding: 10px;
+            font-family: monospace;
+            border-radius: 8px;
+        }
+        input, select, textarea {
+            width: 100%;
+        }
+        button {
+            background: #4f6b38;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.1s linear;
+            padding: 10px 20px;
+        }
+        button:hover {
+            background: #6f9552;
+        }
+        .status-msg {
+            margin-top: 12px;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+        .json-preview {
+            background: #0a0f07;
+            padding: 14px;
+            white-space: pre-wrap;
+            font-size: 0.7rem;
+            max-height: 250px;
+            overflow: auto;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        .generator-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        hr {
+            border-color: #6f6b3c;
+            margin: 18px 0;
+        }
+
+        @media (max-width: 1000px) {
+            .grid-master { grid-template-columns: repeat(2,1fr); gap: 1.5rem; }
+            .full-width { grid-column: span 2; }
+        }
+        @media (max-width: 600px) {
+            .grid-master { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+            .header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- UNIFIED NAVIGATION FRAMEWORK -->
+<div class="swamp-nav">
+    <div class="nav-container">
+        <a href="#" class="nav-brand" id="homeLink">🐸 SWAMP CHRONICLE</a>
+        <div class="nav-links">
+            <a href="#" data-page="newspaper" class="active" id="navNewspaper">📰 GAZETTE</a>
+            <a href="#" data-page="generator" id="navGenerator">⚙️ NEWS GENERATOR</a>
+            <a href="https://wellamatores-metaverse.vercel.app/investarium.html" target="_blank">🏛️ INVESTARIUM</a>
+        </div>
+        <div class="license-badge" id="licenseStatus">🔐 GENERATOR: LOCKED</div>
+    </div>
+</div>
+
+<div class="page-container" id="appRoot">
+    <div style="text-align: center; padding: 3rem;">Loading the Old Swamp Collective...</div>
+</div>
+
+<!-- VIDEO MODAL (fullscreen YouTube) -->
+<div id="videoModal" class="video-modal">
+    <div class="video-container">
+        <button class="close-video" id="closeVideoBtn">✕ CLOSE</button>
+        <iframe id="youtubeIframe" src="" allow="fullscreen; autoplay; encrypted-media" allowfullscreen></iframe>
+        <button id="fullscreenVideoBtn" class="fullscreen-btn">⛶ FULLSCREEN</button>
+    </div>
+</div>
+
+<script>
+    // ========== MASTER NEWSPAPER DATA WITH YOUTUBE INTEGRATION ==========
+    const fullEdition = {
+        "volume": 1,
+        "number": 7,
+        "date": "May 20, 2026 — Night Kwa Edition",
+        "editor": "Clan Urvids & The Frog Council",
+        "columns": [
+            { "articles": [
+                { "rubric": "SWAMP COUNCIL", "title": "Regent’s Night Decree: Kwa Tax Adjustments", "byline": "Le Bureau Desk", "text": "In a late session from Plutonia Sector, Lord Regent imposed a temporary Kwa levy on all lilypad transactions. The tax — 0.8% on trades above 500 WELLIA — aims to fund the Old Swamp Collective’s night patrols. ‘The Night Kwa is not a myth. It is infrastructure’, the Regent declared. The decree will last 60 cycles, with a review after the first harvest moon.", "youtube": "dQw4w9WgXcQ" },
+                { "rubric": "INFRASTRUCTURE", "title": "Plutonia Geothermal: 78% Subscribed", "byline": "JOG Finance", "text": "The 500k WELLIA bond for mini-geothermal plants in Iceland has reached 78% commitment. APY remains at 9.8% with final permits secured. Analysts expect full subscription before the next swamp assembly.", "youtube": "jfKfPfyJRdk" }
+            ]},
+            { "articles": [
+                { "rubric": "MEGANEURA RACING", "title": "First Croak Racetrack Opens", "byline": "Esports Bureau", "text": "Meganeura Racetrack is now live with survival racing. NFT dragonflies recorded speeds up to 280 Kwa per cycle. The first tournament awards 5k WELLIA plus a Genesis Lilypad. Clan Urvids holds the early lead.", "youtube": "L_jWHffIx5E" },
+                { "rubric": "DATA COOPERATIVE", "title": "Swamp Data DAO Licenses Geodata", "byline": "TerraTrampillera", "text": "The decentralized geospatial oracle has closed three enterprise pilots. Drone integration for agrotech in tropical zones is operational.", "youtube": null }
+            ]},
+            { "articles": [
+                { "rubric": "CROAK COMPASS", "title": "Voice Navigation for Blind Explorers", "byline": "Accessibility Lab", "text": "The audio-first ‘Croak Compass’ passed VR prototype tests. It enables echolocation-based wayfinding in virtual expeditions. The SDK will be released for Unity and Unreal.", "youtube": "rYEDA3JcQqw" },
+                { "rubric": "NPC REALM", "title": "AI Factions Active: Diplomatic Incidents", "byline": "Plutonia Log", "text": "Two AI-driven factions — ‘Glowscale’ and ‘Mire Legion’ — exchanged territory near Earth Twin. The Regent’s Office suggests non-interference until the Night Kwa protocol stabilizes.", "youtube": null }
+            ]},
+            { "articles": [
+                { "rubric": "FIRST CROAK PROPHECY", "title": "Underwater Lotus Districts Delayed", "byline": "Chronicle", "text": "The expansion of underwater lotus districts has been moved to Q3 2026 due to procedural instability. However, the ‘First Croak’ narrative script is complete.", "youtube": null },
+                { "rubric": "NIGHT KWA LORE", "title": "Old Swamp Collective Farm", "byline": "Kingdom of Frogs", "text": "Night Kwa is the ancestral call that echoes across Plutonia. The Old Swamp Collective Farm now tokenizes organic peat and fog essence. Every Kwa heard represents a micro-transaction on the JOG network.", "youtube": "M7lc1UVf-VE" }
+            ]}
+        ],
+        "fullWidthFeatures": [
+            { "type": "market", "title": "💰 SWAMP MARKET SNAPSHOT", "content": "WELLIA: 1.00 (stable) · TELLIA: +5.2% · JOG Staked: 892k (+12.4% APY) · Swamp Bonds: 9.8% APY oversubscribed · Glow Oracle index: 227 · NFT Dragonfly floor price: 1.2k WELLIA", "youtube": null },
+            { "type": "calendar", "title": "📅 NIGHT KWA CALENDAR · NEXT 7 CYCLES", "content": "Cycle 127 Day 42: Shareholder Meeting · Day 44: Meganeura Race Qualifiers · Day 47: Glow Auction · Day 49: Swamp Data DAO vote · Day 52: Night Kwa Ritual (Full Moon).", "youtube": "FgjpqbL9BLA" }
+        ]
+    };
+
+    // ========== LICENSE SYSTEM ==========
+    let validLicense = null;
+    const VALID_CODES = ['SWAMP-KING-2026-FROG', 'BUREAU-LEVEL4-JACKDAW', 'GENERATOR-2026'];
+
+    function checkLicenseStored() {
+        const stored = sessionStorage.getItem('swamp_license');
+        if (stored && VALID_CODES.includes(stored)) {
+            validLicense = stored;
+            document.getElementById('licenseStatus').innerHTML = '🔓 GENERATOR: UNLOCKED';
+            return true;
+        }
+        return false;
+    }
+
+    function setLicense(code) {
+        if (VALID_CODES.includes(code)) {
+            validLicense = code;
+            sessionStorage.setItem('swamp_license', code);
+            document.getElementById('licenseStatus').innerHTML = '🔓 GENERATOR: UNLOCKED';
+            return true;
+        }
+        return false;
+    }
+
+    // Video player helper
+    function openYouTubeVideo(videoId) {
+        const modal = document.getElementById('videoModal');
+        const iframe = document.getElementById('youtubeIframe');
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+        modal.classList.add('active');
+    }
+    function closeVideo() {
+        const modal = document.getElementById('videoModal');
+        const iframe = document.getElementById('youtubeIframe');
+        iframe.src = '';
+        modal.classList.remove('active');
+    }
+    function makeFullscreen() {
+        const container = document.querySelector('.video-container');
+        if (container.requestFullscreen) container.requestFullscreen();
+        else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
+    }
+
+    // Attach video events
+    document.getElementById('closeVideoBtn').addEventListener('click', closeVideo);
+    document.getElementById('fullscreenVideoBtn').addEventListener('click', makeFullscreen);
+    document.getElementById('videoModal').addEventListener('click', (e) => { if(e.target === document.getElementById('videoModal')) closeVideo(); });
+
+    // ========== RENDER NEWSPAPER WITH YOUTUBE WIDGETS ==========
+    function renderNewspaper() {
+        const container = document.getElementById('appRoot');
+        container.innerHTML = `
+            <div class="newspaper">
+                <div class="header">
+                    <h1>NIGHT KWA<br>in the Old Swamp Collective Farm</h1>
+                    <div class="subhead">CORPORATE TALES · LE BUREAU DES COLONIES · JOG NETWORK · KINGDOM OF FROGS</div>
+                </div>
+                <div id="issueMeta" class="issue-info"></div>
+                <div class="action-bar">
+                    <a href="https://wellamatores-metaverse.vercel.app/investarium.html" class="investarium-link">🏛️ BACK TO INVESTARIUM</a>
+                    <button id="downloadIssueBtn" class="download-issue-btn">📥 DOWNLOAD FULL ISSUE (JSON)</button>
+                </div>
+                <div id="newspaperGrid" class="grid-master"></div>
+                <div class="footer-links">
+                    <div>📡 SWAMP NEWS GENERATOR — turn any file into structured newspaper JSON</div>
+                    <div style="font-size:0.65rem; margin-top:12px;">Full edition downloadable as JSON · Mirror & deploy your own copy</div>
+                </div>
+            </div>
+        `;
+        document.getElementById('issueMeta').innerHTML = `📰 VOL.${fullEdition.volume} NO.${fullEdition.number} · ${fullEdition.date} · Editor: ${fullEdition.editor} · 🐸 NIGHT KWA · OLD SWAMP COLLECTIVE FARM`;
+
+        const gridContainer = document.getElementById('newspaperGrid');
+        let gridHtml = '';
+        for (let colIdx = 0; colIdx < fullEdition.columns.length; colIdx++) {
+            const column = fullEdition.columns[colIdx];
+            let colHtml = `<div class="column">`;
+            for (let art of column.articles) {
+                let ytButton = '';
+                if (art.youtube) {
+                    ytButton = `<div class="yt-widget"><button class="yt-btn" data-video-id="${art.youtube}">📺 Watch on YouTube / Fullscreen</button></div>`;
+                }
+                colHtml += `
+                    <div class="article-block">
+                        <div class="rubric">${escapeHtml(art.rubric)}</div>
+                        <div class="article-title">${escapeHtml(art.title)}</div>
+                        <div class="byline">${escapeHtml(art.byline)}</div>
+                        <div class="article-text">${escapeHtml(art.text)}</div>
+                        ${ytButton}
+                    </div>
+                `;
+            }
+            colHtml += `</div>`;
+            gridHtml += colHtml;
+        }
+        for (let fw of fullEdition.fullWidthFeatures) {
+            let ytButtonFW = '';
+            if (fw.youtube) {
+                ytButtonFW = `<div class="yt-widget"><button class="yt-btn" data-video-id="${fw.youtube}">📺 Watch on YouTube / Fullscreen</button></div>`;
+            }
+            gridHtml += `
+                <div class="full-width">
+                    <div class="rubric" style="font-size:0.75rem;">${fw.type.toUpperCase()} · CHRONICLE EXCLUSIVE</div>
+                    <div class="article-title" style="font-size:1.4rem;">${escapeHtml(fw.title)}</div>
+                    <div class="article-text">${escapeHtml(fw.content)}</div>
+                    ${ytButtonFW}
+                </div>
+            `;
+        }
+        gridContainer.innerHTML = gridHtml;
+
+        // attach video handlers after render
+        document.querySelectorAll('.yt-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const videoId = btn.getAttribute('data-video-id');
+                if (videoId) openYouTubeVideo(videoId);
+            });
+        });
+
+        document.getElementById('downloadIssueBtn').addEventListener('click', () => {
+            const dataStr = JSON.stringify(fullEdition, null, 2);
+            const blob = new Blob([dataStr], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `night_kwa_swamp_chronicle_vol${fullEdition.volume}_no${fullEdition.number}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    // ========== GENERATOR CODE (preserved from your file) ==========
+    async function extractTextFromFile(file) {
+        const fileType = file.type;
+        const fileName = file.name.toLowerCase();
+        if (fileType === 'application/pdf' || fileName.endsWith('.pdf')) {
+            return `[PDF CONTENT SIMULATION] File: ${file.name}. Real integration: pdf.js extracts text. Plutonia Geothermal: 92% capacity. Swamp bonds APY increased to 10.2%. Night Kwa rituals scheduled.`;
+        } 
+        else if (fileType.startsWith('image/')) {
+            return `[IMAGE OCR SIMULATION] ${file.name}. Detected swamp patterns: Meganeura racetrack expansion approved. New AI factions in Earth Twin. 500k WELLIA staking pool opens tomorrow.`;
+        }
+        else if (fileType === 'text/plain' || fileName.endsWith('.txt') || fileName.endsWith('.csv')) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = () => reject("Failed to read text file");
+                reader.readAsText(file);
+            });
+        }
+        else {
+            return `[BINARY] ${file.name}. Simulated news: Old Swamp Collective votes new geothermal bonds at 11.2% APY.`;
+        }
+    }
+
+    async function generateNewsFromFile(file, section, byline, customPrompt) {
+        let rawText = await extractTextFromFile(file);
+        if (typeof rawText !== 'string') rawText = String(rawText);
+        const titleSuffix = file.name.replace(/\.[^/.]+$/, "").substring(0, 40);
+        const aiSummary = `[AI GENERATED] Based on "${file.name}": ${rawText.substring(0, 200)}... The Regent's council announced new infrastructure bonds. Swamp Data DAO reached consensus. Night Kwa protocol upgrade v2.3 passed. ${customPrompt ? `Context: ${customPrompt}` : ''}`;
+        const fullArticle = `Full extraction from ${file.name} (${(file.size/1024).toFixed(1)} KB).\n---\n${rawText.substring(0, 800)}${rawText.length > 800 ? '…' : ''}\n\n---\nAI Narrative: ${aiSummary}`;
+        return {
+            title: `Swamp Chronicle: ${titleSuffix}`,
+            byline: byline || "Chronicle AI Bureau",
+            section: section,
+            summary: aiSummary.substring(0, 280),
+            full_text: fullArticle,
+            source_file: file.name,
+            processed_at: new Date().toISOString(),
+            license_used: validLicense ? validLicense.substring(0,8)+"..." : "demo"
+        };
+    }
+
+    function renderGeneratorPage() {
+        const container = document.getElementById('appRoot');
+        container.innerHTML = `
+            <div class="generator-full">
+                <div class="generator-card">
+                    <h2>📡 SWAMP NEWS GENERATOR — PDF + IMAGE INTELLIGENCE</h2>
+                    <p style="margin-bottom: 20px;">Upload any document → AI extracts insights → ready-to-publish JSON. <strong>Requires license.</strong></p>
+                    <div class="license-panel">
+                        <label>🔑 LICENSE ACTIVATION</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <input type="password" id="licenseInput" placeholder="License code" style="flex:1;">
+                            <button id="activateLicenseBtn">ACTIVATE</button>
+                        </div>
+                        <div style="font-size:0.7rem; margin-top:8px;">Demo: SWAMP-KING-2026-FROG</div>
+                        <div id="licenseMsg" class="status-msg"></div>
+                    </div>
+                    <div id="generatorTool" style="display: none;">
+                        <hr>
+                        <div class="generator-input-group">
+                            <label>📂 UPLOAD FILE (PDF / IMAGE / TXT / CSV)</label>
+                            <input type="file" id="genFileInput" accept=".pdf,.jpg,.jpeg,.png,.txt,.csv,application/pdf,image/*">
+                        </div>
+                        <div class="generator-input-group">
+                            <label>📰 SECTION</label>
+                            <select id="genSectionSelect">
+                                <option>Swamp Council</option><option>Infrastructure</option><option>Meganeura Racing</option>
+                                <option>Data Cooperative</option><option>Croak Compass</option><option>Investment Protocols</option>
+                                <option>Night Kwa Lore</option><option>Corporate Tales</option>
+                            </select>
+                        </div>
+                        <div class="generator-input-group">
+                            <label>✍️ BYLINE</label>
+                            <input type="text" id="genByline" value="AI Chronicle Desk">
+                        </div>
+                        <div class="generator-input-group">
+                            <label>💬 CUSTOM PROMPT</label>
+                            <textarea id="genPrompt" rows="2"></textarea>
+                        </div>
+                        <button id="processFileBtn">✨ GENERATE ARTICLE</button>
+                        <div id="processingStatus" class="status-msg"></div>
+                        <div id="resultArea" style="display: none;">
+                            <h3>📄 GENERATED JSON</h3>
+                            <div id="jsonPreview" class="json-preview"></div>
+                            <div class="generator-buttons">
+                                <button id="copyJsonBtn">📋 COPY</button>
+                                <button id="downloadArticleJsonBtn">💾 DOWNLOAD JSON</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        if (checkLicenseStored()) {
+            document.getElementById('generatorTool').style.display = 'block';
+            document.getElementById('licenseMsg').innerHTML = '✅ Active.';
+        }
+        document.getElementById('activateLicenseBtn').addEventListener('click', () => {
+            const code = document.getElementById('licenseInput').value.trim();
+            if (setLicense(code)) {
+                document.getElementById('generatorTool').style.display = 'block';
+                document.getElementById('licenseMsg').innerHTML = '✅ Verified!';
+            } else {
+                document.getElementById('licenseMsg').innerHTML = '❌ Invalid code.';
+            }
+        });
+        const processBtn = document.getElementById('processFileBtn');
+        const fileInput = document.getElementById('genFileInput');
+        const statusDiv = document.getElementById('processingStatus');
+        const resultArea = document.getElementById('resultArea');
+        const jsonPreview = document.getElementById('jsonPreview');
+        processBtn.addEventListener('click', async () => {
+            if (!validLicense) { statusDiv.innerHTML = '⚠️ Activate license.'; return; }
+            if (!fileInput.files.length) { statusDiv.innerHTML = '❌ Upload a file.'; return; }
+            const file = fileInput.files[0];
+            const section = document.getElementById('genSectionSelect').value;
+            const byline = document.getElementById('genByline').value;
+            const prompt = document.getElementById('genPrompt').value;
+            statusDiv.innerHTML = '🔄 Processing AI extraction...';
+            try {
+                const article = await generateNewsFromFile(file, section, byline, prompt);
+                jsonPreview.textContent = JSON.stringify(article, null, 2);
+                resultArea.style.display = 'block';
+                statusDiv.innerHTML = '✅ Ready.';
+                window.lastArticle = article;
+            } catch(e) { statusDiv.innerHTML = `❌ ${e.message}`; }
+        });
+        document.getElementById('copyJsonBtn')?.addEventListener('click', () => {
+            if (jsonPreview.textContent) navigator.clipboard.writeText(jsonPreview.textContent);
+        });
+        document.getElementById('downloadArticleJsonBtn')?.addEventListener('click', () => {
+            if (jsonPreview.textContent) {
+                const blob = new Blob([jsonPreview.textContent], {type:'application/json'});
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `article_${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(a.href);
+            }
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // routing
+    let currentPage = 'newspaper';
+    function setActiveNav(page) {
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            const lp = link.getAttribute('data-page');
+            if (lp === page) link.classList.add('active');
+            else link.classList.remove('active');
+        });
+    }
+    function navigateTo(page) {
+        currentPage = page;
+        if (page === 'newspaper') renderNewspaper();
+        else if (page === 'generator') renderGeneratorPage();
+        setActiveNav(page);
+    }
+    document.getElementById('navNewspaper').addEventListener('click', (e) => { e.preventDefault(); navigateTo('newspaper'); });
+    document.getElementById('navGenerator').addEventListener('click', (e) => { e.preventDefault(); navigateTo('generator'); });
+    document.getElementById('homeLink').addEventListener('click', (e) => { e.preventDefault(); navigateTo('newspaper'); });
+    checkLicenseStored();
+    navigateTo('newspaper');
+</script>
+</body>
+</html>
