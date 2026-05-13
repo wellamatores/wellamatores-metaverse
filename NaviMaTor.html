@@ -2,460 +2,382 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NaviMator — Modular Navigation Platform | Global & Offline-Ready</title>
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <!-- Font Awesome 6 (free) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>NaviMaTor • PMC CHOPIN — Tactical Navigation System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=VT323&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', system-ui, sans-serif; background-color: #030303; }
+        .title-font { font-family: 'VT323', monospace; letter-spacing: 0.02em; }
+        
+        /* Hero background */
+        .hero-bg {
+            background-image: linear-gradient(125deg, rgba(0,0,0,0.88) 0%, rgba(0,20,10,0.92) 100%), url('https://i.imgur.com/0zqKX8J.jpeg');
+            background-size: cover;
+            background-position: center 30%;
         }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-            background: #f5f7fb;
-            color: #1a2c3e;
-            line-height: 1.5;
+        
+        /* Card hover effect */
+        .card-hover {
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
-
-        ::-webkit-scrollbar {
-            width: 8px;
+        .card-hover:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 20px 35px -12px rgba(0, 255, 157, 0.25);
+            border-color: rgba(0, 255, 157, 0.5) !important;
         }
-        ::-webkit-scrollbar-track {
-            background: #e2e8f0;
+        
+        /* Tactical accent */
+        .glow-text {
+            text-shadow: 0 0 6px rgba(0, 255, 157, 0.4);
         }
-        ::-webkit-scrollbar-thumb {
-            background: #2c7a4d;
-            border-radius: 10px;
-        }
-
-        /* header hero */
-        .hero {
-            background: linear-gradient(135deg, #0a2f2a 0%, #1b4d3e 100%);
-            color: white;
-            padding: 3rem 2rem;
-            text-align: center;
-            border-bottom-left-radius: 32px;
-            border-bottom-right-radius: 32px;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-        }
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.5rem;
-        }
-        .hero h1 span {
-            background: #f5b042;
-            padding: 0 8px;
-            border-radius: 24px;
-            color: #1e2f2a;
-            font-size: 2rem;
-        }
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 1rem auto 0;
-            opacity: 0.9;
-        }
-        .badge-container {
-            margin-top: 1.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.8rem;
-        }
-        .badge {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(4px);
-            padding: 0.5rem 1.2rem;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .container {
-            max-width: 1300px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
-
-        .section-title {
-            font-size: 1.9rem;
-            font-weight: 700;
-            margin: 2rem 0 1rem;
-            border-left: 6px solid #2c7a4d;
-            padding-left: 1rem;
-        }
-        .subsection {
-            margin: 2rem 0;
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.8rem;
-            margin-top: 1rem;
-        }
-        .version-card {
-            background: white;
-            border-radius: 28px;
-            padding: 1.5rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        
+        /* Builder panel styles */
+        .builder-floating {
             transition: all 0.2s ease;
-            border: 1px solid #e9edf2;
         }
-        .version-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.12);
+        .builder-floating:hover {
+            transform: scale(1.02);
         }
-        .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        .version-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-        .version-sub {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-            color: #2c7a4d;
-            margin-bottom: 1rem;
-        }
-        .price {
-            font-weight: 800;
-            font-size: 1.3rem;
-            margin: 1rem 0;
-            color: #1e4620;
-        }
-        .feature-list {
-            list-style: none;
-            margin: 1rem 0;
-        }
-        .feature-list li {
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-size: 0.9rem;
-        }
-        .feature-list li i {
-            color: #2c7a4d;
-            width: 1.2rem;
-            font-size: 0.9rem;
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .builder-panel-mobile { width: 260px; right: 10px; top: 70px; }
         }
 
-        .roadmap {
-            background: white;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            margin: 1.5rem 0;
+        /* Logo styling */
+        .pmc-logo {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.5px;
         }
-        .roadmap-phase {
-            border-bottom: 1px solid #eef2f6;
-            padding: 1.5rem;
-        }
-        .phase-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 0.8rem;
-        }
-        .phase-months {
-            background: #eef2ff;
-            border-radius: 60px;
-            padding: 0.2rem 1rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #1f4f3c;
-        }
-        .phase-desc {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-            margin-top: 0.8rem;
-        }
-        .phase-desc span {
-            background: #f0f4f9;
-            padding: 0.25rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-        }
-
-        .matrix-table {
-            overflow-x: auto;
-            background: white;
-            border-radius: 28px;
-            padding: 1rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-        }
-        th, td {
-            text-align: left;
-            padding: 12px 10px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        th {
-            background-color: #eef2f0;
-            font-weight: 700;
-        }
-        .price-tag {
-            font-weight: 700;
-            color: #1f5e3f;
-        }
-
-        .feature-highlight {
-            background: linear-gradient(120deg, #fef9e3 0%, #fff4e0 100%);
-            border-left: 4px solid #e6b422;
-            padding: 0.8rem 1.5rem;
-            border-radius: 24px;
-            margin: 1.5rem 0;
-        }
-
-        .cta-button {
-            background: #2c7a4d;
-            border: none;
-            padding: 0.9rem 2rem;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1rem;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.6rem;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .cta-button:hover {
-            background: #1f5e3f;
-            transform: scale(0.98);
-        }
-
-        footer {
-            background: #0f2120;
-            color: #9aa9af;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            border-top-left-radius: 28px;
-            border-top-right-radius: 28px;
-        }
-
-        @media (max-width: 700px) {
-            .hero h1 {
-                font-size: 2rem;
-            }
-            .section-title {
-                font-size: 1.5rem;
-            }
+        .steinway {
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            letter-spacing: 2px;
         }
     </style>
 </head>
-<body>
+<body class="text-zinc-200">
 
-<div class="hero">
-    <h1>Navi<span>Mator</span></h1>
-    <p>Modular navigation platform · Offline-first OsmAnd core · Tactical precision · Team collaboration</p>
-    <div class="badge-container">
-        <div class="badge"><i class="fas fa-map"></i> OSM + Topo maps</div>
-        <div class="badge"><i class="fas fa-mountain"></i> 3D terrain / slopes</div>
-        <div class="badge"><i class="fas fa-shield-alt"></i> MGRS / MIL-STD-2525</div>
-        <div class="badge"><i class="fas fa-broadcast-tower"></i> Mesh / BFT ready</div>
-        <div class="badge"><i class="fas fa-sync-alt"></i> Cross-version compatibility</div>
+    <!-- ========== FLOATING CONSTRUCTOR PANEL + STORE ========== -->
+    <div id="builderPanel" class="fixed top-20 right-4 z-[999] w-72 bg-black/95 backdrop-blur-md border border-amber-500/60 rounded-2xl shadow-2xl builder-floating p-4">
+        <div class="flex justify-between items-center border-b border-amber-500/40 pb-2 mb-3">
+            <h3 class="text-amber-400 font-bold text-sm uppercase tracking-wider flex gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> CONSTRUCTOR</h3>
+            <button id="closeBuilder" class="text-zinc-400 hover:text-white text-sm"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <!-- Color and text controls -->
+        <div class="space-y-3 text-sm">
+            <div>
+                <label class="text-zinc-400 text-xs block mb-1">🎨 Accent Color</label>
+                <input type="color" id="accentColor" value="#f59e0b" class="w-full h-8 bg-zinc-900 border border-zinc-700 rounded">
+            </div>
+            <div>
+                <label class="text-zinc-400 text-xs block mb-1">🏷️ Brand Name</label>
+                <input type="text" id="brandName" value="PMC CHOPIN" class="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-white text-sm">
+            </div>
+            <div>
+                <label class="text-zinc-400 text-xs block mb-1">📢 Hero Title</label>
+                <input type="text" id="heroTitleMain" value="NaviMaTor" class="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-white text-sm">
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button id="openStoreBtn" class="flex-1 bg-zinc-800 hover:bg-zinc-700 border border-amber-500/40 rounded py-1.5 text-xs font-semibold"><i class="fa-solid fa-store"></i> Store</button>
+                <button id="downloadHtmlBtn" class="flex-1 bg-amber-600 hover:bg-amber-500 text-black rounded py-1.5 text-xs font-bold"><i class="fa-solid fa-download"></i> Download .html</button>
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="container">
-    <!-- Edition line-up -->
-    <div class="section-title"><i class="fas fa-layer-group" style="margin-right: 12px;"></i> Capability packs — one ecosystem</div>
-    <div class="cards-grid">
-        <!-- 1. Citizen Base -->
-        <div class="version-card">
-            <div class="card-icon"><i class="fas fa-user-friends"></i></div>
-            <div class="version-title">Citizen Base</div>
-            <div class="version-sub">Freemium</div>
-            <div class="price">$0 / Free</div>
-            <ul class="feature-list">
-                <li><i class="fas fa-check-circle"></i> Offline regional maps</li>
-                <li><i class="fas fa-check-circle"></i> Lat/Lon, UTM search</li>
-                <li><i class="fas fa-check-circle"></i> GPX import/export</li>
-                <li><i class="fas fa-check-circle"></i> Basic tracking & POI</li>
-                <li><i class="fas fa-charging-station"></i> Optional map store</li>
-            </ul>
-        </div>
-        <!-- 2. Citizen Pro -->
-        <div class="version-card">
-            <div class="card-icon"><i class="fas fa-star-of-life"></i></div>
-            <div class="version-title">Citizen Pro</div>
-            <div class="version-sub">Paid / subscription</div>
-            <div class="price">$4.99/year or $19.99 lifetime</div>
-            <ul class="feature-list">
-                <li><i class="fas fa-check-circle"></i> Hillshade / 3D terrain / slopes</li>
-                <li><i class="fas fa-check-circle"></i> Custom styles + plugins</li>
-                <li><i class="fas fa-check-circle"></i> Advanced routing (vehicle dimensions)</li>
-                <li><i class="fas fa-check-circle"></i> Hourly OSM updates</li>
-                <li><i class="fas fa-cloud-sun"></i> Offline weather layers</li>
-            </ul>
-        </div>
-        <!-- 3. Emergency & SAR -->
-        <div class="version-card">
-            <div class="card-icon"><i class="fas fa-truck-medical"></i></div>
-            <div class="version-title">Emergency & SAR</div>
-            <div class="version-sub">SAR / Civil Defence / Geologists</div>
-            <div class="price">from $99/year (org)</div>
-            <ul class="feature-list">
-                <li><i class="fas fa-check-circle"></i> Blue Force Tracking (real-time)</li>
-                <li><i class="fas fa-check-circle"></i> Geotagged chat + messenger</li>
-                <li><i class="fas fa-check-circle"></i> Hazard layers (fires, floods)</li>
-                <li><i class="fas fa-check-circle"></i> Meshtastic / mesh integration</li>
-                <li><i class="fas fa-check-circle"></i> Team zones & evacuation routes</li>
-            </ul>
-        </div>
-        <!-- 4. Tactical Base (Entry) -->
-        <div class="version-card">
-            <div class="card-icon"><i class="fas fa-user-secret"></i></div>
-            <div class="version-title">Tactical Base</div>
-            <div class="version-sub">Entry level</div>
-            <div class="price">$19.99/year</div>
-            <ul class="feature-list">
-                <li><i class="fas fa-check-circle"></i> Full MGRS (4–10 digit)</li>
-                <li><i class="fas fa-check-circle"></i> NATO APP-6 (basic)</li>
-                <li><i class="fas fa-check-circle"></i> Tactical drawing tools</li>
-                <li><i class="fas fa-check-circle"></i> Low emission mode</li>
-                <li><i class="fas fa-check-circle"></i> Dead reckoning, pace count</li>
-            </ul>
-        </div>
-        <!-- 5. Tactical Pro / Command -->
-        <div class="version-card">
-            <div class="card-icon"><i class="fas fa-hand-fist"></i></div>
-            <div class="version-title">Tactical Pro / Command</div>
-            <div class="version-sub">Full TAK-class capabilities</div>
-            <div class="price">from $499/year (unit)</div>
-            <ul class="feature-list">
-                <li><i class="fas fa-check-circle"></i> MIL-STD-2525 full symbology</li>
-                <li><i class="fas fa-check-circle"></i> LOS / slope / dead zones analysis</li>
-                <li><i class="fas fa-check-circle"></i> Drone integration (MAVLink, video)</li>
-                <li><i class="fas fa-check-circle"></i> CONOPs mission planner</li>
-                <li><i class="fas fa-check-circle"></i> Full encryption + enterprise server</li>
-            </ul>
+    
+    <!-- STORE MODAL (widgets + templates) -->
+    <div id="storeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[1000] hidden items-center justify-center">
+        <div class="bg-zinc-950 border border-amber-500/50 rounded-2xl w-[90%] max-w-lg p-6 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl title-font text-amber-400"><i class="fa-solid fa-cart-shopping"></i> WIDGET STORE</h2>
+                <button id="closeStoreModal" class="text-white text-2xl">&times;</button>
+            </div>
+            <div class="flex gap-4 border-b border-zinc-800 mb-4">
+                <button class="store-tab-btn active-tab text-amber-400 pb-2" data-tab="templates">📦 Templates</button>
+                <button class="store-tab-btn text-zinc-400 pb-2" data-tab="widgets">🧩 Widgets</button>
+            </div>
+            <!-- Templates tab -->
+            <div id="templatesTab" class="store-tab-content space-y-3">
+                <div onclick="applyTemplate('classic')" class="bg-zinc-900 p-3 rounded-xl cursor-pointer hover:border-amber-500 border border-transparent transition">
+                    <span class="text-xs bg-green-700 px-2 py-0.5 rounded">CLASSIC</span>
+                    <p class="font-semibold mt-1">Civ / Tactical Light</p>
+                    <p class="text-xs text-zinc-400">Original golden style</p>
+                </div>
+                <div onclick="applyTemplate('military')" class="bg-zinc-900 p-3 rounded-xl cursor-pointer hover:border-amber-500 border border-transparent transition">
+                    <span class="text-xs bg-red-700 px-2 py-0.5 rounded">MILITARY</span>
+                    <p class="font-semibold mt-1">PMC Dark Green</p>
+                    <p class="text-xs text-zinc-400">Red accents, army style</p>
+                </div>
+                <div onclick="applyTemplate('command')" class="bg-zinc-900 p-3 rounded-xl cursor-pointer hover:border-amber-500 border border-transparent transition">
+                    <span class="text-xs bg-purple-700 px-2 py-0.5 rounded">COMMAND</span>
+                    <p class="font-semibold mt-1">Command Edition</p>
+                    <p class="text-xs text-zinc-400">Dark jade + steel accents</p>
+                </div>
+            </div>
+            <!-- Widgets tab -->
+            <div id="widgetsTab" class="store-tab-content hidden space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div onclick="addDynamicWidget('features')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-star text-amber-400"></i> Features</div>
+                    <div onclick="addDynamicWidget('testimonials')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-comment"></i> Testimonials</div>
+                    <div onclick="addDynamicWidget('comparison')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-scale-balanced"></i> Comparison</div>
+                    <div onclick="addDynamicWidget('gallery')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-images"></i> Gallery</div>
+                    <div onclick="addDynamicWidget('cta')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-bolt"></i> CTA Block</div>
+                    <div onclick="addDynamicWidget('techspecs')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-microchip"></i> Specs</div>
+                </div>
+            </div>
+            <p class="text-[10px] text-zinc-500 text-center mt-5">Widgets are added at the end of the page. Settings persist when downloading.</p>
         </div>
     </div>
 
-    <!-- unified ecosystem highlight -->
-    <div class="feature-highlight">
-        <i class="fas fa-cube" style="margin-right: 12px; font-size: 1.4rem;"></i> 
-        <strong>One ecosystem, unlimited profiles</strong> — Single account, modular purchases, cross-version compatibility. Civilian view can open tactical GPX (with automated data sanitization).<br>
-        <i class="fas fa-robot" style="margin-right: 6px;"></i> AI assistant: risk analysis, tactical positioning, object recognition.
-    </div>
-
-    <!-- product matrix & pricing -->
-    <div class="section-title"><i class="fas fa-chart-simple"></i> Product matrix & pricing (global)</div>
-    <div class="matrix-table">
-        <table>
-            <thead>
-                <tr><th>Capability Pack</th><th>Key modules</th><th>Price</th><th>Target audience</th></tr>
-            </thead>
-            <tbody>
-                <tr><td><strong>Core (Base)</strong></td><td>Offline OSM, GPX, Lat/Lon/UTM, basic routing, night mode</td><td class="price-tag">Free</td><td>Everyone</td></tr>
-                <tr><td><strong>Pro Outdoor</strong></td><td>Hillshade, 3D terrain, custom styles, weather plugins</td><td class="price-tag">$4.99/year or $19.99 lifetime</td><td>Hikers, bikers, adventurers</td></tr>
-                <tr><td><strong>SAR & Field Pack</strong></td><td>BFT, geochat, hazard layers, mesh, offline sync</td><td class="price-tag">$99/year (organization)</td><td>Civil defence, SAR teams, geologists</td></tr>
-                <tr><td><strong>Tactical Core</strong></td><td>MGRS 4–10 digits, APP-6 basic, low emission, dead reckoning</td><td class="price-tag">$19.99/year</td><td>Instructors, tactical enthusiasts</td></tr>
-                <tr><td><strong>Tactical Pro</strong></td><td>MIL-STD-2525, LOS analysis, drone feed, mission planning, encrypted</td><td class="price-tag">$499/year / unit</td><td>Defense, command posts, SOF</td></tr>
-                <tr><td><strong>Vertical solutions</strong></td><td>Marine charts, AR mode, aviation, agriculture analytics</td><td class="price-tag">from $9.99/month</td><td>Professional operators</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Global Roadmap -->
-    <div class="section-title"><i class="fas fa-road"></i> Global roadmap (12 months)</div>
-    <div class="roadmap">
-        <div class="roadmap-phase">
-            <div class="phase-title"><i class="fas fa-microchip"></i> Months 1–3 <span class="phase-months">Core MVP</span></div>
-            <div>Offline OSM, coordinate search, GPX, contours, night mode, account system (Android/iOS beta).</div>
-            <div class="phase-desc"><span>📱 500 beta testers</span><span>🗺️ Global maps + focus regions</span><span>🔐 Encrypted cloud sync</span></div>
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <!-- NAVBAR -->
+    <nav class="bg-black/90 backdrop-blur-sm border-b border-amber-500/30 fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <!-- Logo block based on the image: PMC CHOPIN + STEINWAY & SONS -->
+                <div class="flex flex-col items-start leading-tight">
+                    <div id="navBrand" class="text-xl md:text-2xl font-black tracking-tight pmc-logo text-white">PMC CHOPIN</div>
+                    <div class="text-[9px] md:text-[10px] text-zinc-400 steinway tracking-[2px]">STEINWAY & SONS</div>
+                </div>
+            </div>
+            <div class="hidden md:flex gap-6 text-xs uppercase tracking-wider font-medium">
+                <a href="#" class="hover:text-amber-400 transition">MODULES</a>
+                <a href="#versions" class="hover:text-amber-400 transition">LINEUP</a>
+                <a href="#story" class="hover:text-amber-400 transition">CONCEPT</a>
+                <a href="#footer" class="hover:text-amber-400 transition">CONTACT</a>
+            </div>
+            <button onclick="document.getElementById('versions').scrollIntoView({behavior:'smooth'})" class="bg-amber-500 hover:bg-amber-400 text-black px-5 py-2 rounded-md text-sm font-semibold">DOWNLOAD</button>
         </div>
-        <div class="roadmap-phase">
-            <div class="phase-title"><i class="fas fa-mountain"></i> Months 4–6 <span class="phase-months">Pro Outdoor + MGRS</span></div>
-            <div>Hillshade, 3D terrain, custom styling, MGRS foundation, sensor plugins, in-app store.</div>
-            <div class="phase-desc"><span>🎨 Map themes</span><span>🧭 MGRS coordinates</span><span>📡 External GPS/BLE support</span></div>
-        </div>
-        <div class="roadmap-phase">
-            <div class="phase-title"><i class="fas fa-hands-helping"></i> Months 7–9 <span class="phase-months">SAR & Field Pack</span></div>
-            <div>Blue Force Tracking, geotagged chat, hazard layers, Meshtastic integration, team synchronization.</div>
-            <div class="phase-desc"><span>🚁 BFT server</span><span>🔥 Global hazard layers</span><span>📡 Mesh options</span><span>🤝 NGO pilot program</span></div>
-        </div>
-        <div class="roadmap-phase">
-            <div class="phase-title"><i class="fas fa-tactical"></i> Months 10–12 <span class="phase-months">Tactical Pro + Enterprise</span></div>
-            <div>Full MIL-STD-2525, LOS/slope analysis, mission planning, drone integration (MAVLink), on-premise server.</div>
-            <div class="phase-desc"><span>🛸 MAVLink / video</span><span>🔒 End-to-end encryption</span><span>💼 On-premise backend</span><span>📋 CONOPs editor</span></div>
-        </div>
-    </div>
+    </nav>
 
-    <!-- Platform advantages -->
-    <div class="section-title"><i class="fas fa-gem"></i> Why NaviMator leads the market</div>
-    <div class="cards-grid" style="margin-bottom: 1rem;">
-        <div class="version-card" style="background: #fefcf5;">
-            <i class="fas fa-puzzle-piece" style="font-size: 2rem; color:#2c7a4d;"></i>
-            <h3 style="margin: 0.5rem 0;">True modularity</h3>
-            <p>Single core engine + Capability Packs. Interface adapts seamlessly from casual outdoor to tactical command.</p>
+    <!-- HERO SECTION -->
+    <header class="hero-bg min-h-screen flex items-center pt-24">
+        <div class="max-w-6xl mx-auto px-6 text-center py-16">
+            <div class="inline-flex items-center gap-3 bg-black/60 border border-amber-500/40 px-5 py-2 rounded-full mb-6">
+                <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="uppercase tracking-[3px] text-xs font-mono">Offline • MGRS • ATAK-ready</span>
+            </div>
+            <h1 id="heroHeading" class="text-6xl md:text-8xl font-bold title-font tracking-tighter mb-5 leading-[1.1]">
+                Navi<span class="text-amber-400">Ma</span>Tor
+            </h1>
+            <p id="heroSub" class="text-xl md:text-2xl text-amber-400/80 max-w-3xl mx-auto mb-6">Modular tactical navigation for everyone</p>
+            <p class="text-zinc-300 text-lg max-w-2xl mx-auto mb-8">OsmAnd + Tactical Precision + ATAK compatibility. One account — unlimited possibilities. Full offline, MGRS, team collaboration, and AI analytics.</p>
+            <div class="flex gap-5 justify-center flex-wrap">
+                <button onclick="document.getElementById('versions').scrollIntoView({behavior:'smooth'})" class="bg-white text-black hover:bg-amber-300 px-8 py-3 rounded-lg font-bold transition flex gap-2 items-center"><i class="fa-solid fa-arrow-down"></i> SELECT VERSION</button>
+                <button onclick="addDynamicWidget('cta')" class="border border-white/50 hover:bg-white/10 px-8 py-3 rounded-lg font-medium transition">INTERACTIVE DEMO</button>
+            </div>
         </div>
-        <div class="version-card" style="background: #fefcf5;">
-            <i class="fas fa-globe-asia" style="font-size: 2rem; color:#2c7a4d;"></i>
-            <h3 style="margin: 0.5rem 0;">Global-first design</h3>
-            <p>Multilingual UI, worldwide OSM coverage, local topo maps for any region, disaster layers, neutral brand for worldwide adoption.</p>
+    </header>
+
+    <!-- INTRO / DESCRIPTION -->
+    <section class="py-16 bg-zinc-900 border-y border-amber-500/20">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <p class="text-xl leading-relaxed text-zinc-200">NaviMaTor combines the power of <strong>OsmAnd</strong> (offline, topography, customization), <strong>Tactical NAV</strong> (MGRS, precision), <strong>TacticMap</strong> (NATO symbology, planning), and elements from ATAK-Civ/iTAK. Plus Russian features like "Field Navigator".<br> <span class="text-amber-400">Unified base: OSM + official topo maps, full offline, 3D terrain, external sensors, mesh networks, and encrypted cloud server.</span></p>
         </div>
-        <div class="version-card" style="background: #fefcf5;">
-            <i class="fas fa-shield-alt" style="font-size: 2rem; color:#2c7a4d;"></i>
-            <h3 style="margin: 0.5rem 0;">Security & Offline-first</h3>
-            <p>Low emission mode, encrypted communication, full offline functionality, mesh networking, dead reckoning when GPS denied.</p>
+    </section>
+
+    <!-- "AXE SOUP / COMBAT TOMATO" STORY -->
+    <section id="story" class="py-20 bg-black">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="bg-gradient-to-br from-zinc-900/90 to-black border-2 border-red-800/60 rounded-3xl p-8 md:p-12 text-center shadow-2xl">
+                <div class="text-7xl mb-5">🔥🍅⚔️</div>
+                <h2 class="text-4xl md:text-5xl title-font text-red-500 font-bold mb-5">AXE SOUP (Combat Tomato)</h2>
+                <p class="text-zinc-300 text-lg max-w-3xl mx-auto mb-6">A soldier came to an open field, planted his axe, and said: "Let's cook tactical soup." At first there was only a black cauldron and an axe. But the soldier threw in a ripe tomato — the Hero section, five pieces of juicy meat (5 versions from Civil Basic to Military Pro), added fresh herbs (AI, mesh networks, unified account). The result was a <strong class="text-red-400">juicy, fierce, combat-ready tomato</strong> that can feed both a tourist grandma and an assault group.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 text-sm border-t border-red-900/40 pt-8">
+                    <div><i class="fa-solid fa-crown text-amber-400"></i> <span class="font-semibold">Base:</span> OSM + MGRS + ATAK</div>
+                    <div><i class="fa-solid fa-layer-group text-amber-400"></i> <span class="font-semibold">Filling:</span> 5 modular cards</div>
+                    <div><i class="fa-solid fa-pepper-hot text-amber-400"></i> <span class="font-semibold">Spices:</span> widgets, AI assistant, constructor</div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Global CTA / Beta access -->
-    <div style="text-align: center; margin: 2.5rem 0 1rem;">
-        <button type="button" class="cta-button" id="betaButton"><i class="fas fa-envelope"></i> Join global closed beta (Core)</button>
-        <p style="margin-top: 1rem; font-size: 0.85rem; color: #4b5f6e;">First 500 users receive 1 year free Citizen Pro after launch</p>
-    </div>
-
-    <!-- unified account info (cross-version) -->
-    <div style="background: #eef4ea; border-radius: 28px; padding: 1.5rem; margin: 1rem 0;">
-        <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
-            <div><i class="fas fa-cloud-upload-alt" style="font-size: 1.8rem; margin-right: 8px;"></i> <strong>Single account, global license</strong> — Buy once, use modules across editions (with role-based limitations). Civilian app can open tactical packages with sensitive data redacted automatically. Cross-version collaboration guaranteed.</div>
-            <div><i class="fas fa-battery-full"></i> Power-efficient · <i class="fas fa-moon"></i> Night & red-filter modes</div>
+    <!-- PRODUCT LINEUP (5+ cards) -->
+    <section id="versions" class="py-24 bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-5xl font-bold title-font text-center mb-14 tracking-wider text-amber-400">PRODUCT LINEUP</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Civil Basic -->
+                <div class="bg-zinc-900 border border-zinc-700 rounded-2xl p-7 card-hover">
+                    <div><span class="bg-green-700 px-3 py-0.5 text-xs rounded-full">FREE / FREEMIUM</span><h3 class="text-2xl font-bold mt-3">Civil Basic</h3></div>
+                    <p class="text-zinc-400 text-sm my-4">Intuitive interface like Google Maps + light OsmAnd</p>
+                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🗺️ Offline maps, POI, tracking</li><li class="flex gap-2">⛰️ Contour lines + simplified terrain</li><li class="flex gap-2">📍 Coordinate search (LatLon/UTM)</li><li class="flex gap-2">📁 GPX import/export</li><li class="flex gap-2">🎯 Ads + map/feature purchases</li></ul>
+                </div>
+                <!-- Civil Pro -->
+                <div class="bg-zinc-900 border border-amber-500/60 rounded-2xl p-7 card-hover relative">
+                    <div class="absolute -top-3 right-5 bg-amber-500 text-black text-[11px] px-3 font-bold rounded-full">★ RECOMMENDED</div>
+                    <div><span class="bg-amber-600 px-3 py-0.5 text-xs rounded-full">PRO (PAID)</span><h3 class="text-2xl font-bold mt-3">Civil Pro</h3></div>
+                    <p class="text-zinc-400 text-sm my-4">OsmAnd on steroids: 3D, hillshade, full customization</p>
+                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🎨 Advanced styles, layer overlays</li><li class="flex gap-2">📡 Plugins: weather, offline Wikipedia, sensors</li><li class="flex gap-2">🚛 Navigation with vehicle dimensions, slopes, lane guidance</li><li class="flex gap-2">🔄 Auto map updates, OSM editing</li></ul>
+                </div>
+                <!-- Civil Services -->
+                <div class="bg-zinc-900 border border-sky-700 rounded-2xl p-7 card-hover">
+                    <div><span class="bg-sky-800 px-3 py-0.5 text-xs rounded-full">SERVICES (LICENSE)</span><h3 class="text-2xl font-bold mt-3">Civil Services</h3></div>
+                    <p class="text-zinc-400 text-sm my-4">EMERCOM, SAR, geologists, rescue teams — collaborative work</p>
+                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🔄 Blue Force Tracking, position sharing</li><li class="flex gap-2">📡 Mesh / Meshtastic for no-coverage zones</li><li class="flex gap-2">⚠️ Special layers: fires, floods, medical POI</li><li class="flex gap-2">📊 Mission planning (evacuation zones)</li></ul>
+                </div>
+                <!-- Military Basic -->
+                <div class="bg-zinc-900 border border-red-600/50 rounded-2xl p-7 card-hover">
+                    <div><span class="bg-red-700 px-3 py-0.5 text-xs rounded-full">TACTICAL ENTRY</span><h3 class="text-2xl font-bold mt-3">Military Basic</h3></div>
+                    <p class="text-zinc-400 text-sm my-4">Airsoft, training, junior units, low signature</p>
+                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🎯 Full MGRS (4–10 digit), military precision</li><li class="flex gap-2">🪖 NATO APP-6 / MIL-STD-2525 symbology</li><li class="flex gap-2">✍️ Tactical drawing, overlays with military graphics</li><li class="flex gap-2">🧭 Dead reckoning, magnetic declination, pace count</li><li class="flex gap-2">🔇 Low emission mode, full offline</li></ul>
+                </div>
+                <!-- Military Pro (wide) -->
+                <div class="lg:col-span-2 bg-zinc-900 border-2 border-red-600 rounded-2xl p-7 card-hover">
+                    <div><span class="bg-red-800 px-3 py-0.5 text-xs rounded-full">COMMAND / PRO</span><h3 class="text-3xl font-bold mt-2 text-red-400">Military Pro / Command</h3></div>
+                    <p class="text-zinc-300 my-3">Full tactical assault kit: ATAK + TacticMap. For command staff, instructors, and special forces.</p>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <ul class="space-y-1"><li>✅ Advanced symbology, multi-layer operational maps</li><li>✅ Blue/Red Force Tracking, mesh collaboration</li><li>✅ Mission planning (CONOPs, fire support)</li><li>✅ Drone/sensor integration, video (FMV), encrypted comms</li></ul>
+                        <ul class="space-y-1"><li>✅ Terrain analysis: LOS, dead zones, slopes</li><li>✅ Branch-specific modes (infantry, mechanized, SOF)</li><li>✅ High security, optional military system integration</li><li>✅ Secure communication, tactical data exchange</li></ul>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- closing statement -->
-    <div style="margin: 2rem 0; text-align: center; font-style: italic; background: white; border-radius: 32px; padding: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-        ⚡ "One map, one account, unlimited missions" — Ecosystem without fragmentation. Global, secure, modular.
-    </div>
-</div>
+    <!-- EXTRA "JUICY" FEATURES -->
+    <section class="py-20 bg-black">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <h2 class="text-4xl title-font font-bold mb-12 text-amber-400">HYBRID CAPABILITIES</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div><i class="fa-solid fa-cloud-arrow-up text-5xl text-amber-400"></i><h3 class="text-xl font-semibold mt-4">Unified Account</h3><p class="text-zinc-400 text-sm">Buy Pro — unlock modules across all versions. Sync via encrypted cloud server (optional).</p></div>
+                <div><i class="fa-solid fa-brain text-5xl text-amber-400"></i><h3 class="text-xl font-semibold mt-4">AI Assistant</h3><p class="text-zinc-400 text-sm">Route risk analysis, tactical hints, object recognition. Automatic position suggestions.</p></div>
+                <div><i class="fa-solid fa-puzzle-piece text-5xl text-amber-400"></i><h3 class="text-xl font-semibold mt-4">Subscription Modules</h3><p class="text-zinc-400 text-sm">Marine charts, aviation, agriculture (farmers), AR mode (camera overlay), sensor integrations.</p></div>
+                <div><i class="fa-solid fa-shield-hart text-5xl text-amber-400"></i><h3 class="text-xl font-semibold mt-4">Reliability & Stealth</h3><p class="text-zinc-400 text-sm">Battery saver, night mode (red filter), external GPS/compasses, low emission. Cross-version compatibility.</p></div>
+                <div><i class="fa-solid fa-diagram-project text-5xl text-amber-400"></i><h3 class="text-xl font-semibold mt-4">Team Collaboration</h3><p class="text-zinc-400 text-sm">File sharing with data censorship, tactical chat, mesh networks, Blue Force Tracking.</p></div>
+                <div><i class="fa-solid fa-globe text-5xl text-amber-400"></i><h3 class="text-xl font-semibold mt-4">Cross-Platform</h3><p class="text-zinc-400 text-sm">Android / iOS, synchronization, total freedom. Offline supremacy.</p></div>
+            </div>
+        </div>
+    </section>
 
-<footer>
-    <p><i class="fas fa-copyright"></i> NaviMator — next-gen modular navigation platform. Built for world responders, adventurers, and teams.</p>
-    <p style="margin-top: 8px;">OsmAnd core · Tactical NAV standards · TAK-inspired synergy · OpenStreetMap ❤️</p>
-</footer>
+    <!-- DYNAMIC WIDGETS ZONE (added via store) -->
+    <div id="dynamicWidgetsZone" class="max-w-7xl mx-auto px-6 py-6 space-y-20"></div>
 
-<script>
-    document.getElementById('betaButton').addEventListener('click', function() {
-        alert('🌍 Global beta program launches Q3 2026. Request early access: beta@navimator.global (demo access after registration).\n\nThank you for supporting unified navigation ecosystem!');
-    });
-</script>
+    <!-- FOOTER -->
+    <footer id="footer" class="bg-black border-t border-amber-500/30 py-12">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="flex flex-col items-center gap-2 mb-5">
+                <div class="text-2xl title-font tracking-wider">NaviMaTor • PMC CHOPIN</div>
+                <div class="text-[10px] text-zinc-500 steinway tracking-[2px]">STEINWAY & SONS</div>
+            </div>
+            <p class="text-zinc-500 text-sm">NaviMaTor © 2026 • Built for those who lead the way. OSM + official topo maps. Offline supremacy, MGRS, ATAK-ready.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ----------------------------------- GLOBAL VARIABLES -----------------------------------
+        let currentAccent = "#f59e0b";
+        
+        // Function to update accent color
+        function updateAccentColor(color) {
+            currentAccent = color;
+            document.querySelectorAll('.text-amber-400, .border-amber-500, .border-amber-500\\/50, .border-amber-500\\/60').forEach(el => {
+                if(el.classList.contains('text-amber-400')) el.style.color = color;
+                if(el.classList.contains('border-amber-500') || el.classList.contains('border-amber-500/50') || el.classList.contains('border-amber-500/60')) {
+                    el.style.borderColor = color + (el.className.includes('/50') ? '80' : '');
+                }
+            });
+            document.querySelectorAll('.bg-amber-500, .bg-amber-600').forEach(el => {
+                if(el.classList.contains('bg-amber-500')) el.style.backgroundColor = color;
+                if(el.classList.contains('bg-amber-600')) el.style.backgroundColor = color;
+            });
+            const heroSpan = document.querySelector('#heroHeading span');
+            if(heroSpan) heroSpan.style.color = color;
+        }
+        
+        // Apply template (color scheme)
+        window.applyTemplate = function(type) {
+            if(type === 'classic') {
+                updateAccentColor("#f59e0b");
+                document.querySelector('.hero-bg').style.backgroundImage = "linear-gradient(125deg, rgba(0,0,0,0.88) 0%, rgba(0,20,10,0.92) 100%), url('https://i.imgur.com/0zqKX8J.jpeg')";
+            } else if(type === 'military') {
+                updateAccentColor("#b91c1c");
+                document.querySelector('.hero-bg').style.backgroundImage = "linear-gradient(125deg, #0a1f1a, #021108), url('https://i.imgur.com/0zqKX8J.jpeg')";
+            } else if(type === 'command') {
+                updateAccentColor("#2dd4bf");
+                document.querySelector('.hero-bg').style.backgroundImage = "linear-gradient(125deg, #0b1c1a, #010f0c), url('https://i.imgur.com/0zqKX8J.jpeg')";
+            }
+            document.getElementById('storeModal').classList.add('hidden');
+        };
+        
+        // Add dynamic widgets
+        window.addDynamicWidget = function(widgetType) {
+            const zone = document.getElementById('dynamicWidgetsZone');
+            let html = '';
+            if(widgetType === 'features') {
+                html = `<section class="bg-zinc-900/50 rounded-3xl p-8 border border-amber-500/20"><h3 class="text-3xl title-font text-center mb-8">⚡ KEY FEATURES</h3><div class="grid md:grid-cols-3 gap-6 text-center"><div><i class="fa-regular fa-map text-4xl text-amber-400"></i><p class="mt-2">Offline topography + 3D terrain</p></div><div><i class="fa-regular fa-compass text-4xl text-amber-400"></i><p>MGRS / UTM / LatLon</p></div><div><i class="fa-solid fa-tower-cell text-4xl text-amber-400"></i><p>Mesh / Meshtastic, external sensors</p></div></div></section>`;
+            } else if(widgetType === 'testimonials') {
+                html = `<section class="p-8 bg-black/60 rounded-2xl"><h3 class="text-2xl font-bold text-center mb-6">💬 OPERATOR TESTIMONIALS</h3><div class="flex flex-col md:flex-row gap-6 justify-center"><div class="bg-zinc-900 p-5 rounded-xl"><i class="fa-solid fa-quote-left text-amber-400"></i><p class="mt-2">"We use it in reconnaissance, MGRS works flawlessly, and APP-6 overlays really speed up planning."</p><span class="text-xs text-zinc-500">— Assault Group Commander</span></div><div class="bg-zinc-900 p-5 rounded-xl"><i class="fa-solid fa-quote-left text-amber-400"></i><p class="mt-2">"Best ATAK replacement on Android, fully offline, Blue Force Tracking via mesh — a game changer for units."</p><span class="text-xs text-zinc-500">— Tactical Instructor</span></div></div></section>`;
+            } else if(widgetType === 'comparison') {
+                html = `<section class="bg-zinc-950 p-8 rounded-3xl border border-zinc-800"><h3 class="text-3xl title-font text-center mb-6">📊 EDITION COMPARISON</h3><div class="overflow-x-auto"><table class="min-w-full text-sm text-left"><thead class="border-b border-zinc-700"><tr><th>Feature</th><th>Civil Basic</th><th>Civil Pro</th><th>Military Pro</th></tr></thead><tbody><tr class="border-b"><td>MGRS 10-digit</td><td>—</td><td>—</td><td>✅</td></tr><tr class="border-b"><td>NATO APP-6/MIL-STD</td><td>—</td><td>—</td><td>✅</td></tr><tr class="border-b"><td>Blue Force / Mesh</td><td>—</td><td>—</td><td>✅ team</td></tr><tr class="border-b"><td>3D terrain / hillshade</td><td>simplified</td><td>✅ full</td><td>✅ tactical analysis</td></tr><tr><td>Price / Access</td><td>Freemium</td><td>$29 / subscription</td><td>upon request (license)</td></tr></tbody></table></div></section>`;
+            } else if(widgetType === 'gallery') {
+                html = `<section><h3 class="text-3xl title-font text-center mb-6">🖼 INTERFACE GALLERY</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-3"><div class="bg-zinc-800 h-32 rounded-xl flex items-center justify-center text-4xl">🗺️ MGRS</div><div class="bg-zinc-800 h-32 rounded-xl flex items-center justify-center text-4xl">🎯 APP-6</div><div class="bg-zinc-800 h-32 rounded-xl flex items-center justify-center text-4xl">📡 ATAK-link</div><div class="bg-zinc-800 h-32 rounded-xl flex items-center justify-center text-4xl">⚙️ AI Assistant</div></div></section>`;
+            } else if(widgetType === 'cta') {
+                html = `<div class="bg-gradient-to-r from-amber-700 to-red-800 rounded-2xl p-10 text-center shadow-xl"><h3 class="text-3xl font-bold">READY FOR TOTAL NAVIGATION?</h3><button onclick="alert('Demo download / redirect to store')" class="mt-5 bg-black text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-zinc-900 transition">➜ GET PMC LICENSE</button></div>`;
+            } else if(widgetType === 'techspecs') {
+                html = `<section class="bg-zinc-900/40 p-6 rounded-xl"><h3 class="text-2xl font-mono mb-3">📡 TECHNICAL SPECIFICATIONS</h3><ul class="grid grid-cols-2 gap-2 text-sm"><li>◉ Formats: GPX/KML/KMZ/MGRS/GeoJSON</li><li>◉ Offline routing: Daedalus + custom profiles</li><li>◉ External module support: Meshtastic, RTL-SDR, GPS L1/L5</li><li>◉ Encryption: AES-256 optional, optional cloud server</li><li>◉ Battery: night mode, red filter, low emission mode</li><li>◉ Precision: Dead Reckoning, magnetic declination, compass calibration</li></ul></section>`;
+            }
+            if(html) zone.insertAdjacentHTML('beforeend', html);
+            document.getElementById('storeModal').classList.add('hidden');
+        };
+        
+        // Download full HTML
+        function downloadFullHTML() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], {type: 'text/html'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `NaviMaTor_${Date.now()}.html`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Initialize UI event listeners
+        document.getElementById('accentColor').addEventListener('input', (e) => updateAccentColor(e.target.value));
+        document.getElementById('brandName').addEventListener('input', (e) => {
+            document.getElementById('navBrand').innerText = e.target.value;
+        });
+        document.getElementById('heroTitleMain').addEventListener('input', (e) => {
+            let val = e.target.value;
+            document.getElementById('heroHeading').innerHTML = val.replace(/Ma/g, '<span class="text-amber-400">Ma</span>');
+        });
+        document.getElementById('closeBuilder').addEventListener('click', () => {
+            document.getElementById('builderPanel').style.display = 'none';
+        });
+        document.getElementById('openStoreBtn').addEventListener('click', () => {
+            document.getElementById('storeModal').classList.remove('hidden');
+            document.getElementById('storeModal').style.display = 'flex';
+        });
+        document.getElementById('closeStoreModal').addEventListener('click', () => {
+            document.getElementById('storeModal').classList.add('hidden');
+        });
+        document.getElementById('downloadHtmlBtn').addEventListener('click', downloadFullHTML);
+        
+        // Tab switching in store modal
+        document.querySelectorAll('.store-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.store-tab-btn').forEach(b => b.classList.remove('active-tab', 'text-amber-400'));
+                btn.classList.add('active-tab', 'text-amber-400');
+                const tab = btn.getAttribute('data-tab');
+                document.getElementById('templatesTab').classList.toggle('hidden', tab !== 'templates');
+                document.getElementById('widgetsTab').classList.toggle('hidden', tab !== 'widgets');
+            });
+        });
+        
+        // Close modal on outside click
+        window.onclick = function(e) {
+            const modal = document.getElementById('storeModal');
+            if(e.target === modal) modal.classList.add('hidden');
+        };
+        
+        // Initial accent setup
+        updateAccentColor('#f59e0b');
+    </script>
 </body>
 </html>
