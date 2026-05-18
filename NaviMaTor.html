@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>NaviMaTor • PMC CHOPIN — Tactical Navigation System with 3D LLM Intelligence</title>
+    <title>NaviMaTor · PMC CHOPIN — Sistema Táctico de Navegación con IA 3D</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
@@ -13,14 +13,12 @@
         body { font-family: 'Inter', system-ui, sans-serif; background-color: #030303; overflow-x: hidden; }
         .title-font { font-family: 'VT323', monospace; letter-spacing: 0.02em; }
         
-        /* Hero background */
         .hero-bg {
             background-image: linear-gradient(125deg, rgba(0,0,0,0.88) 0%, rgba(0,20,10,0.92) 100%), url('https://i.imgur.com/0zqKX8J.jpeg');
             background-size: cover;
             background-position: center 30%;
         }
         
-        /* Card hover effect */
         .card-hover {
             transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
@@ -28,10 +26,6 @@
             transform: translateY(-6px) scale(1.01);
             box-shadow: 0 20px 35px -12px rgba(0, 255, 157, 0.25);
             border-color: rgba(0, 255, 157, 0.5) !important;
-        }
-        
-        .glow-text {
-            text-shadow: 0 0 6px rgba(0, 255, 157, 0.4);
         }
         
         .builder-floating {
@@ -55,7 +49,6 @@
             letter-spacing: 2px;
         }
 
-        /* 3D Canvas Overlay Fixes */
         #three-canvas-container {
             position: relative;
             width: 100%;
@@ -71,11 +64,16 @@
             width: 100%;
             height: 100%;
         }
+        
+        /* Estilos adicionales para la UI flotante del simulador */
+        .simulator-ui {
+            font-family: monospace;
+        }
     </style>
 </head>
 <body class="text-zinc-200">
 
-    <!-- ========== FLOATING CONSTRUCTOR PANEL + STORE ========== -->
+    <!-- ========== PANEL CONSTRUCTOR FLOTANTE ========== -->
     <div id="builderPanel" class="fixed top-20 right-4 z-[999] w-72 bg-black/95 backdrop-blur-md border border-amber-500/60 rounded-2xl shadow-2xl builder-floating p-4">
         <div class="flex justify-between items-center border-b border-amber-500/40 pb-2 mb-3">
             <h3 class="text-amber-400 font-bold text-sm uppercase tracking-wider flex gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> CONSTRUCTOR</h3>
@@ -84,63 +82,63 @@
         
         <div class="space-y-3 text-sm">
             <div>
-                <label class="text-zinc-400 text-xs block mb-1">🎨 Accent Color</label>
+                <label class="text-zinc-400 text-xs block mb-1">🎨 Color de acento</label>
                 <input type="color" id="accentColor" value="#f59e0b" class="w-full h-8 bg-zinc-900 border border-zinc-700 rounded">
             </div>
             <div>
-                <label class="text-zinc-400 text-xs block mb-1">🏷️ Brand Name</label>
+                <label class="text-zinc-400 text-xs block mb-1">🏷️ Nombre de marca</label>
                 <input type="text" id="brandName" value="PMC CHOPIN" class="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-white text-sm">
             </div>
             <div>
-                <label class="text-zinc-400 text-xs block mb-1">📢 Hero Title</label>
+                <label class="text-zinc-400 text-xs block mb-1">📢 Título principal</label>
                 <input type="text" id="heroTitleMain" value="NaviMaTor" class="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-white text-sm">
             </div>
             <div class="flex gap-2 pt-2">
-                <button id="openStoreBtn" class="flex-1 bg-zinc-800 hover:bg-zinc-700 border border-amber-500/40 rounded py-1.5 text-xs font-semibold"><i class="fa-solid fa-store"></i> Store</button>
-                <button id="downloadHtmlBtn" class="flex-1 bg-amber-600 hover:bg-amber-500 text-black rounded py-1.5 text-xs font-bold"><i class="fa-solid fa-download"></i> Download .html</button>
+                <button id="openStoreBtn" class="flex-1 bg-zinc-800 hover:bg-zinc-700 border border-amber-500/40 rounded py-1.5 text-xs font-semibold"><i class="fa-solid fa-store"></i> Tienda</button>
+                <button id="downloadHtmlBtn" class="flex-1 bg-amber-600 hover:bg-amber-500 text-black rounded py-1.5 text-xs font-bold"><i class="fa-solid fa-download"></i> Descargar .html</button>
             </div>
         </div>
     </div>
     
-    <!-- STORE MODAL -->
+    <!-- MODAL DE TIENDA -->
     <div id="storeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[1000] hidden items-center justify-center">
         <div class="bg-zinc-950 border border-amber-500/50 rounded-2xl w-[90%] max-w-lg p-6 shadow-2xl">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl title-font text-amber-400"><i class="fa-solid fa-cart-shopping"></i> WIDGET STORE</h2>
+                <h2 class="text-2xl title-font text-amber-400"><i class="fa-solid fa-cart-shopping"></i> TIENDA DE WIDGETS</h2>
                 <button id="closeStoreModal" class="text-white text-2xl">&times;</button>
             </div>
             <div class="flex gap-4 border-b border-zinc-800 mb-4">
-                <button class="store-tab-btn active-tab text-amber-400 pb-2" data-tab="templates">📦 Templates</button>
+                <button class="store-tab-btn active-tab text-amber-400 pb-2" data-tab="templates">📦 Plantillas</button>
                 <button class="store-tab-btn text-zinc-400 pb-2" data-tab="widgets">🧩 Widgets</button>
             </div>
             <div id="templatesTab" class="store-tab-content space-y-3">
                 <div onclick="applyTemplate('classic')" class="bg-zinc-900 p-3 rounded-xl cursor-pointer hover:border-amber-500 border border-transparent transition">
-                    <span class="text-xs bg-green-700 px-2 py-0.5 rounded">CLASSIC</span>
-                    <p class="font-semibold mt-1">Civ / Tactical Light</p>
+                    <span class="text-xs bg-green-700 px-2 py-0.5 rounded">CLÁSICA</span>
+                    <p class="font-semibold mt-1">Civil / Táctico Ligero</p>
                 </div>
                 <div onclick="applyTemplate('military')" class="bg-zinc-900 p-3 rounded-xl cursor-pointer hover:border-amber-500 border border-transparent transition">
-                    <span class="text-xs bg-red-700 px-2 py-0.5 rounded">MILITARY</span>
+                    <span class="text-xs bg-red-700 px-2 py-0.5 rounded">MILITAR</span>
                     <p class="font-semibold mt-1">PMC Dark Green</p>
                 </div>
                 <div onclick="applyTemplate('command')" class="bg-zinc-900 p-3 rounded-xl cursor-pointer hover:border-amber-500 border border-transparent transition">
-                    <span class="text-xs bg-purple-700 px-2 py-0.5 rounded">COMMAND</span>
-                    <p class="font-semibold mt-1">Command Edition</p>
+                    <span class="text-xs bg-purple-700 px-2 py-0.5 rounded">COMANDO</span>
+                    <p class="font-semibold mt-1">Edición Comando</p>
                 </div>
             </div>
             <div id="widgetsTab" class="store-tab-content hidden space-y-3">
                 <div class="grid grid-cols-2 gap-3">
-                    <div onclick="addDynamicWidget('features')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-star text-amber-400"></i> Features</div>
-                    <div onclick="addDynamicWidget('testimonials')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-comment"></i> Testimonials</div>
-                    <div onclick="addDynamicWidget('comparison')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-scale-balanced"></i> Comparison</div>
-                    <div onclick="addDynamicWidget('gallery')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-images"></i> Gallery</div>
-                    <div onclick="addDynamicWidget('cta')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-bolt"></i> CTA Block</div>
-                    <div onclick="addDynamicWidget('techspecs')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-microchip"></i> Specs</div>
+                    <div onclick="addDynamicWidget('features')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-star text-amber-400"></i> Características</div>
+                    <div onclick="addDynamicWidget('testimonials')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-comment"></i> Testimonios</div>
+                    <div onclick="addDynamicWidget('comparison')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-scale-balanced"></i> Comparación</div>
+                    <div onclick="addDynamicWidget('gallery')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-images"></i> Galería</div>
+                    <div onclick="addDynamicWidget('cta')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-bolt"></i> Bloque CTA</div>
+                    <div onclick="addDynamicWidget('techspecs')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-microchip"></i> Especificaciones</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- NAVBAR -->
+    <!-- BARRA DE NAVEGACIÓN -->
     <nav class="bg-black/90 backdrop-blur-sm border-b border-amber-500/30 fixed w-full z-50">
         <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center gap-3">
@@ -150,128 +148,127 @@
                 </div>
             </div>
             <div class="hidden md:flex gap-6 text-xs uppercase tracking-wider font-medium">
-                <a href="#" class="hover:text-amber-400 transition">MODULES</a>
-                <a href="#versions" class="hover:text-amber-400 transition">LINEUP</a>
-                <a href="#story" class="hover:text-amber-400 transition">CONCEPT</a>
-                <a href="#footer" class="hover:text-amber-400 transition">CONTACT</a>
+                <a href="#" class="hover:text-amber-400 transition">MÓDULOS</a>
+                <a href="#versions" class="hover:text-amber-400 transition">VERSIONES</a>
+                <a href="#story" class="hover:text-amber-400 transition">CONCEPTO</a>
+                <a href="#footer" class="hover:text-amber-400 transition">CONTACTO</a>
             </div>
-            <button onclick="document.getElementById('versions').scrollIntoView({behavior:'smooth'})" class="bg-amber-500 hover:bg-amber-400 text-black px-5 py-2 rounded-md text-sm font-semibold">DOWNLOAD</button>
+            <button onclick="document.getElementById('versions').scrollIntoView({behavior:'smooth'})" class="bg-amber-500 hover:bg-amber-400 text-black px-5 py-2 rounded-md text-sm font-semibold">DESCARGAR</button>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
+    <!-- SECCIÓN HERO -->
     <header class="hero-bg min-h-screen flex items-center pt-24">
         <div class="max-w-6xl mx-auto px-6 text-center py-16">
             <div class="inline-flex items-center gap-3 bg-black/60 border border-amber-500/40 px-5 py-2 rounded-full mb-6">
                 <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span class="uppercase tracking-[3px] text-xs font-mono">Offline • MGRS • ATAK-ready • 3D LLM</span>
+                <span class="uppercase tracking-[3px] text-xs font-mono">Offline · MGRS · ATAK-ready · IA 3D</span>
             </div>
             <h1 id="heroHeading" class="text-6xl md:text-8xl font-bold title-font tracking-tighter mb-5 leading-[1.1]">
                 Navi<span class="text-amber-400">Ma</span>Tor
             </h1>
-            <p id="heroSub" class="text-xl md:text-2xl text-amber-400/80 max-w-3xl mx-auto mb-6">Modular tactical navigation + 3D AI Intelligence</p>
-            <p class="text-zinc-300 text-lg max-w-2xl mx-auto mb-8">OsmAnd + Tactical Precision + ATAK compatibility. One account — unlimited possibilities. Full offline, MGRS, team collaboration, and real-time 3D LLM terrain analysis.</p>
+            <p class="text-xl md:text-2xl text-amber-400/80 max-w-3xl mx-auto mb-6">Navegación táctica modular + inteligencia artificial 3D</p>
+            <p class="text-zinc-300 text-lg max-w-2xl mx-auto mb-8">OsmAnd + Precisión Táctica + compatibilidad ATAK. Una cuenta — infinitas posibilidades. Offline total, MGRS, colaboración en equipo y análisis de terreno con IA 3D en tiempo real.</p>
             <div class="flex gap-5 justify-center flex-wrap">
-                <button onclick="document.getElementById('versions').scrollIntoView({behavior:'smooth'})" class="bg-white text-black hover:bg-amber-300 px-8 py-3 rounded-lg font-bold transition flex gap-2 items-center"><i class="fa-solid fa-arrow-down"></i> SELECT VERSION</button>
-                <button onclick="document.getElementById('threeDemoSection').scrollIntoView({behavior:'smooth'})" class="border border-white/50 hover:bg-white/10 px-8 py-3 rounded-lg font-medium transition">🎮 LAUNCH 3D DEMO</button>
+                <button onclick="document.getElementById('versions').scrollIntoView({behavior:'smooth'})" class="bg-white text-black hover:bg-amber-300 px-8 py-3 rounded-lg font-bold transition flex gap-2 items-center"><i class="fa-solid fa-arrow-down"></i> SELECCIONAR VERSIÓN</button>
+                <button onclick="document.getElementById('threeDemoSection').scrollIntoView({behavior:'smooth'})" class="border border-white/50 hover:bg-white/10 px-8 py-3 rounded-lg font-medium transition">🎮 DEMO 3D</button>
             </div>
         </div>
     </header>
 
-    <!-- FULL 3D LLM INTELLIGENCE SECTION (EMBEDDED FROM ORIGINAL FILE) -->
+    <!-- SECCIÓN 3D CON IA INTEGRADA (SIMULADOR COMPLETO) -->
     <section id="threeDemoSection" class="py-16 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-7xl mx-auto px-4 md:px-8">
             <div class="text-center mb-8">
-                <h2 class="text-4xl md:text-5xl title-font font-bold text-amber-400 mb-3">⚡ LLM INTELLIGENCE 3D MODEL</h2>
-                <p class="text-zinc-400 max-w-2xl mx-auto">Interactive terrain analysis • MGRS precision • AI-assisted tactical overlay</p>
+                <h2 class="text-4xl md:text-5xl title-font font-bold text-amber-400 mb-3">⚡ MODELO 3D CON INTELIGENCIA ARTIFICIAL</h2>
+                <p class="text-zinc-400 max-w-2xl mx-auto">Análisis interactivo del terreno · Precisión MGRS · Superposición táctica asistida por IA</p>
             </div>
             <div id="three-canvas-container" class="relative">
-                <!-- The 3D canvas will be injected here -->
                 <div id="navimator-3d-root" style="width:100%; height:100%;"></div>
             </div>
             <div class="text-center text-xs text-zinc-500 mt-4 flex justify-center gap-6">
-                <span><i class="fa-regular fa-hand-pointer"></i> Drag to rotate | Right-click to pan</span>
-                <span><i class="fa-regular fa-message"></i> Use LLM panel (bottom right corner of 3D view)</span>
+                <span><i class="fa-regular fa-hand-pointer"></i> Arrastrar para rotar | Botón derecho + arrastrar para mover</span>
+                <span><i class="fa-regular fa-message"></i> Usa el panel LLM (esquina inferior derecha de la vista 3D)</span>
             </div>
         </div>
     </section>
 
-    <!-- INTRO / DESCRIPTION -->
+    <!-- DESCRIPCIÓN / INTRO -->
     <section class="py-16 bg-zinc-900 border-y border-amber-500/20">
         <div class="max-w-4xl mx-auto px-6 text-center">
-            <p class="text-xl leading-relaxed text-zinc-200">NaviMaTor combines the power of <strong>OsmAnd</strong> (offline, topography), <strong>Tactical NAV</strong> (MGRS, precision), <strong>TacticMap</strong> (NATO symbology), and an integrated <strong>3D LLM Intelligence Core</strong> for terrain reasoning, line-of-sight analysis, and AI-assisted navigation. <span class="text-amber-400">Unified base: OSM + official topo maps, full offline, 3D terrain, external sensors, mesh networks.</span></p>
+            <p class="text-xl leading-relaxed text-zinc-200">NaviMaTor combina el poder de <strong>OsmAnd</strong> (offline, topografía), <strong>NAV Táctica</strong> (MGRS, precisión), <strong>TacticMap</strong> (simbología OTAN) y un <strong>núcleo de inteligencia artificial 3D</strong> para razonamiento del terreno, análisis de líneas de visión y navegación asistida por IA. <span class="text-amber-400">Base unificada: OSM + mapas topográficos oficiales, offline total, terreno 3D, sensores externos, redes malladas.</span></p>
         </div>
     </section>
 
-    <!-- "AXE SOUP" STORY -->
+    <!-- HISTORIA "SOPA DE HACHA" -->
     <section id="story" class="py-20 bg-black">
         <div class="max-w-5xl mx-auto px-6">
             <div class="bg-gradient-to-br from-zinc-900/90 to-black border-2 border-red-800/60 rounded-3xl p-8 md:p-12 text-center shadow-2xl">
                 <div class="text-7xl mb-5">🔥🍅⚔️</div>
-                <h2 class="text-4xl md:text-5xl title-font text-red-500 font-bold mb-5">AXE SOUP (Combat Tomato)</h2>
-                <p class="text-zinc-300 text-lg max-w-3xl mx-auto mb-6">A soldier came to an open field, planted his axe, and said: "Let's cook tactical soup." At first there was only a black cauldron and an axe. But the soldier threw in a ripe tomato — the Hero section, five pieces of juicy meat (5 versions from Civil Basic to Military Pro), added fresh herbs (AI, mesh networks, unified account). The result was a <strong class="text-red-400">juicy, fierce, combat-ready tomato</strong> that can feed both a tourist grandma and an assault group.</p>
+                <h2 class="text-4xl md:text-5xl title-font text-red-500 font-bold mb-5">SOPA DE HACHA (Tomate de Combate)</h2>
+                <p class="text-zinc-300 text-lg max-w-3xl mx-auto mb-6">Un soldado llegó a un campo abierto, plantó su hacha y dijo: "Vamos a cocinar sopa táctica". Al principio solo había un caldero negro y un hacha. Pero el soldado añadió un tomate maduro — la sección Hero —, cinco piezas de carne jugosa (5 versiones desde Civil Básico hasta Militar Pro), añadió hierbas frescas (IA, redes malladas, cuenta unificada). El resultado fue un <strong class="text-red-400">tomate jugoso, feroz y listo para el combate</strong> que puede alimentar tanto a una abuela turista como a un grupo de asalto.</p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 text-sm border-t border-red-900/40 pt-8">
                     <div><i class="fa-solid fa-crown text-amber-400"></i> <span class="font-semibold">Base:</span> OSM + MGRS + ATAK</div>
-                    <div><i class="fa-solid fa-layer-group text-amber-400"></i> <span class="font-semibold">Filling:</span> 5 modular cards</div>
-                    <div><i class="fa-solid fa-brain text-amber-400"></i> <span class="font-semibold">Spices:</span> 3D LLM, widgets, constructor</div>
+                    <div><i class="fa-solid fa-layer-group text-amber-400"></i> <span class="font-semibold">Relleno:</span> 5 tarjetas modulares</div>
+                    <div><i class="fa-solid fa-brain text-amber-400"></i> <span class="font-semibold">Especias:</span> IA 3D, widgets, constructor</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PRODUCT LINEUP (5+ cards) -->
+    <!-- LÍNEA DE PRODUCTOS (5 VERSIONES) -->
     <section id="versions" class="py-24 bg-zinc-950">
         <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-5xl font-bold title-font text-center mb-14 tracking-wider text-amber-400">PRODUCT LINEUP</h2>
+            <h2 class="text-5xl font-bold title-font text-center mb-14 tracking-wider text-amber-400">LÍNEA DE PRODUCTOS</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="bg-zinc-900 border border-zinc-700 rounded-2xl p-7 card-hover">
-                    <div><span class="bg-green-700 px-3 py-0.5 text-xs rounded-full">FREE / FREEMIUM</span><h3 class="text-2xl font-bold mt-3">Civil Basic</h3></div>
-                    <p class="text-zinc-400 text-sm my-4">Intuitive interface like Google Maps + light OsmAnd</p>
-                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🗺️ Offline maps, POI, tracking</li><li class="flex gap-2">⛰️ Contour lines + simplified terrain</li><li class="flex gap-2">📍 Coordinate search (LatLon/UTM)</li><li class="flex gap-2">📁 GPX import/export</li></ul>
+                    <div><span class="bg-green-700 px-3 py-0.5 text-xs rounded-full">GRATUITO / FREEMIUM</span><h3 class="text-2xl font-bold mt-3">Civil Básico</h3></div>
+                    <p class="text-zinc-400 text-sm my-4">Interfaz intuitiva como Google Maps + OsmAnd ligero</p>
+                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🗺️ Mapas offline, POI, seguimiento</li><li class="flex gap-2">⛰️ Curvas de nivel + terreno simplificado</li><li class="flex gap-2">📍 Búsqueda de coordenadas (LatLon/UTM)</li><li class="flex gap-2">📁 Importar/exportar GPX</li></ul>
                 </div>
                 <div class="bg-zinc-900 border border-amber-500/60 rounded-2xl p-7 card-hover relative">
-                    <div class="absolute -top-3 right-5 bg-amber-500 text-black text-[11px] px-3 font-bold rounded-full">★ RECOMMENDED</div>
-                    <div><span class="bg-amber-600 px-3 py-0.5 text-xs rounded-full">PRO (PAID)</span><h3 class="text-2xl font-bold mt-3">Civil Pro</h3></div>
-                    <p class="text-zinc-400 text-sm my-4">OsmAnd on steroids: 3D, hillshade, full customization</p>
-                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🎨 Advanced styles, layer overlays</li><li class="flex gap-2">📡 Plugins: weather, offline Wikipedia</li><li class="flex gap-2">🚛 Navigation with vehicle dimensions</li><li class="flex gap-2">🔄 Auto map updates</li></ul>
+                    <div class="absolute -top-3 right-5 bg-amber-500 text-black text-[11px] px-3 font-bold rounded-full">★ RECOMENDADO</div>
+                    <div><span class="bg-amber-600 px-3 py-0.5 text-xs rounded-full">PRO (PAGO)</span><h3 class="text-2xl font-bold mt-3">Civil Pro</h3></div>
+                    <p class="text-zinc-400 text-sm my-4">OsmAnd potenciado: 3D, sombreado, personalización total</p>
+                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🎨 Estilos avanzados, superposición de capas</li><li class="flex gap-2">📡 Plugins: clima, Wikipedia offline</li><li class="flex gap-2">🚛 Navegación con dimensiones de vehículo</li><li class="flex gap-2">🔄 Actualización automática de mapas</li></ul>
                 </div>
                 <div class="bg-zinc-900 border border-sky-700 rounded-2xl p-7 card-hover">
-                    <div><span class="bg-sky-800 px-3 py-0.5 text-xs rounded-full">SERVICES</span><h3 class="text-2xl font-bold mt-3">Civil Services</h3></div>
-                    <p class="text-zinc-400 text-sm my-4">EMERCOM, SAR, geologists, rescue teams</p>
-                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🔄 Blue Force Tracking, position sharing</li><li class="flex gap-2">📡 Mesh / Meshtastic</li><li class="flex gap-2">⚠️ Special layers: fires, floods</li></ul>
+                    <div><span class="bg-sky-800 px-3 py-0.5 text-xs rounded-full">SERVICIOS</span><h3 class="text-2xl font-bold mt-3">Servicios Civiles</h3></div>
+                    <p class="text-zinc-400 text-sm my-4">EMERCOM, SAR, geólogos, equipos de rescate</p>
+                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🔄 Blue Force Tracking, compartición de posición</li><li class="flex gap-2">📡 Malla / Meshtastic</li><li class="flex gap-2">⚠️ Capas especiales: incendios, inundaciones</li></ul>
                 </div>
                 <div class="bg-zinc-900 border border-red-600/50 rounded-2xl p-7 card-hover">
-                    <div><span class="bg-red-700 px-3 py-0.5 text-xs rounded-full">TACTICAL ENTRY</span><h3 class="text-2xl font-bold mt-3">Military Basic</h3></div>
-                    <p class="text-zinc-400 text-sm my-4">Airsoft, training, junior units</p>
-                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🎯 Full MGRS (4–10 digit)</li><li class="flex gap-2">🪖 NATO APP-6 symbology</li><li class="flex gap-2">✍️ Tactical drawing overlays</li><li class="flex gap-2">🔇 Low emission mode</li></ul>
+                    <div><span class="bg-red-700 px-3 py-0.5 text-xs rounded-full">NIVEL TÁCTICO</span><h3 class="text-2xl font-bold mt-3">Militar Básico</h3></div>
+                    <p class="text-zinc-400 text-sm my-4">Airsoft, entrenamiento, unidades junior</p>
+                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🎯 MGRS completo (4–10 dígitos)</li><li class="flex gap-2">🪖 Simbología OTAN APP-6</li><li class="flex gap-2">✍️ Superposiciones de dibujo táctico</li><li class="flex gap-2">🔇 Modo de baja emisión</li></ul>
                 </div>
                 <div class="lg:col-span-2 bg-zinc-900 border-2 border-red-600 rounded-2xl p-7 card-hover">
-                    <div><span class="bg-red-800 px-3 py-0.5 text-xs rounded-full">COMMAND / PRO</span><h3 class="text-3xl font-bold mt-2 text-red-400">Military Pro / Command</h3></div>
-                    <p class="text-zinc-300 my-3">Full tactical assault kit: ATAK + TacticMap + 3D LLM Core.</p>
+                    <div><span class="bg-red-800 px-3 py-0.5 text-xs rounded-full">COMANDO / PRO</span><h3 class="text-3xl font-bold mt-2 text-red-400">Militar Pro / Comando</h3></div>
+                    <p class="text-zinc-300 my-3">Kit táctico de asalto completo: ATAK + TacticMap + núcleo IA 3D.</p>
                     <div class="grid md:grid-cols-2 gap-4 text-sm">
-                        <ul><li>✅ Advanced symbology, multi-layer maps</li><li>✅ Blue/Red Force Tracking, mesh</li><li>✅ Mission planning (CONOPs)</li><li>✅ Drone/sensor integration</li></ul>
-                        <ul><li>✅ Terrain analysis: LOS, dead zones, slopes</li><li>✅ Branch-specific modes (infantry, SOF)</li><li>✅ Secure communication, tactical data exchange</li><li>✅ Integrated LLM for real-time risk assessment</li></ul>
+                        <ul><li>✅ Simbología avanzada, mapas multicapa</li><li>✅ Seguimiento Blue/Red Force, malla</li><li>✅ Planificación de misiones (CONOPs)</li><li>✅ Integración de drones/sensores</li></ul>
+                        <ul><li>✅ Análisis de terreno: LOS, zonas muertas, pendientes</li><li>✅ Modos específicos por rama (infantería, SOF)</li><li>✅ Comunicación segura, intercambio de datos tácticos</li><li>✅ IA integrada para evaluación de riesgos en tiempo real</li></ul>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- DYNAMIC WIDGETS ZONE -->
+    <!-- ZONA DE WIDGETS DINÁMICOS -->
     <div id="dynamicWidgetsZone" class="max-w-7xl mx-auto px-6 py-6 space-y-20"></div>
 
-    <!-- FOOTER -->
+    <!-- PIE DE PÁGINA -->
     <footer id="footer" class="bg-black border-t border-amber-500/30 py-12">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <div class="flex flex-col items-center gap-2 mb-5">
-                <div class="text-2xl title-font tracking-wider">NaviMaTor • PMC CHOPIN</div>
+                <div class="text-2xl title-font tracking-wider">NaviMaTor · PMC CHOPIN</div>
                 <div class="text-[10px] text-zinc-500 steinway tracking-[2px]">STEINWAY & SONS</div>
             </div>
-            <p class="text-zinc-500 text-sm">NaviMaTor © 2026 • Built for those who lead the way. OSM + official topo maps. Offline supremacy, MGRS, ATAK-ready, 3D LLM Intelligence.</p>
+            <p class="text-zinc-500 text-sm">NaviMaTor © 2026 · Creado para quienes lideran el camino. OSM + mapas topográficos oficiales. Supremacía offline, MGRS, listo para ATAK, inteligencia artificial 3D.</p>
         </div>
     </footer>
 
-    <!-- Three.js Libraries + Original 3D NaviMaTor Script (Integrated) -->
+    <!-- IMPORTACIÓN DE TRES.JS Y LÓGICA 3D COMPLETA (del archivo 60dee6) -->
     <script type="importmap">
         {
             "imports": {
@@ -286,25 +283,22 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-        // --- Setup within specific container for integration ---
+        // --- Setup completo del simulador 3D (basado en deepseek_html_20260518_60dee6.html) ---
         const container = document.getElementById('navimator-3d-root');
         container.style.width = '100%';
         container.style.height = '100%';
         
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x01010c);
-        scene.fog = new THREE.FogExp2(0x01010c, 0.0008);
+        scene.background = new THREE.Color(0x050b1a);
+        scene.fog = new THREE.FogExp2(0x050b1a, 0.0005);
         
-        const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 2000);
-        camera.position.set(35, 25, 45);
-        camera.lookAt(0, 0, 0);
+        const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.5, 2000);
+        camera.position.set(45, 38, 55);
         
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(container.clientWidth, container.clientHeight);
         renderer.shadowMap.enabled = true;
-        renderer.setPixelRatio(window.devicePixelRatio);
         container.appendChild(renderer.domElement);
-        renderer.domElement.classList.add('webgl-canvas');
         
         const labelRenderer = new CSS2DRenderer();
         labelRenderer.setSize(container.clientWidth, container.clientHeight);
@@ -316,139 +310,266 @@
         
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
+        controls.dampingFactor = 0.06;
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
         controls.screenSpacePanning = true;
         controls.maxPolarAngle = Math.PI / 2.2;
+        controls.minDistance = 15;
+        controls.maxDistance = 130;
         
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0x222222);
+        // --- Iluminación dinámica (día/noche) ---
+        const ambientLight = new THREE.AmbientLight(0x1a2a3a, 0.55);
         scene.add(ambientLight);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        dirLight.position.set(10, 30, 5);
-        dirLight.castShadow = true;
-        scene.add(dirLight);
-        const backLight = new THREE.PointLight(0x4466ff, 0.3);
-        backLight.position.set(-5, 10, -10);
-        scene.add(backLight);
+        const sunLight = new THREE.DirectionalLight(0xfff5e0, 1.3);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 1024;
+        sunLight.shadow.mapSize.height = 1024;
+        scene.add(sunLight);
+        const moonLight = new THREE.DirectionalLight(0x88aaff, 0.15);
+        scene.add(moonLight);
         
-        // Terrain
-        const width = 80, depth = 80, segments = 128;
-        const geometry = new THREE.PlaneGeometry(width, depth, segments, segments);
+        // --- Terreno procedural (280x280) ---
+        const terrainWidth = 140, terrainDepth = 140, segments = 280;
+        const geometry = new THREE.PlaneGeometry(terrainWidth, terrainDepth, segments, segments);
         geometry.rotateX(-Math.PI / 2);
         const positions = geometry.attributes.position.array;
+        
+        function getRawHeight(x, z) {
+            const nx = x / 38, nz = z / 38;
+            let y = Math.sin(nx * 1.6) * Math.cos(nz * 1.6) * 1.3;
+            y += Math.sin(nx * 3.2) * Math.cos(nz * 3.0) * 0.7;
+            y += Math.sin(nx * 6.5) * 0.45 + Math.cos(nz * 5.5) * 0.45;
+            y += Math.abs(Math.sin(nx * 1.1) * Math.cos(nz * 1.0)) * 1.0;
+            const peak1 = Math.hypot(x - 25, z - 18);
+            y += Math.max(0, 2.0 * (1 - peak1 / 28)) ** 2;
+            const peak2 = Math.hypot(x + 20, z + 15);
+            y += Math.max(0, 1.6 * (1 - peak2 / 26)) ** 1.8;
+            const riverDepth = Math.abs(z - (12 * Math.sin(x * 0.07) - 5));
+            if (riverDepth < 2.0) y -= 0.55 * (1 - riverDepth / 2.0);
+            if (Math.hypot(x + 8, z + 5) < 7) y -= 0.7;
+            if (Math.hypot(x + 28, z + 24) < 11) y -= 0.45;
+            if (Math.hypot(x - 30, z - 22) < 4.2) y -= 1.1;
+            if (Math.abs(x) > 62) y -= (Math.abs(x) - 62) * 0.35;
+            if (Math.abs(z) > 62) y -= (Math.abs(z) - 62) * 0.35;
+            return Math.max(-0.2, Math.min(4.8, y * 1.1 + 0.15));
+        }
+        
         for (let i = 0; i < positions.length; i += 3) {
-            const x = positions[i], z = positions[i+2];
-            let y = 0;
-            y += Math.sin(x * 0.25) * 1.2 * Math.cos(z * 0.25);
-            y += Math.sin(x * 0.5) * 0.6;
-            y += Math.cos(z * 0.5) * 0.6;
-            y += Math.sin((x * 0.8 + z * 0.6)) * 0.4;
-            y = Math.max(0, y);
-            positions[i+1] = y;
+            positions[i+1] = getRawHeight(positions[i], positions[i+2]);
         }
         geometry.computeVertexNormals();
-        const colors = [];
-        for (let i = 0; i < positions.length; i += 3) {
-            const y = positions[i+1];
-            const t = Math.min(1, y / 3.5);
-            colors.push(0.3 + t * 0.4, 0.5 + t * 0.3, 0.3 + t * 0.2);
-        }
-        geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
-        const terrainMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7 });
-        const terrain = new THREE.Mesh(geometry, terrainMat);
-        terrain.receiveShadow = true;
-        scene.add(terrain);
         
-        const gridHelper = new THREE.GridHelper(120, 40, 0x00ccff, 0x88aaff);
-        gridHelper.position.y = -0.2;
-        gridHelper.material.transparent = true;
-        gridHelper.material.opacity = 0.35;
-        scene.add(gridHelper);
+        const terrainMat = new THREE.MeshStandardMaterial({ color: 0x6a8a5a, roughness: 0.65 });
+        const terrainMesh = new THREE.Mesh(geometry, terrainMat);
+        terrainMesh.receiveShadow = true;
+        scene.add(terrainMesh);
         
-        function getTerrainY(x, z, posArray, w, d) {
-            const half = w/2;
-            const segPerSide = Math.sqrt(posArray.length/3) - 1;
-            const step = w / segPerSide;
-            let ix = (x + half) / step, iz = (z + half) / step;
-            ix = Math.min(Math.max(ix, 0), segPerSide);
-            iz = Math.min(Math.max(iz, 0), segPerSide);
+        function getTerrainHeight(x, z) {
+            const half = terrainWidth / 2, step = terrainWidth / segments;
+            let ix = Math.min(Math.max((x + half) / step, 0), segments - 1);
+            let iz = Math.min(Math.max((z + half) / step, 0), segments - 1);
             const ix0 = Math.floor(ix), iz0 = Math.floor(iz);
-            const ix1 = Math.min(ix0 + 1, segPerSide), iz1 = Math.min(iz0 + 1, segPerSide);
-            const getY = (i, j) => posArray[(j * (segPerSide+1) + i) * 3 + 1];
-            const y00 = getY(ix0, iz0), y10 = getY(ix1, iz0), y01 = getY(ix0, iz1), y11 = getY(ix1, iz1);
+            const ix1 = Math.min(ix0 + 1, segments - 1), iz1 = Math.min(iz0 + 1, segments - 1);
+            const getY = (i, j) => positions[(j * (segments + 1) + i) * 3 + 1];
+            const y00 = getY(ix0, iz0), y10 = getY(ix1, iz0);
+            const y01 = getY(ix0, iz1), y11 = getY(ix1, iz1);
             const tx = ix - ix0, tz = iz - iz0;
-            const y0 = y00 * (1 - tx) + y10 * tx;
-            const y1 = y01 * (1 - tx) + y11 * tx;
-            return y0 * (1 - tz) + y1 * tz;
+            return (y00 * (1-tx) + y10 * tx) * (1-tz) + (y01 * (1-tx) + y11 * tx) * tz;
         }
         
-        const bluePos = [[8,5,"ALPHA • BLUE"],[-4,12,"BRAVO • BLUE"],[2,-10,"CHARLIE • BLUE"],[-12,-3,"DELTA • BLUE"]];
-        const blueSpheres = [];
-        bluePos.forEach(([x,z,label]) => {
-            const y = getTerrainY(x, z, positions, width, depth);
-            const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.6,16,16), new THREE.MeshStandardMaterial({ color: 0x3399ff, emissive: 0x004466 }));
-            sphere.position.set(x, y+0.6, z);
+        // --- Unidades amigas (Blue Force Tracking) ---
+        const friendlyUnits = [
+            { name: "ALFA", color: 0x3399ff, pos: [18, 5], icon: "🎯" },
+            { name: "BRAVO", color: 0x33aaff, pos: [-5, 14], icon: "🎯" },
+            { name: "CHARLIE", color: 0x33bbff, pos: [8, -10], icon: "🎯" },
+            { name: "DELTA", color: 0x33ccff, pos: [-14, -4], icon: "🎯" }
+        ];
+        
+        const friendlySpheres = [];
+        friendlyUnits.forEach((unit, idx) => {
+            const y = getTerrainHeight(unit.pos[0], unit.pos[1]);
+            const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.65, 24, 24), new THREE.MeshStandardMaterial({ color: unit.color, emissive: 0x004466, emissiveIntensity: 0.4 }));
+            sphere.position.set(unit.pos[0], y + 0.65, unit.pos[1]);
+            sphere.castShadow = true;
             scene.add(sphere);
+            friendlySpheres.push(sphere);
+            
             const div = document.createElement('div');
-            div.textContent = label;
-            div.style.cssText = 'color:#88ddff; font-size:12px; background:rgba(0,0,0,0.6); padding:2px 8px; border-radius:20px; border-left:3px solid #00FFFF';
-            const labelObj = new CSS2DObject(div);
-            labelObj.position.set(x, y+1.2, z);
-            scene.add(labelObj);
-            blueSpheres.push(sphere);
+            div.textContent = `${unit.icon} ${unit.name} · BLUEFOR`;
+            div.style.backgroundColor = 'rgba(0,20,40,0.8)';
+            div.style.color = '#aaffff';
+            div.style.fontSize = '10px';
+            div.style.padding = '2px 8px';
+            div.style.borderRadius = '20px';
+            div.style.borderLeft = '3px solid #33ccff';
+            const label = new CSS2DObject(div);
+            label.position.set(unit.pos[0], y + 1.2, unit.pos[1]);
+            scene.add(label);
         });
         
-        // Stars and ambiance
-        const starField = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 }));
-        const starPos = [];
-        for (let i = 0; i < 800; i++) starPos.push((Math.random() - 0.5) * 400, (Math.random() - 0.5) * 150 + 40, (Math.random() - 0.5) * 150 - 80);
-        starField.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
-        scene.add(starField);
+        // --- Unidades hostiles ---
+        const hostileUnits = [
+            { name: "HOSTIL", color: 0xdd3333, pos: [22, -12], icon: "⚠️" },
+            { name: "HOSTIL", color: 0xcc4444, pos: [-20, 8], icon: "⚠️" },
+            { name: "HOSTIL", color: 0xbb5555, pos: [-2, 22], icon: "⚠️" }
+        ];
+        hostileUnits.forEach(unit => {
+            const y = getTerrainHeight(unit.pos[0], unit.pos[1]);
+            const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.65, 24, 24), new THREE.MeshStandardMaterial({ color: unit.color, emissive: 0x441111, emissiveIntensity: 0.3 }));
+            sphere.position.set(unit.pos[0], y + 0.65, unit.pos[1]);
+            sphere.castShadow = true;
+            scene.add(sphere);
+            const div = document.createElement('div');
+            div.textContent = `${unit.icon} ${unit.name} · REDFOR`;
+            div.style.backgroundColor = 'rgba(40,0,0,0.8)';
+            div.style.color = '#ffaaaa';
+            div.style.fontSize = '10px';
+            div.style.padding = '2px 8px';
+            div.style.borderRadius = '20px';
+            div.style.borderLeft = '3px solid #ff4444';
+            const label = new CSS2DObject(div);
+            label.position.set(unit.pos[0], y + 1.2, unit.pos[1]);
+            scene.add(label);
+        });
         
-        // Particles
-        const particleGeo = new THREE.BufferGeometry();
-        const partPos = [];
-        for (let i = 0; i < 600; i++) partPos.push((Math.random() - 0.5) * 85, (Math.random() - 0.5) * 15 + 1.5, (Math.random() - 0.5) * 85);
-        particleGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(partPos), 3));
-        const particles = new THREE.Points(particleGeo, new THREE.PointsMaterial({ color: 0x77bbff, size: 0.06 }));
-        scene.add(particles);
+        // --- Elementos del terreno: río, lago, cuadrícula MGRS ---
+        const riverPoints = [];
+        for (let t = -1; t <= 1; t += 0.04) {
+            const x = t * 72, z = 12 * Math.sin(t * Math.PI * 1.6) - 6;
+            riverPoints.push(new THREE.Vector3(x, getTerrainHeight(x, z) - 0.15, z));
+        }
+        const riverTube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(riverPoints), 180, 0.7, 8, false), new THREE.MeshStandardMaterial({ color: 0x3399ff, transparent: true, opacity: 0.85 }));
+        scene.add(riverTube);
         
-        // LLM UI Injection (custom panel inside 3D container absolute positioned)
+        const lakeY = getTerrainHeight(-8, -5) - 0.12;
+        const lakePlane = new THREE.Mesh(new THREE.CircleGeometry(6.5, 24), new THREE.MeshStandardMaterial({ color: 0x44aaff, transparent: true, opacity: 0.8 }));
+        lakePlane.position.set(-8, lakeY, -5);
+        lakePlane.rotation.x = -Math.PI / 2;
+        scene.add(lakePlane);
+        
+        const mgrsGridGroup = new THREE.Group();
+        const gridStep = 10, gridExtent = 65;
+        for (let i = -gridExtent; i <= gridExtent; i += gridStep) {
+            const lineV = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i, -0.2, -gridExtent), new THREE.Vector3(i, -0.2, gridExtent)]), new THREE.LineBasicMaterial({ color: 0x88ff88, transparent: true, opacity: 0.3 }));
+            const lineH = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-gridExtent, -0.2, i), new THREE.Vector3(gridExtent, -0.2, i)]), new THREE.LineBasicMaterial({ color: 0x88ff88, transparent: true, opacity: 0.3 }));
+            mgrsGridGroup.add(lineV, lineH);
+        }
+        scene.add(mgrsGridGroup);
+        
+        // --- Funciones de dibujo táctico (líneas, flechas, marcadores) ---
+        let drawMode = null;
+        let tempPoints = [];
+        let tacticalObjects = [];
+        let currentDrawObject = null;
+        
+        function createArrowLine(start, end, color = 0xff4444) {
+            const points = [start.clone(), end.clone()];
+            const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
+            const lineMat = new THREE.LineBasicMaterial({ color });
+            const lineObj = new THREE.Line(lineGeo, lineMat);
+            
+            const dir = new THREE.Vector3().subVectors(end, start).normalize();
+            const arrowLen = 1.2;
+            const perp = new THREE.Vector3(-dir.z, dir.y, dir.x).normalize();
+            const arrowBase = end.clone().sub(dir.clone().multiplyScalar(0.8));
+            const arrowLeft = arrowBase.clone().add(perp.clone().multiplyScalar(arrowLen * 0.4)).sub(dir.clone().multiplyScalar(arrowLen * 0.5));
+            const arrowRight = arrowBase.clone().add(perp.clone().multiplyScalar(-arrowLen * 0.4)).sub(dir.clone().multiplyScalar(arrowLen * 0.5));
+            
+            const arrowGeo = new THREE.BufferGeometry().setFromPoints([end, arrowLeft, arrowRight]);
+            const arrowMat = new THREE.LineBasicMaterial({ color });
+            const arrowObj = new THREE.Line(arrowGeo, arrowMat);
+            
+            const group = new THREE.Group();
+            group.add(lineObj, arrowObj);
+            return group;
+        }
+        
+        function createLine(start, end, color = 0x44ff44) {
+            const points = [start.clone(), end.clone()];
+            const geo = new THREE.BufferGeometry().setFromPoints(points);
+            return new THREE.Line(geo, new THREE.LineBasicMaterial({ color }));
+        }
+        
+        function addMarker(x, z, color = 0xffaa44) {
+            const y = getTerrainHeight(x, z) + 0.3;
+            const markerGeo = new THREE.SphereGeometry(0.25, 8, 8);
+            const markerMat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.5 });
+            const marker = new THREE.Mesh(markerGeo, markerMat);
+            marker.position.set(x, y, z);
+            scene.add(marker);
+            tacticalObjects.push({ type: 'marker', object: marker, pos: { x, z } });
+            return marker;
+        }
+        
+        // --- Panel LLM táctico (en español) ---
         const llmPanelDiv = document.createElement('div');
-        llmPanelDiv.innerHTML = `<div style="position:absolute; bottom:20px; right:20px; width:280px; background:rgba(2,5,15,0.9); backdrop-filter:blur(16px); border-radius:24px; border:1px solid #f59e0b; padding:14px; z-index:20; pointer-events:auto; font-family:monospace;">
-            <h4 style="margin:0 0 8px 0; color:#f59e0b;">🧠 TACTICAL LLM</h4>
-            <textarea id="llmCommandInput" rows="2" placeholder="Route analysis, cover, risk..." style="width:100%; background:#0A0E1A; border:1px solid #00FFFF80; color:white; border-radius:16px; padding:8px;"></textarea>
-            <button id="llmSendBtn" style="margin-top:8px; background:none; border:1px solid #00FFFF; color:#AAFFFF; border-radius:40px; padding:4px 12px;">SEND</button>
-            <div id="llmResponseBox" style="background:#03060F; border-radius:16px; padding:8px; margin-top:10px; font-size:11px; max-height:150px; overflow-y:auto; border-left:3px solid #f59e0b;"></div>
+        llmPanelDiv.innerHTML = `<div style="position:absolute; bottom:20px; right:20px; width:280px; background:rgba(0,0,0,0.9); backdrop-filter:blur(16px); border-radius:24px; border:1px solid #0f0; padding:14px; z-index:20; pointer-events:auto; font-family:monospace;">
+            <h4 style="margin:0 0 8px 0; color:#0f0;">🧠 IA TÁCTICA</h4>
+            <textarea id="llmCommandInput" rows="2" placeholder="Comandos: río, cueva, pantano, lago, ruta, LOS, cobertura, altura x z..." style="width:100%; background:#111; border:1px solid #0f0; color:#0f0; border-radius:16px; padding:8px;"></textarea>
+            <button id="llmSendBtn" style="margin-top:8px; background:#0f0; color:#000; border:none; border-radius:40px; padding:4px 12px; font-weight:bold; cursor:pointer;">ANALIZAR</button>
+            <div id="llmResponseBox" style="background:#03060F; border-radius:16px; padding:8px; margin-top:10px; font-size:11px; max-height:150px; overflow-y:auto; border-left:3px solid #0f0; color:#aaa;"></div>
         </div>`;
         container.style.position = 'relative';
         container.appendChild(llmPanelDiv);
         
+        function llmResponse(query) {
+            const q = query.toLowerCase();
+            if (q.includes('río') || q.includes('river')) return "🌊 Río cruza el mapa de NW a SE. Vados: (-15,3), (5,-2), (25,-8). Profundidad hasta 0.4m.";
+            if (q.includes('cueva') || q.includes('cave')) return "⛰️ Cueva en (30,22). Tipo: dolina. Capacidad: 8 personas. Acceso por el sur.";
+            if (q.includes('pantano') || q.includes('swamp')) return "🪰 Pantano en (-28,-24). Radio ~11m. Transitabilidad: baja, se requiere equipo especial.";
+            if (q.includes('lago') || q.includes('lake')) return "💧 Lago en (-8,-5). Profundidad hasta 0.9m. Márgenes suaves. Posible punto de agua.";
+            if (q.includes('ruta') || q.includes('route')) return "🧭 Ruta óptima desde ALFA hasta (15,-10): desvío este, valle del río. 340m, ~12min. Riesgo bajo.";
+            if (q.includes('los') || q.includes('línea de visión')) return "📡 Análisis LOS desde BRAVO hasta objetivo (22,-12): 67% obstáculos. Posición recomendada (-5,14) — LOS 89%.";
+            if (q.includes('cobertura') || q.includes('cover')) return "🛡️ Cobertura: cueva (30,22), bosque NO, laderas >25° en (15,8).";
+            if (q.includes('altura') && q.match(/-?\d+/)) {
+                const coords = q.match(/-?\d+/g);
+                if (coords && coords.length >= 2) {
+                    const x = parseFloat(coords[0]), z = parseFloat(coords[1]);
+                    return `📐 Altura en (${x}, ${z}): ${getTerrainHeight(x, z).toFixed(2)} m.`;
+                }
+            }
+            return "🤖 Comandos: río, cueva, pantano, lago, ruta, LOS, cobertura, altura X Z";
+        }
+        
         const llmInput = document.getElementById('llmCommandInput');
         const llmSend = document.getElementById('llmSendBtn');
         const llmResp = document.getElementById('llmResponseBox');
-        llmResp.innerHTML = '> LLM ready. Awaiting tactical command.<br>> 3D terrain integrated.';
+        llmResp.innerHTML = '> IA lista. Esperando comando táctico.<br>> Terreno 3D integrado.';
         
-        function llmReply(cmd) {
-            let msg = '';
-            if(cmd.includes('route')) msg = '🧭 Optimal low-risk route generated. Avoid eastern ridge.';
-            else if(cmd.includes('cover')) msg = '🛡️ Cover positions identified. Grid: 38T MM 12345 67890.';
-            else if(cmd.includes('risk')) msg = '⚠️ Risk: Moderate-High eastern slope. Southern corridor safer.';
-            else if(cmd.includes('los')) msg = '📡 LOS: 67% occlusion. Move ALPHA to high ground.';
-            else msg = `🧠 Analysis: "${cmd.substring(0,50)}" — Terrain stable. MGRS ready.`;
-            llmResp.innerHTML += `<div>> 🤖 LLM: ${msg}</div>`;
-            llmResp.scrollTop = llmResp.scrollHeight;
-            if(llmResp.children.length > 6) llmResp.removeChild(llmResp.children[0]);
+        llmSend.addEventListener('click', () => {
+            const query = llmInput.value;
+            const response = llmResponse(query);
+            llmResp.innerHTML = `> ${query}<br>📍 ${response}<br>${llmResp.innerHTML}`.split('<br>').slice(0, 12).join('<br>');
+            llmInput.value = '';
+        });
+        
+        // --- Ciclo día/noche ---
+        let timeOfDay = Math.PI / 2;
+        let lastTimestamp = performance.now();
+        
+        function updateTimeOfDay(now) {
+            const delta = Math.min(100, now - lastTimestamp);
+            lastTimestamp = now;
+            timeOfDay += (delta / 120000) * Math.PI * 2;
+            if (timeOfDay > Math.PI * 2) timeOfDay -= Math.PI * 2;
+            const sunY = Math.cos(timeOfDay) * 65 + 15;
+            const sunHeight = Math.max(0, Math.sin(timeOfDay));
+            sunLight.position.set(Math.sin(timeOfDay) * 80, sunY, Math.cos(timeOfDay * 0.9) * 55);
+            sunLight.intensity = 0.15 + sunHeight * 1.35;
+            ambientLight.intensity = 0.25 + sunHeight * 0.4;
         }
-        llmSend.addEventListener('click', () => { if(llmInput.value.trim()) llmReply(llmInput.value.trim()); llmInput.value = ''; });
         
+        // --- Animación ---
         function animate() {
-            requestAnimationFrame(animate);
+            const now = performance.now();
+            updateTimeOfDay(now);
+            friendlySpheres.forEach((s, i) => { s.position.y += Math.sin(now * 0.004 + i) * 0.0025; });
             controls.update();
-            particles.rotation.y += 0.0015;
-            blueSpheres.forEach((s,i) => { s.position.y += Math.sin(Date.now() * 0.003 + i) * 0.004; });
             renderer.render(scene, camera);
             labelRenderer.render(scene, camera);
+            requestAnimationFrame(animate);
         }
         animate();
         
@@ -459,10 +580,12 @@
             renderer.setSize(w, h);
             labelRenderer.setSize(w, h);
         });
+        
+        console.log("NaviMaTor · Simulador 3D completo | IA Táctica | Ciclo día/noche");
     </script>
 
     <script>
-        // Constructor & Widget Logic (standalone)
+        // Constructor y lógica de widgets
         let currentAccent = "#f59e0b";
         function updateAccentColor(color) {
             currentAccent = color;
@@ -483,12 +606,12 @@
         window.addDynamicWidget = function(widgetType) {
             const zone = document.getElementById('dynamicWidgetsZone');
             let html = '';
-            if(widgetType === 'features') html = `<section class="bg-zinc-900/50 rounded-3xl p-8"><h3 class="text-3xl title-font text-center">⚡ KEY FEATURES</h3><div class="grid md:grid-cols-3 gap-6 text-center"><div><i class="fa-regular fa-map text-4xl text-amber-400"></i><p>Offline 3D terrain</p></div><div><i class="fa-regular fa-compass text-4xl text-amber-400"></i><p>MGRS/UTM</p></div><div><i class="fa-solid fa-tower-cell text-4xl text-amber-400"></i><p>Mesh integration</p></div></div></section>`;
-            if(widgetType === 'testimonials') html = `<section class="p-8 bg-black/60"><h3 class="text-2xl font-bold text-center">💬 TESTIMONIALS</h3><div class="flex flex-col md:flex-row gap-6"><div class="bg-zinc-900 p-5 rounded-xl"><i class="fa-solid fa-quote-left"></i><p>"MGRS works flawlessly, APP-6 overlays speed planning."</p></div><div class="bg-zinc-900 p-5 rounded-xl"><i class="fa-solid fa-quote-left"></i><p>"Best ATAK replacement with 3D LLM."</p></div></div></section>`;
-            if(widgetType === 'comparison') html = `<section class="bg-zinc-950 p-8 rounded-3xl"><h3 class="text-3xl text-center">📊 COMPARISON</h3><table class="w-full text-sm"><tr><th>Feature</th><th>Basic</th><th>Pro</th></tr><tr><td>MGRS 10-digit</td><td>—</td><td>✅</td></tr></table></section>`;
-            if(widgetType === 'gallery') html = `<section><h3 class="text-3xl text-center">🖼 GALLERY</h3><div class="grid grid-cols-2 gap-3"><div class="bg-zinc-800 h-28 rounded flex items-center justify-center">MGRS View</div><div class="bg-zinc-800 h-28 rounded flex items-center justify-center">APP-6</div></div></section>`;
-            if(widgetType === 'cta') html = `<div class="bg-gradient-to-r from-amber-700 to-red-800 rounded-2xl p-10 text-center"><h3 class="text-3xl font-bold">READY?</h3><button onclick="alert('Request license')" class="mt-5 bg-black text-white px-8 py-3 rounded-full">GET LICENSE</button></div>`;
-            if(widgetType === 'techspecs') html = `<section class="bg-zinc-900/40 p-6"><h3 class="text-2xl">📡 SPECS</h3><ul><li>Formats: GPX/KML/MGRS</li><li>Offline routing + Daedalus</li><li>Encryption: AES-256</li></ul></section>`;
+            if(widgetType === 'features') html = `<section class="bg-zinc-900/50 rounded-3xl p-8"><h3 class="text-3xl title-font text-center">⚡ CARACTERÍSTICAS CLAVE</h3><div class="grid md:grid-cols-3 gap-6 text-center"><div><i class="fa-regular fa-map text-4xl text-amber-400"></i><p>Terreno 3D offline</p></div><div><i class="fa-regular fa-compass text-4xl text-amber-400"></i><p>MGRS/UTM</p></div><div><i class="fa-solid fa-tower-cell text-4xl text-amber-400"></i><p>Integración mallada</p></div></div></section>`;
+            if(widgetType === 'testimonials') html = `<section class="p-8 bg-black/60"><h3 class="text-2xl font-bold text-center">💬 TESTIMONIOS</h3><div class="flex flex-col md:flex-row gap-6"><div class="bg-zinc-900 p-5 rounded-xl"><i class="fa-solid fa-quote-left"></i><p>"MGRS funciona perfectamente, las superposiciones APP-6 aceleran la planificación."</p></div><div class="bg-zinc-900 p-5 rounded-xl"><i class="fa-solid fa-quote-left"></i><p>"El mejor reemplazo de ATAK con IA 3D."</p></div></div></section>`;
+            if(widgetType === 'comparison') html = `<section class="bg-zinc-950 p-8 rounded-3xl"><h3 class="text-3xl text-center">📊 COMPARACIÓN</h3><table class="w-full text-sm"><tr><th>Función</th><th>Básico</th><th>Pro</th></tr><tr><td>MGRS 10 dígitos</td><td>—</td><td>✅</td></tr></table></section>`;
+            if(widgetType === 'gallery') html = `<section><h3 class="text-3xl text-center">🖼 GALERÍA</h3><div class="grid grid-cols-2 gap-3"><div class="bg-zinc-800 h-28 rounded flex items-center justify-center">Vista MGRS</div><div class="bg-zinc-800 h-28 rounded flex items-center justify-center">APP-6</div></div></section>`;
+            if(widgetType === 'cta') html = `<div class="bg-gradient-to-r from-amber-700 to-red-800 rounded-2xl p-10 text-center"><h3 class="text-3xl font-bold">¿LISTO?</h3><button onclick="alert('Solicitar licencia')" class="mt-5 bg-black text-white px-8 py-3 rounded-full">OBTENER LICENCIA</button></div>`;
+            if(widgetType === 'techspecs') html = `<section class="bg-zinc-900/40 p-6"><h3 class="text-2xl">📡 ESPECIFICACIONES</h3><ul><li>Formatos: GPX/KML/MGRS</li><li>Enrutamiento offline + Daedalus</li><li>Cifrado: AES-256</li></ul></section>`;
             if(html) zone.insertAdjacentHTML('beforeend', html);
             document.getElementById('storeModal').classList.add('hidden');
         };
