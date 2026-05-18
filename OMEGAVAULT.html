@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>JOG CORE // BLACK GRIFFIN DOSSIER // OMEGA VAULT</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Courier New', 'Space Grotesk', monospace;
+            background: #000;
+        }
+
+        /* 3D canvas background */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Overlay dossier */
+        .overlay {
+            position: relative;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(16px);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #eef5e1;
+            font-family: 'Courier New', monospace;
+            border-left: 5px solid #f0b27a;
+            overflow-y: auto;
+            pointer-events: auto;
+            max-height: 100vh;
+            scroll-behavior: smooth;
+        }
+
+        .overlay::-webkit-scrollbar {
+            width: 6px;
+        }
+        .overlay::-webkit-scrollbar-track {
+            background: #121a0f;
+        }
+        .overlay::-webkit-scrollbar-thumb {
+            background: #dbb067;
+            border-radius: 6px;
+        }
+
+        /* Clearance Header */
+        .clearance {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-bottom: 1px dashed #6fa86e;
+            padding-bottom: 0.8rem;
+            margin-bottom: 2rem;
+            font-size: 0.8rem;
+        }
+        .black-griffin {
+            background: #0c0f1c;
+            padding: 0.25rem 1rem;
+            border-left: 6px solid #f0b27a;
+            color: #fad296;
+            text-transform: uppercase;
+        }
+        .omega {
+            color: #d98c45;
+            text-shadow: 0 0 4px #ff8c2e;
+        }
+
+        /* Cards grid - equal size */
+        .worlds-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            margin: 2rem 0;
+            justify-content: center;
+        }
+        .world-card {
+            background: rgba(7, 16, 12, 0.85);
+            backdrop-filter: blur(4px);
+            border: 1px solid #4e9b64;
+            border-radius: 24px;
+            padding: 1.2rem;
+            flex: 1 1 280px;
+            max-width: 320px;
+            min-width: 260px;
+            display: flex;
+            flex-direction: column;
+            transition: 0.2s;
+        }
+        .world-card:hover {
+            transform: translateY(-6px);
+            border-color: #f0b27a;
+            box-shadow: 0 0 20px #7affa04d;
+        }
+        /* 3D canvas inside card */
+        .card-canvas {
+            width: 100%;
+            height: 180px;
+            border-radius: 16px;
+            background: #00000055;
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+        .wallet-amount {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffda9e;
+        }
+        .regent-name {
+            font-size: 0.8rem;
+            color: #bcddae;
+        }
+        .mechanic {
+            font-size: 0.7rem;
+            color: #dfcca1;
+            margin: 0.6rem 0;
+            border-top: 1px dotted #426e47;
+            padding-top: 0.4rem;
+        }
+        button.resonate {
+            background: rgba(20,20,10,0.8);
+            border: 1px solid #b0ffb0;
+            color: #f5ffd3;
+            padding: 0.5rem;
+            margin-top: 0.6rem;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+            border-radius: 40px;
+            transition: 0.2s;
+            width: 100%;
+        }
+        button.resonate:hover {
+            background: #469f57;
+            border-color: #ffeaac;
+            box-shadow: 0 0 12px #b3ffb3;
+        }
+        .resonance-feedback {
+            background: #041007cc;
+            border-left: 5px solid #f1ac6b;
+            padding: 1rem;
+            border-radius: 14px;
+            margin: 1rem 0;
+        }
+        .three-suns {
+            text-align: center;
+            font-size: 1.4rem;
+            letter-spacing: 8px;
+            margin-top: 1rem;
+        }
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.7rem;
+            border-top: 1px solid #2c6e3c;
+            padding-top: 1rem;
+        }
+
+        /* Secret Vault Button */
+        .vault-button {
+            background: #1e2a1a;
+            border: 1px solid #c9a23b;
+            color: #ffdd99;
+            padding: 0.6rem 1.2rem;
+            font-family: monospace;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 1rem;
+            width: fit-content;
+            transition: 0.2s;
+        }
+        .vault-button:hover {
+            background: #3a2a1a;
+            box-shadow: 0 0 10px #ffb347;
+        }
+
+        /* Modal for password */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #0a0f0c;
+            border: 2px solid #f0b27a;
+            padding: 2rem;
+            border-radius: 32px;
+            max-width: 400px;
+            text-align: center;
+            color: #f5e7c8;
+        }
+        .modal input {
+            background: #1e2a1a;
+            border: 1px solid #c9a23b;
+            padding: 0.6rem;
+            width: 100%;
+            margin: 1rem 0;
+            color: white;
+            font-family: monospace;
+        }
+        .modal button {
+            background: #4a6a3a;
+            border: none;
+            padding: 0.5rem 1rem;
+            color: white;
+            cursor: pointer;
+        }
+        .secret-content {
+            display: none;
+            background: #020804;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 1px solid #f0b27a;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 0.8rem;
+        }
+        @media (max-width: 700px) {
+            .overlay { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="canvas-container"></div>
+
+<div class="overlay">
+    <div class="clearance">
+        <span class="black-griffin">⚡ BLACK GRIFFIN // DOSSIER No. JOG-CORE-666 ⚡</span>
+        <span class="omega">OMEGA LEVEL // JACKDAW PROTOCOL</span>
+    </div>
+
+    <!-- LOST REGENTS COVENANT with 3D models -->
+    <div class="dossier">
+        <h2>🌀 LOST REGENTS COVENANT 🌀</h2>
+        <p>PHASE I — FIVE FROZEN NODES. Each carries a neural AI sigil.</p>
+        <div class="worlds-grid" id="worldsGrid">
+            <!-- five cards will be populated by JS with Three.js canvases -->
+        </div>
+        <div id="resonanceOutput" class="resonance-feedback">
+            💠 JOG NETWORK AWAITS THE CHOICE. 💠
+        </div>
+        <div class="three-suns">🌞🌞🌞 PROTOCOL "THREE SUNS" // TRIAD ALIGNMENT ACTIVE 🌞🌞🌞</div>
+    </div>
+
+    <!-- SECRET VAULT BUTTON -->
+    <div style="display: flex; justify-content: center; margin: 1rem 0;">
+        <div class="vault-button" id="vaultBtn">🔒 OMEGA VAULT // CLASSIFIED ARCHIVE 🔒</div>
+    </div>
+    <div id="secretVault" class="secret-content">
+        <!-- will be filled from the DOSSIER text -->
+    </div>
+
+    <footer>
+        JOG NETWORK — STORIES IN WORLDS BEYOND. UNITY WITHOUT BORDERS.<br>
+        DOSSIER JOG-CORE-666 // All nodes under Jackdaw Protocol Control.
+    </footer>
+</div>
+
+<!-- Password Modal -->
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <h3>⚡ OMEGA CLEARANCE REQUIRED ⚡</h3>
+        <p>Enter Jackdaw Cipher:</p>
+        <input type="password" id="vaultPassword" placeholder="PASSWORD">
+        <button id="submitPassword">AUTHENTICATE</button>
+        <button id="closeModal" style="background:#331100; margin-top:0.5rem;">DENY</button>
+    </div>
+</div>
+
+<!-- Three.js imports -->
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+        }
+    }
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    // ----- BACKGROUND SCENE (Yautja Temple) -----
+    const container = document.getElementById('canvas-container');
+    const sceneBG = new THREE.Scene();
+    sceneBG.background = new THREE.Color(0x02030c);
+    sceneBG.fog = new THREE.FogExp2(0x02030c, 0.002);
+    const cameraBG = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 1000);
+    cameraBG.position.set(7, 5, 14);
+    const rendererBG = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    rendererBG.setSize(window.innerWidth, window.innerHeight);
+    rendererBG.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(rendererBG.domElement);
+    
+    const renderScene = new RenderPass(sceneBG, cameraBG);
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.7, 0.3, 0.2);
+    const effectComposer = new EffectComposer(rendererBG);
+    effectComposer.addPass(renderScene);
+    effectComposer.addPass(bloomPass);
+    
+    const controlsBG = new OrbitControls(cameraBG, rendererBG.domElement);
+    controlsBG.enableDamping = true;
+    controlsBG.target.set(0, 2, 0);
+    
+    // Lights and basic objects for background (simplified but atmospheric)
+    const ambient = new THREE.AmbientLight(0x221c10);
+    sceneBG.add(ambient);
+    const mainLight = new THREE.DirectionalLight(0xefd89a, 0.9);
+    mainLight.position.set(4, 10, 3);
+    sceneBG.add(mainLight);
+    const coreGlow = new THREE.PointLight(0xc0a86e, 0.8);
+    coreGlow.position.set(0, 1.5, 0);
+    sceneBG.add(coreGlow);
+    // Stars
+    const starGeo = new THREE.BufferGeometry();
+    const starCount = 1500;
+    const starPos = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount; i++) {
+        starPos[i*3] = (Math.random() - 0.5) * 200;
+        starPos[i*3+1] = (Math.random() - 0.5) * 40;
+        starPos[i*3+2] = (Math.random() - 0.5) * 100 - 50;
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffefb0, size: 0.08, transparent: true, blending: THREE.AdditiveBlending }));
+    sceneBG.add(stars);
+    // Central artifact (simple)
+    const artifact = new THREE.Mesh(new THREE.IcosahedronGeometry(1.2, 0), new THREE.MeshStandardMaterial({ color: 0xaa8866, emissive: 0x442200, emissiveIntensity: 0.5 }));
+    artifact.position.set(0, 1.2, 0);
+    sceneBG.add(artifact);
+    
+    function animateBG() {
+        requestAnimationFrame(animateBG);
+        artifact.rotation.y += 0.005;
+        stars.rotation.y += 0.0005;
+        controlsBG.update();
+        effectComposer.render();
+    }
+    animateBG();
+    window.addEventListener('resize', () => {
+        cameraBG.aspect = window.innerWidth / window.innerHeight;
+        cameraBG.updateProjectionMatrix();
+        rendererBG.setSize(window.innerWidth, window.innerHeight);
+        effectComposer.setSize(window.innerWidth, window.innerHeight);
+    });
+    
+    // ----- Helper: create 3D neural model for each card (different style) -----
+    function createNeuralModel(type) {
+        const group = new THREE.Group();
+        let coreMat, geometry;
+        switch(type) {
+            case 'james': // spiky neural net
+                const ico = new THREE.IcosahedronGeometry(0.7, 1);
+                const matSpike = new THREE.MeshStandardMaterial({ color: 0x88aaff, emissive: 0x2266aa, emissiveIntensity: 0.7 });
+                const mesh = new THREE.Mesh(ico, matSpike);
+                group.add(mesh);
+                // spikes
+                const spikeCount = 40;
+                for (let i = 0; i < spikeCount; i++) {
+                    const spike = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.3, 6), new THREE.MeshStandardMaterial({ color: 0xffaa66, emissive: 0xaa4422 }));
+                    spike.position.set(Math.sin(i)*0.9, Math.cos(i*2)*0.9, Math.cos(i)*0.9);
+                    spike.lookAt(spike.position.clone().multiplyScalar(2));
+                    group.add(spike);
+                }
+                break;
+            case 'stefan': // iron rings + core
+                const coreRing = new THREE.Mesh(new THREE.SphereGeometry(0.6, 32, 32), new THREE.MeshStandardMaterial({ color: 0xccaa77, metalness: 0.9, emissive: 0x553300 }));
+                group.add(coreRing);
+                const ring = new THREE.Mesh(new THREE.TorusGeometry(0.85, 0.05, 64, 100), new THREE.MeshStandardMaterial({ color: 0xdd8855, metalness: 0.8 }));
+                ring.rotation.x = Math.PI/2;
+                group.add(ring);
+                const ring2 = new THREE.Mesh(new THREE.TorusGeometry(0.95, 0.04, 64, 100), new THREE.MeshStandardMaterial({ color: 0xbb9966 }));
+                ring2.rotation.z = Math.PI/3;
+                group.add(ring2);
+                break;
+            case 'quadriga': // ghostly translucent + particles
+                const ghostMat = new THREE.MeshStandardMaterial({ color: 0x88aacc, emissive: 0x226688, transparent: true, opacity: 0.6 });
+                const ghostCore = new THREE.Mesh(new THREE.DodecahedronGeometry(0.7), ghostMat);
+                group.add(ghostCore);
+                const particleCloud = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ color: 0x66ccff, size: 0.03 }));
+                const particlePos = [];
+                for (let i=0;i<200;i++) {
+                    particlePos.push((Math.random()-0.5)*1.6, (Math.random()-0.5)*1.6, (Math.random()-0.5)*1.6);
+                }
+                particleCloud.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(particlePos), 3));
+                group.add(particleCloud);
+                break;
+            case 'mtgox': // chaotic cubes, fractured
+                const fractGroup = new THREE.Group();
+                for (let i=0;i<12;i++) {
+                    const box = new THREE.Mesh(new THREE.BoxGeometry(0.3,0.3,0.3), new THREE.MeshStandardMaterial({ color: 0xdd6644, emissive: 0x882200 }));
+                    box.position.set(Math.sin(i)*0.7, Math.cos(i*2)*0.6, Math.cos(i)*0.7);
+                    fractGroup.add(box);
+                }
+                group.add(fractGroup);
+                const centerExplode = new THREE.Mesh(new THREE.SphereGeometry(0.4, 16,16), new THREE.MeshStandardMaterial({ color: 0xff8844, emissive: 0xff2200 }));
+                group.add(centerExplode);
+                break;
+            case 'satoshi': // silent glowing orb with halo
+                const silentOrb = new THREE.Mesh(new THREE.SphereGeometry(0.8, 64, 64), new THREE.MeshStandardMaterial({ color: 0xddddcc, emissive: 0x886622, emissiveIntensity: 0.4 }));
+                group.add(silentOrb);
+                const halo = new THREE.Mesh(new THREE.SphereGeometry(0.95, 32, 32), new THREE.MeshBasicMaterial({ color: 0xffcc88, transparent: true, opacity: 0.2, side: THREE.BackSide }));
+                group.add(halo);
+                break;
+            default: break;
+        }
+        return group;
+    }
+    
+    // Data for the five regents
+    const regentsData = [
+        { id: 'james', name: 'James Howell', btc: '7,500 BTC', world: 'Plutonia Dump', mechanic: 'Dump RNG — random artifacts from discarded data.', modelType: 'james' },
+        { id: 'stefan', name: 'Stefan Thomas', btc: '7,002 BTC', world: 'IronKeep Sanctum', mechanic: '10 attempts / session — guess the password.', modelType: 'stefan' },
+        { id: 'quadriga', name: 'QuadrigaCX', btc: '26,350 BTC', world: 'Necro Bourse', mechanic: 'Ghost node: 3s delay, 25% chance resource dissolves.', modelType: 'quadriga' },
+        { id: 'mtgox', name: 'Mt.Gox', btc: '79,957 BTC', world: 'Hacked Nebula', mechanic: 'Sabotage mode — intercept trades.', modelType: 'mtgox' },
+        { id: 'satoshi', name: 'Satoshi Nakamoto', btc: '~1,000,000 BTC', world: 'Silence Node', mechanic: 'No economy, meditation & rare prophecies.', modelType: 'satoshi' }
+    ];
+    
+    const worldsGrid = document.getElementById('worldsGrid');
+    const resonanceDiv = document.getElementById('resonanceOutput');
+    const cardCanvases = [];
+    
+    regentsData.forEach((reg, idx) => {
+        const card = document.createElement('div');
+        card.className = 'world-card';
+        card.innerHTML = `
+            <div class="card-canvas" id="canvas-${reg.id}"></div>
+            <div class="wallet-amount">${reg.btc}</div>
+            <div class="regent-name">Regent: ${reg.name}</div>
+            <div><strong>${reg.world}</strong></div>
+            <div class="mechanic">${reg.mechanic}</div>
+            <button class="resonate" data-world="${reg.world}" data-regent="${reg.name}" data-btc="${reg.btc}" data-mechanic="${reg.mechanic}">⚡ RESONATE ⚡</button>
+        `;
+        worldsGrid.appendChild(card);
+        
+        // Create Three.js renderer for card
+        const canvasContainer = card.querySelector('.card-canvas');
+        const width = canvasContainer.clientWidth;
+        const height = 180;
+        const sceneCard = new THREE.Scene();
+        sceneCard.background = new THREE.Color(0x050b07);
+        const cameraCard = new THREE.PerspectiveCamera(45, width/height, 0.1, 100);
+        cameraCard.position.set(0, 0, 2.5);
+        const rendererCard = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        rendererCard.setSize(width, height);
+        canvasContainer.appendChild(rendererCard.domElement);
+        
+        const model = createNeuralModel(reg.modelType);
+        sceneCard.add(model);
+        // add subtle light
+        const lightCard = new THREE.PointLight(0xffaa66, 0.8);
+        lightCard.position.set(1, 1, 2);
+        sceneCard.add(lightCard);
+        const ambientCard = new THREE.AmbientLight(0x443322);
+        sceneCard.add(ambientCard);
+        
+        let time = 0;
+        function animateCard() {
+            requestAnimationFrame(animateCard);
+            time += 0.02;
+            model.rotation.y = time * 0.5;
+            model.rotation.x = Math.sin(time * 0.3) * 0.2;
+            lightCard.intensity = 0.6 + Math.sin(time * 3) * 0.2;
+            rendererCard.render(sceneCard, cameraCard);
+        }
+        animateCard();
+        
+        // resize observer for card canvas
+        const resizeObserver = new ResizeObserver(() => {
+            const newWidth = canvasContainer.clientWidth;
+            const newHeight = 180;
+            rendererCard.setSize(newWidth, newHeight);
+            cameraCard.aspect = newWidth / newHeight;
+            cameraCard.updateProjectionMatrix();
+        });
+        resizeObserver.observe(canvasContainer);
+        cardCanvases.push(rendererCard);
+    });
+    
+    // Resonance logic
+    function setResonance(regent, btc, world, mechanic) {
+        const timestamp = new Date().toLocaleString();
+        resonanceDiv.innerHTML = `
+            ⚡⚡ RESONANCE REGISTERED — OMEGA PACT ⚡⚡ [${timestamp}]<br>
+            🧬 LOST REGENT: <strong>${regent}</strong> | ${btc}<br>
+            🌍 CHOSEN WORLD: <strong>${world}</strong><br>
+            ✦ MECHANIC: ${mechanic}<br>
+            🦅 BLACK GRIFFIN OMEN: The JOG network bends.
+        `;
+        sessionStorage.setItem('jog_last_resonance', JSON.stringify({ regent, btc, world, mechanic, timestamp }));
+        // audio
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.value = 960;
+            gain.gain.value = 0.1;
+            osc.start();
+            gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+            osc.stop(audioCtx.currentTime + 0.5);
+            audioCtx.resume();
+        } catch(e) {}
+    }
+    
+    document.addEventListener('click', (e) => {
+        if (e.target.classList && e.target.classList.contains('resonate')) {
+            const btn = e.target;
+            const regent = btn.getAttribute('data-regent');
+            const btc = btn.getAttribute('data-btc');
+            const world = btn.getAttribute('data-world');
+            const mechanic = btn.getAttribute('data-mechanic');
+            setResonance(regent, btc, world, mechanic);
+        }
+    });
+    
+    // ----- SECRET VAULT with password -----
+    const modal = document.getElementById('passwordModal');
+    const vaultBtn = document.getElementById('vaultBtn');
+    const secretDiv = document.getElementById('secretVault');
+    const submitPw = document.getElementById('submitPassword');
+    const closeModal = document.getElementById('closeModal');
+    const pwInput = document.getElementById('vaultPassword');
+    
+    const fullDossier = `/// TOP SECRET // OMEGA // JOG ARCHIVE ///
+
+DOSSIER No. JOG-CORE-666 // CLASSIFICATION: "BLACK GRIFFIN"
+
+CORPORATE AFFILIATION
+Full Name: Network Orbital Group (JOG)
+Structure: Transmedia Orbital Network
+Founder: TerraTrampilleraVerse Holding / Le Bureau des Colonies (JACKDAW)
+HQ: JOG Prime Station, Helios Belt
+
+NETWORK ARCHITECTURE
+JOG is a distributed network of nodes, orbital hubs, and quantum relays.
+
+DIVISIONS:
+JOG Studios, JOG Entertainment, JOG Originals, JOG Animation, JOG Music, JOG Gaming, JOG Education, JOG Live, JOG Mythics
+
+MOTTO: "One network. One story."
+
+THREE SUNS PROTOCOL: Celestial Trinity active. Dark griffins migration recorded.
+
+OPERATIONAL DATA:
+NAME: JOG Network (Jupiter Orbital Group)
+TYPE: Interstellar media network
+FOUNDER: J.O.G. (Yuri I. Z.)
+STATUS: ACTIVE
+COVERAGE: Multiversal
+
+HOLONET CHANNELS: JOG Dramatica, Cosmos, Pulse, Nexus, Immersion, Infinite
+14.7 billion active nodes, 3 galactic sectors
+
+MYTHIC ARTIFACT: BLACK GRIFFIN — iridescent wings, emblem of JACKDAW squadron.
+
+PROTOCOL JACKDAW // OMEGA LEVEL
+"Ex Umbris Ad Astra"
+All JOG nodes under Jackdaw supervision.
+
+THIS DOCUMENT IS PROPERTY OF JOG NETWORK. UNAUTHORIZED ACCESS PROHIBITED.
+LAST SYNC: 2471.33.14 // AUTHENTICITY CONFIRMED
+⚡ TRANSMISSION MODE: ACTIVE`;
+
+    const correctPassword = "JACKDAW666"; // simple password
+    
+    vaultBtn.onclick = () => {
+        modal.style.display = "flex";
+        pwInput.value = "";
+    };
+    submitPw.onclick = () => {
+        if (pwInput.value === correctPassword) {
+            modal.style.display = "none";
+            secretDiv.style.display = "block";
+            secretDiv.innerHTML = `<pre style="white-space: pre-wrap; font-family: monospace; color: #ffefc0;">${fullDossier}</pre>`;
+        } else {
+            alert("ACCESS DENIED. Incorrect Omega Cipher.");
+        }
+    };
+    closeModal.onclick = () => { modal.style.display = "none"; };
+    window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+</script>
+</body>
+</html>
