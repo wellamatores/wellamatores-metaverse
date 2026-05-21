@@ -2,645 +2,386 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>NaviMaTor · PMC CHOPIN — Sistema Táctico de Navegación con IA 3D</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0A0F0A">
+    <meta name="description" content="NAVIMATOR VANGUARD TDP v4.0 - Plataforma Táctica Digital Integrada | Geoespacial, Análisis IA, Sincronización">
+    <title>NAVIMATOR VANGUARD TDP v4.0 · Plataforma Táctica Digital</title>
+    <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/utm@1.1.1/utm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mgrs@1.0.0/mgrs.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=VT323&display=swap');
-        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', system-ui, sans-serif; background-color: #030303; overflow-x: hidden; }
-        .title-font { font-family: 'VT323', monospace; letter-spacing: 0.02em; }
-        
-        .hero-bg {
-            background-image: linear-gradient(125deg, rgba(0,0,0,0.88) 0%, rgba(0,20,10,0.92) 100%), url('https://i.imgur.com/0zqKX8J.jpeg');
-            background-size: cover;
-            background-position: center 30%;
+        body, html { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI', 'Courier New', monospace; background: #0A0F0A; }
+        #map { width: 100vw; height: 100vh; position: relative; }
+
+        /* ========= PANEL SUPERIOR ========= */
+        .oracle-panel {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            background: rgba(10, 15, 10, 0.94);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 10px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #00E5CC;
+            box-shadow: 0 0 20px rgba(0, 229, 204, 0.3);
+            z-index: 1000;
+            pointer-events: none;
+            gap: 10px;
         }
-        
-        .card-hover {
-            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        .oracle-title h1 { font-size: 0.9rem; color: #00E5CC; letter-spacing: 1px; }
+        .tactical-value { background: #0A1F0A; padding: 4px 16px; border-radius: 40px; color: #00E5CC; font-weight: bold; font-size: 1.3rem; }
+        .oracle-stats { display: flex; gap: 15px; }
+        .stat-chip { font-size: 0.7rem; background: #162216; padding: 4px 12px; border-radius: 40px; color: #CAFFC2; }
+        .lang-selector { pointer-events: auto; background: #0A1F0A; padding: 4px 8px; border-radius: 20px; border: 1px solid #00A86B; cursor: pointer; font-size: 0.7rem; color: #00E5CC; }
+
+        /* ========= PANEL LATERAL IZQUIERDO (CAPAS) ========= */
+        .layers-panel {
+            position: absolute;
+            left: 12px;
+            top: 100px;
+            background: rgba(8, 12, 8, 0.94);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 12px;
+            min-width: 170px;
+            z-index: 1001;
+            pointer-events: auto;
+            border-left: 3px solid #00E5CC;
+            font-size: 0.7rem;
         }
-        .card-hover:hover {
-            transform: translateY(-6px) scale(1.01);
-            box-shadow: 0 20px 35px -12px rgba(0, 255, 157, 0.25);
-            border-color: rgba(0, 255, 157, 0.5) !important;
+        .layers-panel h4 { color: #00E5CC; margin-bottom: 8px; font-size: 0.75rem; }
+        .layer-item { display: flex; align-items: center; gap: 8px; margin: 6px 0; color: #B0FFC0; cursor: pointer; }
+        .layer-item input { accent-color: #00A86B; width: 14px; height: 14px; cursor: pointer; }
+
+        /* ========= PANEL DERECHO (ANÁLISIS) ========= */
+        .reco-panel {
+            position: absolute;
+            right: 12px;
+            top: 100px;
+            width: 270px;
+            background: rgba(10, 16, 10, 0.94);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 12px;
+            border-right: 2px solid #00A86B;
+            z-index: 1001;
+            pointer-events: none;
+            font-size: 0.7rem;
         }
-        
-        .builder-floating {
-            transition: all 0.2s ease;
-        }
-        .builder-floating:hover {
-            transform: scale(1.02);
-        }
-        
-        @media (max-width: 768px) {
-            .builder-panel-mobile { width: 260px; right: 10px; top: 70px; }
+        .reco-title { color: #00E5CC; border-bottom: 1px solid #3E7A3E; margin-bottom: 8px; padding-bottom: 4px; }
+        .situational-index { font-size: 2rem; font-weight: bold; color: #00E5CC; text-align: center; margin: 8px 0; }
+        .reco-item { margin: 6px 0; color: #D0FFD0; display: flex; gap: 8px; align-items: center; }
+
+        /* ========= BARRA INFERIOR ========= */
+        .mgrs-bar {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            background: rgba(7, 16, 7, 0.92);
+            backdrop-filter: blur(8px);
+            border-radius: 40px;
+            padding: 6px 16px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            z-index: 1001;
+            color: #ADEBAD;
+            border: 1px solid #2E6B2E;
+            pointer-events: none;
+            flex-wrap: wrap;
         }
 
-        .pmc-logo {
-            font-family: 'Inter', sans-serif;
-            letter-spacing: -0.5px;
+        /* ========= ACCIONES TÁCTICAS ========= */
+        .tact-actions {
+            position: absolute;
+            bottom: 80px;
+            left: 12px;
+            display: flex;
+            gap: 8px;
+            z-index: 1002;
+            pointer-events: auto;
+            flex-wrap: wrap;
         }
-        .steinway {
-            font-family: 'Inter', sans-serif;
-            font-weight: 300;
-            letter-spacing: 2px;
-        }
-
-        #three-canvas-container {
-            position: relative;
-            width: 100%;
-            height: 600px;
+        .tact-btn {
+            background: #102210dd;
+            border: 1px solid #00A86B;
+            color: #D4FFD4;
+            padding: 6px 12px;
             border-radius: 32px;
-            overflow: hidden;
-            border: 2px solid rgba(245, 158, 11, 0.4);
-            box-shadow: 0 25px 40px -12px black;
-            background: #01010c;
+            font-family: monospace;
+            cursor: pointer;
+            font-size: 0.65rem;
+            transition: 0.05s linear;
+            backdrop-filter: blur(4px);
         }
-        canvas.webgl-canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
+        .tact-btn:hover { background: #1a3a1add; border-color: #00E5CC; }
+        .tact-btn:active { transform: scale(0.96); background: #2C6E2C; }
+
+        .coord-panel {
+            position: absolute;
+            top: 100px;
+            right: 290px;
+            background: rgba(11, 19, 11, 0.92);
+            backdrop-filter: blur(8px);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.6rem;
+            color: #C0FFC0;
+            pointer-events: none;
+            border-right: 2px solid #00E5CC;
+            z-index: 1001;
         }
-        
-        /* Estilos adicionales para la UI flotante del simulador */
-        .simulator-ui {
+
+        .log-area {
+            position: absolute;
+            bottom: 80px;
+            right: 12px;
+            background: rgba(3, 10, 3, 0.94);
+            backdrop-filter: blur(5px);
+            padding: 8px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            width: 250px;
+            max-height: 130px;
+            overflow-y: auto;
+            color: #9CCF9C;
+            pointer-events: none;
+            z-index: 999;
             font-family: monospace;
         }
+
+        @media (max-width: 800px) {
+            .reco-panel { width: 220px; right: 8px; top: 90px; }
+            .coord-panel { right: 240px; top: 90px; font-size: 0.55rem; }
+            .layers-panel { display: none; }
+            .tact-btn { padding: 4px 8px; font-size: 0.55rem; }
+        }
+        @media (max-width: 480px) {
+            .reco-panel { display: none; }
+            .coord-panel { right: 12px; top: 90px; width: auto; }
+            .log-area { width: 200px; }
+        }
+        .log-area::-webkit-scrollbar { width: 4px; }
+        .log-area::-webkit-scrollbar-track { background: #1a2a1a; }
+        .log-area::-webkit-scrollbar-thumb { background: #00A86B; border-radius: 4px; }
     </style>
 </head>
-<body class="text-zinc-200">
+<body>
+<div id="map"></div>
 
-    <!-- ========== PANEL CONSTRUCTOR FLOTANTE ========== -->
-    <div id="builderPanel" class="fixed top-20 right-4 z-[999] w-72 bg-black/95 backdrop-blur-md border border-amber-500/60 rounded-2xl shadow-2xl builder-floating p-4">
-        <div class="flex justify-between items-center border-b border-amber-500/40 pb-2 mb-3">
-            <h3 class="text-amber-400 font-bold text-sm uppercase tracking-wider flex gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> CONSTRUCTOR</h3>
-            <button id="closeBuilder" class="text-zinc-400 hover:text-white text-sm"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        
-        <div class="space-y-3 text-sm">
-            <div>
-                <label class="text-zinc-400 text-xs block mb-1">🎨 Color de acento</label>
-                <input type="color" id="accentColor" value="#f59e0b" class="w-full h-8 bg-zinc-900 border border-zinc-700 rounded">
-            </div>
-            <div>
-                <label class="text-zinc-400 text-xs block mb-1">🏷️ Nombre de marca</label>
-                <input type="text" id="brandName" value="PMC CHOPIN" class="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-white text-sm">
-            </div>
-            <div>
-                <label class="text-zinc-400 text-xs block mb-1">📢 Título principal</label>
-                <input type="text" id="heroTitleMain" value="NaviMaTor" class="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-white text-sm">
-            </div>
-            <div class="flex gap-2 pt-2">
-                <button id="openStoreBtn" class="flex-1 bg-zinc-800 hover:bg-zinc-700 border border-amber-500/40 rounded py-1.5 text-xs font-semibold"><i class="fa-solid fa-store"></i> Tienda</button>
-                <button id="downloadHtmlBtn" class="flex-1 bg-amber-600 hover:bg-amber-500 text-black rounded py-1.5 text-xs font-bold"><i class="fa-solid fa-download"></i> Descargar .html</button>
-            </div>
-        </div>
+<div class="oracle-panel">
+    <div class="oracle-title"><h1><i class="fas fa-microchip"></i> NAVIMATOR VANGUARD TDP v4.0</h1></div>
+    <div class="tactical-value" id="situationalIndexValue">--</div>
+    <div class="oracle-stats">
+        <div class="stat-chip"><i class="fas fa-eye"></i> <span id="losStat">--</span>% LOS</div>
+        <div class="stat-chip"><i class="fas fa-layer-group"></i> <span id="markerCount">0</span> entidades</div>
+        <select id="languageSelect" class="lang-selector"><option value="es">🇪🇸 ES</option><option value="pt">🇧🇷 PT</option><option value="en">🇬🇧 EN</option></select>
     </div>
-    
-    <!-- MODAL DE TIENDA -->
-    <div id="storeModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[1000] hidden items-center justify-center">
-        <div class="bg-zinc-950 border border-amber-500/50 rounded-2xl w-[90%] max-w-lg p-6 shadow-2xl">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl title-font text-amber-400"><i class="fa-solid fa-cart-shopping"></i> TIENDA DE WIDGETS</h2>
-                <button id="closeStoreModal" class="text-white text-2xl">&times;</button>
-            </div>
-            <div class="flex gap-4 border-b border-zinc-800 mb-4">
-                <button class="store-tab-btn active-tab text-amber-400 pb-2" data-tab="templates">📦 Plantillas</button>
-                <button class="store-tab-btn text-zinc-400 pb-2" data-tab="widgets">🧩 Widgets</button>
-            </div>
-            <div id="templatesTab" class="store-tab-content space-y-3">
-                <div onclick="applyTemplate('classic')" class="bg-zinc-900 p-3 rounded-xl cursor-pointer hover:border-amber-500 border border-transparent transition">
-                    <span class="text-xs bg-green-700 px-2 py-0.5 rounded">CLÁSICA</span>
-                    <p class="font-semibold mt-1">Civil / Táctico Ligero</p>
-                </div>
-                <div onclick="applyTemplate('military')" class="bg-zinc-900 p-3 rounded-xl cursor-pointer hover:border-amber-500 border border-transparent transition">
-                    <span class="text-xs bg-red-700 px-2 py-0.5 rounded">MILITAR</span>
-                    <p class="font-semibold mt-1">PMC Dark Green</p>
-                </div>
-                <div onclick="applyTemplate('command')" class="bg-zinc-900 p-3 rounded-xl cursor-pointer hover:border-amber-500 border border-transparent transition">
-                    <span class="text-xs bg-purple-700 px-2 py-0.5 rounded">COMANDO</span>
-                    <p class="font-semibold mt-1">Edición Comando</p>
-                </div>
-            </div>
-            <div id="widgetsTab" class="store-tab-content hidden space-y-3">
-                <div class="grid grid-cols-2 gap-3">
-                    <div onclick="addDynamicWidget('features')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-star text-amber-400"></i> Características</div>
-                    <div onclick="addDynamicWidget('testimonials')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-comment"></i> Testimonios</div>
-                    <div onclick="addDynamicWidget('comparison')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-scale-balanced"></i> Comparación</div>
-                    <div onclick="addDynamicWidget('gallery')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-images"></i> Galería</div>
-                    <div onclick="addDynamicWidget('cta')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-bolt"></i> Bloque CTA</div>
-                    <div onclick="addDynamicWidget('techspecs')" class="bg-zinc-900 p-3 text-center rounded-xl cursor-pointer hover:bg-zinc-800"><i class="fa-solid fa-microchip"></i> Especificaciones</div>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
 
-    <!-- BARRA DE NAVEGACIÓN -->
-    <nav class="bg-black/90 backdrop-blur-sm border-b border-amber-500/30 fixed w-full z-50">
-        <div class="max-w-7xl mx-auto px-5 md:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
-            <div class="flex items-center gap-3">
-                <div class="flex flex-col items-start leading-tight">
-                    <div id="navBrand" class="text-xl md:text-2xl font-black tracking-tight pmc-logo text-white">PMC CHOPIN</div>
-                    <div class="text-[9px] md:text-[10px] text-zinc-400 steinway tracking-[2px]">STEINWAY & SONS</div>
-                </div>
-            </div>
-            <div class="hidden md:flex gap-6 text-xs uppercase tracking-wider font-medium">
-                <a href="#" class="hover:text-amber-400 transition">MÓDULOS</a>
-                <a href="#versions" class="hover:text-amber-400 transition">VERSIONES</a>
-                <a href="#story" class="hover:text-amber-400 transition">CONCEPTO</a>
-                <a href="#footer" class="hover:text-amber-400 transition">CONTACTO</a>
-            </div>
-            <button onclick="document.getElementById('versions').scrollIntoView({behavior:'smooth'})" class="bg-amber-500 hover:bg-amber-400 text-black px-5 py-2 rounded-md text-sm font-semibold">DESCARGAR</button>
-        </div>
-    </nav>
+<div class="layers-panel">
+    <h4><i class="fas fa-map"></i> CAPAS TÁCTICAS</h4>
+    <div class="layer-item"><input type="checkbox" id="layerBlufor" checked> <i class="fas fa-shield-haltered"></i> <span data-key="blufor">BLUFOR</span></div>
+    <div class="layer-item"><input type="checkbox" id="layerOpfor" checked> <i class="fas fa-skull-crossbones"></i> <span data-key="opfor">OPFOR</span></div>
+    <div class="layer-item"><input type="checkbox" id="layerAlert" checked> <i class="fas fa-bell"></i> <span data-key="alert">ALERTA</span></div>
+    <div class="layer-item"><input type="checkbox" id="layerPoi" checked> <i class="fas fa-flag"></i> <span data-key="poi">PUNTO DE INTERÉS</span></div>
+</div>
 
-    <!-- SECCIÓN HERO -->
-    <header class="hero-bg min-h-screen flex items-center pt-24">
-        <div class="max-w-6xl mx-auto px-6 text-center py-16">
-            <div class="inline-flex items-center gap-3 bg-black/60 border border-amber-500/40 px-5 py-2 rounded-full mb-6">
-                <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span class="uppercase tracking-[3px] text-xs font-mono">Offline · MGRS · ATAK-ready · IA 3D</span>
-            </div>
-            <h1 id="heroHeading" class="text-6xl md:text-8xl font-bold title-font tracking-tighter mb-5 leading-[1.1]">
-                Navi<span class="text-amber-400">Ma</span>Tor
-            </h1>
-            <p class="text-xl md:text-2xl text-amber-400/80 max-w-3xl mx-auto mb-6">Navegación táctica modular + inteligencia artificial 3D</p>
-            <p class="text-zinc-300 text-lg max-w-2xl mx-auto mb-8">OsmAnd + Precisión Táctica + compatibilidad ATAK. Una cuenta — infinitas posibilidades. Offline total, MGRS, colaboración en equipo y análisis de terreno con IA 3D en tiempo real.</p>
-            <div class="flex gap-5 justify-center flex-wrap">
-                <button onclick="document.getElementById('versions').scrollIntoView({behavior:'smooth'})" class="bg-white text-black hover:bg-amber-300 px-8 py-3 rounded-lg font-bold transition flex gap-2 items-center"><i class="fa-solid fa-arrow-down"></i> SELECCIONAR VERSIÓN</button>
-                <button onclick="document.getElementById('threeDemoSection').scrollIntoView({behavior:'smooth'})" class="border border-white/50 hover:bg-white/10 px-8 py-3 rounded-lg font-medium transition">🎮 DEMO 3D</button>
-            </div>
-        </div>
-    </header>
+<div class="reco-panel">
+    <div class="reco-title"><i class="fas fa-brain"></i> <span data-key="analysis">ANÁLISIS SITUACIONAL</span></div>
+    <div class="situational-index" id="indexDisplay">--</div>
+    <div id="recoList"><div class="reco-item"><i class="fas fa-chart-line"></i> <span data-key="waiting">Cargando datos...</span></div></div>
+</div>
 
-    <!-- SECCIÓN 3D CON IA INTEGRADA (SIMULADOR COMPLETO) -->
-    <section id="threeDemoSection" class="py-16 bg-gradient-to-b from-zinc-950 to-black">
-        <div class="max-w-7xl mx-auto px-4 md:px-8">
-            <div class="text-center mb-8">
-                <h2 class="text-4xl md:text-5xl title-font font-bold text-amber-400 mb-3">⚡ MODELO 3D CON INTELIGENCIA ARTIFICIAL</h2>
-                <p class="text-zinc-400 max-w-2xl mx-auto">Análisis interactivo del terreno · Precisión MGRS · Superposición táctica asistida por IA</p>
-            </div>
-            <div id="three-canvas-container" class="relative">
-                <div id="navimator-3d-root" style="width:100%; height:100%;"></div>
-            </div>
-            <div class="text-center text-xs text-zinc-500 mt-4 flex justify-center gap-6">
-                <span><i class="fa-regular fa-hand-pointer"></i> Arrastrar para rotar | Botón derecho + arrastrar para mover</span>
-                <span><i class="fa-regular fa-message"></i> Usa el panel LLM (esquina inferior derecha de la vista 3D)</span>
-            </div>
-        </div>
-    </section>
+<div class="coord-panel">
+    <div><i class="fas fa-globe"></i> MGRS: <span id="mgrsLive">—</span></div>
+    <div><i class="fas fa-location-dot"></i> LAT/LON: <span id="latlonLive">—</span></div>
+    <div><i class="fas fa-chart-simple"></i> UTM: <span id="utmLive">—</span></div>
+</div>
 
-    <!-- DESCRIPCIÓN / INTRO -->
-    <section class="py-16 bg-zinc-900 border-y border-amber-500/20">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <p class="text-xl leading-relaxed text-zinc-200">NaviMaTor combina el poder de <strong>OsmAnd</strong> (offline, topografía), <strong>NAV Táctica</strong> (MGRS, precisión), <strong>TacticMap</strong> (simbología OTAN) y un <strong>núcleo de inteligencia artificial 3D</strong> para razonamiento del terreno, análisis de líneas de visión y navegación asistida por IA. <span class="text-amber-400">Base unificada: OSM + mapas topográficos oficiales, offline total, terreno 3D, sensores externos, redes malladas.</span></p>
-        </div>
-    </section>
+<div class="mgrs-bar">
+    <div><i class="fas fa-border-all"></i> MGRS GRID | Zona 23 22 21 20 19</div>
+    <div><i class="fas fa-satellite-dish"></i> GPS <span id="gpsStatus">INICIANDO</span></div>
+</div>
 
-    <!-- HISTORIA "SOPA DE HACHA" -->
-    <section id="story" class="py-20 bg-black">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="bg-gradient-to-br from-zinc-900/90 to-black border-2 border-red-800/60 rounded-3xl p-8 md:p-12 text-center shadow-2xl">
-                <div class="text-7xl mb-5">🔥🍅⚔️</div>
-                <h2 class="text-4xl md:text-5xl title-font text-red-500 font-bold mb-5">SOPA DE HACHA (Tomate de Combate)</h2>
-                <p class="text-zinc-300 text-lg max-w-3xl mx-auto mb-6">Un soldado llegó a un campo abierto, plantó su hacha y dijo: "Vamos a cocinar sopa táctica". Al principio solo había un caldero negro y un hacha. Pero el soldado añadió un tomate maduro — la sección Hero —, cinco piezas de carne jugosa (5 versiones desde Civil Básico hasta Militar Pro), añadió hierbas frescas (IA, redes malladas, cuenta unificada). El resultado fue un <strong class="text-red-400">tomate jugoso, feroz y listo para el combate</strong> que puede alimentar tanto a una abuela turista como a un grupo de asalto.</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 text-sm border-t border-red-900/40 pt-8">
-                    <div><i class="fa-solid fa-crown text-amber-400"></i> <span class="font-semibold">Base:</span> OSM + MGRS + ATAK</div>
-                    <div><i class="fa-solid fa-layer-group text-amber-400"></i> <span class="font-semibold">Relleno:</span> 5 tarjetas modulares</div>
-                    <div><i class="fa-solid fa-brain text-amber-400"></i> <span class="font-semibold">Especias:</span> IA 3D, widgets, constructor</div>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="tact-actions">
+    <button class="tact-btn" id="placeBluforBtn"><i class="fas fa-user-check"></i> BLUFOR</button>
+    <button class="tact-btn" id="placeOpforBtn"><i class="fas fa-skull"></i> OPFOR</button>
+    <button class="tact-btn" id="placeAlertBtn"><i class="fas fa-bell"></i> ALERTA</button>
+    <button class="tact-btn" id="placePoiBtn"><i class="fas fa-flag"></i> POI</button>
+    <button class="tact-btn" id="centerGpsBtn"><i class="fas fa-location-arrow"></i> CENTRO</button>
+    <button class="tact-btn" id="refreshAnalysisBtn"><i class="fas fa-chart-simple"></i> ANALIZAR</button>
+    <button class="tact-btn" id="clearMarkersBtn"><i class="fas fa-trash-alt"></i> LIMPIAR</button>
+</div>
 
-    <!-- LÍNEA DE PRODUCTOS (5 VERSIONES) -->
-    <section id="versions" class="py-24 bg-zinc-950">
-        <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-5xl font-bold title-font text-center mb-14 tracking-wider text-amber-400">LÍNEA DE PRODUCTOS</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-zinc-900 border border-zinc-700 rounded-2xl p-7 card-hover">
-                    <div><span class="bg-green-700 px-3 py-0.5 text-xs rounded-full">GRATUITO / FREEMIUM</span><h3 class="text-2xl font-bold mt-3">Civil Básico</h3></div>
-                    <p class="text-zinc-400 text-sm my-4">Interfaz intuitiva como Google Maps + OsmAnd ligero</p>
-                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🗺️ Mapas offline, POI, seguimiento</li><li class="flex gap-2">⛰️ Curvas de nivel + terreno simplificado</li><li class="flex gap-2">📍 Búsqueda de coordenadas (LatLon/UTM)</li><li class="flex gap-2">📁 Importar/exportar GPX</li></ul>
-                </div>
-                <div class="bg-zinc-900 border border-amber-500/60 rounded-2xl p-7 card-hover relative">
-                    <div class="absolute -top-3 right-5 bg-amber-500 text-black text-[11px] px-3 font-bold rounded-full">★ RECOMENDADO</div>
-                    <div><span class="bg-amber-600 px-3 py-0.5 text-xs rounded-full">PRO (PAGO)</span><h3 class="text-2xl font-bold mt-3">Civil Pro</h3></div>
-                    <p class="text-zinc-400 text-sm my-4">OsmAnd potenciado: 3D, sombreado, personalización total</p>
-                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🎨 Estilos avanzados, superposición de capas</li><li class="flex gap-2">📡 Plugins: clima, Wikipedia offline</li><li class="flex gap-2">🚛 Navegación con dimensiones de vehículo</li><li class="flex gap-2">🔄 Actualización automática de mapas</li></ul>
-                </div>
-                <div class="bg-zinc-900 border border-sky-700 rounded-2xl p-7 card-hover">
-                    <div><span class="bg-sky-800 px-3 py-0.5 text-xs rounded-full">SERVICIOS</span><h3 class="text-2xl font-bold mt-3">Servicios Civiles</h3></div>
-                    <p class="text-zinc-400 text-sm my-4">EMERCOM, SAR, geólogos, equipos de rescate</p>
-                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🔄 Blue Force Tracking, compartición de posición</li><li class="flex gap-2">📡 Malla / Meshtastic</li><li class="flex gap-2">⚠️ Capas especiales: incendios, inundaciones</li></ul>
-                </div>
-                <div class="bg-zinc-900 border border-red-600/50 rounded-2xl p-7 card-hover">
-                    <div><span class="bg-red-700 px-3 py-0.5 text-xs rounded-full">NIVEL TÁCTICO</span><h3 class="text-2xl font-bold mt-3">Militar Básico</h3></div>
-                    <p class="text-zinc-400 text-sm my-4">Airsoft, entrenamiento, unidades junior</p>
-                    <ul class="space-y-2 text-sm"><li class="flex gap-2">🎯 MGRS completo (4–10 dígitos)</li><li class="flex gap-2">🪖 Simbología OTAN APP-6</li><li class="flex gap-2">✍️ Superposiciones de dibujo táctico</li><li class="flex gap-2">🔇 Modo de baja emisión</li></ul>
-                </div>
-                <div class="lg:col-span-2 bg-zinc-900 border-2 border-red-600 rounded-2xl p-7 card-hover">
-                    <div><span class="bg-red-800 px-3 py-0.5 text-xs rounded-full">COMANDO / PRO</span><h3 class="text-3xl font-bold mt-2 text-red-400">Militar Pro / Comando</h3></div>
-                    <p class="text-zinc-300 my-3">Kit táctico de asalto completo: ATAK + TacticMap + núcleo IA 3D.</p>
-                    <div class="grid md:grid-cols-2 gap-4 text-sm">
-                        <ul><li>✅ Simbología avanzada, mapas multicapa</li><li>✅ Seguimiento Blue/Red Force, malla</li><li>✅ Planificación de misiones (CONOPs)</li><li>✅ Integración de drones/sensores</li></ul>
-                        <ul><li>✅ Análisis de terreno: LOS, zonas muertas, pendientes</li><li>✅ Modos específicos por rama (infantería, SOF)</li><li>✅ Comunicación segura, intercambio de datos tácticos</li><li>✅ IA integrada para evaluación de riesgos en tiempo real</li></ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="log-area" id="oracleLog">[>] NAVIMATOR VANGUARD TDP v4.0<br>[>] Persistencia activa<br>[>] Inicializando...</div>
 
-    <!-- ZONA DE WIDGETS DINÁMICOS -->
-    <div id="dynamicWidgetsZone" class="max-w-7xl mx-auto px-6 py-6 space-y-20"></div>
+<script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+<script>
+    // ==================== NAVIMATOR VANGUARD TDP v4.0 ====================
+    // Geoespacial | Análisis IA | Persistencia | Multilenguaje
 
-    <!-- PIE DE PÁGINA -->
-    <footer id="footer" class="bg-black border-t border-amber-500/30 py-12">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <div class="flex flex-col items-center gap-2 mb-5">
-                <div class="text-2xl title-font tracking-wider">NaviMaTor · PMC CHOPIN</div>
-                <div class="text-[10px] text-zinc-500 steinway tracking-[2px]">STEINWAY & SONS</div>
-            </div>
-            <p class="text-zinc-500 text-sm">NaviMaTor © 2026 · Creado para quienes lideran el camino. OSM + mapas topográficos oficiales. Supremacía offline, MGRS, listo para ATAK, inteligencia artificial 3D.</p>
-        </div>
-    </footer>
+    let map, userMarker, watchId;
+    let currentPos = { lat: -22.9068, lng: -43.1729 };
+    let tacticalMarkers = [];
+    let db;
+    const DB_NAME = 'NavimatorTDP_V4';
+    const STORE_NAME = 'geo_entities';
+    let currentLang = 'es';
 
-    <!-- IMPORTACIÓN DE TRES.JS Y LÓGICA 3D COMPLETA (del archivo 60dee6) -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
-            }
-        }
-    </script>
+    const translations = {
+        es: { blufor:"BLUFOR", opfor:"OPFOR", alert:"ALERTA", poi:"PUNTO DE INTERÉS", analysis:"ANÁLISIS SITUACIONAL", waiting:"Cargando datos...", threat:"AMENAZA", stable:"ESTABLE", critical:"CRÍTICO", los:"LOS" },
+        pt: { blufor:"BLUFOR", opfor:"OPFOR", alert:"ALERTA", poi:"PONTO DE INTERESSE", analysis:"ANÁLISE SITUACIONAL", waiting:"Carregando...", threat:"AMEAÇA", stable:"ESTÁVEL", critical:"CRÍTICO", los:"LOS" },
+        en: { blufor:"BLUFOR", opfor:"OPFOR", alert:"ALERT", poi:"POINT OF INTEREST", analysis:"SITUATIONAL ANALYSIS", waiting:"Loading data...", threat:"THREAT", stable:"STABLE", critical:"CRITICAL", los:"LOS" }
+    };
 
-    <script type="module">
-        import * as THREE from 'three';
-        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+    function t(key) { return translations[currentLang][key] || key; }
+    function updateUITexts() { document.querySelectorAll('[data-key]').forEach(el => { let k = el.getAttribute('data-key'); if(translations[currentLang][k]) el.innerText = translations[currentLang][k]; }); }
 
-        // --- Setup completo del simulador 3D (basado en deepseek_html_20260518_60dee6.html) ---
-        const container = document.getElementById('navimator-3d-root');
-        container.style.width = '100%';
-        container.style.height = '100%';
-        
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x050b1a);
-        scene.fog = new THREE.FogExp2(0x050b1a, 0.0005);
-        
-        const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.5, 2000);
-        camera.position.set(45, 38, 55);
-        
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        renderer.shadowMap.enabled = true;
-        container.appendChild(renderer.domElement);
-        
-        const labelRenderer = new CSS2DRenderer();
-        labelRenderer.setSize(container.clientWidth, container.clientHeight);
-        labelRenderer.domElement.style.position = 'absolute';
-        labelRenderer.domElement.style.top = '0px';
-        labelRenderer.domElement.style.left = '0px';
-        labelRenderer.domElement.style.pointerEvents = 'none';
-        container.appendChild(labelRenderer.domElement);
-        
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.06;
-        controls.rotateSpeed = 1.0;
-        controls.zoomSpeed = 1.2;
-        controls.panSpeed = 0.8;
-        controls.screenSpacePanning = true;
-        controls.maxPolarAngle = Math.PI / 2.2;
-        controls.minDistance = 15;
-        controls.maxDistance = 130;
-        
-        // --- Iluminación dinámica (día/noche) ---
-        const ambientLight = new THREE.AmbientLight(0x1a2a3a, 0.55);
-        scene.add(ambientLight);
-        const sunLight = new THREE.DirectionalLight(0xfff5e0, 1.3);
-        sunLight.castShadow = true;
-        sunLight.shadow.mapSize.width = 1024;
-        sunLight.shadow.mapSize.height = 1024;
-        scene.add(sunLight);
-        const moonLight = new THREE.DirectionalLight(0x88aaff, 0.15);
-        scene.add(moonLight);
-        
-        // --- Terreno procedural (280x280) ---
-        const terrainWidth = 140, terrainDepth = 140, segments = 280;
-        const geometry = new THREE.PlaneGeometry(terrainWidth, terrainDepth, segments, segments);
-        geometry.rotateX(-Math.PI / 2);
-        const positions = geometry.attributes.position.array;
-        
-        function getRawHeight(x, z) {
-            const nx = x / 38, nz = z / 38;
-            let y = Math.sin(nx * 1.6) * Math.cos(nz * 1.6) * 1.3;
-            y += Math.sin(nx * 3.2) * Math.cos(nz * 3.0) * 0.7;
-            y += Math.sin(nx * 6.5) * 0.45 + Math.cos(nz * 5.5) * 0.45;
-            y += Math.abs(Math.sin(nx * 1.1) * Math.cos(nz * 1.0)) * 1.0;
-            const peak1 = Math.hypot(x - 25, z - 18);
-            y += Math.max(0, 2.0 * (1 - peak1 / 28)) ** 2;
-            const peak2 = Math.hypot(x + 20, z + 15);
-            y += Math.max(0, 1.6 * (1 - peak2 / 26)) ** 1.8;
-            const riverDepth = Math.abs(z - (12 * Math.sin(x * 0.07) - 5));
-            if (riverDepth < 2.0) y -= 0.55 * (1 - riverDepth / 2.0);
-            if (Math.hypot(x + 8, z + 5) < 7) y -= 0.7;
-            if (Math.hypot(x + 28, z + 24) < 11) y -= 0.45;
-            if (Math.hypot(x - 30, z - 22) < 4.2) y -= 1.1;
-            if (Math.abs(x) > 62) y -= (Math.abs(x) - 62) * 0.35;
-            if (Math.abs(z) > 62) y -= (Math.abs(z) - 62) * 0.35;
-            return Math.max(-0.2, Math.min(4.8, y * 1.1 + 0.15));
-        }
-        
-        for (let i = 0; i < positions.length; i += 3) {
-            positions[i+1] = getRawHeight(positions[i], positions[i+2]);
-        }
-        geometry.computeVertexNormals();
-        
-        const terrainMat = new THREE.MeshStandardMaterial({ color: 0x6a8a5a, roughness: 0.65 });
-        const terrainMesh = new THREE.Mesh(geometry, terrainMat);
-        terrainMesh.receiveShadow = true;
-        scene.add(terrainMesh);
-        
-        function getTerrainHeight(x, z) {
-            const half = terrainWidth / 2, step = terrainWidth / segments;
-            let ix = Math.min(Math.max((x + half) / step, 0), segments - 1);
-            let iz = Math.min(Math.max((z + half) / step, 0), segments - 1);
-            const ix0 = Math.floor(ix), iz0 = Math.floor(iz);
-            const ix1 = Math.min(ix0 + 1, segments - 1), iz1 = Math.min(iz0 + 1, segments - 1);
-            const getY = (i, j) => positions[(j * (segments + 1) + i) * 3 + 1];
-            const y00 = getY(ix0, iz0), y10 = getY(ix1, iz0);
-            const y01 = getY(ix0, iz1), y11 = getY(ix1, iz1);
-            const tx = ix - ix0, tz = iz - iz0;
-            return (y00 * (1-tx) + y10 * tx) * (1-tz) + (y01 * (1-tx) + y11 * tx) * tz;
-        }
-        
-        // --- Unidades amigas (Blue Force Tracking) ---
-        const friendlyUnits = [
-            { name: "ALFA", color: 0x3399ff, pos: [18, 5], icon: "🎯" },
-            { name: "BRAVO", color: 0x33aaff, pos: [-5, 14], icon: "🎯" },
-            { name: "CHARLIE", color: 0x33bbff, pos: [8, -10], icon: "🎯" },
-            { name: "DELTA", color: 0x33ccff, pos: [-14, -4], icon: "🎯" }
-        ];
-        
-        const friendlySpheres = [];
-        friendlyUnits.forEach((unit, idx) => {
-            const y = getTerrainHeight(unit.pos[0], unit.pos[1]);
-            const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.65, 24, 24), new THREE.MeshStandardMaterial({ color: unit.color, emissive: 0x004466, emissiveIntensity: 0.4 }));
-            sphere.position.set(unit.pos[0], y + 0.65, unit.pos[1]);
-            sphere.castShadow = true;
-            scene.add(sphere);
-            friendlySpheres.push(sphere);
-            
-            const div = document.createElement('div');
-            div.textContent = `${unit.icon} ${unit.name} · BLUEFOR`;
-            div.style.backgroundColor = 'rgba(0,20,40,0.8)';
-            div.style.color = '#aaffff';
-            div.style.fontSize = '10px';
-            div.style.padding = '2px 8px';
-            div.style.borderRadius = '20px';
-            div.style.borderLeft = '3px solid #33ccff';
-            const label = new CSS2DObject(div);
-            label.position.set(unit.pos[0], y + 1.2, unit.pos[1]);
-            scene.add(label);
+    const elements = { mgrsSpan:document.getElementById('mgrsLive'), latlonSpan:document.getElementById('latlonLive'), utmSpan:document.getElementById('utmLive'), logDiv:document.getElementById('oracleLog'), situationalIndexSpan:document.getElementById('situationalIndexValue'), indexDisplaySpan:document.getElementById('indexDisplay'), losStatSpan:document.getElementById('losStat'), markerCountSpan:document.getElementById('markerCount'), gpsStatusSpan:document.getElementById('gpsStatus') };
+
+    function addLog(msg, isAlert = false) {
+        let entry = document.createElement('div');
+        entry.innerHTML = `🔹 ${new Date().toLocaleTimeString()} · ${msg}`;
+        entry.style.color = isAlert ? '#FFB86B' : '#9BFF9B';
+        entry.style.fontSize = '0.55rem'; entry.style.marginBottom = '2px';
+        elements.logDiv.appendChild(entry);
+        while(elements.logDiv.children.length > 18) elements.logDiv.removeChild(elements.logDiv.children[0]);
+        entry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function toMGRS(lat, lon) { try { return window.mgrs ? window.mgrs.forward([lon, lat]) : "MGRS--"; } catch(e) { return "err"; } }
+    function toUTM(lat, lon) { try { if(window.utm) { let u = window.utm.fromLatLon(lat, lon); return `${u.zoneNum}${u.zoneLetter} ${Math.round(u.easting)}E/${Math.round(u.northing)}N`; } return "UTM--"; } catch(e) { return "conv err"; } }
+    function updateCoordsUI(lat, lng) { if(lat && lng) { elements.latlonSpan.innerText = `${lat.toFixed(5)}°, ${lng.toFixed(5)}°`; elements.mgrsSpan.innerText = toMGRS(lat, lng); elements.utmSpan.innerText = toUTM(lat, lng); } }
+
+    function initDB() { return new Promise((resolve, reject) => { let req = indexedDB.open(DB_NAME, 1); req.onerror = e => { addLog(`DB Error: ${e.target.error}`, true); reject(e); }; req.onsuccess = e => { db = e.target.result; addLog("💾 IndexedDB conectado"); resolve(db); }; req.onupgradeneeded = e => { let dbT = e.target.result; if(!dbT.objectStoreNames.contains(STORE_NAME)) { let store = dbT.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true }); store.createIndex('tipo', 'tipo', { unique: false }); store.createIndex('timestamp', 'timestamp'); } addLog("📀 DB estructurado"); }; }); }
+
+    async function saveMarkerToDB(data) { if(!db) return; let tx = db.transaction(STORE_NAME, 'readwrite'); tx.objectStore(STORE_NAME).add(data); tx.oncomplete = () => addLog(`💾 ${data.tipo.toUpperCase()} guardado`); }
+    async function loadMarkersFromDB() { if(!db) return []; let tx = db.transaction(STORE_NAME, 'readonly'); return await tx.objectStore(STORE_NAME).getAll() || []; }
+    async function clearDB() { if(!db) return; let tx = db.transaction(STORE_NAME, 'readwrite'); tx.objectStore(STORE_NAME).clear(); tx.oncomplete = () => addLog("🗑️ DB limpiado"); }
+
+    function getMarkerIcon(type) {
+        let icons = { blufor: { html:'<i class="fas fa-shield-haltered" style="font-size:28px; color:#2A8CFF;"></i>', label:'BLUFOR', layer:'blufor' }, opfor:{ html:'<i class="fas fa-skull-crossbones" style="font-size:28px; color:#FF4A4A;"></i>', label:'OPFOR', layer:'opfor' }, alert:{ html:'<i class="fas fa-bell" style="font-size:28px; color:#FFAA33;"></i>', label:'ALERTA', layer:'alert' }, poi:{ html:'<i class="fas fa-flag" style="font-size:28px; color:#AAAAAA;"></i>', label:'POI', layer:'poi' } };
+        return icons[type] || icons.poi;
+    }
+
+    async function addTacticalMarker(lat, lng, type, skipSave = false) {
+        let icon = getMarkerIcon(type);
+        let el = document.createElement('div');
+        el.innerHTML = `<div style="filter:drop-shadow(0 2px 4px black); text-align:center;">${icon.html}</div><div style="background:#000000cc; padding:0px 8px; border-radius:20px; font-size:10px; font-weight:bold; color:white; margin-top:-5px;">${icon.label}</div>`;
+        el.style.cursor = 'pointer';
+        let marker = new maplibregl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map);
+        let data = { id: Date.now()+Math.random(), tipo:type, latitude:lat, longitude:lng, titulo:icon.label, timestamp:new Date().toISOString(), camada:icon.layer };
+        tacticalMarkers.push({ marker, data });
+        if(!skipSave) await saveMarkerToDB(data);
+        elements.markerCountSpan.innerText = tacticalMarkers.length;
+        addLog(`📍 ${icon.label} en ${lat.toFixed(5)}, ${lng.toFixed(5)}`);
+        return data;
+    }
+
+    async function clearAllMarkers() { tacticalMarkers.forEach(({marker}) => marker.remove()); tacticalMarkers = []; await clearDB(); elements.markerCountSpan.innerText = 0; addLog("🗑️ Todas las entidades eliminadas"); updateSituationalDisplay(); }
+
+    function calculateSituationalIndex() {
+        let blu = tacticalMarkers.filter(m => m.data.tipo === 'blufor').length;
+        let op = tacticalMarkers.filter(m => m.data.tipo === 'opfor').length;
+        let al = tacticalMarkers.filter(m => m.data.tipo === 'alert').length;
+        let total = tacticalMarkers.length;
+        if(total === 0) return { index:85, los:75, blu, op, al };
+        let threat = (op * 2 + al * 2.5) / (total + 1);
+        let index = Math.max(20, Math.min(100, Math.round(100 * (1 - Math.min(1, threat) * 0.65))));
+        let los = Math.min(98, Math.max(35, 70 + (blu * 2) - (op * 1.8) - (al * 1.5)));
+        return { index, los, blu, op, al, total };
+    }
+
+    function generateRecommendations(idx, los, blu, op, al) {
+        let rec = [];
+        if(idx < 40) rec.push("💀 ÍNDICE CRÍTICO! Evacuación inmediata recomendada.");
+        else if(idx < 60) rec.push("⚠️ Situación peligrosa. Reforzar sector NORTE.");
+        else if(idx < 75) rec.push("⚡ Inestable. Aumentar vigilancia.");
+        else rec.push("✅ Estable. Mantener monitoreo.");
+        if(los < 55) rec.push("👁️ Línea de visión comprometida. Reubicar observadores.");
+        if(op > blu * 1.3) rec.push("🔴 Superioridad OPFOR. Solicitar apoyo.");
+        if(al > 2) rec.push("🚨 Múltiples ALERTAS. Priorizar análisis.");
+        if(rec.length === 0) rec.push("📡 Sin anomalías. Continuar.");
+        return rec.slice(0,4);
+    }
+
+    function updateSituationalDisplay() {
+        let { index, los, blu, op, al } = calculateSituationalIndex();
+        elements.situationalIndexSpan.innerText = index;
+        elements.indexDisplaySpan.innerText = index;
+        elements.losStatSpan.innerText = los;
+        let color = index < 50 ? '#FF6B6B' : (index < 75 ? '#FFB86B' : '#00E5CC');
+        elements.situationalIndexSpan.style.color = color;
+        elements.indexDisplaySpan.style.color = color;
+        let recos = generateRecommendations(index, los, blu, op, al);
+        document.getElementById('recoList').innerHTML = recos.map(r => `<div class="reco-item"><i class="fas fa-chevron-circle-right"></i> ${r}</div>`).join('');
+        addLog(`📊 Análisis: Índice ${index} | LOS ${los}% | BLU:${blu} OP:${op} ALT:${al}`);
+    }
+
+    function applyLayerFilters() {
+        let showBlu = document.getElementById('layerBlufor').checked;
+        let showOp = document.getElementById('layerOpfor').checked;
+        let showAlt = document.getElementById('layerAlert').checked;
+        let showPoi = document.getElementById('layerPoi').checked;
+        tacticalMarkers.forEach(({ marker, data }) => {
+            let vis = false;
+            if(data.tipo === 'blufor') vis = showBlu;
+            else if(data.tipo === 'opfor') vis = showOp;
+            else if(data.tipo === 'alert') vis = showAlt;
+            else vis = showPoi;
+            marker.getElement().style.display = vis ? 'block' : 'none';
         });
-        
-        // --- Unidades hostiles ---
-        const hostileUnits = [
-            { name: "HOSTIL", color: 0xdd3333, pos: [22, -12], icon: "⚠️" },
-            { name: "HOSTIL", color: 0xcc4444, pos: [-20, 8], icon: "⚠️" },
-            { name: "HOSTIL", color: 0xbb5555, pos: [-2, 22], icon: "⚠️" }
-        ];
-        hostileUnits.forEach(unit => {
-            const y = getTerrainHeight(unit.pos[0], unit.pos[1]);
-            const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.65, 24, 24), new THREE.MeshStandardMaterial({ color: unit.color, emissive: 0x441111, emissiveIntensity: 0.3 }));
-            sphere.position.set(unit.pos[0], y + 0.65, unit.pos[1]);
-            sphere.castShadow = true;
-            scene.add(sphere);
-            const div = document.createElement('div');
-            div.textContent = `${unit.icon} ${unit.name} · REDFOR`;
-            div.style.backgroundColor = 'rgba(40,0,0,0.8)';
-            div.style.color = '#ffaaaa';
-            div.style.fontSize = '10px';
-            div.style.padding = '2px 8px';
-            div.style.borderRadius = '20px';
-            div.style.borderLeft = '3px solid #ff4444';
-            const label = new CSS2DObject(div);
-            label.position.set(unit.pos[0], y + 1.2, unit.pos[1]);
-            scene.add(label);
-        });
-        
-        // --- Elementos del terreno: río, lago, cuadrícula MGRS ---
-        const riverPoints = [];
-        for (let t = -1; t <= 1; t += 0.04) {
-            const x = t * 72, z = 12 * Math.sin(t * Math.PI * 1.6) - 6;
-            riverPoints.push(new THREE.Vector3(x, getTerrainHeight(x, z) - 0.15, z));
-        }
-        const riverTube = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(riverPoints), 180, 0.7, 8, false), new THREE.MeshStandardMaterial({ color: 0x3399ff, transparent: true, opacity: 0.85 }));
-        scene.add(riverTube);
-        
-        const lakeY = getTerrainHeight(-8, -5) - 0.12;
-        const lakePlane = new THREE.Mesh(new THREE.CircleGeometry(6.5, 24), new THREE.MeshStandardMaterial({ color: 0x44aaff, transparent: true, opacity: 0.8 }));
-        lakePlane.position.set(-8, lakeY, -5);
-        lakePlane.rotation.x = -Math.PI / 2;
-        scene.add(lakePlane);
-        
-        const mgrsGridGroup = new THREE.Group();
-        const gridStep = 10, gridExtent = 65;
-        for (let i = -gridExtent; i <= gridExtent; i += gridStep) {
-            const lineV = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(i, -0.2, -gridExtent), new THREE.Vector3(i, -0.2, gridExtent)]), new THREE.LineBasicMaterial({ color: 0x88ff88, transparent: true, opacity: 0.3 }));
-            const lineH = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-gridExtent, -0.2, i), new THREE.Vector3(gridExtent, -0.2, i)]), new THREE.LineBasicMaterial({ color: 0x88ff88, transparent: true, opacity: 0.3 }));
-            mgrsGridGroup.add(lineV, lineH);
-        }
-        scene.add(mgrsGridGroup);
-        
-        // --- Funciones de dibujo táctico (líneas, flechas, marcadores) ---
-        let drawMode = null;
-        let tempPoints = [];
-        let tacticalObjects = [];
-        let currentDrawObject = null;
-        
-        function createArrowLine(start, end, color = 0xff4444) {
-            const points = [start.clone(), end.clone()];
-            const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
-            const lineMat = new THREE.LineBasicMaterial({ color });
-            const lineObj = new THREE.Line(lineGeo, lineMat);
-            
-            const dir = new THREE.Vector3().subVectors(end, start).normalize();
-            const arrowLen = 1.2;
-            const perp = new THREE.Vector3(-dir.z, dir.y, dir.x).normalize();
-            const arrowBase = end.clone().sub(dir.clone().multiplyScalar(0.8));
-            const arrowLeft = arrowBase.clone().add(perp.clone().multiplyScalar(arrowLen * 0.4)).sub(dir.clone().multiplyScalar(arrowLen * 0.5));
-            const arrowRight = arrowBase.clone().add(perp.clone().multiplyScalar(-arrowLen * 0.4)).sub(dir.clone().multiplyScalar(arrowLen * 0.5));
-            
-            const arrowGeo = new THREE.BufferGeometry().setFromPoints([end, arrowLeft, arrowRight]);
-            const arrowMat = new THREE.LineBasicMaterial({ color });
-            const arrowObj = new THREE.Line(arrowGeo, arrowMat);
-            
-            const group = new THREE.Group();
-            group.add(lineObj, arrowObj);
-            return group;
-        }
-        
-        function createLine(start, end, color = 0x44ff44) {
-            const points = [start.clone(), end.clone()];
-            const geo = new THREE.BufferGeometry().setFromPoints(points);
-            return new THREE.Line(geo, new THREE.LineBasicMaterial({ color }));
-        }
-        
-        function addMarker(x, z, color = 0xffaa44) {
-            const y = getTerrainHeight(x, z) + 0.3;
-            const markerGeo = new THREE.SphereGeometry(0.25, 8, 8);
-            const markerMat = new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.5 });
-            const marker = new THREE.Mesh(markerGeo, markerMat);
-            marker.position.set(x, y, z);
-            scene.add(marker);
-            tacticalObjects.push({ type: 'marker', object: marker, pos: { x, z } });
-            return marker;
-        }
-        
-        // --- Panel LLM táctico (en español) ---
-        const llmPanelDiv = document.createElement('div');
-        llmPanelDiv.innerHTML = `<div style="position:absolute; bottom:20px; right:20px; width:280px; background:rgba(0,0,0,0.9); backdrop-filter:blur(16px); border-radius:24px; border:1px solid #0f0; padding:14px; z-index:20; pointer-events:auto; font-family:monospace;">
-            <h4 style="margin:0 0 8px 0; color:#0f0;">🧠 IA TÁCTICA</h4>
-            <textarea id="llmCommandInput" rows="2" placeholder="Comandos: río, cueva, pantano, lago, ruta, LOS, cobertura, altura x z..." style="width:100%; background:#111; border:1px solid #0f0; color:#0f0; border-radius:16px; padding:8px;"></textarea>
-            <button id="llmSendBtn" style="margin-top:8px; background:#0f0; color:#000; border:none; border-radius:40px; padding:4px 12px; font-weight:bold; cursor:pointer;">ANALIZAR</button>
-            <div id="llmResponseBox" style="background:#03060F; border-radius:16px; padding:8px; margin-top:10px; font-size:11px; max-height:150px; overflow-y:auto; border-left:3px solid #0f0; color:#aaa;"></div>
-        </div>`;
-        container.style.position = 'relative';
-        container.appendChild(llmPanelDiv);
-        
-        function llmResponse(query) {
-            const q = query.toLowerCase();
-            if (q.includes('río') || q.includes('river')) return "🌊 Río cruza el mapa de NW a SE. Vados: (-15,3), (5,-2), (25,-8). Profundidad hasta 0.4m.";
-            if (q.includes('cueva') || q.includes('cave')) return "⛰️ Cueva en (30,22). Tipo: dolina. Capacidad: 8 personas. Acceso por el sur.";
-            if (q.includes('pantano') || q.includes('swamp')) return "🪰 Pantano en (-28,-24). Radio ~11m. Transitabilidad: baja, se requiere equipo especial.";
-            if (q.includes('lago') || q.includes('lake')) return "💧 Lago en (-8,-5). Profundidad hasta 0.9m. Márgenes suaves. Posible punto de agua.";
-            if (q.includes('ruta') || q.includes('route')) return "🧭 Ruta óptima desde ALFA hasta (15,-10): desvío este, valle del río. 340m, ~12min. Riesgo bajo.";
-            if (q.includes('los') || q.includes('línea de visión')) return "📡 Análisis LOS desde BRAVO hasta objetivo (22,-12): 67% obstáculos. Posición recomendada (-5,14) — LOS 89%.";
-            if (q.includes('cobertura') || q.includes('cover')) return "🛡️ Cobertura: cueva (30,22), bosque NO, laderas >25° en (15,8).";
-            if (q.includes('altura') && q.match(/-?\d+/)) {
-                const coords = q.match(/-?\d+/g);
-                if (coords && coords.length >= 2) {
-                    const x = parseFloat(coords[0]), z = parseFloat(coords[1]);
-                    return `📐 Altura en (${x}, ${z}): ${getTerrainHeight(x, z).toFixed(2)} m.`;
-                }
-            }
-            return "🤖 Comandos: río, cueva, pantano, lago, ruta, LOS, cobertura, altura X Z";
-        }
-        
-        const llmInput = document.getElementById('llmCommandInput');
-        const llmSend = document.getElementById('llmSendBtn');
-        const llmResp = document.getElementById('llmResponseBox');
-        llmResp.innerHTML = '> IA lista. Esperando comando táctico.<br>> Terreno 3D integrado.';
-        
-        llmSend.addEventListener('click', () => {
-            const query = llmInput.value;
-            const response = llmResponse(query);
-            llmResp.innerHTML = `> ${query}<br>📍 ${response}<br>${llmResp.innerHTML}`.split('<br>').slice(0, 12).join('<br>');
-            llmInput.value = '';
-        });
-        
-        // --- Ciclo día/noche ---
-        let timeOfDay = Math.PI / 2;
-        let lastTimestamp = performance.now();
-        
-        function updateTimeOfDay(now) {
-            const delta = Math.min(100, now - lastTimestamp);
-            lastTimestamp = now;
-            timeOfDay += (delta / 120000) * Math.PI * 2;
-            if (timeOfDay > Math.PI * 2) timeOfDay -= Math.PI * 2;
-            const sunY = Math.cos(timeOfDay) * 65 + 15;
-            const sunHeight = Math.max(0, Math.sin(timeOfDay));
-            sunLight.position.set(Math.sin(timeOfDay) * 80, sunY, Math.cos(timeOfDay * 0.9) * 55);
-            sunLight.intensity = 0.15 + sunHeight * 1.35;
-            ambientLight.intensity = 0.25 + sunHeight * 0.4;
-        }
-        
-        // --- Animación ---
-        function animate() {
-            const now = performance.now();
-            updateTimeOfDay(now);
-            friendlySpheres.forEach((s, i) => { s.position.y += Math.sin(now * 0.004 + i) * 0.0025; });
-            controls.update();
-            renderer.render(scene, camera);
-            labelRenderer.render(scene, camera);
-            requestAnimationFrame(animate);
-        }
-        animate();
-        
-        window.addEventListener('resize', () => {
-            const w = container.clientWidth, h = container.clientHeight;
-            camera.aspect = w / h;
-            camera.updateProjectionMatrix();
-            renderer.setSize(w, h);
-            labelRenderer.setSize(w, h);
-        });
-        
-        console.log("NaviMaTor · Simulador 3D completo | IA Táctica | Ciclo día/noche");
-    </script>
+        addLog("🎨 Filtros aplicados");
+    }
 
-    <script>
-        // Constructor y lógica de widgets
-        let currentAccent = "#f59e0b";
-        function updateAccentColor(color) {
-            currentAccent = color;
-            document.querySelectorAll('.text-amber-400, .border-amber-500, .border-amber-500\\/50, .border-amber-500\\/60').forEach(el => {
-                if(el.classList.contains('text-amber-400')) el.style.color = color;
-                if(el.classList.contains('border-amber-500') || el.classList.contains('border-amber-500/50') || el.classList.contains('border-amber-500/60')) el.style.borderColor = color + '80';
-            });
-            document.querySelectorAll('.bg-amber-500, .bg-amber-600').forEach(el => el.style.backgroundColor = color);
-            const heroSpan = document.querySelector('#heroHeading span');
-            if(heroSpan) heroSpan.style.color = color;
-        }
-        window.applyTemplate = function(type) {
-            if(type === 'classic') updateAccentColor("#f59e0b");
-            if(type === 'military') updateAccentColor("#b91c1c");
-            if(type === 'command') updateAccentColor("#2dd4bf");
-            document.getElementById('storeModal').classList.add('hidden');
-        };
-        window.addDynamicWidget = function(widgetType) {
-            const zone = document.getElementById('dynamicWidgetsZone');
-            let html = '';
-            if(widgetType === 'features') html = `<section class="bg-zinc-900/50 rounded-3xl p-8"><h3 class="text-3xl title-font text-center">⚡ CARACTERÍSTICAS CLAVE</h3><div class="grid md:grid-cols-3 gap-6 text-center"><div><i class="fa-regular fa-map text-4xl text-amber-400"></i><p>Terreno 3D offline</p></div><div><i class="fa-regular fa-compass text-4xl text-amber-400"></i><p>MGRS/UTM</p></div><div><i class="fa-solid fa-tower-cell text-4xl text-amber-400"></i><p>Integración mallada</p></div></div></section>`;
-            if(widgetType === 'testimonials') html = `<section class="p-8 bg-black/60"><h3 class="text-2xl font-bold text-center">💬 TESTIMONIOS</h3><div class="flex flex-col md:flex-row gap-6"><div class="bg-zinc-900 p-5 rounded-xl"><i class="fa-solid fa-quote-left"></i><p>"MGRS funciona perfectamente, las superposiciones APP-6 aceleran la planificación."</p></div><div class="bg-zinc-900 p-5 rounded-xl"><i class="fa-solid fa-quote-left"></i><p>"El mejor reemplazo de ATAK con IA 3D."</p></div></div></section>`;
-            if(widgetType === 'comparison') html = `<section class="bg-zinc-950 p-8 rounded-3xl"><h3 class="text-3xl text-center">📊 COMPARACIÓN</h3><table class="w-full text-sm"><tr><th>Función</th><th>Básico</th><th>Pro</th></tr><tr><td>MGRS 10 dígitos</td><td>—</td><td>✅</td></tr></table></section>`;
-            if(widgetType === 'gallery') html = `<section><h3 class="text-3xl text-center">🖼 GALERÍA</h3><div class="grid grid-cols-2 gap-3"><div class="bg-zinc-800 h-28 rounded flex items-center justify-center">Vista MGRS</div><div class="bg-zinc-800 h-28 rounded flex items-center justify-center">APP-6</div></div></section>`;
-            if(widgetType === 'cta') html = `<div class="bg-gradient-to-r from-amber-700 to-red-800 rounded-2xl p-10 text-center"><h3 class="text-3xl font-bold">¿LISTO?</h3><button onclick="alert('Solicitar licencia')" class="mt-5 bg-black text-white px-8 py-3 rounded-full">OBTENER LICENCIA</button></div>`;
-            if(widgetType === 'techspecs') html = `<section class="bg-zinc-900/40 p-6"><h3 class="text-2xl">📡 ESPECIFICACIONES</h3><ul><li>Formatos: GPX/KML/MGRS</li><li>Enrutamiento offline + Daedalus</li><li>Cifrado: AES-256</li></ul></section>`;
-            if(html) zone.insertAdjacentHTML('beforeend', html);
-            document.getElementById('storeModal').classList.add('hidden');
-        };
-        function downloadFullHTML() {
-            const htmlContent = document.documentElement.outerHTML;
-            const blob = new Blob([htmlContent], {type: 'text/html'});
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `NaviMaTor_PMC_${Date.now()}.html`;
-            a.click();
-            URL.revokeObjectURL(a.href);
-        }
-        document.getElementById('accentColor')?.addEventListener('input', (e) => updateAccentColor(e.target.value));
-        document.getElementById('brandName')?.addEventListener('input', (e) => { if(document.getElementById('navBrand')) document.getElementById('navBrand').innerText = e.target.value; });
-        document.getElementById('heroTitleMain')?.addEventListener('input', (e) => { let val = e.target.value; document.getElementById('heroHeading').innerHTML = val.replace(/Ma/g, '<span class="text-amber-400">Ma</span>'); });
-        document.getElementById('closeBuilder')?.addEventListener('click', () => { document.getElementById('builderPanel').style.display = 'none'; });
-        document.getElementById('openStoreBtn')?.addEventListener('click', () => { document.getElementById('storeModal').classList.remove('hidden'); document.getElementById('storeModal').style.display = 'flex'; });
-        document.getElementById('closeStoreModal')?.addEventListener('click', () => { document.getElementById('storeModal').classList.add('hidden'); });
-        document.getElementById('downloadHtmlBtn')?.addEventListener('click', downloadFullHTML);
-        document.querySelectorAll('.store-tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.store-tab-btn').forEach(b => b.classList.remove('active-tab', 'text-amber-400'));
-                btn.classList.add('active-tab', 'text-amber-400');
-                const tab = btn.getAttribute('data-tab');
-                document.getElementById('templatesTab').classList.toggle('hidden', tab !== 'templates');
-                document.getElementById('widgetsTab').classList.toggle('hidden', tab !== 'widgets');
-            });
+    function onGeoSuccess(pos) { currentPos = { lat: pos.coords.latitude, lng: pos.coords.longitude }; if(!userMarker) userMarker = new maplibregl.Marker({ color: "#00E5CC", scale: 1.1 }).setLngLat([currentPos.lng, currentPos.lat]).addTo(map); else userMarker.setLngLat([currentPos.lng, currentPos.lat]); updateCoordsUI(currentPos.lat, currentPos.lng); elements.gpsStatusSpan.innerHTML = 'ACTIVO ✓'; elements.gpsStatusSpan.style.color = "#00FF88"; }
+    function onGeoError(err) { addLog(`⚠️ GPS: ${err.message}`, true); elements.gpsStatusSpan.innerHTML = 'FALLBACK'; }
+    function startGPS() { if(navigator.geolocation) { watchId = navigator.geolocation.watchPosition(onGeoSuccess, onGeoError, { enableHighAccuracy: true, maximumAge: 3000 }); addLog("🛰️ GPS activo"); } else addLog("GPS no soportado", true); }
+    function centerOnUser() { if(currentPos.lat && currentPos.lng) map.flyTo({ center: [currentPos.lng, currentPos.lat], zoom: 14, duration: 800 }); else map.flyTo({ center: [-43.1729, -22.9068], zoom: 12 }); addLog("🎯 Centrado en posición"); }
+
+    function onMapClick(e) { let { lat, lng } = e.lngLat; let choice = confirm("Marcar como:\n✓ OK = BLUFOR\n✗ Cancelar = OPFOR"); if(choice) addTacticalMarker(lat, lng, 'blufor'); else addTacticalMarker(lat, lng, 'opfor'); updateSituationalDisplay(); }
+
+    async function initMap() {
+        map = new maplibregl.Map({ container: 'map', style: "https://demotiles.maplibre.org/style.json", center: [-43.1729, -22.9068], zoom: 12 });
+        map.addControl(new maplibregl.NavigationControl(), 'top-left');
+        map.on('click', onMapClick);
+        map.on('load', async () => {
+            addLog("✔️ Mapa cargado | NAVIMATOR VANGUARD TDP v4.0");
+            await initDB();
+            let saved = await loadMarkersFromDB();
+            for(let m of saved) await addTacticalMarker(m.latitude, m.longitude, m.tipo, true);
+            addLog(`📌 ${saved.length} entidades restauradas`);
+            updateSituationalDisplay();
+            setInterval(updateSituationalDisplay, 10000);
         });
-        updateAccentColor('#f59e0b');
-    </script>
+    }
+
+    function bindEvents() {
+        document.getElementById('placeBluforBtn').onclick = () => { if(currentPos) addTacticalMarker(currentPos.lat, currentPos.lng, 'blufor'); updateSituationalDisplay(); };
+        document.getElementById('placeOpforBtn').onclick = () => { if(currentPos) addTacticalMarker(currentPos.lat + (Math.random()*0.002-0.001), currentPos.lng + (Math.random()*0.002-0.001), 'opfor'); updateSituationalDisplay(); };
+        document.getElementById('placeAlertBtn').onclick = () => { if(currentPos) addTacticalMarker(currentPos.lat + (Math.random()*0.0015), currentPos.lng + (Math.random()*0.0015), 'alert'); updateSituationalDisplay(); };
+        document.getElementById('placePoiBtn').onclick = () => { if(currentPos) addTacticalMarker(currentPos.lat + (Math.random()*0.001), currentPos.lng + (Math.random()*0.001), 'poi'); updateSituationalDisplay(); };
+        document.getElementById('centerGpsBtn').onclick = centerOnUser;
+        document.getElementById('refreshAnalysisBtn').onclick = () => { updateSituationalDisplay(); addLog("🔄 Análisis recalculado"); };
+        document.getElementById('clearMarkersBtn').onclick = () => { if(confirm("¿Eliminar TODAS las entidades?")) clearAllMarkers(); };
+        document.getElementById('layerBlufor').addEventListener('change', applyLayerFilters);
+        document.getElementById('layerOpfor').addEventListener('change', applyLayerFilters);
+        document.getElementById('layerAlert').addEventListener('change', applyLayerFilters);
+        document.getElementById('layerPoi').addEventListener('change', applyLayerFilters);
+        document.getElementById('languageSelect').addEventListener('change', (e) => { currentLang = e.target.value; updateUITexts(); addLog(`🌐 Idioma cambiado a ${currentLang.toUpperCase()}`); });
+    }
+
+    setInterval(() => { if(currentPos.lat) updateCoordsUI(currentPos.lat, currentPos.lng); }, 2000);
+    window.onload = () => { initMap(); startGPS(); bindEvents(); updateUITexts(); addLog("⬛ NAVIMATOR VANGUARD TDP v4.0 OPERACIONAL"); addLog("🔷 IA Asistiva | Persistencia | Geoespacial"); };
+</script>
 </body>
 </html>
