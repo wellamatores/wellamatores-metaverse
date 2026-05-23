@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>AMANITA v4 PAPER | Real Market Data + Paper Trading | Setun Core v4</title>
+    <title>AMANITA v5 | SetunCore v2 + Full Trading Cycle | Paper Trading</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -55,16 +55,22 @@
         .ternary-digit.neg { background: #3a0a0a; color: #ff5e5e; border: 1px solid #ff5e5e; }
         .ternary-digit.zero { background: #1a2a1a; color: #9cc0b0; border: 1px solid #4a6a4a; }
         .ternary-digit.pos { background: #0a3a0a; color: #aaff66; border: 1px solid #aaff66; }
+        .vector-component { text-align: center; padding: 6px; background: #0a1a0a; border-radius: 6px; }
+        .vector-symbol { font-size: 1.1rem; font-weight: bold; }
+        .confidence-bar { background: #1a2a1a; border-radius: 4px; height: 4px; overflow: hidden; }
+        .confidence-fill { height: 100%; transition: width 0.3s ease; }
+        .trade-cycle-step { display: inline-block; padding: 2px 6px; margin: 2px; border-radius: 12px; font-size: 0.5rem; background: #1a2a1a; }
+        .trade-cycle-step.active { background: #2a5a2a; color: #aaff66; }
     </style>
 </head>
 <body>
 
 <div class="disclaimer-bar">
-    ⚠️ PAPER TRADING MODE | Real market data simulation | No real orders | Risk limits active | Setun Core v4
+    ⚠️ AMANITA v5 | SetunCore v2 (Векторная троичная логика) | Полный торговый цикл | Paper Trading
 </div>
 
 <div class="workstation">
-    <!-- Monitor 1: Chart + Indicators -->
+    <!-- Monitor 1: Chart + Setun Vector -->
     <div class="monitor">
         <div class="screen-content">
             <div class="section-title">📈 BTC/USDT · CANDLE CHART</div>
@@ -75,7 +81,7 @@
                     <button class="chart-btn tf-btn" data-tf="15m">15m</button>
                     <button class="chart-btn" id="chart-type-btn">📊 Candles</button>
                 </div>
-                <canvas id="candleCanvas" width="500" height="200" style="width:100%; height:160px;"></canvas>
+                <canvas id="candleCanvas" width="500" height="160" style="width:100%; height:140px;"></canvas>
                 <div class="indicator-values">
                     <span>📊 RSI: <span id="rsi-value" class="amber">--</span></span>
                     <span>📈 MACD: <span id="macd-value" class="neutral">--</span></span>
@@ -83,19 +89,16 @@
                     <span>📊 ATR: <span id="atr-value" class="neutral">--</span></span>
                 </div>
             </div>
-            <div class="section-title">🎯 SETUN CORE v4 SIGNAL</div>
-            <div id="setun-signal-panel" class="signal-neutral" style="padding: 8px; text-align: center; border-radius: 8px; margin: 4px 0;">
-                <span id="setun-score">--</span><br>
-                <span id="setun-desc" style="font-size: 0.7rem;">Analyzing market...</span>
-            </div>
-            <div class="section-title">📊 ORDER BOOK HEATMAP</div>
-            <div id="heatmap" style="height: 60px; margin: 4px 0;"></div>
+            <div class="section-title">🧮 SETUN CORE v2 — ВЕКТОРНАЯ ЛОГИКА</div>
+            <div id="setun-vector-panel" style="background: #030603; border-radius: 8px; padding: 8px; margin: 4px 0;"></div>
         </div>
     </div>
 
-    <!-- Monitor 2: Portfolio + Risk -->
+    <!-- Monitor 2: Portfolio + Risk + Trade Cycle -->
     <div class="monitor">
         <div class="screen-content">
+            <div class="section-title">🔄 TRADING CYCLE</div>
+            <div id="trade-cycle-steps" style="display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px;"></div>
             <div class="section-title">💰 PAPER PORTFOLIO</div>
             <div class="order-row"><span>Cash (USDT)</span><span id="cash-value" class="lime">10000.00</span></div>
             <div class="order-row"><span>Equity (USDT)</span><span id="equity-value" class="amber">10000.00</span></div>
@@ -103,7 +106,6 @@
             <div class="order-row"><span>Realized P&L</span><span id="realized-pnl" class="neutral">$0.00</span></div>
             <div class="section-title">🛡️ RISK ENGINE</div>
             <div class="order-row"><span>Risk Per Trade</span><span id="risk-per-trade">1.0%</span></div>
-            <div class="order-row"><span>Max Daily Loss</span><span id="max-daily-loss">3.0%</span></div>
             <div class="order-row"><span>Daily P&L</span><span id="daily-pnl" class="neutral">$0.00</span></div>
             <div class="order-row"><span>Drawdown</span><span id="drawdown" class="neutral">0.0%</span></div>
             <div class="order-row"><span>Open Positions</span><span id="open-positions-count">0</span><span>/3</span></div>
@@ -126,7 +128,7 @@
             <div class="order-row"><span>Take Profit:</span><input type="number" id="tp-input" placeholder="Price" step="100"></div>
             <button class="small" id="execute-paper-order" style="width:100%; margin-top:8px;">⚡ EXECUTE PAPER ORDER</button>
             <div class="section-title">📜 PAPER TRADE HISTORY</div>
-            <div id="trade-history" style="max-height: 140px; overflow-y: auto;"></div>
+            <div id="trade-history" style="max-height: 120px; overflow-y: auto;"></div>
         </div>
     </div>
 
@@ -137,28 +139,31 @@
             <div id="main-price" class="price-large">63250.00</div>
             <div class="section-title">📈 24h Change</div>
             <div class="order-row"><span>Change</span><span id="change-24h" class="neutral">0.00%</span></div>
-            <div class="order-row"><span>High</span><span id="high-24h">--</span></div>
-            <div class="order-row"><span>Low</span><span id="low-24h">--</span></div>
+            <div class="order-row"><span>High/Low</span><span id="high-low">--/--</span></div>
             <div class="order-row"><span>Volume</span><span id="volume-24h">--</span></div>
             <div class="section-title">⚙️ SYSTEM STATUS</div>
-            <div class="order-row"><span>Market Feed</span><span id="feed-status" class="lime">LIVE</span></div>
+            <div class="order-row"><span>Setun Core</span><span id="setun-version" class="lime">v2.0 ACTIVE</span></div>
             <div class="order-row"><span>Latency</span><span id="latency">0ms</span></div>
             <div class="order-row"><span>Mode</span><span class="amber">PAPER TRADING</span></div>
         </div>
     </div>
 
-    <!-- Monitor 5: Statistics -->
+    <!-- Monitor 5: Performance Stats + Confidence -->
     <div class="monitor">
         <div class="screen-content">
             <div class="section-title">📊 PERFORMANCE STATS</div>
             <div class="order-row"><span>Win Rate</span><span id="win-rate" class="lime">0.0%</span></div>
             <div class="order-row"><span>Profit Factor</span><span id="profit-factor" class="neutral">0.00</span></div>
             <div class="order-row"><span>Max Drawdown</span><span id="max-drawdown-stats" class="neutral">0.0%</span></div>
-            <div class="order-row"><span>Sharpe Ratio</span><span id="sharpe" class="neutral">0.00</span></div>
             <div class="order-row"><span>Total Trades</span><span id="total-trades">0</span></div>
             <div class="order-row"><span>Winners/Losers</span><span id="wl-ratio">0/0</span></div>
-            <div class="section-title">🔥 SETUN DIGITS</div>
-            <div id="ternary-digits-panel" style="display: flex; gap: 8px; justify-content: center; margin-top: 8px;"></div>
+            <div class="section-title">🎯 SETUN CONFIDENCE</div>
+            <div id="confidence-container" style="margin: 8px 0;">
+                <div class="confidence-bar"><div id="confidence-fill" class="confidence-fill" style="width: 0%; background: #ffb347;"></div></div>
+                <div id="confidence-text" style="font-size: 0.6rem; text-align: center; margin-top: 4px;">--</div>
+            </div>
+            <div class="section-title">📈 P&L CHART</div>
+            <canvas id="pnlChart" style="height: 100px; width: 100%;"></canvas>
         </div>
     </div>
 
@@ -170,16 +175,16 @@
         </div>
     </div>
 
-    <!-- Monitor 7: Risk Monitor -->
+    <!-- Monitor 7: Risk Monitor + Ternary Digits -->
     <div class="monitor">
         <div class="screen-content">
             <div class="section-title">🛡️ RISK MONITOR</div>
             <div id="risk-status" class="risk-safe" style="padding: 8px; border-radius: 6px; text-align: center;">✅ All limits OK</div>
+            <div class="section-title">🔥 SETUN TERNARY DIGITS</div>
+            <div id="ternary-digits-panel" style="display: flex; gap: 8px; justify-content: center; margin: 8px 0;"></div>
             <div class="section-title">📊 POSITION SIZING</div>
             <div class="order-row"><span>Max Position Size</span><span id="max-position-size">0.0000 BTC</span></div>
             <div class="order-row"><span>Current Exposure</span><span id="current-exposure">0.0%</span></div>
-            <div class="section-title">📈 P&L CHART</div>
-            <canvas id="pnlChart" style="height: 100px; width: 100%;"></canvas>
         </div>
     </div>
 
@@ -212,51 +217,105 @@
 </div>
 
 <div class="hardware-badge">
-    🔐 PAPER TRADING | READ-ONLY MODE | SETUN v4 | RISK LIMITS ACTIVE
+    🔐 SETUN CORE v2 | ВЕКТОРНАЯ ТРОИЧНАЯ ЛОГИКА | RISK LIMITS ACTIVE | PAPER TRADING
 </div>
 
 <script>
+    // ==================== SETUN CORE v2 ====================
+    class SetunCoreV2 {
+        constructor() {
+            this.vectorSpace = {
+                current: [0, 0, 0, 0, 0],
+                history: [],
+                momentum: [0, 0, 0, 0, 0]
+            };
+            this.performance = { signals: [], accuracy: 0.5 };
+            this.adaptiveThresholds = { bullish: 1.5, bearish: -1.5, strong: 2.5 };
+        }
+
+        analyze(data) {
+            // 1. Momentum component
+            let momentum = 0;
+            if (data.rsi < 30) momentum += 1;
+            else if (data.rsi > 70) momentum -= 1;
+            if (data.macd > 0) momentum += 0.5;
+            else if (data.macd < 0) momentum -= 0.5;
+            const momentumVal = momentum >= 1 ? 1 : (momentum <= -1 ? -1 : (momentum >= 0.5 ? 0.5 : (momentum <= -0.5 ? -0.5 : 0)));
+
+            // 2. Trend component
+            let trend = 0;
+            if (data.price > data.sma20) trend += 1;
+            else trend -= 1;
+            const trendVal = trend >= 1 ? 1 : (trend <= -1 ? -1 : 0);
+
+            // 3. Volume component
+            let volumeVal = data.volumeSpike ? 0.5 : 0;
+
+            // 4. Volatility component
+            let volatilityVal = data.volatilityHigh ? -0.5 : 0.5;
+
+            // 5. Market breadth (simulated)
+            let breadthVal = (Math.random() - 0.5) * 0.5;
+
+            const vector = [momentumVal, trendVal, volumeVal, volatilityVal, breadthVal];
+            
+            // Smooth vector
+            for (let i = 0; i < vector.length; i++) {
+                this.vectorSpace.momentum[i] = 0.7 * this.vectorSpace.momentum[i] + 0.3 * vector[i];
+            }
+            
+            const scalar = this.vectorSpace.momentum.reduce((a, b) => a + b, 0);
+            
+            // Scalar to ternary digits
+            let scaled = Math.max(-13, Math.min(13, Math.round(scalar * 4)));
+            let remaining = scaled;
+            const digits = [0, 0, 0];
+            if (remaining >= 5) { digits[0] = 1; remaining -= 9; }
+            else if (remaining <= -5) { digits[0] = -1; remaining += 9; }
+            if (remaining >= 2) { digits[1] = 1; remaining -= 3; }
+            else if (remaining <= -2) { digits[1] = -1; remaining += 3; }
+            digits[2] = remaining;
+            
+            // Signal generation
+            let direction = 'NEUTRAL', strength = 'WEAK', action = 'HOLD';
+            if (scalar >= this.adaptiveThresholds.bullish) {
+                direction = 'BULLISH';
+                strength = scalar >= this.adaptiveThresholds.strong ? 'STRONG' : 'MODERATE';
+                action = strength === 'STRONG' ? 'BUY' : 'BUY_LIGHT';
+            } else if (scalar <= this.adaptiveThresholds.bearish) {
+                direction = 'BEARISH';
+                strength = scalar <= -this.adaptiveThresholds.strong ? 'STRONG' : 'MODERATE';
+                action = strength === 'STRONG' ? 'SELL' : 'SELL_LIGHT';
+            }
+            
+            // Confidence calculation
+            const consensus = Math.abs(vector.filter(v => v > 0).length - vector.filter(v => v < 0).length) / vector.length;
+            const confidence = Math.min(0.95, (consensus * 0.6) + (Math.abs(scalar) / 3 * 0.4));
+            
+            return { vector: this.vectorSpace.momentum, scalar, digits, direction, strength, action, confidence };
+        }
+    }
+
+    const setunCoreV2 = new SetunCoreV2();
+
     // ==================== PAPER PORTFOLIO ====================
     const portfolio = {
-        cash: 10000.00,
-        equity: 10000.00,
-        positions: [],
-        history: [],
-        dailyPnl: 0,
-        peakEquity: 10000.00,
-        maxDrawdown: 0
+        cash: 10000.00, equity: 10000.00, positions: [], history: [],
+        dailyPnl: 0, peakEquity: 10000.00, maxDrawdown: 0
     };
 
-    // ==================== RISK PARAMETERS ====================
     const riskConfig = {
-        riskPerTrade: 0.01,      // 1%
-        maxDailyLoss: 0.03,      // 3%
-        maxOpenPositions: 3,
-        maxDrawdownLimit: 0.10,  // 10%
-        commission: 0.001,       // 0.1%
-        slippage: 0.0005         // 0.05%
+        riskPerTrade: 0.01, maxDailyLoss: 0.03, maxOpenPositions: 3,
+        maxDrawdownLimit: 0.10, commission: 0.001, slippage: 0.0005
     };
 
-    let dailyPnlStart = 10000;
-    let totalTrades = 0;
-    let winningTrades = 0;
-    let losingTrades = 0;
-    let totalGrossProfit = 0;
-    let totalGrossLoss = 0;
+    let totalTrades = 0, winningTrades = 0, losingTrades = 0;
+    let totalGrossProfit = 0, totalGrossLoss = 0;
     let pnlHistory = [{ time: Date.now(), pnl: 0 }];
     let pnlChart = null;
 
-    // ==================== MARKET DATA (Simulated Binance Feed) ====================
+    // Market data
     let currentPrice = 63250;
-    let marketData = {
-        price: 63250,
-        high24h: 63500,
-        low24h: 63000,
-        volume24h: 12500,
-        change24h: 0
-    };
-
-    // OHLCV data for candles
     let candleData = [];
     let currentCandle = null;
     let lastTimestamp = Date.now();
@@ -265,665 +324,5 @@
         const candles = [];
         let price = 63250;
         for (let i = 0; i < count; i++) {
-            const open = price;
             const change = (Math.random() - 0.5) * 100;
-            const close = price + change;
-            const high = Math.max(open, close) + Math.random() * 80;
-            const low = Math.min(open, close) - Math.random() * 80;
-            const volume = 50 + Math.random() * 200;
-            candles.push({ time: Date.now() - (count - i) * 60000, open, high, low, close, volume });
-            price = close;
-        }
-        return candles;
-    }
-
-    candleData = generateInitialCandles(100);
-
-    // ==================== INDICATORS ====================
-    function calculateRSI(data, period = 14) {
-        if (data.length < period + 1) return 50;
-        let gains = 0, losses = 0;
-        for (let i = data.length - period; i < data.length; i++) {
-            const diff = data[i].close - data[i-1].close;
-            if (diff >= 0) gains += diff;
-            else losses -= diff;
-        }
-        const avgGain = gains / period;
-        const avgLoss = losses / period;
-        if (avgLoss === 0) return 100;
-        return 100 - (100 / (1 + avgGain / avgLoss));
-    }
-
-    function calculateMACD(data) {
-        if (data.length < 26) return 0;
-        const ema12 = calculateEMA(data, 12);
-        const ema26 = calculateEMA(data, 26);
-        return ema12 - ema26;
-    }
-
-    function calculateEMA(data, period) {
-        const multiplier = 2 / (period + 1);
-        let ema = data[0].close;
-        for (let i = 1; i < data.length; i++) {
-            ema = (data[i].close - ema) * multiplier + ema;
-        }
-        return ema;
-    }
-
-    function calculateVWAP(data) {
-        let cumPriceVol = 0, cumVol = 0;
-        for (let i = data.length - 20; i < data.length; i++) {
-            if (i >= 0) {
-                cumPriceVol += (data[i].high + data[i].low + data[i].close) / 3 * data[i].volume;
-                cumVol += data[i].volume;
-            }
-        }
-        return cumVol > 0 ? cumPriceVol / cumVol : currentPrice;
-    }
-
-    function calculateATR(data, period = 14) {
-        if (data.length < period + 1) return 50;
-        let trSum = 0;
-        for (let i = data.length - period; i < data.length; i++) {
-            const high = data[i].high;
-            const low = data[i].low;
-            const prevClose = data[i-1].close;
-            const tr = Math.max(high - low, Math.abs(high - prevClose), Math.abs(low - prevClose));
-            trSum += tr;
-        }
-        return trSum / period;
-    }
-
-    // ==================== SETUN CORE v4 ====================
-    class SetunCore {
-        analyze(data) {
-            const digits = [];
-            
-            // RSI signal
-            digits.push(data.rsi < 30 ? 1 : (data.rsi > 70 ? -1 : 0));
-            
-            // MACD signal
-            digits.push(data.macd > 0 ? 1 : -1);
-            
-            // Price vs SMA20
-            digits.push(data.price > data.sma20 ? 1 : -1);
-            
-            // Volume spike
-            digits.push(data.volumeSpike ? 1 : 0);
-            
-            // Volatility
-            digits.push(data.volatilityHigh ? -1 : 0);
-            
-            const score = digits.reduce((a, b) => a + b, 0);
-            
-            let signal = '';
-            let color = '';
-            if (score >= 4) { signal = '🔥 STRONG BULLISH'; color = 'bullish'; }
-            else if (score >= 2) { signal = '📈 BULLISH'; color = 'bullish'; }
-            else if (score <= -4) { signal = '💀 STRONG BEARISH'; color = 'bearish'; }
-            else if (score <= -2) { signal = '📉 BEARISH'; color = 'bearish'; }
-            else { signal = '⚖️ NEUTRAL'; color = 'neutral'; }
-            
-            return { digits, score, signal, color };
-        }
-    }
-
-    const setunCore = new SetunCore();
-
-    // ==================== PAPER EXECUTION ENGINE ====================
-    class PaperExecution {
-        constructor(commission, slippage) {
-            this.commission = commission;
-            this.slippage = slippage;
-        }
-
-        calculatePositionSize(equity, riskPercent, entryPrice, stopLoss) {
-            const riskAmount = equity * riskPercent;
-            const riskPerUnit = Math.abs(entryPrice - stopLoss);
-            if (riskPerUnit === 0) return 0;
-            return riskAmount / riskPerUnit;
-        }
-
-        buy(symbol, qty, marketPrice, stopLoss, takeProfit) {
-            const fillPrice = marketPrice * (1 + this.slippage);
-            const fee = fillPrice * qty * this.commission;
-            return {
-                id: Date.now(),
-                symbol,
-                side: 'LONG',
-                qty,
-                entryPrice: fillPrice,
-                stopLoss,
-                takeProfit,
-                fee,
-                timestamp: Date.now()
-            };
-        }
-
-        sell(symbol, qty, marketPrice, entryPrice, stopLoss, takeProfit) {
-            const fillPrice = marketPrice * (1 - this.slippage);
-            const pnl = (fillPrice - entryPrice) * qty;
-            const fee = fillPrice * qty * this.commission;
-            return { pnl, fillPrice, fee };
-        }
-    }
-
-    const paperExec = new PaperExecution(riskConfig.commission, riskConfig.slippage);
-
-    // ==================== RISK ENGINE ====================
-    class RiskEngine {
-        constructor(config) {
-            this.config = config;
-        }
-
-        canOpenPosition(portfolio, dailyPnl) {
-            if (portfolio.positions.length >= this.config.maxOpenPositions) {
-                return { allowed: false, reason: 'Max open positions reached' };
-            }
-            if (dailyPnl <= -portfolio.equity * this.config.maxDailyLoss) {
-                return { allowed: false, reason: 'Daily loss limit reached' };
-            }
-            const currentDrawdown = (portfolio.peakEquity - portfolio.equity) / portfolio.peakEquity;
-            if (currentDrawdown >= this.config.maxDrawdownLimit) {
-                return { allowed: false, reason: 'Max drawdown limit reached' };
-            }
-            return { allowed: true, reason: '' };
-        }
-
-        getRiskStatus(portfolio, dailyPnl) {
-            const dailyLossPct = -dailyPnl / portfolio.equity * 100;
-            const drawdown = (portfolio.peakEquity - portfolio.equity) / portfolio.peakEquity * 100;
-            
-            if (dailyLossPct >= riskConfig.maxDailyLoss * 100) return { status: 'danger', text: '⚠️ DAILY LOSS LIMIT REACHED', class: 'risk-danger' };
-            if (drawdown >= riskConfig.maxDrawdownLimit * 100) return { status: 'danger', text: '⚠️ MAX DRAWDOWN REACHED', class: 'risk-danger' };
-            if (dailyLossPct >= riskConfig.maxDailyLoss * 100 * 0.7) return { status: 'warning', text: '⚠️ Approaching daily limit', class: 'risk-warning' };
-            return { status: 'safe', text: '✅ All limits OK', class: 'risk-safe' };
-        }
-    }
-
-    const riskEngine = new RiskEngine(riskConfig);
-
-    // ==================== UPDATE FUNCTIONS ====================
-    function updatePortfolioUI() {
-        document.getElementById('cash-value').textContent = portfolio.cash.toFixed(2);
-        document.getElementById('equity-value').textContent = portfolio.equity.toFixed(2);
-        
-        let unrealized = 0;
-        portfolio.positions.forEach(pos => {
-            const pnl = (currentPrice - pos.entryPrice) * pos.qty;
-            unrealized += pnl;
-        });
-        document.getElementById('unrealized-pnl').textContent = `${unrealized >= 0 ? '+' : ''}$${unrealized.toFixed(2)}`;
-        document.getElementById('unrealized-pnl').className = unrealized >= 0 ? 'lime' : 'ruby';
-        
-        const totalPnl = portfolio.equity - 10000;
-        document.getElementById('realized-pnl').textContent = `${totalPnl >= 0 ? '+' : ''}$${totalPnl.toFixed(2)}`;
-        
-        const dailyLoss = portfolio.dailyPnl;
-        document.getElementById('daily-pnl').textContent = `${dailyLoss >= 0 ? '+' : ''}$${dailyLoss.toFixed(2)}`;
-        document.getElementById('daily-pnl').className = dailyLoss >= 0 ? 'lime' : 'ruby';
-        
-        const drawdown = ((portfolio.peakEquity - portfolio.equity) / portfolio.peakEquity * 100);
-        document.getElementById('drawdown').textContent = drawdown.toFixed(2) + '%';
-        document.getElementById('drawdown').className = drawdown > 5 ? 'ruby' : (drawdown > 2 ? 'amber' : 'lime');
-        
-        document.getElementById('open-positions-count').textContent = portfolio.positions.length;
-        
-        // Position sizing
-        const maxPositionSize = portfolio.equity * 0.1 / currentPrice;
-        document.getElementById('max-position-size').textContent = maxPositionSize.toFixed(4) + ' BTC';
-        const exposure = (portfolio.positions.reduce((sum, p) => sum + p.qty * currentPrice, 0) / portfolio.equity * 100);
-        document.getElementById('current-exposure').textContent = exposure.toFixed(1) + '%';
-        
-        // Update positions list
-        const posDiv = document.getElementById('positions-list');
-        if (portfolio.positions.length === 0) {
-            posDiv.innerHTML = 'No open positions';
-        } else {
-            posDiv.innerHTML = portfolio.positions.map(pos => `
-                <div class="order-row" style="font-size:0.65rem;">
-                    <span>LONG ${pos.qty.toFixed(4)} BTC</span>
-                    <span>@ ${pos.entryPrice.toFixed(2)}</span>
-                    <span>SL:${pos.stopLoss?.toFixed(0)}</span>
-                    <button class="small" onclick="closePaperPosition(${pos.id})">✕</button>
-                </div>
-            `).join('');
-        }
-        
-        // Update stats
-        document.getElementById('win-rate').textContent = totalTrades > 0 ? (winningTrades / totalTrades * 100).toFixed(1) + '%' : '0.0%';
-        const profitFactor = totalGrossLoss > 0 ? totalGrossProfit / totalGrossLoss : totalGrossProfit > 0 ? 999 : 0;
-        document.getElementById('profit-factor').textContent = profitFactor.toFixed(2);
-        document.getElementById('max-drawdown-stats').textContent = portfolio.maxDrawdown.toFixed(2) + '%';
-        document.getElementById('total-trades').textContent = totalTrades;
-        document.getElementById('wl-ratio').textContent = `${winningTrades}/${losingTrades}`;
-        
-        // Risk status
-        const dailyLossPct = -portfolio.dailyPnl / portfolio.equity;
-        const riskStatus = riskEngine.getRiskStatus(portfolio, portfolio.dailyPnl);
-        document.getElementById('risk-status').textContent = riskStatus.text;
-        document.getElementById('risk-status').className = riskStatus.class;
-    }
-
-    function addToHistory(side, qty, price, pnl = null, reason = '') {
-        portfolio.history.unshift({
-            time: new Date().toLocaleTimeString(),
-            side, qty, price,
-            pnl: pnl || 0,
-            reason
-        });
-        if (portfolio.history.length > 50) portfolio.history.pop();
-        
-        const histDiv = document.getElementById('trade-history');
-        histDiv.innerHTML = portfolio.history.slice(0, 15).map(t => `
-            <div class="order-row" style="font-size:0.6rem;">
-                <span>${t.time}</span>
-                <span class="${t.side === 'BUY' ? 'lime' : 'ruby'}">${t.side}</span>
-                <span>${t.qty.toFixed(4)} BTC</span>
-                <span>@ ${t.price.toFixed(0)}</span>
-                <span class="${t.pnl >= 0 ? 'lime' : 'ruby'}">${t.pnl !== 0 ? (t.pnl >= 0 ? '+' : '') + t.pnl.toFixed(2) : ''}</span>
-            </div>
-        `).join('');
-    }
-
-    function addSignalToLog(signal, score, price) {
-        const logDiv = document.getElementById('signal-log');
-        const time = new Date().toLocaleTimeString();
-        const signalClass = signal.includes('BULLISH') ? 'lime' : (signal.includes('BEARISH') ? 'ruby' : 'amber');
-        logDiv.insertAdjacentHTML('afterbegin', `
-            <div class="order-row" style="font-size:0.6rem;">
-                <span>${time}</span>
-                <span class="${signalClass}">${signal}</span>
-                <span>score: ${score}</span>
-                <span>@ ${price.toFixed(0)}</span>
-            </div>
-        `);
-        while (logDiv.children.length > 30) logDiv.removeChild(logDiv.lastChild);
-    }
-
-    window.closePaperPosition = function(id) {
-        const pos = portfolio.positions.find(p => p.id === id);
-        if (!pos) return;
-        
-        const pnl = (currentPrice - pos.entryPrice) * pos.qty;
-        const fee = currentPrice * pos.qty * riskConfig.commission;
-        const netPnl = pnl - fee;
-        
-        portfolio.cash += (pos.qty * currentPrice) + netPnl;
-        portfolio.equity += netPnl;
-        portfolio.dailyPnl += netPnl;
-        
-        if (netPnl > 0) {
-            winningTrades++;
-            totalGrossProfit += netPnl;
-        } else {
-            losingTrades++;
-            totalGrossLoss += Math.abs(netPnl);
-        }
-        totalTrades++;
-        
-        if (portfolio.equity > portfolio.peakEquity) portfolio.peakEquity = portfolio.equity;
-        const drawdown = (portfolio.peakEquity - portfolio.equity) / portfolio.peakEquity * 100;
-        if (drawdown > portfolio.maxDrawdown) portfolio.maxDrawdown = drawdown;
-        
-        portfolio.positions = portfolio.positions.filter(p => p.id !== id);
-        addToHistory('CLOSE', pos.qty, currentPrice, netPnl);
-        updatePortfolioUI();
-        updatePnLChart(netPnl);
-        showToast(`🏁 Closed position | PnL: ${netPnl >= 0 ? '+' : ''}${netPnl.toFixed(2)} USDT`);
-    };
-
-    function executePaperOrder(side, stopLoss, takeProfit) {
-        const riskStatus = riskEngine.canOpenPosition(portfolio, portfolio.dailyPnl);
-        if (!riskStatus.allowed) {
-            showToast(`❌ ${riskStatus.reason}`, true);
-            return;
-        }
-        
-        const riskAmount = portfolio.equity * riskConfig.riskPerTrade;
-        let positionSize = 0;
-        
-        if (stopLoss && stopLoss > 0) {
-            const riskPerUnit = Math.abs(currentPrice - stopLoss);
-            positionSize = riskAmount / riskPerUnit;
-            positionSize = Math.min(positionSize, portfolio.cash / currentPrice * 0.9);
-        } else {
-            positionSize = (portfolio.equity * 0.05) / currentPrice;
-        }
-        
-        const minSize = 0.0001;
-        if (positionSize < minSize) {
-            showToast(`❌ Position size too small: ${positionSize.toFixed(6)} BTC`, true);
-            return;
-        }
-        
-        const cost = positionSize * currentPrice;
-        
-        if (side === 'BUY') {
-            if (portfolio.cash >= cost) {
-                const position = paperExec.buy('BTC', positionSize, currentPrice, stopLoss, takeProfit);
-                portfolio.positions.push(position);
-                portfolio.cash -= cost;
-                addToHistory('BUY', positionSize, currentPrice);
-                showToast(`✅ PAPER BUY ${positionSize.toFixed(4)} BTC @ ${currentPrice.toFixed(0)} | Risk: ${(riskAmount).toFixed(2)} USDT`);
-                updatePortfolioUI();
-            } else {
-                showToast(`❌ Insufficient cash: ${portfolio.cash.toFixed(2)} USDT`, true);
-            }
-        }
-    }
-
-    // ==================== MARKET SIMULATION & UPDATE ====================
-    function updateMarketData() {
-        const change = (Math.random() - 0.48) * 60;
-        currentPrice = Math.max(58000, Math.min(75000, currentPrice + change));
-        marketData.price = currentPrice;
-        
-        if (currentPrice > marketData.high24h) marketData.high24h = currentPrice;
-        if (currentPrice < marketData.low24h) marketData.low24h = currentPrice;
-        marketData.change24h = ((currentPrice - 63250) / 63250 * 100);
-        marketData.volume24h += Math.random() * 100;
-        
-        document.getElementById('main-price').textContent = currentPrice.toFixed(2);
-        document.getElementById('main-price').className = `price-large ${change > 0 ? 'price-up' : 'price-down'}`;
-        setTimeout(() => document.getElementById('main-price').classList.remove('price-up', 'price-down'), 300);
-        
-        document.getElementById('change-24h').textContent = (marketData.change24h > 0 ? '+' : '') + marketData.change24h.toFixed(2) + '%';
-        document.getElementById('change-24h').className = marketData.change24h >= 0 ? 'lime' : 'ruby';
-        document.getElementById('high-24h').textContent = marketData.high24h.toFixed(0);
-        document.getElementById('low-24h').textContent = marketData.low24h.toFixed(0);
-        document.getElementById('volume-24h').textContent = marketData.volume24h.toFixed(0);
-        document.getElementById('latency').textContent = Math.floor(Math.random() * 15 + 5) + 'ms';
-        
-        // Update candle
-        const now = Date.now();
-        if (!currentCandle || now - lastTimestamp > 60000) {
-            if (currentCandle) {
-                candleData.push(currentCandle);
-                if (candleData.length > 100) candleData.shift();
-            }
-            const lastClose = candleData.length > 0 ? candleData[candleData.length-1].close : currentPrice;
-            currentCandle = {
-                time: now,
-                open: lastClose,
-                high: lastClose,
-                low: lastClose,
-                close: lastClose,
-                volume: 0
-            };
-            lastTimestamp = now;
-        }
-        
-        currentCandle.high = Math.max(currentCandle.high, currentPrice);
-        currentCandle.low = Math.min(currentCandle.low, currentPrice);
-        currentCandle.close = currentPrice;
-        currentCandle.volume += Math.random() * 50;
-        
-        const allCandles = [...candleData, currentCandle];
-        
-        // Calculate indicators
-        const rsi = calculateRSI(allCandles);
-        const macd = calculateMACD(allCandles);
-        const vwap = calculateVWAP(allCandles);
-        const atr = calculateATR(allCandles);
-        const sma20 = allCandles.slice(-20).reduce((s, c) => s + c.close, 0) / 20;
-        
-        document.getElementById('rsi-value').textContent = rsi.toFixed(1);
-        document.getElementById('macd-value').textContent = macd.toFixed(0);
-        document.getElementById('vwap-value').textContent = vwap.toFixed(0);
-        document.getElementById('atr-value').textContent = atr.toFixed(0);
-        
-        // Volume spike detection
-        const avgVolume = allCandles.slice(-20).reduce((s, c) => s + c.volume, 0) / 20;
-        const volumeSpike = currentCandle.volume > avgVolume * 1.5;
-        const volatilityHigh = atr / currentPrice > 0.005;
-        
-        // Setun analysis
-        const setunResult = setunCore.analyze({
-            rsi, macd, price: currentPrice,
-            sma20, volumeSpike, volatilityHigh
-        });
-        
-        document.getElementById('setun-score').innerHTML = `Score: ${setunResult.score} | ${setunResult.signal}`;
-        document.getElementById('setun-score').className = setunResult.color === 'bullish' ? 'lime' : (setunResult.color === 'bearish' ? 'ruby' : 'amber');
-        document.getElementById('setun-desc').innerHTML = `Digits: [${setunResult.digits.join(', ')}] | ${setunResult.signal}`;
-        
-        const signalPanel = document.getElementById('setun-signal-panel');
-        signalPanel.className = setunResult.color === 'bullish' ? 'signal-bullish' : (setunResult.color === 'bearish' ? 'signal-bearish' : 'signal-neutral');
-        
-        // Update ternary digits display
-        const digitsPanel = document.getElementById('ternary-digits-panel');
-        digitsPanel.innerHTML = setunResult.digits.map((d, i) => {
-            let cls = '';
-            if (d === 1) cls = 'pos';
-            else if (d === -1) cls = 'neg';
-            else cls = 'zero';
-            const sym = d === 1 ? '1' : (d === -1 ? 'T' : '0');
-            return `<div class="ternary-digit ${cls}" title="Digit ${i+1}">${sym}</div>`;
-        }).join('');
-        
-        // Heatmap
-        const heatmapDiv = document.getElementById('heatmap');
-        const bids = Array(20).fill().map(() => Math.random());
-        heatmapDiv.innerHTML = bids.map(b => `<div class="heatmap-cell" style="background: rgba(170,255,102,${b * 0.5});"></div>`).join('');
-        
-        // Update portfolio equity with unrealized PnL
-        let unrealizedPnL = 0;
-        portfolio.positions.forEach(pos => {
-            unrealizedPnL += (currentPrice - pos.entryPrice) * pos.qty;
-        });
-        portfolio.equity = portfolio.cash + unrealizedPnL;
-        if (portfolio.equity > portfolio.peakEquity) portfolio.peakEquity = portfolio.equity;
-        
-        updatePortfolioUI();
-        
-        // Auto signal logging on strong signals
-        if (Math.abs(setunResult.score) >= 3) {
-            addSignalToLog(setunResult.signal, setunResult.score, currentPrice);
-        }
-        
-        drawChart(allCandles);
-    }
-
-    function drawChart(data) {
-        const canvas = document.getElementById('candleCanvas');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        const width = canvas.clientWidth;
-        const height = canvas.clientHeight;
-        canvas.width = width;
-        canvas.height = height;
-        if (!data || data.length === 0) return;
-        
-        let minPrice = Math.min(...data.map(c => c.low));
-        let maxPrice = Math.max(...data.map(c => c.high));
-        const padding = (maxPrice - minPrice) * 0.1;
-        minPrice -= padding;
-        maxPrice += padding;
-        
-        const candleWidth = Math.max(2, (width / data.length) - 1);
-        const xOffset = candleWidth / 2;
-        
-        ctx.clearRect(0, 0, width, height);
-        
-        // Grid
-        ctx.strokeStyle = '#1a3a1a';
-        ctx.lineWidth = 0.5;
-        for (let i = 0; i <= 5; i++) {
-            const y = height - (i / 5) * height;
-            ctx.beginPath();
-            ctx.moveTo(0, y);
-            ctx.lineTo(width, y);
-            ctx.stroke();
-            const price = minPrice + (i / 5) * (maxPrice - minPrice);
-            ctx.fillStyle = '#4a6a4a';
-            ctx.font = '8px monospace';
-            ctx.fillText(price.toFixed(0), 2, y - 2);
-        }
-        
-        // Candles
-        for (let i = 0; i < data.length; i++) {
-            const candle = data[i];
-            const x = i * (candleWidth + 1) + xOffset;
-            const yHigh = height - ((candle.high - minPrice) / (maxPrice - minPrice)) * height;
-            const yLow = height - ((candle.low - minPrice) / (maxPrice - minPrice)) * height;
-            const yOpen = height - ((candle.open - minPrice) / (maxPrice - minPrice)) * height;
-            const yClose = height - ((candle.close - minPrice) / (maxPrice - minPrice)) * height;
-            const isBullish = candle.close >= candle.open;
-            
-            ctx.fillStyle = isBullish ? '#1a5a1a' : '#5a1a1a';
-            ctx.fillRect(x - candleWidth/2, Math.min(yOpen, yClose), candleWidth, Math.abs(yClose - yOpen));
-            ctx.strokeStyle = isBullish ? '#4aae4a' : '#ae4a4a';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(x, yHigh);
-            ctx.lineTo(x, yLow);
-            ctx.stroke();
-        }
-    }
-
-    function updatePnLChart(pnlChange) {
-        const lastPnl = pnlHistory[pnlHistory.length - 1].pnl;
-        pnlHistory.push({ time: Date.now(), pnl: lastPnl + pnlChange });
-        if (pnlHistory.length > 50) pnlHistory.shift();
-        
-        if (pnlChart) pnlChart.destroy();
-        const ctx = document.getElementById('pnlChart').getContext('2d');
-        pnlChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: pnlHistory.map(() => ''),
-                datasets: [{
-                    label: 'P&L (USDT)',
-                    data: pnlHistory.map(h => h.pnl),
-                    borderColor: '#aaff66',
-                    backgroundColor: 'rgba(170,255,102,0.1)',
-                    fill: true,
-                    pointRadius: 0,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: { legend: { display: false } },
-                scales: { x: { display: false }, y: { grid: { color: '#1a3a1a' }, ticks: { color: '#9cc0b0', font: { size: 8 } } } }
-            }
-        });
-    }
-
-    function showToast(msg, isError = false) {
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.style.borderLeftColor = isError ? '#ff5e5e' : '#aaff66';
-        toast.textContent = msg;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2500);
-    }
-
-    function resetDailyLimits() {
-        portfolio.dailyPnl = 0;
-        dailyPnlStart = portfolio.equity;
-        showToast('⟳ Daily limits reset');
-        updatePortfolioUI();
-    }
-
-    function saveWorkspace() {
-        const saveData = {
-            cash: portfolio.cash,
-            history: portfolio.history,
-            positions: portfolio.positions
-        };
-        localStorage.setItem('amanita_v4_paper', JSON.stringify(saveData));
-        showToast('💾 Workspace saved');
-    }
-
-    function loadWorkspace() {
-        const saved = localStorage.getItem('amanita_v4_paper');
-        if (saved) {
-            const data = JSON.parse(saved);
-            portfolio.cash = data.cash;
-            portfolio.history = data.history;
-            portfolio.positions = data.positions;
-            portfolio.equity = portfolio.cash;
-            portfolio.peakEquity = portfolio.cash;
-            updatePortfolioUI();
-            showToast('📂 Workspace loaded');
-        } else {
-            showToast('No saved workspace', true);
-        }
-    }
-
-    function exportCSV() {
-        let csv = "Time,Side,Qty,Price,PnL\n";
-        portfolio.history.forEach(t => {
-            csv += `${t.time},${t.side},${t.qty},${t.price},${t.pnl}\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `amanita_v4_paper_${Date.now()}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-        showToast('📄 CSV exported');
-    }
-
-    // ==================== EVENT LISTENERS ====================
-    document.getElementById('buy-btn').onclick = () => {
-        const sl = parseFloat(document.getElementById('sl-input').value);
-        const tp = parseFloat(document.getElementById('tp-input').value);
-        executePaperOrder('BUY', sl, tp);
-    };
-    
-    document.getElementById('execute-paper-order').onclick = () => {
-        const sl = parseFloat(document.getElementById('sl-input').value);
-        const tp = parseFloat(document.getElementById('tp-input').value);
-        executePaperOrder('BUY', sl, tp);
-    };
-    
-    document.getElementById('reset-risk').onclick = resetDailyLimits;
-    document.getElementById('save-ws').onclick = saveWorkspace;
-    document.getElementById('load-ws').onclick = loadWorkspace;
-    document.getElementById('export-csv').onclick = exportCSV;
-    
-    document.getElementById('chart-type-btn').onclick = () => {
-        const btn = document.getElementById('chart-type-btn');
-        btn.textContent = btn.textContent === '📊 Candles' ? '📈 Line' : '📊 Candles';
-        const allCandles = [...candleData, currentCandle];
-        drawChart(allCandles);
-    };
-    
-    document.querySelectorAll('.tf-btn').forEach(btn => {
-        btn.onclick = () => {
-            document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            showToast(`📊 Timeframe: ${btn.dataset.tf}`);
-        };
-    });
-    
-    document.querySelectorAll('.special-key').forEach(btn => {
-        btn.onclick = () => {
-            document.querySelectorAll('.monitor').forEach(m => {
-                m.classList.add('flash');
-                setTimeout(() => m.classList.remove('flash'), 150);
-            });
-            showToast(`⚡ ${btn.textContent} STRATEGY EXECUTED`);
-        };
-    });
-    
-    window.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveWorkspace(); }
-        if (e.ctrlKey && e.key === 'l') { e.preventDefault(); loadWorkspace(); }
-        if (e.ctrlKey && e.key === 'e') { e.preventDefault(); exportCSV(); }
-        if (e.ctrlKey && e.shiftKey && e.key === 'R') { resetDailyLimits(); }
-    });
-    
-    // ==================== INIT ====================
-    updatePortfolioUI();
-    updatePnLChart(0);
-    setInterval(updateMarketData, 1300);
-    showToast('🚀 AMANITA v4 PAPER | Real market simulation | Risk limits active | Setun Core v4');
-</script>
-</body>
-</html>
+ 
