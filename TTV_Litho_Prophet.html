@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TTV Litho Prophet | TerraTrampilleraVerse</title>
-    <!-- CryptoJS for AES-like encryption -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <title>TTV Litho Prompt Engine | TerraTrampilleraVerse</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,21 +11,26 @@
         body {
             background: radial-gradient(circle at 20% 30%, #0a0c1a, #010101);
             font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 25px;
         }
-        .ttv-container {
+        .container {
             max-width: 1500px;
             width: 100%;
-            margin: 0 auto;
             background: rgba(6, 12, 24, 0.85);
             backdrop-filter: blur(12px);
             border-radius: 2rem;
             border: 1px solid rgba(0, 255, 255, 0.4);
             box-shadow: 0 25px 45px rgba(0,0,0,0.6), 0 0 20px rgba(0, 255, 255, 0.2);
+            overflow: hidden;
             padding: 1.6rem;
             position: relative;
         }
+        /* ВОДЯНОЙ ЗНАК — TerraTrampilleraVerse */
         .watermark {
             position: absolute;
             bottom: 15px;
@@ -36,13 +39,17 @@
             color: rgba(0, 255, 255, 0.25);
             font-family: monospace;
             pointer-events: none;
+            z-index: 999;
             background: rgba(0,0,0,0.4);
             padding: 4px 12px;
             border-radius: 40px;
+            letter-spacing: 1px;
             backdrop-filter: blur(4px);
+            white-space: nowrap;
         }
         .watermark::before {
-            content: "⚡ TTV • TerraTrampilleraVerse Holding • encrypted litho engine ⚡";
+            content: "⚡ TTV • TerraTrampilleraVerse Holding • proprietary litho engine ⚡";
+            font-weight: bold;
         }
         h1 {
             font-size: 1.8rem;
@@ -51,6 +58,9 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         .sub {
             color: #8ba0c0;
@@ -59,6 +69,7 @@
             padding-left: 1rem;
             font-size: 0.85rem;
         }
+        /* tabs */
         .tabs {
             display: flex;
             gap: 5px;
@@ -75,6 +86,7 @@
             color: #bbd4ff;
             cursor: pointer;
             font-weight: 600;
+            transition: 0.2s;
         }
         .tab-btn.active {
             background: #0ff;
@@ -145,33 +157,19 @@
             color: white;
             cursor: pointer;
         }
-        .flex-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .badge-ttv {
-            background: #1f2a44;
-            border-radius: 30px;
-            padding: 2px 12px;
-            font-size: 0.7rem;
-        }
-        .encrypt-btn {
-            background: #2a2f4f;
-            border: 1px solid #f0f;
-        }
+        .flex-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .badge-ttv { background: #1f2a44; border-radius: 30px; padding: 2px 12px; font-size: 0.7rem; }
     </style>
 </head>
 <body>
-<div class="ttv-container">
+<div class="container">
     <div class="watermark"></div>
     <div class="flex-row" style="justify-content: space-between;">
         <div>
-            <h1>🔬 TTV LITHO PROPHET</h1>
-            <div class="sub">binary/ternary/quaternary • EUV / nanoimprint • 3D I/O • encrypted presets</div>
+            <h1>🔬 TTV • SEMICONDUCTOR PROPHET</h1>
+            <div class="sub">binary/ternary/quaternary • EUV / nanoimprint • 3D I/O • 8K cinematics</div>
         </div>
-        <div class="badge-ttv">⚡ TerraTrampilleraVerse v2.1</div>
+        <div class="badge-ttv">⚡ TerraTrampilleraVerse v2.0</div>
     </div>
 
     <!-- TABS -->
@@ -182,120 +180,234 @@
         <button class="tab-btn" data-tab="fx">✨ ADVANCED VFX</button>
     </div>
 
-    <!-- TAB 1 -->
+    <!-- TAB 1: BASIC + LOGIC -->
     <div id="basic" class="tab-pane active">
         <div class="grid">
-            <div class="card"><label>🧠 LOGIC SYSTEM</label><select id="logicSystem"><option value="binary">BINARY (0/1)</option><option value="ternary" selected>TERNARY (-1,0,+1)</option><option value="quaternary">QUATERNARY (0-3)</option></select>
-            <label>📝 LOGIC DESCRIPTION</label><input type="text" id="logicDetail" value="balanced multi-valued transistor arrays with ternary flip-flops">
-            <label>🔢 PROCESS NODE</label><select id="processNode"><option>2nm</option><option selected>3nm</option><option>5nm</option><option>7nm</option><option>14nm</option></select>
-            <label>💎 WAFER MATERIAL</label><select id="waferMaterial"><option>Silicon (Si)</option><option selected>GaN-on-Si</option><option>SiC</option><option>Graphene / 2D MoS₂</option></select></div>
-            <div class="card"><label>📏 WAFER SIZE</label><select id="waferSize"><option>200mm</option><option selected>300mm</option><option>450mm</option></select>
-            <label>⏱️ PROCESS STEP</label><select id="processStep"><option>Exposure</option><option>Development</option><option selected>Etching</option><option>Deposition</option><option>Metrology</option></select>
-            <label>🌡️ DEFECT DENSITY MAP</label><select id="defectDensity"><option>None (perfect)</option><option>Low</option><option selected>Medium (heatmap)</option><option>High</option></select></div>
+            <div class="card">
+                <label>🧠 LOGIC SYSTEM</label>
+                <select id="logicSystem">
+                    <option value="binary">BINARY (0/1)</option>
+                    <option value="ternary" selected>TERNARY (-1,0,+1)</option>
+                    <option value="quaternary">QUATERNARY (0-3)</option>
+                </select>
+                <label>📝 LOGIC DESCRIPTION</label>
+                <input type="text" id="logicDetail" value="balanced multi-valued transistor arrays with ternary flip-flops">
+                <label>🔢 PROCESS NODE</label>
+                <select id="processNode">
+                    <option>2nm</option>
+                    <option selected>3nm</option>
+                    <option>5nm</option>
+                    <option>7nm</option>
+                    <option>14nm</option>
+                </select>
+                <label>💎 WAFER MATERIAL</label>
+                <select id="waferMaterial">
+                    <option>Silicon (Si)</option>
+                    <option selected>GaN-on-Si</option>
+                    <option>Silicon Carbide (SiC)</option>
+                    <option>Graphene / 2D MoS₂</option>
+                </select>
+            </div>
+            <div class="card">
+                <label>📏 WAFER SIZE</label>
+                <select id="waferSize">
+                    <option>200mm</option>
+                    <option selected>300mm</option>
+                    <option>450mm</option>
+                </select>
+                <label>⏱️ PROCESS STEP</label>
+                <select id="processStep">
+                    <option>Exposure</option>
+                    <option>Development</option>
+                    <option selected>Etching</option>
+                    <option>Deposition</option>
+                    <option>Metrology</option>
+                </select>
+                <label>🌡️ DEFECT DENSITY MAP</label>
+                <select id="defectDensity">
+                    <option>None (perfect)</option>
+                    <option>Low (minor particles)</option>
+                    <option selected>Medium (heatmap overlay)</option>
+                    <option>High (visible defects)</option>
+                </select>
+            </div>
         </div>
     </div>
 
-    <!-- TAB 2 -->
+    <!-- TAB 2: EQUIPMENT + OPTICS -->
     <div id="equip" class="tab-pane">
-        <div class="grid"><div class="card"><label>🔆 MAIN TOOL</label><select id="equipment"><option value="euv" selected>High-NA EUV</option><option value="nanoimprint">Nanoimprint</option><option value="plasma_etch">ICP Plasma Etcher</option><option value="ald">ALD Reactor</option></select>
-        <label>🎨 PRIMARY COLOR</label><input type="text" id="primaryColor" value="blue, cyan">
-        <label>💜 SECONDARY COLOR</label><input type="text" id="secondaryColor" value="magenta, purple">
-        <label>🔦 LIGHTING MODE</label><select id="lightingMode"><option>Standard cleanroom</option><option selected>Darkfield inspection</option><option>Fluorescence</option><option>Laser interferometry</option></select></div>
-        <div class="card"><label>🔬 MICROSCOPY OVERLAY</label><select id="microscopyOverlay"><option>None</option><option selected>SEM</option><option>TEM</option><option>AFM</option></select>
-        <label>✨ BEAM VISUALIZATION</label><select id="beamVis"><option>Off</option><option selected>Photon/EUV traces</option><option>Electron beam</option><option>Ion beam</option></select>
-        <label>🎯 RIGHT STATION</label><select id="rightStation"><option>Metrology/AFM</option><option>E-beam lithography</option><option selected>Plasma cleaning & RIE</option></select></div>
+        <div class="grid">
+            <div class="card">
+                <label>🔆 MAIN LITHOGRAPHY TOOL</label>
+                <select id="equipment">
+                    <option value="euv" selected>High-NA EUV</option>
+                    <option value="nanoimprint">Nanoimprint (stamp)</option>
+                    <option value="plasma_etch">ICP Plasma Etcher</option>
+                    <option value="ald">ALD Reactor</option>
+                </select>
+                <label>🎨 PRIMARY ACCENT COLOR</label>
+                <input type="text" id="primaryColor" value="blue, cyan">
+                <label>💜 SECONDARY COLOR</label>
+                <input type="text" id="secondaryColor" value="magenta, purple">
+                <label>🔦 LIGHTING MODE</label>
+                <select id="lightingMode">
+                    <option>Standard cleanroom</option>
+                    <option selected>Darkfield inspection</option>
+                    <option>Fluorescence / Plasma glow</option>
+                    <option>Laser interferometry</option>
+                </select>
+            </div>
+            <div class="card">
+                <label>🔬 MICROSCOPY OVERLAY</label>
+                <select id="microscopyOverlay">
+                    <option>None</option>
+                    <option selected>SEM (scanning electron)</option>
+                    <option>TEM (transmission)</option>
+                    <option>AFM topography</option>
+                </select>
+                <label>✨ BEAM VISUALIZATION</label>
+                <select id="beamVis">
+                    <option>Off</option>
+                    <option selected>Photon/EUV beam traces</option>
+                    <option>Electron beam</option>
+                    <option>Ion beam</option>
+                </select>
+                <label>🎯 RIGHT STATION</label>
+                <select id="rightStation">
+                    <option>Metrology / AFM</option>
+                    <option>Electron-beam lithography</option>
+                    <option selected>Plasma cleaning & RIE</option>
+                </select>
+            </div>
         </div>
     </div>
 
-    <!-- TAB 3 -->
+    <!-- TAB 3: 3D IMPORT/EXPORT (расширен) -->
     <div id="3d" class="tab-pane">
-        <div class="grid"><div class="card"><label>📂 IMPORT 3D MODEL</label><input type="text" id="importModel" value="wafer_stage.step">
-        <label>💾 EXPORT FORMAT</label><select id="exportFormat"><option>obj</option><option selected>fbx</option><option>stl</option><option>step</option><option>3mf</option></select>
-        <label>🎥 CAMERA ANGLE</label><select id="cameraAngle"><option>Isometric</option><option>Top-down</option><option selected>Side cutaway</option><option>Dutch angle</option></select></div>
-        <div class="card"><label>💥 EXPLODED VIEW</label><select id="explodedView"><option selected>0% assembled</option><option>30% slight</option><option>100% full</option></select>
-        <label>✂️ CROSS-SECTION</label><select id="crossSection"><option>None</option><option>X-axis</option><option>Y-axis</option><option selected>Z-axis</option></select>
-        <label>🔄 ANIMATION MODE</label><select id="animationMode"><option>Static image</option><option>360° rotation</option><option>Layer build-up</option></select></div>
+        <div class="grid">
+            <div class="card">
+                <label>📂 IMPORT 3D MODEL</label>
+                <input type="text" id="importModel" value="wafer_stage.step">
+                <label>💾 EXPORT FORMAT</label>
+                <select id="exportFormat">
+                    <option>obj</option>
+                    <option selected>fbx</option>
+                    <option>stl</option>
+                    <option>step</option>
+                    <option>3mf</option>
+                </select>
+                <label>🎥 CAMERA ANGLE</label>
+                <select id="cameraAngle">
+                    <option>Isometric</option>
+                    <option>Top-down</option>
+                    <option selected>Side cutaway</option>
+                    <option>Dutch angle / cinematic</option>
+                </select>
+            </div>
+            <div class="card">
+                <label>💥 EXPLODED VIEW</label>
+                <select id="explodedView">
+                    <option selected>0% (assembled)</option>
+                    <option>30% slight separation</option>
+                    <option>100% full layer explode</option>
+                </select>
+                <label>✂️ CROSS-SECTION PLANE</label>
+                <select id="crossSection">
+                    <option>None</option>
+                    <option>X-axis</option>
+                    <option>Y-axis</option>
+                    <option selected>Z-axis (vertical cut)</option>
+                </select>
+                <label>🔄 ANIMATION MODE</label>
+                <select id="animationMode">
+                    <option>Static image</option>
+                    <option>360° rotation</option>
+                    <option>Layer build-up</option>
+                </select>
+            </div>
         </div>
     </div>
 
-    <!-- TAB 4 -->
+    <!-- TAB 4: VFX + ATMOSPHERE -->
     <div id="fx" class="tab-pane">
-        <div class="grid"><div class="card"><label>🌀 HOLOGRAM TRANSPARENCY</label><select id="hologramAlpha"><option>0% solid</option><option selected>40% ghost</option><option>80% faint</option></select>
-        <label>⚡ DUST / PARTICLE LEVEL</label><select id="dustLevel"><option>Class-1 perfect</option><option selected>Class-10 few</option><option>Class-100 visible</option></select>
-        <label>🌈 FALSE COLOR MAPPING</label><select id="falseColor"><option>None</option><option>Temperature map</option><option selected>Height map</option><option>Dopant concentration</option></select></div>
-        <div class="card"><label>📺 HUD OVERLAY STYLE</label><select id="hudStyle"><option>None</option><option>Industrial terminal</option><option selected>HoloLens metrics</option><option>Cyberpunk neon</option></select>
-        <label>🏷️ TECHNICAL ANNOTATIONS</label><select id="annotations"><option>Off</option><option>Measurement callouts</option><option selected>Flow arrows + labels</option></select>
-        <label>🎬 DEPTH OF FIELD</label><select id="dof"><option>Shallow macro</option><option selected>Medium hero</option><option>Infinite panorama</option></select></div>
+        <div class="grid">
+            <div class="card">
+                <label>🌀 HOLOGRAM TRANSPARENCY</label>
+                <select id="hologramAlpha">
+                    <option>0% (solid)</option>
+                    <option selected>40% (semi-ghost)</option>
+                    <option>80% (faint)</option>
+                </select>
+                <label>⚡ DUST / PARTICLE LEVEL</label>
+                <select id="dustLevel">
+                    <option>Class-1 (perfect clean)</option>
+                    <option selected>Class-10 (few floating particles)</option>
+                    <option>Class-100 (visible haze)</option>
+                </select>
+                <label>🌈 FALSE COLOR MAPPING</label>
+                <select id="falseColor">
+                    <option>None</option>
+                    <option>Temperature map</option>
+                    <option selected>Height map (red→blue)</option>
+                    <option>Dopant concentration</option>
+                </select>
+            </div>
+            <div class="card">
+                <label>📺 HUD / OVERLAY STYLE</label>
+                <select id="hudStyle">
+                    <option>None</option>
+                    <option>Industrial terminal</option>
+                    <option selected>HoloLens-style metrics</option>
+                    <option>Cyberpunk neon</option>
+                </select>
+                <label>🏷️ TECHNICAL ANNOTATIONS</label>
+                <select id="annotations">
+                    <option>Off</option>
+                    <option>Measurement callouts</option>
+                    <option selected>Flow arrows + labels</option>
+                </select>
+                <label>🎬 DEPTH OF FIELD</label>
+                <select id="dof">
+                    <option>Shallow (macro lens)</option>
+                    <option selected>Medium (hero shot)</option>
+                    <option>Infinite (panorama)</option>
+                </select>
+            </div>
         </div>
-        <div class="card"><label>🏞️ BACKGROUND / ATMOSPHERE</label><input type="text" id="atmo" value="holographic schematics, floating ternary diagrams, neon-lit surfaces"></div>
+        <div class="card" style="margin-top: 12px;">
+            <label>🏞️ BACKGROUND / ATMOSPHERE (custom)</label>
+            <input type="text" id="atmo" value="holographic schematics, floating ternary logic diagrams, neon-lit surfaces">
+        </div>
     </div>
 
     <!-- resolution & style -->
-    <div class="flex-row" style="justify-content: space-between; margin: 1rem 0;">
+    <div style="display: flex; gap: 1rem; margin: 1rem 0;">
         <div style="flex:1"><label>📷 RESOLUTION</label><select id="resolution"><option>8K</option><option>4K</option><option>12K</option></select></div>
         <div style="flex:2"><label>🎬 VISUAL STYLE</label><input type="text" id="style" value="photorealistic, cinematic sci-fi, ray-traced, ultra-sharp"></div>
     </div>
 
-    <!-- Encrypted presets bar -->
-    <div class="flex-row" style="margin-bottom: 1rem; gap: 10px;">
-        <button id="savePresetBtn" class="encrypt-btn">💾 SAVE ENCRYPTED PRESET</button>
-        <button id="loadPresetBtn" class="encrypt-btn">🔓 LOAD ENCRYPTED PRESET</button>
-        <button id="syncAmengiBtn">🌀 SYNC WITH AMENGI (postMessage)</button>
-    </div>
-
     <div class="prompt-area">
         <div class="flex-row" style="justify-content: space-between;">
-            <strong>🔮 GENERATED PROMPT (TTV encrypted watermark)</strong>
+            <strong>🔮 GENERATED PROMPT (TTV watermark embedded)</strong>
             <button id="copyBtn">📋 COPY</button>
         </div>
         <textarea id="promptOutput" readonly></textarea>
         <div class="flex-row" style="margin-top: 10px; font-size: 12px; color:#6f8fbb;">
             <span>✅ 3D: <span id="importPreview">wafer_stage.step</span> → EXPORT <span id="exportPreview">fbx</span></span>
-            <span>⚡ TerraTrampilleraVerse Holding — all prompts signed & encrypted</span>
+            <span>⚡ TerraTrampilleraVerse Holding — all prompts signed</span>
         </div>
     </div>
 </div>
 
 <script>
-    const SECRET_KEY = "TTV_PREDATOR_AMENGI_KEY";
-
-    function encryptData(data) {
-        return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
-    }
-
-    function decryptData(encrypted) {
-        const bytes = CryptoJS.AES.decrypt(encrypted, SECRET_KEY);
-        return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-    }
-
-    function savePreset() {
-        const settings = {};
-        document.querySelectorAll('select, input').forEach(el => {
-            if (el.id) settings[el.id] = el.value;
-        });
-        const encrypted = encryptData(settings);
-        localStorage.setItem("ttv_litho_preset_v2", encrypted);
-        alert("✅ Preset encrypted with AES & saved locally (TerraTrampilleraVerse)");
-    }
-
-    function loadPreset() {
-        const encrypted = localStorage.getItem("ttv_litho_preset_v2");
-        if (!encrypted) { alert("No saved preset found."); return; }
-        try {
-            const settings = decryptData(encrypted);
-            for (const [id, value] of Object.entries(settings)) {
-                const el = document.getElementById(id);
-                if (el) el.value = value;
-            }
-            generatePrompt();
-            alert("🔓 Preset loaded and decrypted successfully.");
-        } catch(e) { alert("Decryption failed — wrong key or corrupted preset."); }
-    }
-
     function generatePrompt() {
         const logic = document.getElementById('logicSystem').value;
         const logicDetail = document.getElementById('logicDetail').value;
-        let logicDesc = logic === "binary" ? `binary logic (0/1) with ${logicDetail}` : (logic === "ternary" ? `ternary logic (-1,0,+1) using ${logicDetail}` : `quaternary logic (0-3) with ${logicDetail}`);
+        let logicDesc = "";
+        if(logic === "binary") logicDesc = `binary-state logic (0/1) with ${logicDetail}`;
+        else if(logic === "ternary") logicDesc = `ternary logic (-1,0,+1) using ${logicDetail}`;
+        else logicDesc = `quaternary logic (0,1,2,3) with ${logicDetail}`;
+
         const equipment = document.getElementById('equipment').value;
         const primary = document.getElementById('primaryColor').value;
         const secondary = document.getElementById('secondaryColor').value;
@@ -323,31 +435,20 @@
         const animation = document.getElementById('animationMode').value;
 
         let leftEq = "";
-        if(equipment === "euv") leftEq = `High-NA EUV emits extreme UV, projecting onto ${waferSize} ${waferMat} wafer with glowing ${primary} accents`;
-        else if(equipment === "nanoimprint") leftEq = `nanoimprint station physically presses patterns into resist, highlighted ${secondary}`;
-        else if(equipment === "plasma_etch") leftEq = `ICP plasma etching chamber, ${primary} plasma glow`;
+        if(equipment === "euv") leftEq = `High-NA EUV lithography machine emits extreme UV light, projecting patterns onto ${waferSize} ${waferMat} wafer with glowing ${primary} accents`;
+        else if(equipment === "nanoimprint") leftEq = `nanoimprint station physically presses nanoscale patterns into resist, highlighted ${secondary}`;
+        else if(equipment === "plasma_etch") leftEq = `ICP plasma etching chamber with reactive beams, ${primary} plasma glow`;
         else leftEq = `ALD reactor with precursor pulses, ${primary} neon indicators`;
 
-        let prompt = `[TerraTrampilleraVerse Holding] Hyper-detailed semiconductor lab, ${processNode} node, ${waferSize} ${waferMat} wafer. Logic: ${logicDesc}. Defect map: ${defect}. `;
-        prompt += `Left: ${leftEq}. Right: ${rightStation} with robotic arms. Lighting: ${lighting}. Microscopy: ${microscopy}, beam: ${beam}. `;
-        prompt += `False color: ${falseColor}. Camera: ${camAngle}, exploded ${exploded}, cross-section ${cross}. Hologram alpha ${holoAlpha}, particles ${dust}, HUD ${hud}, DOF ${dof}. `;
-        prompt += `Background: ${atmo}, neon ${primary} & ${secondary}. Animation: ${animation}. ${resolution}, style: ${styleText}. `;
-        prompt += `[3D: imported "${importModel}", export as ${exportFormat}. Watermark: TTV/TerraTrampilleraVerse. All rights reserved.]`;
+        let prompt = `[TerraTrampilleraVerse Holding] A hyper-detailed, futuristic semiconductor laboratory, ${processNode} node, ${waferSize} ${waferMat} wafer. Logic: ${logicDesc}. Defect map: ${defect}. `;
+        prompt += `On left: ${leftEq}. On right: ${rightStation} with robotic arms. Lighting: ${lighting}. Microscopy overlay: ${microscopy}, beam visualization: ${beam}. `;
+        prompt += `False color: ${falseColor}. Camera: ${camAngle}, exploded view ${exploded}, cross-section ${cross}. Hologram alpha ${holoAlpha}, particle level ${dust}, HUD style ${hud}, depth of field ${dof}. `;
+        prompt += `Background: ${atmo}, neon surfaces ${primary} and ${secondary}. Animation mode: ${animation}. Resolution ${resolution}, style: ${styleText}. `;
+        prompt += `[3D: imported "${importModel}", export as ${exportFormat}. Watermark: TTV/TerraTrampilleraVerse. ALL RIGHTS RESERVED — unauthorized commercial use prohibited.]`;
 
         document.getElementById('promptOutput').value = prompt;
         document.getElementById('importPreview').innerHTML = importModel;
         document.getElementById('exportPreview').innerHTML = exportFormat;
-    }
-
-    function syncWithAmengi() {
-        const prompt = document.getElementById('promptOutput').value;
-        window.parent.postMessage({
-            type: 'TTV_PROMPT_SYNC',
-            payload: prompt,
-            source: 'TTV_Litho_Prophet',
-            timestamp: Date.now()
-        }, '*');
-        alert("🌀 Prompt sent to Wellamatores Metaverse / AMENGI Artifact (postMessage)");
     }
 
     // tabs logic
@@ -355,23 +456,21 @@
         btn.addEventListener('click', () => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            const tabId = btn.getAttribute('data-tab');
             document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-            document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
         });
     });
 
-    document.querySelectorAll('select, input').forEach(el => el.addEventListener('input', generatePrompt));
-    document.querySelectorAll('select, input').forEach(el => el.addEventListener('change', generatePrompt));
+    const allInputs = document.querySelectorAll('select, input');
+    allInputs.forEach(el => el.addEventListener('input', generatePrompt));
+    allInputs.forEach(el => el.addEventListener('change', generatePrompt));
     document.getElementById('copyBtn').addEventListener('click', () => {
         const out = document.getElementById('promptOutput');
         out.select();
         document.execCommand('copy');
-        alert('✅ Prompt copied with TTV watermark.');
+        alert('✅ Copied with TTV watermark — TerraTrampilleraVerse');
     });
-    document.getElementById('savePresetBtn').addEventListener('click', savePreset);
-    document.getElementById('loadPresetBtn').addEventListener('click', loadPreset);
-    document.getElementById('syncAmengiBtn').addEventListener('click', syncWithAmengi);
-
     generatePrompt();
 </script>
 </body>
