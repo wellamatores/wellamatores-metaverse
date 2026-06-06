@@ -80,6 +80,12 @@
     .node-title { font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; }
     .node-desc { font-size: 0.55rem; color: #8BA2C2; }
     .footer-holding { margin-top: 2rem; text-align: center; font-size: 0.55rem; font-family: monospace; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); color: #5A6E8A; }
+    /* TTV Embed styles */
+    .ttv-embed { margin: 1.5rem 0; border-radius: 24px; overflow: hidden; border: 1px solid rgba(0,229,255,0.4); background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); }
+    .ttv-embed-header { padding: 0.5rem 1rem; background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(0,229,255,0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .ttv-embed-header span:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 1px; color: #00E5FF; }
+    .ttv-embed-header span:last-child { font-family: monospace; font-size: 0.55rem; color: #F9A826; }
+    .ttv-embed-footer { padding: 0.4rem 1rem; background: rgba(0,0,0,0.5); border-top: 1px solid rgba(0,229,255,0.2); font-size: 0.55rem; color: #6BB5A0; text-align: center; font-family: monospace; }
     @media (max-width: 700px) { .research-nodes { grid-template-columns: repeat(2, 1fr); } .holo-digits { flex-wrap: wrap; } .clan-grid { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
@@ -99,7 +105,7 @@
         <button class="division-btn active" data-division="jog">🛰️ JOG</button>
         <button class="division-btn" data-division="plutonia">🌀 PLUTONIA X</button>
         <button class="division-btn" data-division="bureau">🏛️ Le Bureau</button>
-     <button class="division-btn" data-division="jackdaw" id="jackdawDivisionBtn" onclick="window.open('BASTION.html', '_blank')">🐦 JACKDAW University</button>
+        <button class="division-btn" data-division="jackdaw" id="jackdawDivisionBtn" onclick="window.open('BASTION.html', '_blank')">🐦 JACKDAW University</button>
         <button class="division-btn" data-division="holding">💠 Holding</button>
       </div>
       <div class="system-status">
@@ -111,7 +117,7 @@
     <a href="javascript:history.back()" class="back-link">← BACK TO MAIN PAGE</a>
 
     <div class="lab-main-grid">
-      <!-- LEFT PANEL (unchanged) -->
+      <!-- LEFT PANEL -->
       <div class="panel-left">
         <div class="panel-header">🐺 PREDATORS SQUAD • AUTONOMOUS UNIT</div>
         <div class="predators-panel">
@@ -176,7 +182,6 @@
       <div class="panel-right">
         <div class="video-portal">
           <div class="video-wrapper" id="videoWrapper">
-            <!-- Will be filled dynamically: either iframe OR div with 3D -->
             <div id="amengi-3d-container" style="width:100%;height:100%;display:none;"></div>
             <iframe id="youtubeFrame" src="about:blank" frameborder="0" allowfullscreen style="width:100%;height:100%;display:none;"></iframe>
           </div>
@@ -224,6 +229,18 @@
       <div class="node-card"><div class="node-icon">⚡</div><div class="node-title">JACKDAW HUB</div><div class="node-desc">Training active</div></div>
     </div>
 
+    <!-- TTV LITHO PROPHET - TerraTrampilleraVerse Integration -->
+    <div class="ttv-embed">
+      <div class="ttv-embed-header">
+        <span>⚡ TTV LITHO PROPHET</span>
+        <span>🔒 TerraTrampilleraVerse Holding • encrypted presets</span>
+      </div>
+      <iframe src="/ttv/ttv-litho-prophet-v2.1.html" width="100%" height="700" frameborder="0" style="display: block; background: #03081a;"></iframe>
+      <div class="ttv-embed-footer">
+        🧠 binary/ternary/quaternary logic • 3D I/O (OBJ/FBX/STEP) • AES-encrypted presets • sync with AMENGI
+      </div>
+    </div>
+
     <div class="footer-holding">
       <span>TerratrampilleraVerse Holding — JOG Laboratory Network • Amengi Artifact 3D Analysis • Cultural & Tech Exchange with Kingdom of Predators</span>
     </div>
@@ -240,7 +257,7 @@
   </script>
 
   <script type="module">
-    // --- Amengi Artifact 3D Scene (from second file, fully integrated) ---
+    // --- Amengi Artifact 3D Scene ---
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -252,10 +269,8 @@
     let amengiContainer = null;
 
     function initAmengiScene(containerElement) {
-      // Clear container
       while (containerElement.firstChild) containerElement.removeChild(containerElement.firstChild);
       
-      // Setup scene
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(0x03080c);
       scene.fog = new THREE.FogExp2(0x03080c, 0.008);
@@ -291,7 +306,6 @@
       controls.autoRotate = false;
       controls.target.set(0, 0.5, 0);
       
-      // Lighting
       const ambientLight = new THREE.AmbientLight(0x111820);
       scene.add(ambientLight);
       const mainLight = new THREE.DirectionalLight(0xd4b87a, 1.2);
@@ -307,7 +321,6 @@
       pulseLight.position.set(0.5, 0.8, 0.5);
       scene.add(pulseLight);
       
-      // Particles
       const particleCount = 1200;
       const particlesGeometry = new THREE.BufferGeometry();
       const particlePositions = new Float32Array(particleCount * 3);
@@ -321,7 +334,6 @@
       const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
       scene.add(particleSystem);
       
-      // Artifact group
       const artifactGroup = new THREE.Group();
       
       const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
@@ -388,7 +400,6 @@
       
       scene.add(artifactGroup);
       
-      // Pedestal
       const pedestalGroup = new THREE.Group();
       const baseGeo = new THREE.CylinderGeometry(2.2, 2.5, 0.4, 8);
       const stoneMat = new THREE.MeshStandardMaterial({ color: 0x2a2e3a, roughness: 0.7, metalness: 0.1, emissive: 0x111111 });
@@ -411,7 +422,6 @@
       pedestalGroup.add(runeLines);
       scene.add(pedestalGroup);
       
-      // Lightning
       const lightningMat = new THREE.LineBasicMaterial({ color: 0xff6633 });
       function createLightning(start, end, segments = 8) {
         const points = [start.clone()];
@@ -435,7 +445,6 @@
         artifactGroup.add(lightning);
       }
       
-      // Energy particles
       const energyParticleCount = 800;
       const energyParticleGeo = new THREE.BufferGeometry();
       const energyPositions = new Float32Array(energyParticleCount * 3);
@@ -452,7 +461,6 @@
       const energyParticles = new THREE.Points(energyParticleGeo, energyParticleMat);
       artifactGroup.add(energyParticles);
       
-      // Ground ring
       const groundRingGeo = new THREE.RingGeometry(2.4, 3.4, 32);
       const groundRingMat = new THREE.MeshStandardMaterial({ color: 0x1f2a1e, emissive: 0x331a0a, side: THREE.DoubleSide, transparent: true, opacity: 0.5, metalness: 0.1 });
       const groundRing = new THREE.Mesh(groundRingGeo, groundRingMat);
@@ -460,7 +468,6 @@
       groundRing.position.y = -0.95;
       scene.add(groundRing);
       
-      // Starfield
       const starCount = 3000;
       const starGeo = new THREE.BufferGeometry();
       const starPos = [];
@@ -522,7 +529,6 @@
       
       animate();
       
-      // Handle resize for this specific renderer
       const resizeObserver = new ResizeObserver(() => {
         if (!amengiContainer || !amengiContainer.parentElement) return;
         const width = amengiContainer.clientWidth;
@@ -586,7 +592,7 @@
       addLogMessage("Switched to YAUTJA PRIME FEED • KHARMA MOVIE (Predator Origins)", 'predator');
     }
     
-    // --- Background 3D (first file's decorative scene) ---
+    // Background 3D
     const containerBg = document.getElementById('canvas-container');
     const bgScene = new THREE.Scene(); bgScene.background = new THREE.Color(0x03060C); bgScene.fog = new THREE.FogExp2(0x03060C, 0.008);
     const bgCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); bgCamera.position.set(0, 2, 12);
@@ -644,7 +650,7 @@
       bgCamera.aspect = window.innerWidth / window.innerHeight; bgCamera.updateProjectionMatrix(); bgRenderer.setSize(window.innerWidth, window.innerHeight);
     });
     
-    // --- UI and helpers from first file ---
+    // UI and helpers
     const clans = ["Shadow Clan", "Iron Wolves Clan", "Black Flame Clan", "North Wind Clan", "Deep Hunters Clan", "Blood Moon Clan", "Ice Peaks Clan", "Rusted Thrones Clan", "White Ghosts Clan", "Fire Hearts Clan", "Stone Wardens Clan", "Rending Claws Clan", "Silent Harbor Clan", "Broken Spears Clan", "Last Chance Clan"];
     document.getElementById('clansGrid').innerHTML = clans.map(clan => `<div class="clan-tag">${clan}</div>`).join('');
     
@@ -768,7 +774,6 @@
       else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
     }
     
-    // Wire buttons
     document.getElementById('initiateBtn').addEventListener('click', initiateResearch);
     document.getElementById('resetBtn').addEventListener('click', resetSimulation);
     document.getElementById('checkPredatorsBtn').addEventListener('click', checkPredatorsStatus);
@@ -793,13 +798,48 @@
       });
     });
     
-    // Initialize default: Yautja Prime stream
     switchToYautjaPrime();
     updateUI();
     addLogMessage('🐺 Predators squad deployed. "Operating autonomously, ready to assist"', 'predator');
     addLogMessage('🧠 Amengi Artifact 3D integration ready • Click "AMENGI ARTIFACT (3D)"', 'system');
     addLogMessage('👑 15 clans of the Kingdom of Predators recognized • Cultural exchange active', 'info');
     setTimeout(() => { if (!helpRequestActive) showHelpRequest(); }, 15000);
+  </script>
+
+  <!-- TTV PostMessage Listener for AMENGI sync -->
+  <script>
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'TTV_PROMPT_SYNC') {
+        const promptPreview = event.data.payload.length > 120 
+          ? event.data.payload.substring(0, 120) + '…' 
+          : event.data.payload;
+        
+        // Add to log terminal if function exists
+        if (typeof addLogMessage === 'function') {
+          addLogMessage(`[TTV] Prompt synced with AMENGI: ${promptPreview}`, 'system');
+        } else {
+          console.log("[AMENGI ARTIFACT] Full prompt received:", event.data.payload);
+          // Fallback: add to terminal manually
+          const log = document.getElementById('logTerminal');
+          if (log) {
+            const newLine = document.createElement('div');
+            newLine.className = 'log-line';
+            newLine.innerHTML = `> [${new Date().toLocaleTimeString()}] ⚙️ [SYSTEM] [TTV] Prompt synced: ${promptPreview}`;
+            log.insertBefore(newLine, log.firstChild);
+            if (log.children.length > 12) log.removeChild(log.lastChild);
+          }
+        }
+        
+        // Optional: boost neural resonance when ternary logic is used
+        if (event.data.payload && event.data.payload.match(/ternary/i)) {
+          if (typeof researchProgress !== 'undefined') {
+            researchProgress = Math.min(100, researchProgress + 0.5);
+            if (typeof updateUI === 'function') updateUI();
+          }
+        }
+      }
+    });
+    console.log("TTV PostMessage listener active — ready for AMENGI sync");
   </script>
 </body>
 </html>
