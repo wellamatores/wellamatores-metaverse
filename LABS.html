@@ -86,6 +86,22 @@
     .ttv-embed-header span:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 1px; color: #00E5FF; }
     .ttv-embed-header span:last-child { font-family: monospace; font-size: 0.55rem; color: #F9A826; }
     .ttv-embed-footer { padding: 0.4rem 1rem; background: rgba(0,0,0,0.5); border-top: 1px solid rgba(0,229,255,0.2); font-size: 0.55rem; color: #6BB5A0; text-align: center; font-family: monospace; }
+    .ttv-fullscreen-btn {
+      background: rgba(0,229,255,0.2);
+      border: 1px solid #00E5FF;
+      border-radius: 30px;
+      padding: 4px 12px;
+      color: #00E5FF;
+      font-family: monospace;
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ttv-fullscreen-btn:hover {
+      background: #00E5FF;
+      color: #000;
+      box-shadow: 0 0 8px #00E5FF;
+    }
     @media (max-width: 700px) { .research-nodes { grid-template-columns: repeat(2, 1fr); } .holo-digits { flex-wrap: wrap; } .clan-grid { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
@@ -229,13 +245,18 @@
       <div class="node-card"><div class="node-icon">⚡</div><div class="node-title">JACKDAW HUB</div><div class="node-desc">Training active</div></div>
     </div>
 
-    <!-- TTV LITHO PROPHET - TerraTrampilleraVerse Integration -->
-    <div class="ttv-embed">
+    <!-- TTV LITHO PROPHET - TerraTrampilleraVerse Integration (FULLSCREEN FIXED) -->
+    <div class="ttv-embed" id="ttvMainBlock">
       <div class="ttv-embed-header">
         <span>⚡ TTV LITHO PROPHET</span>
-        <span>🔒 TerraTrampilleraVerse Holding • encrypted presets</span>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span>🔒 TerraTrampilleraVerse Holding • encrypted presets</span>
+          <button class="ttv-fullscreen-btn" id="ttvFullscreenBtn">⛶ FULLSCREEN</button>
+        </div>
       </div>
-      <iframe src="/ttv/ttv-litho-prophet-v2.1.html" width="100%" height="700" frameborder="0" style="display: block; background: #03081a;"></iframe>
+      <div id="ttvIframeWrapper" style="position: relative; transition: all 0.3s ease;">
+        <iframe id="ttvIframe" src="https://wellamatores-metaverse.vercel.app/TTV_Litho_Prophet.html" width="100%" height="700" frameborder="0" style="display: block; background: #03081a;"></iframe>
+      </div>
       <div class="ttv-embed-footer">
         🧠 binary/ternary/quaternary logic • 3D I/O (OBJ/FBX/STEP) • AES-encrypted presets • sync with AMENGI
       </div>
@@ -840,6 +861,85 @@
       }
     });
     console.log("TTV PostMessage listener active — ready for AMENGI sync");
+
+    // TTV FULLSCREEN FUNCTIONALITY
+    (function() {
+      const ttvBlock = document.getElementById('ttvMainBlock');
+      const fullscreenBtn = document.getElementById('ttvFullscreenBtn');
+      const iframeWrapper = document.getElementById('ttvIframeWrapper');
+      const iframe = document.getElementById('ttvIframe');
+      let isTtvFullscreen = false;
+      let originalWrapperStyle = {};
+      let originalBlockStyle = {};
+
+      function enterTtvFullscreen() {
+        originalWrapperStyle = {
+          position: iframeWrapper.style.position,
+          top: iframeWrapper.style.top,
+          left: iframeWrapper.style.left,
+          width: iframeWrapper.style.width,
+          height: iframeWrapper.style.height,
+          zIndex: iframeWrapper.style.zIndex,
+          backgroundColor: iframeWrapper.style.backgroundColor
+        };
+        originalBlockStyle = {
+          margin: ttvBlock.style.margin,
+          position: ttvBlock.style.position
+        };
+        
+        iframeWrapper.style.position = 'fixed';
+        iframeWrapper.style.top = '0';
+        iframeWrapper.style.left = '0';
+        iframeWrapper.style.width = '100vw';
+        iframeWrapper.style.height = '100vh';
+        iframeWrapper.style.zIndex = '10000';
+        iframeWrapper.style.backgroundColor = '#03081a';
+        
+        iframe.style.height = '100vh';
+        iframe.style.width = '100vw';
+        
+        document.body.style.overflow = 'hidden';
+        
+        fullscreenBtn.textContent = '❌ EXIT';
+        isTtvFullscreen = true;
+      }
+
+      function exitTtvFullscreen() {
+        iframeWrapper.style.position = originalWrapperStyle.position || '';
+        iframeWrapper.style.top = originalWrapperStyle.top || '';
+        iframeWrapper.style.left = originalWrapperStyle.left || '';
+        iframeWrapper.style.width = originalWrapperStyle.width || '';
+        iframeWrapper.style.height = originalWrapperStyle.height || '';
+        iframeWrapper.style.zIndex = originalWrapperStyle.zIndex || '';
+        iframeWrapper.style.backgroundColor = originalWrapperStyle.backgroundColor || '';
+        
+        iframe.style.height = '700px';
+        iframe.style.width = '100%';
+        
+        document.body.style.overflow = '';
+        
+        fullscreenBtn.textContent = '⛶ FULLSCREEN';
+        isTtvFullscreen = false;
+      }
+
+      function toggleTtvFullscreen() {
+        if (isTtvFullscreen) {
+          exitTtvFullscreen();
+        } else {
+          enterTtvFullscreen();
+        }
+      }
+
+      if (fullscreenBtn) {
+        fullscreenBtn.addEventListener('click', toggleTtvFullscreen);
+      }
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isTtvFullscreen) {
+          exitTtvFullscreen();
+        }
+      });
+    })();
   </script>
 </body>
 </html>
