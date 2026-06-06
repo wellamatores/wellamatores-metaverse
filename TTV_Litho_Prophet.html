@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTV Litho Prophet | TerraTrampilleraVerse</title>
+    <!-- CryptoJS for AES-like encryption -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background: radial-gradient(circle at 20% 30%, #0a0c1a, #010101);
+            font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .ttv-container {
+            max-width: 1500px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(6, 12, 24, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.6), 0 0 20px rgba(0, 255, 255, 0.2);
+            padding: 1.6rem;
+            position: relative;
+        }
+        .watermark {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 10px;
+            color: rgba(0, 255, 255, 0.25);
+            font-family: monospace;
+            pointer-events: none;
+            background: rgba(0,0,0,0.4);
+            padding: 4px 12px;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+        }
+        .watermark::before {
+            content: "⚡ TTV • TerraTrampilleraVerse Holding • encrypted litho engine ⚡";
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            background: linear-gradient(135deg, #0ff, #f0f, #ffcc44);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .sub {
+            color: #8ba0c0;
+            margin-bottom: 1.5rem;
+            border-left: 3px solid #0ff;
+            padding-left: 1rem;
+            font-size: 0.85rem;
+        }
+        .tabs {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #1e3a5f;
+            padding-bottom: 8px;
+        }
+        .tab-btn {
+            background: #0e1628;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 40px;
+            color: #bbd4ff;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .tab-btn.active {
+            background: #0ff;
+            color: #010514;
+            box-shadow: 0 0 12px #0ff;
+        }
+        .tab-pane {
+            display: none;
+            animation: fade 0.2s ease;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background: rgba(18, 28, 48, 0.7);
+            border-radius: 1.3rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(0, 200, 255, 0.2);
+        }
+        label {
+            display: block;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #7c9ed6;
+            margin-top: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+        select, input {
+            width: 100%;
+            background: #030612;
+            border: 1px solid #2a3f60;
+            padding: 8px 12px;
+            border-radius: 14px;
+            color: #eef4ff;
+            font-size: 0.85rem;
+        }
+        .prompt-area {
+            margin-top: 2rem;
+            background: #02040c;
+            border-radius: 1.4rem;
+            border: 1px solid #0ff33f;
+            padding: 1.2rem;
+        }
+        textarea {
+            width: 100%;
+            background: #000000;
+            border: 1px solid #2c5282;
+            border-radius: 1rem;
+            color: #d4e6ff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            padding: 1rem;
+            min-height: 170px;
+        }
+        button {
+            background: linear-gradient(95deg, #0f5cbf, #7a2be0);
+            border: none;
+            padding: 8px 22px;
+            border-radius: 34px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+        .flex-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .badge-ttv {
+            background: #1f2a44;
+            border-radius: 30px;
+            padding: 2px 12px;
+            font-size: 0.7rem;
+        }
+        .encrypt-btn {
+            background: #2a2f4f;
+            border: 1px solid #f0f;
+        }
+    </style>
+</head>
+<body>
+<div class="ttv-container">
+    <div class="watermark"></div>
+    <div class="flex-row" style="justify-content: space-between;">
+        <div>
+            <h1>🔬 TTV LITHO PROPHET</h1>
+            <div class="sub">binary/ternary/quaternary • EUV / nanoimprint • 3D I/O • encrypted presets</div>
+        </div>
+        <div class="badge-ttv">⚡ TerraTrampilleraVerse v2.1</div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="basic">🧬 CORE / LOGIC</button>
+        <button class="tab-btn" data-tab="equip">🛠️ EQUIPMENT & OPTICS</button>
+        <button class="tab-btn" data-tab="3d">📦 3D IMPORT/EXPORT</button>
+        <button class="tab-btn" data-tab="fx">✨ ADVANCED VFX</button>
+    </div>
+
+    <!-- TAB 1 -->
+    <div id="basic" class="tab-pane active">
+        <div class="grid">
+            <div class="card"><label>🧠 LOGIC SYSTEM</label><select id="logicSystem"><option value="binary">BINARY (0/1)</option><option value="ternary" selected>TERNARY (-1,0,+1)</option><option value="quaternary">QUATERNARY (0-3)</option></select>
+            <label>📝 LOGIC DESCRIPTION</label><input type="text" id="logicDetail" value="balanced multi-valued transistor arrays with ternary flip-flops">
+            <label>🔢 PROCESS NODE</label><select id="processNode"><option>2nm</option><option selected>3nm</option><option>5nm</option><option>7nm</option><option>14nm</option></select>
+            <label>💎 WAFER MATERIAL</label><select id="waferMaterial"><option>Silicon (Si)</option><option selected>GaN-on-Si</option><option>SiC</option><option>Graphene / 2D MoS₂</option></select></div>
+            <div class="card"><label>📏 WAFER SIZE</label><select id="waferSize"><option>200mm</option><option selected>300mm</option><option>450mm</option></select>
+            <label>⏱️ PROCESS STEP</label><select id="processStep"><option>Exposure</option><option>Development</option><option selected>Etching</option><option>Deposition</option><option>Metrology</option></select>
+            <label>🌡️ DEFECT DENSITY MAP</label><select id="defectDensity"><option>None (perfect)</option><option>Low</option><option selected>Medium (heatmap)</option><option>High</option></select></div>
+        </div>
+    </div>
+
+    <!-- TAB 2 -->
+    <div id="equip" class="tab-pane">
+        <div class="grid"><div class="card"><label>🔆 MAIN TOOL</label><select id="equipment"><option value="euv" selected>High-NA EUV</option><option value="nanoimprint">Nanoimprint</option><option value="plasma_etch">ICP Plasma Etcher</option><option value="ald">ALD Reactor</option></select>
+        <label>🎨 PRIMARY COLOR</label><input type="text" id="primaryColor" value="blue, cyan">
+        <label>💜 SECONDARY COLOR</label><input type="text" id="secondaryColor" value="magenta, purple">
+        <label>🔦 LIGHTING MODE</label><select id="lightingMode"><option>Standard cleanroom</option><option selected>Darkfield inspection</option><option>Fluorescence</option><option>Laser interferometry</option></select></div>
+        <div class="card"><label>🔬 MICROSCOPY OVERLAY</label><select id="microscopyOverlay"><option>None</option><option selected>SEM</option><option>TEM</option><option>AFM</option></select>
+        <label>✨ BEAM VISUALIZATION</label><select id="beamVis"><option>Off</option><option selected>Photon/EUV traces</option><option>Electron beam</option><option>Ion beam</option></select>
+        <label>🎯 RIGHT STATION</label><select id="rightStation"><option>Metrology/AFM</option><option>E-beam lithography</option><option selected>Plasma cleaning & RIE</option></select></div>
+        </div>
+    </div>
+
+    <!-- TAB 3 -->
+    <div id="3d" class="tab-pane">
+        <div class="grid"><div class="card"><label>📂 IMPORT 3D MODEL</label><input type="text" id="importModel" value="wafer_stage.step">
+        <label>💾 EXPORT FORMAT</label><select id="exportFormat"><option>obj</option><option selected>fbx</option><option>stl</option><option>step</option><option>3mf</option></select>
+        <label>🎥 CAMERA ANGLE</label><select id="cameraAngle"><option>Isometric</option><option>Top-down</option><option selected>Side cutaway</option><option>Dutch angle</option></select></div>
+        <div class="card"><label>💥 EXPLODED VIEW</label><select id="explodedView"><option selected>0% assembled</option><option>30% slight</option><option>100% full</option></select>
+        <label>✂️ CROSS-SECTION</label><select id="crossSection"><option>None</option><option>X-axis</option><option>Y-axis</option><option selected>Z-axis</option></select>
+        <label>🔄 ANIMATION MODE</label><select id="animationMode"><option>Static image</option><option>360° rotation</option><option>Layer build-up</option></select></div>
+        </div>
+    </div>
+
+    <!-- TAB 4 -->
+    <div id="fx" class="tab-pane">
+        <div class="grid"><div class="card"><label>🌀 HOLOGRAM TRANSPARENCY</label><select id="hologramAlpha"><option>0% solid</option><option selected>40% ghost</option><option>80% faint</option></select>
+        <label>⚡ DUST / PARTICLE LEVEL</label><select id="dustLevel"><option>Class-1 perfect</option><option selected>Class-10 few</option><option>Class-100 visible</option></select>
+        <label>🌈 FALSE COLOR MAPPING</label><select id="falseColor"><option>None</option><option>Temperature map</option><option selected>Height map</option><option>Dopant concentration</option></select></div>
+        <div class="card"><label>📺 HUD OVERLAY STYLE</label><select id="hudStyle"><option>None</option><option>Industrial terminal</option><option selected>HoloLens metrics</option><option>Cyberpunk neon</option></select>
+        <label>🏷️ TECHNICAL ANNOTATIONS</label><select id="annotations"><option>Off</option><option>Measurement callouts</option><option selected>Flow arrows + labels</option></select>
+        <label>🎬 DEPTH OF FIELD</label><select id="dof"><option>Shallow macro</option><option selected>Medium hero</option><option>Infinite panorama</option></select></div>
+        </div>
+        <div class="card"><label>🏞️ BACKGROUND / ATMOSPHERE</label><input type="text" id="atmo" value="holographic schematics, floating ternary diagrams, neon-lit surfaces"></div>
+    </div>
+
+    <!-- resolution & style -->
+    <div class="flex-row" style="justify-content: space-between; margin: 1rem 0;">
+        <div style="flex:1"><label>📷 RESOLUTION</label><select id="resolution"><option>8K</option><option>4K</option><option>12K</option></select></div>
+        <div style="flex:2"><label>🎬 VISUAL STYLE</label><input type="text" id="style" value="photorealistic, cinematic sci-fi, ray-traced, ultra-sharp"></div>
+    </div>
+
+    <!-- Encrypted presets bar -->
+    <div class="flex-row" style="margin-bottom: 1rem; gap: 10px;">
+        <button id="savePresetBtn" class="encrypt-btn">💾 SAVE ENCRYPTED PRESET</button>
+        <button id="loadPresetBtn" class="encrypt-btn">🔓 LOAD ENCRYPTED PRESET</button>
+        <button id="syncAmengiBtn">🌀 SYNC WITH AMENGI (postMessage)</button>
+    </div>
+
+    <div class="prompt-area">
+        <div class="flex-row" style="justify-content: space-between;">
+            <strong>🔮 GENERATED PROMPT (TTV encrypted watermark)</strong>
+            <button id="copyBtn">📋 COPY</button>
+        </div>
+        <textarea id="promptOutput" readonly></textarea>
+        <div class="flex-row" style="margin-top: 10px; font-size: 12px; color:#6f8fbb;">
+            <span>✅ 3D: <span id="importPreview">wafer_stage.step</span> → EXPORT <span id="exportPreview">fbx</span></span>
+            <span>⚡ TerraTrampilleraVerse Holding — all prompts signed & encrypted</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const SECRET_KEY = "TTV_PREDATOR_AMENGI_KEY";
+
+    function encryptData(data) {
+        return CryptoJS.AES.encrypt(JSON.stringify(data), SECRET_KEY).toString();
+    }
+
+    function decryptData(encrypted) {
+        const bytes = CryptoJS.AES.decrypt(encrypted, SECRET_KEY);
+        return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    }
+
+    function savePreset() {
+        const settings = {};
+        document.querySelectorAll('select, input').forEach(el => {
+            if (el.id) settings[el.id] = el.value;
+        });
+        const encrypted = encryptData(settings);
+        localStorage.setItem("ttv_litho_preset_v2", encrypted);
+        alert("✅ Preset encrypted with AES & saved locally (TerraTrampilleraVerse)");
+    }
+
+    function loadPreset() {
+        const encrypted = localStorage.getItem("ttv_litho_preset_v2");
+        if (!encrypted) { alert("No saved preset found."); return; }
+        try {
+            const settings = decryptData(encrypted);
+            for (const [id, value] of Object.entries(settings)) {
+                const el = document.getElementById(id);
+                if (el) el.value = value;
+            }
+            generatePrompt();
+            alert("🔓 Preset loaded and decrypted successfully.");
+        } catch(e) { alert("Decryption failed — wrong key or corrupted preset."); }
+    }
+
+    function generatePrompt() {
+        const logic = document.getElementById('logicSystem').value;
+        const logicDetail = document.getElementById('logicDetail').value;
+        let logicDesc = logic === "binary" ? `binary logic (0/1) with ${logicDetail}` : (logic === "ternary" ? `ternary logic (-1,0,+1) using ${logicDetail}` : `quaternary logic (0-3) with ${logicDetail}`);
+        const equipment = document.getElementById('equipment').value;
+        const primary = document.getElementById('primaryColor').value;
+        const secondary = document.getElementById('secondaryColor').value;
+        const rightStation = document.getElementById('rightStation').value;
+        const atmo = document.getElementById('atmo').value;
+        const resolution = document.getElementById('resolution').value;
+        const styleText = document.getElementById('style').value;
+        const processNode = document.getElementById('processNode').value;
+        const waferMat = document.getElementById('waferMaterial').value;
+        const waferSize = document.getElementById('waferSize').value;
+        const lighting = document.getElementById('lightingMode').value;
+        const microscopy = document.getElementById('microscopyOverlay').value;
+        const beam = document.getElementById('beamVis').value;
+        const defect = document.getElementById('defectDensity').value;
+        const falseColor = document.getElementById('falseColor').value;
+        const camAngle = document.getElementById('cameraAngle').value;
+        const exploded = document.getElementById('explodedView').value;
+        const cross = document.getElementById('crossSection').value;
+        const holoAlpha = document.getElementById('hologramAlpha').value;
+        const dust = document.getElementById('dustLevel').value;
+        const hud = document.getElementById('hudStyle').value;
+        const dof = document.getElementById('dof').value;
+        const importModel = document.getElementById('importModel').value;
+        const exportFormat = document.getElementById('exportFormat').value.toUpperCase();
+        const animation = document.getElementById('animationMode').value;
+
+        let leftEq = "";
+        if(equipment === "euv") leftEq = `High-NA EUV emits extreme UV, projecting onto ${waferSize} ${waferMat} wafer with glowing ${primary} accents`;
+        else if(equipment === "nanoimprint") leftEq = `nanoimprint station physically presses patterns into resist, highlighted ${secondary}`;
+        else if(equipment === "plasma_etch") leftEq = `ICP plasma etching chamber, ${primary} plasma glow`;
+        else leftEq = `ALD reactor with precursor pulses, ${primary} neon indicators`;
+
+        let prompt = `[TerraTrampilleraVerse Holding] Hyper-detailed semiconductor lab, ${processNode} node, ${waferSize} ${waferMat} wafer. Logic: ${logicDesc}. Defect map: ${defect}. `;
+        prompt += `Left: ${leftEq}. Right: ${rightStation} with robotic arms. Lighting: ${lighting}. Microscopy: ${microscopy}, beam: ${beam}. `;
+        prompt += `False color: ${falseColor}. Camera: ${camAngle}, exploded ${exploded}, cross-section ${cross}. Hologram alpha ${holoAlpha}, particles ${dust}, HUD ${hud}, DOF ${dof}. `;
+        prompt += `Background: ${atmo}, neon ${primary} & ${secondary}. Animation: ${animation}. ${resolution}, style: ${styleText}. `;
+        prompt += `[3D: imported "${importModel}", export as ${exportFormat}. Watermark: TTV/TerraTrampilleraVerse. All rights reserved.]`;
+
+        document.getElementById('promptOutput').value = prompt;
+        document.getElementById('importPreview').innerHTML = importModel;
+        document.getElementById('exportPreview').innerHTML = exportFormat;
+    }
+
+    function syncWithAmengi() {
+        const prompt = document.getElementById('promptOutput').value;
+        window.parent.postMessage({
+            type: 'TTV_PROMPT_SYNC',
+            payload: prompt,
+            source: 'TTV_Litho_Prophet',
+            timestamp: Date.now()
+        }, '*');
+        alert("🌀 Prompt sent to Wellamatores Metaverse / AMENGI Artifact (postMessage)");
+    }
+
+    // tabs logic
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+            document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
+        });
+    });
+
+    document.querySelectorAll('select, input').forEach(el => el.addEventListener('input', generatePrompt));
+    document.querySelectorAll('select, input').forEach(el => el.addEventListener('change', generatePrompt));
+    document.getElementById('copyBtn').addEventListener('click', () => {
+        const out = document.getElementById('promptOutput');
+        out.select();
+        document.execCommand('copy');
+        alert('✅ Prompt copied with TTV watermark.');
+    });
+    document.getElementById('savePresetBtn').addEventListener('click', savePreset);
+    document.getElementById('loadPresetBtn').addEventListener('click', loadPreset);
+    document.getElementById('syncAmengiBtn').addEventListener('click', syncWithAmengi);
+
+    generatePrompt();
+</script>
+</body>
+</html>
