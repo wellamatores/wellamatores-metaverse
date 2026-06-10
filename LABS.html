@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Wellamatores LABS | Amengi Artifact • Quantum Logic • AES Presets</title>
+  <title>Wellamatores LABS | Predators Division • Amengi Artifact Integrated</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -22,12 +22,6 @@
     .logo-area h1 { font-size: 1.3rem; font-weight: 600; letter-spacing: 2px; color: #E1E9F0; }
     .logo-area h1 span { color: #00E5FF; text-shadow: 0 0 8px #00E5FF; }
     .logo-area p { font-size: 0.6rem; color: #8BA2C2; letter-spacing: 2px; }
-    .logic-switch { display: flex; gap: 0.5rem; background: rgba(10,14,23,0.9); backdrop-filter: blur(8px); padding: 0.3rem; border-radius: 8px; border: 1px solid rgba(0,229,255,0.3); }
-    .logic-btn { background: transparent; border: none; padding: 0.4rem 1rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.65rem; letter-spacing: 1px; color: #8BA2C2; cursor: pointer; transition: all 0.2s; border-radius: 4px; }
-    .logic-btn.active { background: rgba(0,229,255,0.2); color: #00E5FF; box-shadow: inset 0 0 8px rgba(0,229,255,0.2); border: 1px solid rgba(0,229,255,0.5); }
-    .preset-buttons { display: flex; gap: 0.5rem; }
-    .preset-btn { background: rgba(249,168,38,0.15); border: 1px solid #F9A826; padding: 0.4rem 1rem; border-radius: 8px; color: #F9A826; font-family: monospace; font-size: 0.65rem; cursor: pointer; transition: all 0.2s; }
-    .preset-btn:hover { background: #F9A826; color: #000; }
     .division-switch { display: flex; gap: 0.5rem; background: rgba(10,14,23,0.9); backdrop-filter: blur(8px); padding: 0.3rem; border-radius: 8px; border: 1px solid rgba(0,229,255,0.3); flex-wrap: wrap; }
     .division-btn { background: transparent; border: none; padding: 0.4rem 1rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.65rem; letter-spacing: 1px; color: #8BA2C2; cursor: pointer; transition: all 0.2s; border-radius: 4px; }
     .division-btn.active { background: rgba(0,229,255,0.2); color: #00E5FF; box-shadow: inset 0 0 8px rgba(0,229,255,0.2); border: 1px solid rgba(0,229,255,0.5); }
@@ -45,7 +39,7 @@
     .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; }
     .video-wrapper iframe { width: 100%; height: 100%; border: none; }
     .video-wrapper .amengi-3d { width: 100%; height: 100%; display: block; }
-    .video-controls { position: absolute; bottom: 10px; left: 10px; right: 10px; display: flex; gap: 8px; justify-content: flex-end; z-index: 30; flex-wrap: wrap; }
+    .video-controls { position: absolute; bottom: 10px; left: 10px; right: 10px; display: flex; gap: 8px; justify-content: flex-end; z-index: 30; }
     .video-btn { background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #F9A826; border-radius: 8px; padding: 5px 12px; font-size: 0.6rem; color: #F9A826; cursor: pointer; font-family: monospace; transition: 0.2s; }
     .video-btn.active { background: #F9A826; color: #000; border-color: #00E5FF; }
     .video-btn:hover { background: #F9A826; color: #000; }
@@ -76,8 +70,8 @@
     .sample-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .log-terminal { padding: 0.8rem; background: rgba(0,0,0,0.4); margin: 0.8rem 1rem; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; height: 120px; overflow-y: auto; display: flex; flex-direction: column-reverse; }
     .log-line { color: #6BB5A0; padding: 3px 0; border-bottom: 1px solid rgba(0,229,255,0.08); font-family: monospace; }
-    .action-buttons { display: flex; gap: 1rem; padding: 0.8rem 1rem; flex-wrap: wrap; }
-    .btn-lab { background: transparent; border: 1px solid #F9A826; padding: 0.5rem 1rem; border-radius: 6px; color: #F9A826; font-family: monospace; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: all 0.2s; flex: 1; min-width: 100px; }
+    .action-buttons { display: flex; gap: 1rem; padding: 0.8rem 1rem; }
+    .btn-lab { background: transparent; border: 1px solid #F9A826; padding: 0.5rem 1rem; border-radius: 6px; color: #F9A826; font-family: monospace; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: all 0.2s; flex: 1; }
     .btn-lab:hover { background: rgba(249,168,38,0.15); border-color: #00E5FF; color: #00E5FF; }
     .research-nodes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.2rem; }
     .node-card { background: rgba(6,10,18,0.6); backdrop-filter: blur(8px); border: 1px solid rgba(0,229,255,0.15); border-radius: 12px; padding: 0.8rem; text-align: center; transition: all 0.2s; }
@@ -91,81 +85,37 @@
     .ttv-embed-header span:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 1px; color: #00E5FF; }
     .ttv-fullscreen-btn { background: rgba(0,229,255,0.2); border: 1px solid #00E5FF; border-radius: 30px; padding: 4px 12px; color: #00E5FF; font-family: monospace; font-size: 0.6rem; cursor: pointer; transition: all 0.2s; }
     .ttv-fullscreen-btn:hover { background: #00E5FF; color: #000; box-shadow: 0 0 8px #00E5FF; }
-    
-    /* Labby Assistant Button */
-    .labby-assistant {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 10px;
-    }
-    .labby-btn {
-      width: 65px;
-      height: 65px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #00E5FF, #F9A826);
-      border: 2px solid rgba(255,255,255,0.3);
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(0,229,255,0.5);
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      position: relative;
-      overflow: hidden;
-    }
-    .labby-btn::before {
-      content: '🐭';
-      font-size: 32px;
-      transition: transform 0.3s ease;
-    }
-    .labby-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(249,168,38,0.7);
-    }
-    .labby-btn:hover::before {
-      transform: rotate(15deg);
-    }
-    .labby-status {
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(10px);
-      border: 1px solid #00E5FF;
-      border-radius: 20px;
-      padding: 8px 14px;
+    @media (max-width: 700px) { .research-nodes { grid-template-columns: repeat(2, 1fr); } .holo-digits { flex-wrap: wrap; } .clan-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* AI Assistant Button Styles - добавлено только это */
+    .ai-assistant-btn {
+      background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(249,168,38,0.1));
+      border: 1px solid rgba(0,229,255,0.6);
+      border-radius: 40px;
+      padding: 0.5rem 1.2rem;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
-      font-family: monospace;
-      max-width: 280px;
-      text-align: center;
+      font-weight: 600;
+      letter-spacing: 1px;
       color: #00E5FF;
       cursor: pointer;
-      transition: all 0.2s;
-    }
-    .labby-status:hover {
-      background: rgba(0,229,255,0.2);
-      border-color: #F9A826;
-    }
-    .labby-badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: #F9A826;
-      color: #000;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      font-size: 10px;
-      display: flex;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(8px);
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-weight: bold;
+      gap: 8px;
+      box-shadow: 0 0 6px rgba(0,229,255,0.3);
     }
-    
-    @media (max-width: 700px) { .research-nodes { grid-template-columns: repeat(2, 1fr); } .holo-digits { flex-wrap: wrap; } .clan-grid { grid-template-columns: repeat(2, 1fr); } .action-buttons { flex-direction: column; } .preset-buttons { order: -1; } }
+    .ai-assistant-btn:hover {
+      background: rgba(0,229,255,0.25);
+      border-color: #F9A826;
+      color: #F9A826;
+      transform: scale(1.02);
+      box-shadow: 0 0 12px rgba(0,229,255,0.5);
+    }
+    .ai-assistant-btn:active {
+      transform: scale(0.98);
+    }
   </style>
 </head>
 <body>
@@ -178,29 +128,25 @@
     <div class="lab-header">
       <div class="logo-area">
         <h1>WELLAMATORES<span>//</span>LABS</h1>
-        <p>AMENGI ARTIFACT • QUANTUM LOGIC • AES ENCRYPTED PRESETS</p>
+        <p>JOG NEURAL DIVISION • PREDATORS UNIT • AMENGI ARTIFACT INTEGRATED</p>
       </div>
-      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-        <div class="logic-switch" id="logicSwitch">
-          <button class="logic-btn" data-logic="binary">01 BINARY</button>
-          <button class="logic-btn active" data-logic="ternary">☯ TERNARY</button>
-          <button class="logic-btn" data-logic="quaternary">🔷 QUATERNARY</button>
-        </div>
-        <div class="preset-buttons">
-          <button class="preset-btn" id="savePresetBtn">💾 SAVE ENCRYPTED</button>
-          <button class="preset-btn" id="loadPresetBtn">📂 LOAD PRESET</button>
-        </div>
+      <div class="division-switch">
+        <button class="division-btn active" data-division="jog">🛰️ JOG</button>
+        <button class="division-btn" data-division="plutonia">🌀 PLUTONIA X</button>
+        <button class="division-btn" data-division="bureau">🏛️ Le Bureau</button>
+        <button class="division-btn" id="jackdawUniversityBtn">🐦 JACKDAW University</button>
+        <button class="division-btn" data-division="holding">💠 Holding</button>
       </div>
-    </div>
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
-      <div class="back-link" id="backLink">← BACK TO MAIN PAGE</div>
       <div class="system-status">
         <div class="status-led"><span class="led"></span>PREDATORS • ACTIVE</div>
         <div class="status-led"><span class="led"></span>AMENGI ARTIFACT • ONLINE</div>
       </div>
     </div>
 
+    <div class="back-link" id="backLink">← BACK TO MAIN PAGE</div>
+
     <div class="lab-main-grid">
+      <!-- LEFT PANEL -->
       <div class="panel-left">
         <div class="panel-header">🐺 PREDATORS SQUAD • AUTONOMOUS UNIT</div>
         <div class="predators-panel">
@@ -218,6 +164,7 @@
             <span style="color:#00E5FF; font-size: 0.7rem;" id="connectionStatus">ACTIVE • 3D SCENE READY</span>
           </div>
         </div>
+
         <div id="helpRequestBlock" class="help-request hidden">
           <div style="display: flex; gap: 8px; align-items: center;">
             <span style="font-size: 1.2rem;">🐺</span>
@@ -228,6 +175,7 @@
           </div>
           <button class="response-btn" id="acceptHelpBtn">ACCEPT REQUEST → PROVIDE ASSISTANCE</button>
         </div>
+
         <div class="clans-info">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <span style="font-size: 0.65rem; color:#F9A826;">👑 KINGDOM OF PREDATORS</span>
@@ -236,21 +184,26 @@
           <div class="clan-grid" id="clansGrid"></div>
           <div style="margin-top: 8px; font-size: 0.55rem; color:#6BB5A0; text-align: center;">▸ Tech Exchange • Cultural Alliance • Joint Research ▸</div>
         </div>
+
         <div class="samples-list">
           <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
             <span style="font-size: 0.65rem; color:#F9A826;">📦 SHARED SAMPLES (from Predators)</span>
-            <span style="font-size: 0.55rem; color:#8BA2C2;" id="samplesCount">3 samples</span>
+            <span style="font-size: 0.55rem; color:#8BA2C2;" id="samplesCount">4 samples</span>
           </div>
           <div id="samplesList"></div>
         </div>
+
         <div class="progress-section">
           <div class="progress-label">
             <span>🎓 JACKDAW TRAINING (Predators methodology)</span>
             <span id="trainingPercent">52%</span>
           </div>
           <div class="progress-bar-container"><div class="progress-fill" id="trainingFill" style="width: 52%"></div></div>
+          <div style="font-size: 0.55rem; color:#6BB5A0; margin-top: 6px;">▸ Tactical training: ✓ complete<br>▸ Sample handling: in progress<br>▸ Cross-training: active</div>
         </div>
       </div>
+
+      <!-- RIGHT PANEL with integrated Amengi 3D -->
       <div class="panel-right">
         <div class="video-portal">
           <div class="video-wrapper" id="videoWrapper">
@@ -263,6 +216,7 @@
             <button class="video-btn" id="fullscreenVideoBtn">⛶ FULLSCREEN</button>
           </div>
         </div>
+
         <div class="progress-section">
           <div class="progress-label">
             <span id="currentResearchLabel">AMENGI ARTIFACT • NEURAL RESONANCE</span>
@@ -270,13 +224,16 @@
           </div>
           <div class="progress-bar-container"><div class="progress-fill" id="researchProgress" style="width: 47.3%"></div></div>
         </div>
+
         <div class="holo-digits">
-          <div class="holo-card"><div class="holo-value" id="tokensValue">14.2</div><div class="holo-label" id="tokensLabel">INFERENCE TOKENS (M)</div></div>
-          <div class="holo-card"><div class="holo-value" id="framesValue">3.1</div><div class="holo-label" id="framesLabel">VIDEO FRAMES (M)</div></div>
+          <div class="holo-card"><div class="holo-value" id="tokensValue">14.2</div><div class="holo-label">INFERENCE TOKENS (M)</div></div>
+          <div class="holo-card"><div class="holo-value" id="framesValue">3.1</div><div class="holo-label">VIDEO FRAMES (M)</div></div>
           <div class="holo-card"><div class="holo-value" id="autonomyValue">94.7</div><div class="holo-label">AUTONOMY INDEX (%)</div></div>
           <div class="holo-card"><div class="holo-value" id="helpGivenValue">3</div><div class="holo-label">ASSISTANCE GIVEN</div></div>
         </div>
+
         <div class="log-terminal" id="logTerminal"></div>
+
         <div class="action-buttons">
           <button class="btn-lab" id="initiateBtn">⟁ INITIATE RESEARCH</button>
           <button class="btn-lab" id="resetBtn">⟲ RESET</button>
@@ -292,448 +249,241 @@
       <div class="node-card"><div class="node-icon">⚡</div><div class="node-title">JACKDAW HUB</div><div class="node-desc">Training active</div></div>
     </div>
 
+    <!-- TTV LITHO PROPHET - TerraTrampilleraVerse Integration -->
     <div class="ttv-embed" id="ttvMainBlock">
       <div class="ttv-embed-header">
         <span>⚡ TTV LITHO PROPHET</span>
         <div style="display: flex; gap: 10px; align-items: center;">
-          <span>🔒 TerraTrampilleraVerse Holding • ternary/quaternary logic</span>
+          <span>🔒 TerraTrampilleraVerse Holding • encrypted presets</span>
           <button class="ttv-fullscreen-btn" id="ttvFullscreenBtn">⛶ FULLSCREEN</button>
         </div>
       </div>
-      <div id="ttvIframeWrapper" style="position: relative;">
+      <div id="ttvIframeWrapper" style="position: relative; transition: all 0.3s ease;">
         <iframe id="ttvIframe" src="https://wellamatores-metaverse.vercel.app/TTV_Litho_Prophet.html" width="100%" height="700" frameborder="0" style="display: block; background: #03081a;"></iframe>
       </div>
-      <div class="ttv-embed-footer">🧠 binary/ternary/quaternary logic • 3D I/O • AES-encrypted presets • sync with AMENGI</div>
+      <div class="ttv-embed-footer">
+        🧠 binary/ternary/quaternary logic • 3D I/O (OBJ/FBX/STEP) • AES-encrypted presets • sync with AMENGI
+      </div>
     </div>
-    <div class="footer-holding">TerratrampilleraVerse Holding — JOG Laboratory Network • Amengi Artifact • Quantum Logic</div>
+
+    <div class="footer-holding">
+      <span>TerratrampilleraVerse Holding — JOG Laboratory Network • Amengi Artifact 3D Analysis • Cultural & Tech Exchange with Kingdom of Predators</span>
+    </div>
   </div>
 
-  <!-- Labby Assistant - теперь ведёт к отдельному файлу -->
-  <div class="labby-assistant">
-    <div class="labby-status" id="labbyStatus">
-      🐭 Labby • Say "Hey Labby" or click me!
-    </div>
-    <button class="labby-btn" id="labbyBtn"></button>
-  </div>
+  <!-- Кнопка AI Assistant (добавлена только она, без других изменений) -->
+  <button id="aiAssistantBtn" class="ai-assistant-btn" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000;">🤖 AI ASSISTANT • ASK ME</button>
 
+  <!-- Three.js import map and Amengi artifact script -->
   <script type="importmap">
-    { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/" } }
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+      }
+    }
   </script>
 
   <script type="module">
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    // --- Improved 3D Resource Management ---
+    let activeAmengi = { scene: null, camera: null, renderer: null, controls: null, composer: null, animationId: null, resizeObserver: null, container: null };
     
-    // --- 3D Amengi Management ---
-    let amengiActive = false;
-    let amengiScene, amengiCamera, amengiRenderer, amengiControls, amengiAnimationId, amengiContainer;
-    function destroyAmengi() {
-      if (amengiAnimationId) cancelAnimationFrame(amengiAnimationId);
-      if (amengiRenderer) { amengiRenderer.dispose(); if (amengiRenderer.domElement?.parentNode) amengiRenderer.domElement.parentNode.removeChild(amengiRenderer.domElement); }
-      if (amengiControls) amengiControls.dispose();
-      if (amengiContainer) while(amengiContainer.firstChild) amengiContainer.removeChild(amengiContainer.firstChild);
-      amengiActive = false;
+    function fullyDestroyAmengi() {
+      if (activeAmengi.animationId) { cancelAnimationFrame(activeAmengi.animationId); activeAmengi.animationId = null; }
+      if (activeAmengi.resizeObserver) { activeAmengi.resizeObserver.disconnect(); activeAmengi.resizeObserver = null; }
+      if (activeAmengi.renderer) {
+        activeAmengi.renderer.dispose();
+        if (activeAmengi.renderer.domElement && activeAmengi.renderer.domElement.parentNode) activeAmengi.renderer.domElement.parentNode.removeChild(activeAmengi.renderer.domElement);
+        activeAmengi.renderer = null;
+      }
+      if (activeAmengi.composer) { activeAmengi.composer = null; }
+      if (activeAmengi.controls) { activeAmengi.controls.dispose(); activeAmengi.controls = null; }
+      if (activeAmengi.container) { while(activeAmengi.container.firstChild) activeAmengi.container.removeChild(activeAmengi.container.firstChild); }
+      activeAmengi.scene = null; activeAmengi.camera = null; activeAmengi.container = null;
     }
-    function initAmengi(container) {
-      destroyAmengi();
-      const scene = new THREE.Scene(); scene.background = new THREE.Color(0x03080c);
-      const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+
+    function initAmengiScene(containerElement) {
+      fullyDestroyAmengi();
+      while (containerElement.firstChild) containerElement.removeChild(containerElement.firstChild);
+      
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x03080c);
+      scene.fog = new THREE.FogExp2(0x03080c, 0.008);
+      const camera = new THREE.PerspectiveCamera(45, containerElement.clientWidth / containerElement.clientHeight, 0.1, 1000);
       camera.position.set(5, 3, 7);
-      const renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      container.appendChild(renderer.domElement);
+      camera.lookAt(0, 0, 0);
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+      renderer.setSize(containerElement.clientWidth, containerElement.clientHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.toneMapping = THREE.ReinhardToneMapping;
+      renderer.toneMappingExposure = 1.2;
+      containerElement.appendChild(renderer.domElement);
+      const renderScene = new RenderPass(scene, camera);
+      const bloomPass = new UnrealBloomPass(new THREE.Vector2(containerElement.clientWidth, containerElement.clientHeight), 1.2, 0.3, 0.85);
+      bloomPass.threshold = 0.1; bloomPass.strength = 0.65; bloomPass.radius = 0.5;
+      const effectComposer = new EffectComposer(renderer);
+      effectComposer.addPass(renderScene); effectComposer.addPass(bloomPass);
       const controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      const ambient = new THREE.AmbientLight(0x111820); scene.add(ambient);
-      const light = new THREE.DirectionalLight(0xd4b87a, 1.2); light.position.set(3, 5, 2); scene.add(light);
-      const group = new THREE.Group();
-      const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.9, 0), new THREE.MeshStandardMaterial({ color: 0x4a2a1a, emissive: 0x882222, emissiveIntensity: 0.5 }));
-      group.add(core);
-      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.08, 64, 200), new THREE.MeshStandardMaterial({ color: 0xb87c3a, emissive: 0x552200 }));
-      ring.rotation.x = Math.PI / 2; group.add(ring);
-      scene.add(group);
-      const pedestal = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.3, 0.4, 8), new THREE.MeshStandardMaterial({ color: 0x2a2e3a }));
-      pedestal.position.y = -0.8; scene.add(pedestal);
+      controls.enableDamping = true; controls.dampingFactor = 0.05; controls.rotateSpeed = 1.0; controls.zoomSpeed = 1.2; controls.enableZoom = true; controls.enablePan = true; controls.target.set(0, 0.5, 0);
+      
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0x111820); scene.add(ambientLight);
+      const mainLight = new THREE.DirectionalLight(0xd4b87a, 1.2); mainLight.position.set(3, 5, 2); scene.add(mainLight);
+      const fillLight = new THREE.PointLight(0x9e6b3e, 0.8); fillLight.position.set(0, -1, 0); scene.add(fillLight);
+      const backLight = new THREE.PointLight(0x3a6ea5, 0.6); backLight.position.set(-2, 3, -4); scene.add(backLight);
+      const pulseLight = new THREE.PointLight(0xaa4444, 1.5); pulseLight.position.set(0.5, 0.8, 0.5); scene.add(pulseLight);
+      
+      // Particles and Artifact group (simplified but evocative)
+      const artifactGroup = new THREE.Group();
+      const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
+      const coreMat = new THREE.MeshStandardMaterial({ color: 0x4a2a1a, emissive: 0x882222, emissiveIntensity: 0.45, metalness: 0.85, roughness: 0.3 });
+      const core = new THREE.Mesh(coreGeo, coreMat); artifactGroup.add(core);
+      const innerGlowGeo = new THREE.IcosahedronGeometry(0.68, 1);
+      const glowMat = new THREE.MeshStandardMaterial({ color: 0xff6644, emissive: 0xcc3311, emissiveIntensity: 0.7, transparent: true, opacity: 0.4 });
+      const innerGlow = new THREE.Mesh(innerGlowGeo, glowMat); artifactGroup.add(innerGlow);
+      const ring1Geo = new THREE.TorusGeometry(1.2, 0.08, 64, 200);
+      const ringMat1 = new THREE.MeshStandardMaterial({ color: 0xb87c3a, emissive: 0x552200, emissiveIntensity: 0.4, metalness: 0.9 });
+      const ring1 = new THREE.Mesh(ring1Geo, ringMat1); ring1.rotation.x = Math.PI / 2; artifactGroup.add(ring1);
+      const ring2Geo = new THREE.TorusGeometry(1.45, 0.06, 64, 200);
+      const ringMat2 = new THREE.MeshStandardMaterial({ color: 0x8a6e4b, emissive: 0x442200, metalness: 0.85 });
+      const ring2 = new THREE.Mesh(ring2Geo, ringMat2); ring2.rotation.z = Math.PI / 3; ring2.rotation.x = Math.PI / 3; artifactGroup.add(ring2);
+      scene.add(artifactGroup);
+      
+      const pedestalGroup = new THREE.Group();
+      const baseGeo = new THREE.CylinderGeometry(2.2, 2.5, 0.4, 8);
+      const stoneMat = new THREE.MeshStandardMaterial({ color: 0x2a2e3a, roughness: 0.7, metalness: 0.1 });
+      const basePlate = new THREE.Mesh(baseGeo, stoneMat); basePlate.position.y = -0.8; pedestalGroup.add(basePlate);
+      scene.add(pedestalGroup);
+      
+      const starCount = 2000;
+      const starGeo = new THREE.BufferGeometry();
+      const starPos = [];
+      for (let i = 0; i < starCount; i++) { starPos.push((Math.random() - 0.5) * 400, (Math.random() - 0.5) * 200, (Math.random() - 0.5) * 150 - 70); }
+      starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+      const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xb0c4b0, size: 0.12, transparent: true, opacity: 0.6 }));
+      scene.add(stars);
+      
       let time = 0;
-      function animate() { amengiAnimationId = requestAnimationFrame(animate); time += 0.012; group.rotation.y = time * 0.15; ring.rotation.z += 0.01; controls.update(); renderer.render(scene, camera); }
+      function animate() {
+        activeAmengi.animationId = requestAnimationFrame(animate);
+        time += 0.012;
+        artifactGroup.rotation.y = time * 0.15;
+        artifactGroup.rotation.x = Math.sin(time * 0.2) * 0.05;
+        ring1.rotation.z += 0.01; ring2.rotation.x += 0.008; ring2.rotation.y += 0.005;
+        pulseLight.intensity = 1.0 + Math.sin(time * 4) * 0.5;
+        coreMat.emissiveIntensity = 0.45 + Math.sin(time * 2.5) * 0.1;
+        glowMat.emissiveIntensity = 0.7 + Math.sin(time * 3.2) * 0.25;
+        controls.update();
+        effectComposer.render();
+      }
       animate();
-      amengiScene = scene; amengiCamera = camera; amengiRenderer = renderer; amengiControls = controls; amengiContainer = container; amengiActive = true;
+      const resizeObserver = new ResizeObserver(() => {
+        if (!containerElement || !activeAmengi.camera) return;
+        const width = containerElement.clientWidth;
+        const height = containerElement.clientHeight;
+        activeAmengi.camera.aspect = width / height;
+        activeAmengi.camera.updateProjectionMatrix();
+        activeAmengi.renderer.setSize(width, height);
+        activeAmengi.composer.setSize(width, height);
+      });
+      resizeObserver.observe(containerElement);
+      activeAmengi = { scene, camera, renderer, controls, composer: effectComposer, animationId: null, resizeObserver, container: containerElement };
+      activeAmengi.animationId = requestAnimationFrame(function frame() { if (activeAmengi.animationId) requestAnimationFrame(frame); if (activeAmengi.composer && activeAmengi.controls) { activeAmengi.controls.update(); activeAmengi.composer.render(); } });
     }
-    function startAmengi() { const container = document.getElementById('amengi-3d-container'); if(!container) return; container.style.display = 'block'; document.getElementById('youtubeFrame').style.display = 'none'; initAmengi(container); addLogMessage("Amengi 3D Artifact activated", 'system'); }
-    function stopAmengi() { destroyAmengi(); const container = document.getElementById('amengi-3d-container'); if(container) container.style.display = 'none'; }
-    function switchToYautja() { stopAmengi(); const yt = document.getElementById('youtubeFrame'); yt.style.display = 'block'; if(!yt.src || yt.src.includes('about:blank')) yt.src = 'https://www.youtube.com/embed/WXjiF4K7u4g?autoplay=1&rel=0'; addLogMessage("Yautja Prime feed active", 'predator'); }
     
-    // Background 3D
-    const bgContainer = document.getElementById('canvas-container');
-    const bgScene = new THREE.Scene(); bgScene.background = new THREE.Color(0x03060C);
+    function startAmengi() {
+      const wrapper = document.getElementById('videoWrapper');
+      const youtubeFrame = document.getElementById('youtubeFrame');
+      if (youtubeFrame) { youtubeFrame.style.display = 'none'; youtubeFrame.src = 'about:blank'; }
+      let amengiDiv = document.getElementById('amengi-3d-container');
+      if (!amengiDiv) { amengiDiv = document.createElement('div'); amengiDiv.id = 'amengi-3d-container'; amengiDiv.style.width = '100%'; amengiDiv.style.height = '100%'; wrapper.appendChild(amengiDiv); }
+      amengiDiv.style.display = 'block';
+      initAmengiScene(amengiDiv);
+      addLogMessage("AMENGI ARTIFACT 3D scene activated • Neural resonance online", 'system');
+    }
+    
+    function stopAmengi() { fullyDestroyAmengi(); const amengiDiv = document.getElementById('amengi-3d-container'); if(amengiDiv) amengiDiv.style.display = 'none'; }
+    
+    function switchToYautjaPrime() {
+      stopAmengi();
+      const youtubeFrame = document.getElementById('youtubeFrame');
+      const amengiDiv = document.getElementById('amengi-3d-container');
+      if(amengiDiv) amengiDiv.style.display = 'none';
+      youtubeFrame.style.display = 'block';
+      if(!youtubeFrame.src || youtubeFrame.src.includes('about:blank')) youtubeFrame.src = 'https://www.youtube.com/embed/WXjiF4K7u4g?autoplay=1&rel=0';
+      addLogMessage("Switched to YAUTJA PRIME FEED • KHARMA MOVIE (Predator Origins)", 'predator');
+    }
+    
+    // --- Background 3D Scene (persistent) ---
+    const containerBg = document.getElementById('canvas-container');
+    const bgScene = new THREE.Scene(); bgScene.background = new THREE.Color(0x03060C); bgScene.fog = new THREE.FogExp2(0x03060C, 0.008);
     const bgCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); bgCamera.position.set(0, 2, 12);
-    const bgRenderer = new THREE.WebGLRenderer({ antialias: true }); bgRenderer.setSize(window.innerWidth, window.innerHeight); bgContainer.appendChild(bgRenderer.domElement);
-    const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(1.1, 0.28, 200, 32, 3, 4), new THREE.MeshStandardMaterial({ color: 0xF9A826, emissive: 0x442200 }));
-    bgScene.add(knot);
-    bgScene.add(new THREE.AmbientLight(0x111122));
-    const bgLight = new THREE.DirectionalLight(0xFFDDAA, 1.2); bgLight.position.set(3, 5, 4); bgScene.add(bgLight);
+    const bgRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+    bgRenderer.setSize(window.innerWidth, window.innerHeight); bgRenderer.setPixelRatio(window.devicePixelRatio);
+    containerBg.appendChild(bgRenderer.domElement);
+    const knotGeo = new THREE.TorusKnotGeometry(1.1, 0.28, 200, 32, 3, 4);
+    const knotMat = new THREE.MeshStandardMaterial({ color: 0xF9A826, emissive: 0x442200, emissiveIntensity: 0.6, metalness: 0.85, roughness: 0.25 });
+    const knot = new THREE.Mesh(knotGeo, knotMat); bgScene.add(knot);
+    const wireMat = new THREE.MeshBasicMaterial({ color: 0x00E5FF, wireframe: true, transparent: true, opacity: 0.3 });
+    const knotWire = new THREE.Mesh(knotGeo, wireMat); bgScene.add(knotWire);
+    const particleCountBg = 1500;
+    const particlesGeoBg = new THREE.BufferGeometry();
+    const positionsBg = new Float32Array(particleCountBg * 3);
+    for (let i = 0; i < particleCountBg; i++) { const r = 1.5 + Math.random() * 3.5; const theta = Math.random() * Math.PI * 2; const phi = Math.acos(2 * Math.random() - 1); positionsBg[i*3] = r * Math.sin(phi) * Math.cos(theta); positionsBg[i*3+1] = r * Math.sin(phi) * Math.sin(theta) * 0.7; positionsBg[i*3+2] = r * Math.cos(phi); }
+    particlesGeoBg.setAttribute('position', new THREE.BufferAttribute(positionsBg, 3));
+    const particlesBg = new THREE.Points(particlesGeoBg, new THREE.PointsMaterial({ color: 0x00E5FF, size: 0.03, transparent: true, blending: THREE.AdditiveBlending }));
+    bgScene.add(particlesBg);
+    const starsGeoBg = new THREE.BufferGeometry(); const starsPosBg = new Float32Array(3000 * 3);
+    for (let i = 0; i < 3000; i++) { starsPosBg[i*3] = (Math.random() - 0.5) * 400; starsPosBg[i*3+1] = (Math.random() - 0.5) * 200; starsPosBg[i*3+2] = (Math.random() - 0.5) * 150 - 50; }
+    starsGeoBg.setAttribute('position', new THREE.BufferAttribute(starsPosBg, 3));
+    const starsBg = new THREE.Points(starsGeoBg, new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.6 }));
+    bgScene.add(starsBg);
+    const ambientBg = new THREE.AmbientLight(0x111122); bgScene.add(ambientBg);
+    const mainLightBg = new THREE.DirectionalLight(0xFFDDAA, 1.2); mainLightBg.position.set(3, 5, 4); bgScene.add(mainLightBg);
+    const backLightBg = new THREE.PointLight(0x2266FF, 0.6); backLightBg.position.set(-2, 1, -5); bgScene.add(backLightBg);
     let bgTime = 0;
-    function animateBg() { requestAnimationFrame(animateBg); bgTime += 0.008; knot.rotation.y = bgTime * 0.5; bgRenderer.render(bgScene, bgCamera); }
+    function animateBg() { requestAnimationFrame(animateBg); bgTime += 0.008; knot.rotation.y = bgTime * 0.5; knot.rotation.x = Math.sin(bgTime * 0.3) * 0.2; knotWire.rotation.copy(knot.rotation); particlesBg.rotation.y += 0.001; bgCamera.lookAt(0, 0.2, 0); bgRenderer.render(bgScene, bgCamera); }
     animateBg();
     window.addEventListener('resize', () => { bgCamera.aspect = window.innerWidth / window.innerHeight; bgCamera.updateProjectionMatrix(); bgRenderer.setSize(window.innerWidth, window.innerHeight); });
     
-    // --- UI State ---
-    let logicMode = 'ternary';
+    // --- UI State & Logic ---
+    const clans = ["Shadow Clan", "Iron Wolves Clan", "Black Flame Clan", "North Wind Clan", "Deep Hunters Clan", "Blood Moon Clan", "Ice Peaks Clan", "Rusted Thrones Clan", "White Ghosts Clan", "Fire Hearts Clan", "Stone Wardens Clan", "Rending Claws Clan", "Silent Harbor Clan", "Broken Spears Clan", "Last Chance Clan"];
+    document.getElementById('clansGrid').innerHTML = clans.map(clan => `<div class="clan-tag">${clan}</div>`).join('');
     let researchProgress = 47.3, tokens = 14.2, frames = 3.1, autonomy = 94.7, helpGiven = 3, trainingProgress = 52;
-    let samples = ["🔮 Anomalous Mineral #PR-107", "🧬 Biomass Sector G-4", "⚙️ Tech Artifact (unidentified)"];
-    let squadStatus = "🟢 IN LAB", professorStatus = "📚 BRIEFING";
-    let researchInterval = null, helpInterval = null, helpActive = false;
+    let researchInterval = null, helpRequestTimeout = null, helpRequestActive = false;
+    const helpRequests = [{ title: "Sample Consultation", detail: "Anomalous mineral #PR-422 analysis required" }, { title: "Tactical Advice", detail: "Professor requests data on Sector X-7" }, { title: "Data Exchange", detail: "Squad shares field recordings, processing needed" }, { title: "Technical Assistance", detail: "Equipment malfunction, diagnostics required" }];
+    const sampleList = document.getElementById('samplesList');
+    function updateUI() { document.getElementById('researchProgress').style.width = researchProgress + '%'; document.getElementById('progressPercent').innerText = researchProgress.toFixed(1) + '%'; document.getElementById('tokensValue').innerText = tokens.toFixed(1); document.getElementById('framesValue').innerText = frames.toFixed(1); document.getElementById('autonomyValue').innerText = autonomy.toFixed(1); document.getElementById('helpGivenValue').innerText = helpGiven; document.getElementById('trainingPercent').innerText = trainingProgress + '%'; document.getElementById('trainingFill').style.width = trainingProgress + '%'; }
+    function addLogMessage(msg, type = 'info') { const log = document.getElementById('logTerminal'); const newLine = document.createElement('div'); newLine.className = 'log-line'; const prefix = type === 'predator' ? '🐺 [PREDATORS]' : (type === 'system' ? '⚙️ [SYSTEM]' : '📡 [INFO]'); newLine.innerHTML = `> [${new Date().toLocaleTimeString()}] ${prefix} ${msg}`; log.appendChild(newLine); if (log.children.length > 16) log.removeChild(log.firstChild); }
+    function addSampleFromPredators(sampleName) { const newSample = document.createElement('div'); newSample.className = 'sample-item'; newSample.innerHTML = `<span style="color:#6BB5A0;">📦 ${sampleName}</span><span style="color:#8BA2C2;">shared</span>`; sampleList.insertBefore(newSample, sampleList.firstChild); document.getElementById('samplesCount').innerText = sampleList.children.length + ' samples'; }
+    function showHelpRequest() { if (helpRequestActive) return; const randomRequest = helpRequests[Math.floor(Math.random() * helpRequests.length)]; document.getElementById('helpRequestText').innerText = randomRequest.title; document.getElementById('helpRequestDetail').innerText = randomRequest.detail; document.getElementById('helpRequestBlock').classList.remove('hidden'); helpRequestActive = true; addLogMessage(`Predators squad requests assistance: ${randomRequest.title}`, 'predator'); if (helpRequestTimeout) clearTimeout(helpRequestTimeout); helpRequestTimeout = setTimeout(() => { if (helpRequestActive) { document.getElementById('helpRequestBlock').classList.add('hidden'); helpRequestActive = false; addLogMessage("Predators squad resolved the issue independently", 'predator'); } }, 30000); }
+    function acceptHelp() { if (!helpRequestActive) return; helpGiven++; trainingProgress = Math.min(100, trainingProgress + Math.random() * 5); researchProgress = Math.min(100, researchProgress + Math.random() * 4); tokens = Math.min(32, tokens + Math.random() * 0.5); frames = Math.min(10, frames + 0.1); updateUI(); addLogMessage(`Assistance provided. Predators squad expresses gratitude.`, 'system'); if (Math.random() > 0.6) { const samples = ['Rare Crystal #PR-777', 'Artifact "Tear of the Predator"', 'Biomass Sample (classified)']; addSampleFromPredators(samples[Math.floor(Math.random() * samples.length)]); } document.getElementById('helpRequestBlock').classList.add('hidden'); helpRequestActive = false; if (helpRequestTimeout) clearTimeout(helpRequestTimeout); setTimeout(() => { if (!helpRequestActive) showHelpRequest(); }, 25000 + Math.random() * 35000); }
+    function initiateResearch() { if (researchInterval) clearInterval(researchInterval); addLogMessage(`INITIATING RESEARCH PROTOCOL...`, 'system'); researchInterval = setInterval(() => { if (researchProgress < 100) { researchProgress = Math.min(100, researchProgress + Math.random() * 2.5); tokens = Math.min(32, tokens + Math.random() * 0.6); frames = Math.min(10, frames + Math.random() * 0.25); autonomy = Math.min(99.9, autonomy + Math.random() * 0.4); updateUI(); if (researchProgress >= 100) { clearInterval(researchInterval); addLogMessage('✓ RESEARCH COMPLETE! Neural evolution achieved.', 'system'); researchInterval = null; } } else { clearInterval(researchInterval); researchInterval = null; } }, 700); }
+    function resetSimulation() { if (researchInterval) { clearInterval(researchInterval); researchInterval = null; } researchProgress = 47.3; tokens = 14.2; frames = 3.1; autonomy = 94.7; trainingProgress = 52; updateUI(); addLogMessage('SYSTEM RESET • Neural state reinitialized', 'system'); }
+    function checkPredatorsStatus() { const statuses = ["Squad at camp, professor conducting briefing", "War hound patrolling perimeter", "Predators analyzing field data", "Link to Kingdom stable, data exchange active"]; addLogMessage(statuses[Math.floor(Math.random() * statuses.length)], 'predator'); const squadStatuses = ['🟢 IN LAB', '🔴 FIELD MISSION', '🟡 REST/PREP']; const professorStatuses = ['📚 BRIEFING', '🎓 JACKDAW TRAINING', '🔬 RESEARCH', '📡 ON CALL']; document.getElementById('squadStatus').innerHTML = squadStatuses[Math.floor(Math.random() * squadStatuses.length)]; document.getElementById('professorStatus').innerHTML = professorStatuses[Math.floor(Math.random() * professorStatuses.length)]; }
+    function goFullscreen() { const wrapper = document.querySelector('.video-wrapper'); if (wrapper.requestFullscreen) wrapper.requestFullscreen(); else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen(); }
     
-    const clans = ["Shadow Clan", "Iron Wolves", "Black Flame", "North Wind", "Deep Hunters", "Blood Moon", "Ice Peaks", "Rusted Thrones", "White Ghosts", "Fire Hearts", "Stone Wardens", "Rending Claws", "Silent Harbor", "Broken Spears", "Last Chance"];
-    document.getElementById('clansGrid').innerHTML = clans.map(c => `<div class="clan-tag">${c}</div>`).join('');
-    
-    function updateUI() {
-      document.getElementById('researchProgress').style.width = researchProgress + '%';
-      document.getElementById('progressPercent').innerText = researchProgress.toFixed(1) + '%';
-      document.getElementById('helpGivenValue').innerText = helpGiven;
-      document.getElementById('trainingPercent').innerText = trainingProgress + '%';
-      document.getElementById('trainingFill').style.width = trainingProgress + '%';
-      document.getElementById('squadStatus').innerHTML = squadStatus;
-      document.getElementById('professorStatus').innerHTML = professorStatus;
-      let tokenDisplay = tokens, frameDisplay = frames;
-      let tokenUnit = "M", frameUnit = "M";
-      if (logicMode === 'ternary') { tokenDisplay = (tokens * 1.585).toFixed(1); frameDisplay = (frames * 1.585).toFixed(1); tokenUnit = "Trits (M)"; frameUnit = "Trits (M)"; }
-      else if (logicMode === 'quaternary') { tokenDisplay = (tokens * 2.0).toFixed(1); frameDisplay = (frames * 2.0).toFixed(1); tokenUnit = "Quads (M)"; frameUnit = "Quads (M)"; }
-      else { tokenUnit = "Bits (M)"; frameUnit = "Bits (M)"; }
-      document.getElementById('tokensValue').innerText = tokenDisplay;
-      document.getElementById('framesValue').innerText = frameDisplay;
-      document.getElementById('tokensLabel').innerHTML = `INFERENCE ${tokenUnit}`;
-      document.getElementById('framesLabel').innerHTML = `VIDEO ${frameUnit}`;
-      document.getElementById('autonomyValue').innerText = autonomy.toFixed(1);
-    }
-    
-    function addLogMessage(msg, type = 'info') {
-      const log = document.getElementById('logTerminal');
-      const line = document.createElement('div'); line.className = 'log-line';
-      const prefix = type === 'predator' ? '🐺' : (type === 'system' ? '⚙️' : '📡');
-      line.innerHTML = `> [${new Date().toLocaleTimeString()}] ${prefix} ${msg}`;
-      log.appendChild(line); if(log.children.length > 16) log.removeChild(log.firstChild);
-    }
-    
-    function updateSamplesUI() {
-      const container = document.getElementById('samplesList');
-      container.innerHTML = samples.map(s => `<div class="sample-item"><span style="color:#6BB5A0;">📦 ${s}</span><span style="color:#8BA2C2;">shared</span></div>`).join('');
-      document.getElementById('samplesCount').innerText = samples.length + ' samples';
-    }
-    
-    function addSample(name) { samples.unshift(name); updateSamplesUI(); addLogMessage(`New sample received: ${name}`, 'system'); }
-    
-    function showHelpRequest() {
-      if(helpActive) return;
-      const requests = [
-        { title: "Sample Consultation", detail: "Anomalous mineral #PR-422 analysis required" },
-        { title: "Tactical Advice", detail: "Professor requests data on Sector X-7" },
-        { title: "Data Exchange", detail: "Squad shares field recordings" }
-      ];
-      const req = requests[Math.floor(Math.random() * requests.length)];
-      document.getElementById('helpRequestText').innerText = req.title;
-      document.getElementById('helpRequestDetail').innerText = req.detail;
-      document.getElementById('helpRequestBlock').classList.remove('hidden');
-      helpActive = true;
-      addLogMessage(`Predators request: ${req.title}`, 'predator');
-      if(helpInterval) clearTimeout(helpInterval);
-      helpInterval = setTimeout(() => { if(helpActive) { document.getElementById('helpRequestBlock').classList.add('hidden'); helpActive = false; addLogMessage("Predators resolved independently", 'predator'); } }, 30000);
-    }
-    
-    function acceptHelp() {
-      if(!helpActive) return;
-      helpGiven++; trainingProgress = Math.min(100, trainingProgress + Math.random() * 5);
-      researchProgress = Math.min(100, researchProgress + Math.random() * 4);
-      tokens = Math.min(32, tokens + Math.random() * 0.5);
-      frames = Math.min(10, frames + 0.1);
-      updateUI();
-      addLogMessage("Assistance provided to Predators squad", 'system');
-      if(Math.random() > 0.6) addSample(['Rare Crystal #PR-777', 'Artifact "Tear"', 'Biomass Sample'][Math.floor(Math.random()*3)]);
-      document.getElementById('helpRequestBlock').classList.add('hidden');
-      helpActive = false;
-      if(helpInterval) clearTimeout(helpInterval);
-      setTimeout(() => { if(!helpActive) showHelpRequest(); }, 25000);
-    }
-    
-    function initiateResearch() {
-      if(researchInterval) clearInterval(researchInterval);
-      addLogMessage("INITIATING RESEARCH PROTOCOL...", 'system');
-      researchInterval = setInterval(() => {
-        if(researchProgress < 100) {
-          researchProgress = Math.min(100, researchProgress + Math.random() * 2.5);
-          tokens = Math.min(32, tokens + Math.random() * 0.6);
-          frames = Math.min(10, frames + Math.random() * 0.25);
-          autonomy = Math.min(99.9, autonomy + Math.random() * 0.3);
-          updateUI();
-          if(researchProgress >= 100) { clearInterval(researchInterval); addLogMessage("✓ RESEARCH COMPLETE! Neural evolution achieved.", 'system'); researchInterval = null; }
-        } else { clearInterval(researchInterval); researchInterval = null; }
-      }, 800);
-    }
-    
-    function resetSystem() {
-      if(researchInterval) clearInterval(researchInterval);
-      researchProgress = 47.3; tokens = 14.2; frames = 3.1; autonomy = 94.7; trainingProgress = 52; helpGiven = 3;
-      samples = ["🔮 Anomalous Mineral #PR-107", "🧬 Biomass Sector G-4", "⚙️ Tech Artifact (unidentified)"];
-      squadStatus = "🟢 IN LAB"; professorStatus = "📚 BRIEFING";
-      updateSamplesUI(); updateUI();
-      addLogMessage("SYSTEM RESET • All parameters reinitialized", 'system');
-    }
-    
-    function checkStatus() { addLogMessage("Predators squad operational • Cultural exchange active", 'predator'); }
-    
-    // --- AES Encryption ---
-    async function encryptPreset(data, password = "wellamatores-key-2025") {
-      const encoder = new TextEncoder();
-      const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveKey"]);
-      const salt = crypto.getRandomValues(new Uint8Array(16));
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" }, keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt"]);
-      const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoder.encode(JSON.stringify(data)));
-      const result = { version: 1, salt: Array.from(salt), iv: Array.from(iv), data: Array.from(new Uint8Array(encrypted)) };
-      return btoa(JSON.stringify(result));
-    }
-    
-    async function decryptPreset(encryptedBase64, password = "wellamatores-key-2025") {
-      try {
-        const parsed = JSON.parse(atob(encryptedBase64));
-        const encoder = new TextEncoder();
-        const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveKey"]);
-        const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: new Uint8Array(parsed.salt), iterations: 100000, hash: "SHA-256" }, keyMaterial, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
-        const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: new Uint8Array(parsed.iv) }, key, new Uint8Array(parsed.data));
-        return JSON.parse(new TextDecoder().decode(decrypted));
-      } catch(e) { addLogMessage("Decryption failed: Invalid preset or key", 'system'); return null; }
-    }
-    
-    async function savePreset() {
-      const state = { version: 2, timestamp: Date.now(), logicMode, researchProgress, tokens, frames, autonomy, helpGiven, trainingProgress, samples, squadStatus, professorStatus };
-      const encrypted = await encryptPreset(state);
-      const blob = new Blob([encrypted], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = `wellamatores_preset_${Date.now()}.wellpreset`;
-      a.click(); URL.revokeObjectURL(url);
-      addLogMessage(`Preset saved (AES-256 encrypted) • ${new Date().toLocaleTimeString()}`, 'system');
-    }
-    
-    async function loadPresetFromFile() {
-      const input = document.createElement('input'); input.type = 'file'; input.accept = '.wellpreset';
-      input.onchange = async (e) => {
-        const file = e.target.files[0];
-        const text = await file.text();
-        const state = await decryptPreset(text);
-        if(state) {
-          logicMode = state.logicMode || 'ternary';
-          researchProgress = state.researchProgress || 47.3;
-          tokens = state.tokens || 14.2;
-          frames = state.frames || 3.1;
-          autonomy = state.autonomy || 94.7;
-          helpGiven = state.helpGiven || 3;
-          trainingProgress = state.trainingProgress || 52;
-          samples = state.samples || ["🔮 Anomalous Mineral #PR-107"];
-          squadStatus = state.squadStatus || "🟢 IN LAB";
-          professorStatus = state.professorStatus || "📚 BRIEFING";
-          document.querySelectorAll('.logic-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.logic === logicMode);
-          });
-          updateSamplesUI(); updateUI();
-          addLogMessage(`Preset loaded • ${new Date(state.timestamp).toLocaleString()}`, 'system');
-          if(researchInterval) { clearInterval(researchInterval); researchInterval = null; }
-        }
-      };
-      input.click();
-    }
-    
-    // --- Event Binding ---
-    document.getElementById('initiateBtn').onclick = initiateResearch;
-    document.getElementById('resetBtn').onclick = resetSystem;
-    document.getElementById('checkPredatorsBtn').onclick = checkStatus;
-    document.getElementById('acceptHelpBtn').onclick = acceptHelp;
-    document.getElementById('savePresetBtn').onclick = savePreset;
-    document.getElementById('loadPresetBtn').onclick = loadPresetFromFile;
-    document.getElementById('amengi3dBtn').onclick = () => { startAmengi(); document.getElementById('amengi3dBtn').classList.add('active'); document.getElementById('predatorsStreamBtn').classList.remove('active'); };
-    document.getElementById('predatorsStreamBtn').onclick = () => { switchToYautja(); document.getElementById('predatorsStreamBtn').classList.add('active'); document.getElementById('amengi3dBtn').classList.remove('active'); };
-    document.getElementById('fullscreenVideoBtn').onclick = () => { document.querySelector('.video-wrapper').requestFullscreen?.(); };
-    document.getElementById('backLink').onclick = () => window.location.href = 'https://wellamatores-metaverse.vercel.app';
-    
-    document.querySelectorAll('.logic-btn').forEach(btn => {
-      btn.onclick = () => {
-        document.querySelectorAll('.logic-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        logicMode = btn.dataset.logic;
-        addLogMessage(`Logic mode switched to ${logicMode.toUpperCase()} • ${logicMode === 'binary' ? 'Classical bits' : logicMode === 'ternary' ? 'Ternary trits active' : 'Quaternary quads online'}`, 'system');
-        updateUI();
-      };
+    // AI Assistant Button Handler (только это добавлено — обработчик для кнопки)
+    document.getElementById('aiAssistantBtn').addEventListener('click', () => {
+      addLogMessage("🤖 AI ASSISTANT activated • Predictive algorithms online. How can I assist the Predators Division?", 'system');
+      alert("🤖 AI ASSISTANT (Predators Division)\n\nI analyze Amengi resonance, coordinate with Kingdom of Predators, and optimize neural research. Request assistance via terminal commands or accept help requests from the squad.\n\n\"In the hunt, knowledge is the ultimate weapon.\"");
     });
     
-    // --- Labby Assistant: открытие внешнего файла labby.html ---
-    const labbyBtn = document.getElementById('labbyBtn');
-    const labbyStatus = document.getElementById('labbyStatus');
+    document.getElementById('initiateBtn').addEventListener('click', initiateResearch); document.getElementById('resetBtn').addEventListener('click', resetSimulation); document.getElementById('checkPredatorsBtn').addEventListener('click', checkPredatorsStatus); document.getElementById('acceptHelpBtn').addEventListener('click', acceptHelp); document.getElementById('amengi3dBtn').addEventListener('click', () => { startAmengi(); document.getElementById('amengi3dBtn').classList.add('active'); document.getElementById('predatorsStreamBtn').classList.remove('active'); }); document.getElementById('predatorsStreamBtn').addEventListener('click', () => { switchToYautjaPrime(); document.getElementById('predatorsStreamBtn').classList.add('active'); document.getElementById('amengi3dBtn').classList.remove('active'); }); document.getElementById('fullscreenVideoBtn').addEventListener('click', goFullscreen); document.getElementById('jackdawUniversityBtn').addEventListener('click', () => { window.open('https://wellamatores-metaverse.vercel.app/BASTION.html', '_blank'); addLogMessage("JACKDAW University portal opened", 'system'); }); document.getElementById('backLink').addEventListener('click', () => { window.location.href = 'https://wellamatores-metaverse.vercel.app'; });
+    document.querySelectorAll('.division-btn:not(#jackdawUniversityBtn)').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.division-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); addLogMessage(`Switched to ${btn.innerText} division (reference info)`, 'info'); }); });
+    switchToYautjaPrime(); updateUI(); addLogMessage('🐺 Predators squad deployed. "Operating autonomously, ready to assist"', 'predator'); addLogMessage('🧠 Amengi Artifact 3D integration ready • Click "AMENGI ARTIFACT (3D)"', 'system'); addLogMessage('👑 15 clans of the Kingdom of Predators recognized • Cultural exchange active', 'info'); setTimeout(() => { if (!helpRequestActive) showHelpRequest(); }, 15000);
     
-    // Функция открытия ассистента в отдельном окне или если файл не найден - открываем инлайн версию
-    function openLabbyAssistant() {
-      addLogMessage("🐭 Opening Labby Voice Assistant...", 'system');
-      
-      // Пытаемся открыть labby.html в новой вкладке
-      const labbyWindow = window.open('labby.html', 'LabbyAssistant', 'width=400,height=600,menubar=no,toolbar=no,location=no,status=no');
-      
-      if (!labbyWindow || labbyWindow.closed || typeof labbyWindow.closed === 'undefined') {
-        // Если не удалось открыть (блокировка попапов), показываем альтернативный вариант
-        addLogMessage("⚠️ Popup blocked! Click the button again or use voice commands directly", 'system');
-        
-        // Альтернатива: создаём модальное окно с инструкцией
-        showLabbyModal();
-      } else {
-        addLogMessage("✅ Labby Assistant opened in new window • Say 'Hey Labby' to activate", 'system');
-      }
-    }
-    
-    function showLabbyModal() {
-      // Создаём временное модальное окно с инструкцией
-      const modal = document.createElement('div');
-      modal.style.cssText = `
-        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-        background: rgba(6,10,18,0.95); backdrop-filter: blur(20px);
-        border: 2px solid #00E5FF; border-radius: 24px; padding: 24px;
-        z-index: 10000; max-width: 400px; text-align: center;
-        box-shadow: 0 0 50px rgba(0,229,255,0.3); font-family: monospace;
-      `;
-      modal.innerHTML = `
-        <div style="font-size: 48px; margin-bottom: 12px;">🐭</div>
-        <h3 style="color: #00E5FF; margin-bottom: 12px;">Labby Assistant</h3>
-        <p style="color: #8BA2C2; margin-bottom: 16px; font-size: 14px;">
-          Voice commands are available directly in this window!<br><br>
-          <strong style="color: #F9A826;">Say "Hey Labby"</strong> followed by:<br>
-          • research • reset • status • help • amengi • yautja • save • load
-        </p>
-        <button id="closeLabbyModal" style="
-          background: #F9A826; border: none; padding: 10px 20px;
-          border-radius: 12px; font-weight: bold; cursor: pointer;
-          font-family: monospace; margin-top: 8px;
-        ">Got it! 🐭</button>
-      `;
-      document.body.appendChild(modal);
-      document.getElementById('closeLabbyModal').onclick = () => modal.remove();
-      
-      // Автоматическое закрытие через 10 секунд
-      setTimeout(() => { if(modal.parentNode) modal.remove(); }, 10000);
-    }
-    
-    labbyBtn.onclick = openLabbyAssistant;
-    labbyStatus.onclick = openLabbyAssistant;
-    
-    // --- Голосовое распознавание прямо в этом окне (дублируем команды) ---
-    let recognition = null;
-    let isListening = false;
-    
-    if ('webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = false;
-      recognition.lang = 'en-US';
-      
-      recognition.onstart = () => {
-        isListening = true;
-        labbyBtn.style.boxShadow = '0 0 30px rgba(249,168,38,0.9)';
-        labbyStatus.innerHTML = '🐭 Labby is listening... Say a command!';
-        addLogMessage("Labby voice recognition active • Say 'Hey Labby' + command", 'system');
-      };
-      
-      recognition.onend = () => {
-        isListening = false;
-        labbyBtn.style.boxShadow = '0 0 20px rgba(0,229,255,0.5)';
-        labbyStatus.innerHTML = '🐭 Labby • Say "Hey Labby" or click me!';
-      };
-      
-      recognition.onresult = (e) => {
-        const text = e.results[e.results.length - 1][0].transcript.toLowerCase();
-        addLogMessage(`🐭 Labby heard: "${text}"`, 'info');
-        
-        // Проверяем активационную фразу "hey labby"
-        if (text.includes('hey labby') || text.includes('hey labby')) {
-          addLogMessage("🐭 Activation phrase detected! Processing command...", 'system');
-          labbyStatus.innerHTML = '🐭 Labby activated! 🎤';
-          setTimeout(() => {
-            labbyStatus.innerHTML = '🐭 Labby • Say "Hey Labby" or click me!';
-          }, 2000);
-          
-          // Ищем команду после активационной фразы
-          let command = text.replace(/hey labby/g, '').trim();
-          
-          if (command.includes('research') || command.includes('initiate')) initiateResearch();
-          else if (command.includes('reset')) resetSystem();
-          else if (command.includes('status')) checkStatus();
-          else if (command.includes('help') || command.includes('assist')) acceptHelp();
-          else if (command.includes('amengi') || command.includes('3d')) { startAmengi(); document.getElementById('amengi3dBtn').click(); }
-          else if (command.includes('yautja') || command.includes('prime')) { switchToYautja(); document.getElementById('predatorsStreamBtn').click(); }
-          else if (command.includes('save')) savePreset();
-          else if (command.includes('load')) loadPresetFromFile();
-          else if (command !== '') addLogMessage(`Command "${command}" not recognized. Try: research, reset, status, help, amengi, yautja, save, load`, 'system');
-        }
-      };
-    } else {
-      labbyStatus.innerHTML = '🐭 Speech not supported • Click for assistant';
-    }
-    
-    // Функция для запуска/остановки прослушивания
-    function toggleListening() {
-      if (recognition) {
-        if (isListening) {
-          recognition.stop();
-        } else {
-          try {
-            recognition.start();
-          } catch(e) {
-            addLogMessage("Voice recognition already started or error: " + e.message, 'system');
-          }
-        }
-      } else {
-        showLabbyModal();
-      }
-    }
-    
-    // Альтернативная активация: долгое нажатие на кнопку
-    let pressTimer;
-    labbyBtn.addEventListener('mousedown', () => {
-      pressTimer = setTimeout(() => {
-        toggleListening();
-      }, 500);
-    });
-    labbyBtn.addEventListener('mouseup', () => {
-      clearTimeout(pressTimer);
-    });
-    labbyBtn.addEventListener('mouseleave', () => {
-      clearTimeout(pressTimer);
-    });
-    
-    // Клик для открытия внешнего ассистента (короткое нажатие)
-    labbyBtn.addEventListener('click', (e) => {
-      if (!isListening) {
-        openLabbyAssistant();
-      }
-    });
-    
-    // TTV Fullscreen
-    document.getElementById('ttvFullscreenBtn').onclick = () => {
-      const wrapper = document.getElementById('ttvIframeWrapper');
-      if (document.fullscreenElement) document.exitFullscreen();
-      else wrapper.requestFullscreen?.();
-    };
-    
-    window.addEventListener('message', (e) => {
-      if(e.data?.type === 'TTV_PROMPT_SYNC') {
-        const preview = e.data.payload?.substring(0, 100) + (e.data.payload?.length > 100 ? '…' : '');
-        addLogMessage(`[TTV] Synced: ${preview}`, 'system');
-        if(e.data.payload?.includes('ternary')) { logicMode = 'ternary'; document.querySelector('.logic-btn[data-logic="ternary"]').click(); }
-        else if(e.data.payload?.includes('quaternary')) { logicMode = 'quaternary'; document.querySelector('.logic-btn[data-logic="quaternary"]').click(); }
-      }
-    });
-    
-    // Initialization
-    switchToYautja();
-    updateSamplesUI(); updateUI();
-    addLogMessage("Wellamatores LABS ready • Quantum logic active • AES presets available", 'system');
-    addLogMessage("🐭 Labby is here! Say 'Hey Labby' + command (research, reset, status, help, amengi, yautja, save, load)", 'system');
-    setTimeout(() => showHelpRequest(), 10000);
+    // TTV Fullscreen logic
+    (function() { const ttvBlock = document.getElementById('ttvMainBlock'); const fullscreenBtn = document.getElementById('ttvFullscreenBtn'); const iframeWrapper = document.getElementById('ttvIframeWrapper'); const iframe = document.getElementById('ttvIframe'); let isTtvFullscreen = false; let originalWrapperStyle = {}, originalBlockStyle = {}; function enterTtvFullscreen() { originalWrapperStyle = { position: iframeWrapper.style.position, top: iframeWrapper.style.top, left: iframeWrapper.style.left, width: iframeWrapper.style.width, height: iframeWrapper.style.height, zIndex: iframeWrapper.style.zIndex, backgroundColor: iframeWrapper.style.backgroundColor }; iframeWrapper.style.position = 'fixed'; iframeWrapper.style.top = '0'; iframeWrapper.style.left = '0'; iframeWrapper.style.width = '100vw'; iframeWrapper.style.height = '100vh'; iframeWrapper.style.zIndex = '10000'; iframeWrapper.style.backgroundColor = '#03081a'; iframe.style.height = '100vh'; iframe.style.width = '100vw'; document.body.style.overflow = 'hidden'; fullscreenBtn.textContent = '❌ EXIT'; isTtvFullscreen = true; } function exitTtvFullscreen() { iframeWrapper.style.position = originalWrapperStyle.position || ''; iframeWrapper.style.top = originalWrapperStyle.top || ''; iframeWrapper.style.left = originalWrapperStyle.left || ''; iframeWrapper.style.width = originalWrapperStyle.width || ''; iframeWrapper.style.height = originalWrapperStyle.height || ''; iframeWrapper.style.zIndex = originalWrapperStyle.zIndex || ''; iframeWrapper.style.backgroundColor = originalWrapperStyle.backgroundColor || ''; iframe.style.height = '700px'; iframe.style.width = '100%'; document.body.style.overflow = ''; fullscreenBtn.textContent = '⛶ FULLSCREEN'; isTtvFullscreen = false; } fullscreenBtn.addEventListener('click', () => { if (isTtvFullscreen) exitTtvFullscreen(); else enterTtvFullscreen(); }); document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isTtvFullscreen) exitTtvFullscreen(); }); })();
+    window.addEventListener('message', (event) => { if (event.data && event.data.type === 'TTV_PROMPT_SYNC') { const promptPreview = event.data.payload.length > 120 ? event.data.payload.substring(0, 120) + '…' : event.data.payload; addLogMessage(`[TTV] Prompt synced with AMENGI: ${promptPreview}`, 'system'); if (event.data.payload && event.data.payload.match(/ternary/i)) { researchProgress = Math.min(100, researchProgress + 0.5); updateUI(); } } });
+    // Initialize samples
+    ["🔮 Anomalous Mineral #PR-107", "🧬 Biomass Sector G-4", "⚙️ Tech Artifact (unidentified)"].forEach(s => addSampleFromPredators(s));
   </script>
 </body>
 </html>
