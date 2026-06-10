@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Wellamatores LABS | Predators Division • Amengi Artifact Integrated</title>
+  <title>Wellamatores LABS | Voice Assistant • Predators Division • Amengi Artifact</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,7 +29,7 @@
     .status-led { display: flex; align-items: center; gap: 6px; }
     .led { width: 8px; height: 8px; border-radius: 50%; background: #00E5FF; box-shadow: 0 0 4px #00E5FF; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
-    .back-link { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.7rem; color: #F9A826; text-decoration: none; transition: 0.2s; margin-bottom: 1rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.7rem; color: #F9A826; text-decoration: none; transition: 0.2s; margin-bottom: 1rem; cursor: pointer; }
     .back-link:hover { background: rgba(249,168,38,0.2); color: #00E5FF; }
     .lab-main-grid { display: grid; grid-template-columns: 1fr 1.8fr; gap: 1.2rem; margin-bottom: 1.5rem; }
     @media (max-width: 1000px) { .lab-main-grid { grid-template-columns: 1fr; } }
@@ -68,8 +68,8 @@
     .clan-tag { font-size: 0.55rem; background: rgba(0,0,0,0.4); padding: 3px 6px; border-radius: 12px; text-align: center; color: #8BA2C2; }
     .samples-list { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .sample-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .log-terminal { padding: 0.8rem; background: rgba(0,0,0,0.4); margin: 0.8rem 1rem; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; height: 120px; overflow-y: auto; }
-    .log-line { color: #6BB5A0; padding: 3px 0; border-bottom: 1px solid rgba(0,229,255,0.08); }
+    .log-terminal { padding: 0.8rem; background: rgba(0,0,0,0.4); margin: 0.8rem 1rem; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; height: 120px; overflow-y: auto; display: flex; flex-direction: column-reverse; }
+    .log-line { color: #6BB5A0; padding: 3px 0; border-bottom: 1px solid rgba(0,229,255,0.08); font-family: monospace; }
     .action-buttons { display: flex; gap: 1rem; padding: 0.8rem 1rem; }
     .btn-lab { background: transparent; border: 1px solid #F9A826; padding: 0.5rem 1rem; border-radius: 6px; color: #F9A826; font-family: monospace; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: all 0.2s; flex: 1; }
     .btn-lab:hover { background: rgba(249,168,38,0.15); border-color: #00E5FF; color: #00E5FF; }
@@ -80,29 +80,21 @@
     .node-title { font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; }
     .node-desc { font-size: 0.55rem; color: #8BA2C2; }
     .footer-holding { margin-top: 2rem; text-align: center; font-size: 0.55rem; font-family: monospace; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); color: #5A6E8A; }
-    /* TTV Embed styles */
     .ttv-embed { margin: 1.5rem 0; border-radius: 24px; overflow: hidden; border: 1px solid rgba(0,229,255,0.4); background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); }
     .ttv-embed-header { padding: 0.5rem 1rem; background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(0,229,255,0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
     .ttv-embed-header span:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 1px; color: #00E5FF; }
-    .ttv-embed-header span:last-child { font-family: monospace; font-size: 0.55rem; color: #F9A826; }
-    .ttv-embed-footer { padding: 0.4rem 1rem; background: rgba(0,0,0,0.5); border-top: 1px solid rgba(0,229,255,0.2); font-size: 0.55rem; color: #6BB5A0; text-align: center; font-family: monospace; }
-    .ttv-fullscreen-btn {
-      background: rgba(0,229,255,0.2);
-      border: 1px solid #00E5FF;
-      border-radius: 30px;
-      padding: 4px 12px;
-      color: #00E5FF;
-      font-family: monospace;
-      font-size: 0.6rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .ttv-fullscreen-btn:hover {
-      background: #00E5FF;
-      color: #000;
-      box-shadow: 0 0 8px #00E5FF;
-    }
-    @media (max-width: 700px) { .research-nodes { grid-template-columns: repeat(2, 1fr); } .holo-digits { flex-wrap: wrap; } .clan-grid { grid-template-columns: repeat(2, 1fr); } }
+    .ttv-fullscreen-btn { background: rgba(0,229,255,0.2); border: 1px solid #00E5FF; border-radius: 30px; padding: 4px 12px; color: #00E5FF; font-family: monospace; font-size: 0.6rem; cursor: pointer; transition: all 0.2s; }
+    .ttv-fullscreen-btn:hover { background: #00E5FF; color: #000; box-shadow: 0 0 8px #00E5FF; }
+    /* Voice Assistant Styles */
+    .voice-assistant { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    .voice-btn { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #00E5FF, #F9A826); border: none; cursor: pointer; box-shadow: 0 0 20px rgba(0,229,255,0.5); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; font-size: 28px; animation: glowPulse 2s infinite; }
+    .voice-btn.listening { animation: pulseRed 1s infinite; background: linear-gradient(135deg, #ff3366, #ff6633); box-shadow: 0 0 30px rgba(255,51,102,0.8); }
+    .voice-btn:hover { transform: scale(1.1); }
+    @keyframes glowPulse { 0%,100% { box-shadow: 0 0 20px rgba(0,229,255,0.5); } 50% { box-shadow: 0 0 40px rgba(0,229,255,0.8); } }
+    @keyframes pulseRed { 0%,100% { box-shadow: 0 0 20px rgba(255,51,102,0.5); } 50% { box-shadow: 0 0 40px rgba(255,51,102,0.9); } }
+    .voice-status { background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); border: 1px solid #00E5FF; border-radius: 20px; padding: 8px 16px; font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; max-width: 280px; text-align: center; color: #00E5FF; margin-right: 10px; }
+    .voice-command-hint { background: rgba(0,0,0,0.7); border-radius: 12px; padding: 6px 12px; font-size: 0.55rem; color: #8BA2C2; max-width: 240px; text-align: center; margin-right: 10px; }
+    @media (max-width: 700px) { .research-nodes { grid-template-columns: repeat(2, 1fr); } .holo-digits { flex-wrap: wrap; } .clan-grid { grid-template-columns: repeat(2, 1fr); } .voice-assistant { bottom: 10px; right: 10px; } .voice-btn { width: 50px; height: 50px; font-size: 24px; } }
   </style>
 </head>
 <body>
@@ -121,7 +113,7 @@
         <button class="division-btn active" data-division="jog">🛰️ JOG</button>
         <button class="division-btn" data-division="plutonia">🌀 PLUTONIA X</button>
         <button class="division-btn" data-division="bureau">🏛️ Le Bureau</button>
-        <button class="division-btn" data-division="jackdaw" id="jackdawDivisionBtn" onclick="window.open('BASTION.html', '_blank')">🐦 JACKDAW University</button>
+        <button class="division-btn" id="jackdawUniversityBtn">🐦 JACKDAW University</button>
         <button class="division-btn" data-division="holding">💠 Holding</button>
       </div>
       <div class="system-status">
@@ -130,7 +122,7 @@
       </div>
     </div>
 
-    <a href="javascript:history.back()" class="back-link">← BACK TO MAIN PAGE</a>
+    <div class="back-link" id="backLink">← BACK TO MAIN PAGE</div>
 
     <div class="lab-main-grid">
       <!-- LEFT PANEL -->
@@ -177,11 +169,7 @@
             <span style="font-size: 0.65rem; color:#F9A826;">📦 SHARED SAMPLES (from Predators)</span>
             <span style="font-size: 0.55rem; color:#8BA2C2;" id="samplesCount">4 samples</span>
           </div>
-          <div id="samplesList">
-            <div class="sample-item"><span style="color:#6BB5A0;">🔮 Anomalous Mineral #PR-107</span><span style="color:#8BA2C2;">shared</span></div>
-            <div class="sample-item"><span style="color:#6BB5A0;">🧬 Biomass Sector G-4</span><span style="color:#8BA2C2;">shared</span></div>
-            <div class="sample-item"><span style="color:#6BB5A0;">⚙️ Tech Artifact (unidentified)</span><span style="color:#8BA2C2;">shared</span></div>
-          </div>
+          <div id="samplesList"></div>
         </div>
 
         <div class="progress-section">
@@ -198,8 +186,8 @@
       <div class="panel-right">
         <div class="video-portal">
           <div class="video-wrapper" id="videoWrapper">
-            <div id="amengi-3d-container" style="width:100%;height:100%;display:none;"></div>
-            <iframe id="youtubeFrame" src="about:blank" frameborder="0" allowfullscreen style="width:100%;height:100%;display:none;"></iframe>
+            <div id="amengi-3d-container" style="width:100%; height:100%; display:none;"></div>
+            <iframe id="youtubeFrame" src="about:blank" frameborder="0" allowfullscreen style="width:100%; height:100%; display:none;"></iframe>
           </div>
           <div class="video-controls">
             <button class="video-btn" id="amengi3dBtn">🧠 AMENGI ARTIFACT (3D)</button>
@@ -223,12 +211,7 @@
           <div class="holo-card"><div class="holo-value" id="helpGivenValue">3</div><div class="holo-label">ASSISTANCE GIVEN</div></div>
         </div>
 
-        <div class="log-terminal" id="logTerminal">
-          <div class="log-line">> [SYSTEM] Wellamatores LABS initialized</div>
-          <div class="log-line">> [PREDATORS] Squad deployed. Professor: "Operating autonomously"</div>
-          <div class="log-line">> [AMENGI] Artifact 3D scene integrated • Neural resonance active</div>
-          <div class="log-line">> [FEED] Yautja Prime stream ready • KHARMA MOVIE</div>
-        </div>
+        <div class="log-terminal" id="logTerminal"></div>
 
         <div class="action-buttons">
           <button class="btn-lab" id="initiateBtn">⟁ INITIATE RESEARCH</button>
@@ -245,7 +228,7 @@
       <div class="node-card"><div class="node-icon">⚡</div><div class="node-title">JACKDAW HUB</div><div class="node-desc">Training active</div></div>
     </div>
 
-    <!-- TTV LITHO PROPHET - TerraTrampilleraVerse Integration (FULLSCREEN FIXED) -->
+    <!-- TTV LITHO PROPHET -->
     <div class="ttv-embed" id="ttvMainBlock">
       <div class="ttv-embed-header">
         <span>⚡ TTV LITHO PROPHET</span>
@@ -267,679 +250,153 @@
     </div>
   </div>
 
-  <!-- Three.js import map and Amengi artifact script -->
+  <!-- Voice Assistant Interface -->
+  <div class="voice-assistant">
+    <div class="voice-command-hint" id="voiceHint">🎤 Say "Hey LABS" or click mic</div>
+    <div class="voice-status" id="voiceStatus">⚡ Voice AI • Standby</div>
+    <button class="voice-btn" id="voiceBtn">🎙️</button>
+  </div>
+
+  <!-- Three.js import map -->
   <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
-      }
-    }
+    { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/" } }
   </script>
 
   <script type="module">
-    // --- Amengi Artifact 3D Scene ---
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
-    let amengiSceneActive = false;
-    let amengiScene, amengiCamera, amengiRenderer, amengiControls, amengiComposer, amengiAnimationId;
-    let amengiContainer = null;
-
-    function initAmengiScene(containerElement) {
-      while (containerElement.firstChild) containerElement.removeChild(containerElement.firstChild);
-      
-      const scene = new THREE.Scene();
-      scene.background = new THREE.Color(0x03080c);
-      scene.fog = new THREE.FogExp2(0x03080c, 0.008);
-      
-      const camera = new THREE.PerspectiveCamera(45, containerElement.clientWidth / containerElement.clientHeight, 0.1, 1000);
-      camera.position.set(5, 3, 7);
-      camera.lookAt(0, 0, 0);
-      
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-      renderer.setSize(containerElement.clientWidth, containerElement.clientHeight);
-      renderer.setPixelRatio(window.devicePixelRatio);
-      renderer.toneMapping = THREE.ReinhardToneMapping;
-      renderer.toneMappingExposure = 1.2;
-      containerElement.appendChild(renderer.domElement);
-      
-      const renderScene = new RenderPass(scene, camera);
-      const bloomPass = new UnrealBloomPass(new THREE.Vector2(containerElement.clientWidth, containerElement.clientHeight), 1.2, 0.3, 0.85);
-      bloomPass.threshold = 0.1;
-      bloomPass.strength = 0.65;
-      bloomPass.radius = 0.5;
-      const effectComposer = new EffectComposer(renderer);
-      effectComposer.addPass(renderScene);
-      effectComposer.addPass(bloomPass);
-      
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
-      controls.rotateSpeed = 1.0;
-      controls.zoomSpeed = 1.2;
-      controls.panSpeed = 0.8;
-      controls.enableZoom = true;
-      controls.enablePan = true;
-      controls.autoRotate = false;
-      controls.target.set(0, 0.5, 0);
-      
-      const ambientLight = new THREE.AmbientLight(0x111820);
-      scene.add(ambientLight);
-      const mainLight = new THREE.DirectionalLight(0xd4b87a, 1.2);
-      mainLight.position.set(3, 5, 2);
-      scene.add(mainLight);
-      const fillLight = new THREE.PointLight(0x9e6b3e, 0.8);
-      fillLight.position.set(0, -1, 0);
-      scene.add(fillLight);
-      const backLight = new THREE.PointLight(0x3a6ea5, 0.6);
-      backLight.position.set(-2, 3, -4);
-      scene.add(backLight);
-      const pulseLight = new THREE.PointLight(0xaa4444, 1.5);
-      pulseLight.position.set(0.5, 0.8, 0.5);
-      scene.add(pulseLight);
-      
-      const particleCount = 1200;
-      const particlesGeometry = new THREE.BufferGeometry();
-      const particlePositions = new Float32Array(particleCount * 3);
-      for (let i = 0; i < particleCount; i++) {
-        particlePositions[i*3] = (Math.random() - 0.5) * 30;
-        particlePositions[i*3+1] = (Math.random() - 0.5) * 15;
-        particlePositions[i*3+2] = (Math.random() - 0.5) * 20 - 5;
-      }
-      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-      const particlesMaterial = new THREE.PointsMaterial({ color: 0x7a8c6e, size: 0.05, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
-      const particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
-      scene.add(particleSystem);
-      
-      const artifactGroup = new THREE.Group();
-      
-      const coreGeo = new THREE.IcosahedronGeometry(0.9, 0);
-      const coreMat = new THREE.MeshStandardMaterial({ color: 0x4a2a1a, emissive: 0x882222, emissiveIntensity: 0.45, metalness: 0.85, roughness: 0.3 });
-      const core = new THREE.Mesh(coreGeo, coreMat);
-      artifactGroup.add(core);
-      
-      const innerGlowGeo = new THREE.IcosahedronGeometry(0.68, 1);
-      const glowMat = new THREE.MeshStandardMaterial({ color: 0xff6644, emissive: 0xcc3311, emissiveIntensity: 0.7, transparent: true, opacity: 0.4, metalness: 0.2, roughness: 0.1 });
-      const innerGlow = new THREE.Mesh(innerGlowGeo, glowMat);
-      artifactGroup.add(innerGlow);
-      
-      const ring1Geo = new THREE.TorusGeometry(1.2, 0.08, 64, 200);
-      const ringMat1 = new THREE.MeshStandardMaterial({ color: 0xb87c3a, emissive: 0x552200, emissiveIntensity: 0.4, metalness: 0.9, roughness: 0.2 });
-      const ring1 = new THREE.Mesh(ring1Geo, ringMat1);
-      ring1.rotation.x = Math.PI / 2;
-      artifactGroup.add(ring1);
-      
-      const ring2Geo = new THREE.TorusGeometry(1.45, 0.06, 64, 200);
-      const ringMat2 = new THREE.MeshStandardMaterial({ color: 0x8a6e4b, emissive: 0x442200, emissiveIntensity: 0.3, metalness: 0.85, roughness: 0.25 });
-      const ring2 = new THREE.Mesh(ring2Geo, ringMat2);
-      ring2.rotation.z = Math.PI / 3;
-      ring2.rotation.x = Math.PI / 3;
-      artifactGroup.add(ring2);
-      
-      const ring3Geo = new THREE.TorusGeometry(1.7, 0.05, 64, 200);
-      const ringMat3 = new THREE.MeshStandardMaterial({ color: 0x6a543a, emissive: 0x331100, emissiveIntensity: 0.2, metalness: 0.8, roughness: 0.3 });
-      const ring3 = new THREE.Mesh(ring3Geo, ringMat3);
-      ring3.rotation.x = Math.PI / 1.5;
-      ring3.rotation.z = Math.PI / 4;
-      artifactGroup.add(ring3);
-      
-      const shardCount = 24;
-      const shards = [];
-      const shardGeo = new THREE.ConeGeometry(0.12, 0.35, 6);
-      for (let i = 0; i < shardCount; i++) {
-        const mat = new THREE.MeshStandardMaterial({ color: 0xbc7a42, emissive: 0x662200, emissiveIntensity: 0.3, metalness: 0.7, roughness: 0.4 });
-        const shard = new THREE.Mesh(shardGeo, mat);
-        const angle = (i / shardCount) * Math.PI * 2;
-        const radius = 2.1;
-        const yOffset = Math.sin(angle * 3) * 0.6;
-        shard.position.x = Math.cos(angle) * radius;
-        shard.position.z = Math.sin(angle) * radius;
-        shard.position.y = yOffset + 0.2;
-        shard.rotation.x = Math.random() * Math.PI;
-        shard.rotation.z = Math.random() * Math.PI;
-        artifactGroup.add(shard);
-        shards.push({ mesh: shard, angle: angle, radius: radius });
-      }
-      
-      const runeSpheres = [];
-      const sphereMat = new THREE.MeshStandardMaterial({ color: 0xdd8844, emissive: 0xaa3311, emissiveIntensity: 0.6, metalness: 0.3, roughness: 0.2 });
-      for (let i = 0; i < 12; i++) {
-        const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), sphereMat);
-        const phi = Math.acos(2 * Math.random() - 1);
-        const theta = 2 * Math.PI * Math.random();
-        const rad = 2.3;
-        sphere.position.x = rad * Math.sin(phi) * Math.cos(theta);
-        sphere.position.y = rad * Math.sin(phi) * Math.sin(theta);
-        sphere.position.z = rad * Math.cos(phi);
-        artifactGroup.add(sphere);
-        runeSpheres.push({ mesh: sphere, phi, theta, rad, speed: 0.005 });
-      }
-      
-      scene.add(artifactGroup);
-      
-      const pedestalGroup = new THREE.Group();
-      const baseGeo = new THREE.CylinderGeometry(2.2, 2.5, 0.4, 8);
-      const stoneMat = new THREE.MeshStandardMaterial({ color: 0x2a2e3a, roughness: 0.7, metalness: 0.1, emissive: 0x111111 });
-      const basePlate = new THREE.Mesh(baseGeo, stoneMat);
-      basePlate.position.y = -0.8;
-      pedestalGroup.add(basePlate);
-      const pillarGeo = new THREE.CylinderGeometry(1.3, 1.6, 0.9, 6);
-      const pillarMat = new THREE.MeshStandardMaterial({ color: 0x3a3e4a, roughness: 0.5, metalness: 0.3 });
-      const pillar = new THREE.Mesh(pillarGeo, pillarMat);
-      pillar.position.y = -0.3;
-      pedestalGroup.add(pillar);
-      const topPlateGeo = new THREE.CylinderGeometry(1.8, 1.9, 0.2, 8);
-      const topMat = new THREE.MeshStandardMaterial({ color: 0x5a4e3a, metalness: 0.6, roughness: 0.4, emissive: 0x221100 });
-      const topPlate = new THREE.Mesh(topPlateGeo, topMat);
-      topPlate.position.y = 0.15;
-      pedestalGroup.add(topPlate);
-      const runeEdges = new THREE.EdgesGeometry(pillarGeo);
-      const runeLines = new THREE.LineSegments(runeEdges, new THREE.LineBasicMaterial({ color: 0xad6b3a }));
-      runeLines.position.copy(pillar.position);
-      pedestalGroup.add(runeLines);
-      scene.add(pedestalGroup);
-      
-      const lightningMat = new THREE.LineBasicMaterial({ color: 0xff6633 });
-      function createLightning(start, end, segments = 8) {
-        const points = [start.clone()];
-        for (let i = 1; i <= segments; i++) {
-          const t = i / segments;
-          const mid = start.clone().lerp(end, t);
-          mid.x += (Math.random() - 0.5) * 0.12;
-          mid.y += (Math.random() - 0.5) * 0.12;
-          mid.z += (Math.random() - 0.5) * 0.12;
-          points.push(mid);
-        }
-        points.push(end.clone());
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        return new THREE.Line(geometry, lightningMat);
-      }
-      for (let i = 0; i < 6; i++) {
-        const angle = (i / 6) * Math.PI * 2;
-        const start = new THREE.Vector3(Math.cos(angle) * 1.2, 0.2 + Math.sin(angle*2)*0.3, Math.sin(angle) * 1.2);
-        const end = new THREE.Vector3(Math.cos(angle) * 2.0, -0.2 + Math.cos(angle)*0.4, Math.sin(angle) * 2.0);
-        const lightning = createLightning(start, end, 5);
-        artifactGroup.add(lightning);
-      }
-      
-      const energyParticleCount = 800;
-      const energyParticleGeo = new THREE.BufferGeometry();
-      const energyPositions = new Float32Array(energyParticleCount * 3);
-      for (let i = 0; i < energyParticleCount; i++) {
-        const rad = 1.5 + Math.random() * 1.2;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        energyPositions[i*3] = rad * Math.sin(phi) * Math.cos(theta);
-        energyPositions[i*3+1] = rad * Math.sin(phi) * Math.sin(theta);
-        energyPositions[i*3+2] = rad * Math.cos(phi);
-      }
-      energyParticleGeo.setAttribute('position', new THREE.BufferAttribute(energyPositions, 3));
-      const energyParticleMat = new THREE.PointsMaterial({ color: 0xff8844, size: 0.04, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.7 });
-      const energyParticles = new THREE.Points(energyParticleGeo, energyParticleMat);
-      artifactGroup.add(energyParticles);
-      
-      const groundRingGeo = new THREE.RingGeometry(2.4, 3.4, 32);
-      const groundRingMat = new THREE.MeshStandardMaterial({ color: 0x1f2a1e, emissive: 0x331a0a, side: THREE.DoubleSide, transparent: true, opacity: 0.5, metalness: 0.1 });
-      const groundRing = new THREE.Mesh(groundRingGeo, groundRingMat);
-      groundRing.rotation.x = -Math.PI / 2;
-      groundRing.position.y = -0.95;
-      scene.add(groundRing);
-      
-      const starCount = 3000;
-      const starGeo = new THREE.BufferGeometry();
-      const starPos = [];
-      for (let i = 0; i < starCount; i++) {
-        starPos.push((Math.random() - 0.5) * 400);
-        starPos.push((Math.random() - 0.5) * 200);
-        starPos.push((Math.random() - 0.5) * 150 - 70);
-      }
-      starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
-      const starMat = new THREE.PointsMaterial({ color: 0xb0c4b0, size: 0.12, transparent: true, opacity: 0.6 });
-      const stars = new THREE.Points(starGeo, starMat);
-      scene.add(stars);
-      
-      let time = 0;
-      function animate() {
-        amengiAnimationId = requestAnimationFrame(animate);
-        time += 0.012;
-        
-        artifactGroup.rotation.y = time * 0.15;
-        artifactGroup.rotation.x = Math.sin(time * 0.2) * 0.05;
-        artifactGroup.rotation.z = Math.cos(time * 0.23) * 0.03;
-        
-        ring1.rotation.z += 0.01;
-        ring2.rotation.x += 0.008;
-        ring2.rotation.y += 0.005;
-        ring3.rotation.z -= 0.007;
-        ring3.rotation.x += 0.006;
-        
-        pulseLight.intensity = 1.0 + Math.sin(time * 4) * 0.5;
-        coreMat.emissiveIntensity = 0.45 + Math.sin(time * 2.5) * 0.1;
-        glowMat.emissiveIntensity = 0.7 + Math.sin(time * 3.2) * 0.25;
-        
-        shards.forEach((shard) => {
-          shard.angle += 0.008;
-          const rad = 2.1;
-          shard.mesh.position.x = Math.cos(shard.angle) * rad;
-          shard.mesh.position.z = Math.sin(shard.angle) * rad;
-          shard.mesh.position.y = Math.sin(shard.angle * 3) * 0.6 + 0.2;
-          shard.mesh.rotation.x += 0.03;
-          shard.mesh.rotation.z += 0.02;
-        });
-        
-        runeSpheres.forEach((rune) => {
-          rune.theta += rune.speed * 0.8;
-          rune.phi += 0.003;
-          const x = rune.rad * Math.sin(rune.phi) * Math.cos(rune.theta);
-          const y = rune.rad * Math.sin(rune.phi) * Math.sin(rune.theta);
-          const z = rune.rad * Math.cos(rune.phi);
-          rune.mesh.position.set(x, y, z);
-        });
-        
-        energyParticleMat.opacity = 0.6 + Math.sin(time * 5) * 0.2;
-        particleSystem.rotation.y += 0.0005;
-        particleSystem.rotation.x = Math.sin(time * 0.1) * 0.05;
-        
-        controls.update();
-        effectComposer.render();
-      }
-      
-      animate();
-      
-      const resizeObserver = new ResizeObserver(() => {
-        if (!amengiContainer || !amengiContainer.parentElement) return;
-        const width = amengiContainer.clientWidth;
-        const height = amengiContainer.clientHeight;
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(width, height);
-        effectComposer.setSize(width, height);
-      });
-      resizeObserver.observe(containerElement);
-      
-      return { scene, camera, renderer, controls, effectComposer, resizeObserver };
-    }
+    // --- 3D Resource Management (same as before) ---
+    let activeAmengi = { scene: null, camera: null, renderer: null, controls: null, composer: null, animationId: null, resizeObserver: null, container: null };
+    function fullyDestroyAmengi() { if (activeAmengi.animationId) cancelAnimationFrame(activeAmengi.animationId); if (activeAmengi.resizeObserver) activeAmengi.resizeObserver.disconnect(); if (activeAmengi.renderer) { activeAmengi.renderer.dispose(); if (activeAmengi.renderer.domElement?.parentNode) activeAmengi.renderer.domElement.parentNode.removeChild(activeAmengi.renderer.domElement); } if (activeAmengi.controls) activeAmengi.controls.dispose(); if (activeAmengi.container) while(activeAmengi.container.firstChild) activeAmengi.container.removeChild(activeAmengi.container.firstChild); activeAmengi = { scene: null, camera: null, renderer: null, controls: null, composer: null, animationId: null, resizeObserver: null, container: null }; }
+    function initAmengiScene(containerElement) { fullyDestroyAmengi(); while (containerElement.firstChild) containerElement.removeChild(containerElement.firstChild); const scene = new THREE.Scene(); scene.background = new THREE.Color(0x03080c); scene.fog = new THREE.FogExp2(0x03080c, 0.008); const camera = new THREE.PerspectiveCamera(45, containerElement.clientWidth / containerElement.clientHeight, 0.1, 1000); camera.position.set(5, 3, 7); camera.lookAt(0, 0, 0); const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(containerElement.clientWidth, containerElement.clientHeight); renderer.setPixelRatio(window.devicePixelRatio); containerElement.appendChild(renderer.domElement); const renderScene = new RenderPass(scene, camera); const bloomPass = new UnrealBloomPass(new THREE.Vector2(containerElement.clientWidth, containerElement.clientHeight), 1.2, 0.3, 0.85); const effectComposer = new EffectComposer(renderer); effectComposer.addPass(renderScene); effectComposer.addPass(bloomPass); const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.target.set(0, 0.5, 0); const ambientLight = new THREE.AmbientLight(0x111820); scene.add(ambientLight); const mainLight = new THREE.DirectionalLight(0xd4b87a, 1.2); mainLight.position.set(3, 5, 2); scene.add(mainLight); const artifactGroup = new THREE.Group(); const coreGeo = new THREE.IcosahedronGeometry(0.9, 0); const coreMat = new THREE.MeshStandardMaterial({ color: 0x4a2a1a, emissive: 0x882222, emissiveIntensity: 0.45 }); const core = new THREE.Mesh(coreGeo, coreMat); artifactGroup.add(core); const ringGeo = new THREE.TorusGeometry(1.2, 0.08, 64, 200); const ring = new THREE.Mesh(ringGeo, new THREE.MeshStandardMaterial({ color: 0xb87c3a, emissive: 0x552200 })); ring.rotation.x = Math.PI / 2; artifactGroup.add(ring); scene.add(artifactGroup); const pedestalGeo = new THREE.CylinderGeometry(2.0, 2.3, 0.4, 8); const pedestal = new THREE.Mesh(pedestalGeo, new THREE.MeshStandardMaterial({ color: 0x2a2e3a })); pedestal.position.y = -0.8; scene.add(pedestal); let time = 0; function animate() { activeAmengi.animationId = requestAnimationFrame(animate); time += 0.012; artifactGroup.rotation.y = time * 0.15; ring.rotation.z += 0.01; controls.update(); effectComposer.render(); } animate(); const resizeObserver = new ResizeObserver(() => { if (!containerElement || !activeAmengi.camera) return; const w = containerElement.clientWidth, h = containerElement.clientHeight; activeAmengi.camera.aspect = w / h; activeAmengi.camera.updateProjectionMatrix(); activeAmengi.renderer.setSize(w, h); activeAmengi.composer.setSize(w, h); }); resizeObserver.observe(containerElement); activeAmengi = { scene, camera, renderer, controls, composer: effectComposer, animationId: null, resizeObserver, container: containerElement }; activeAmengi.animationId = requestAnimationFrame(function frame() { if (activeAmengi.animationId) requestAnimationFrame(frame); if (activeAmengi.composer && activeAmengi.controls) { activeAmengi.controls.update(); activeAmengi.composer.render(); } }); }
+    function startAmengi() { const wrapper = document.getElementById('videoWrapper'); const youtubeFrame = document.getElementById('youtubeFrame'); youtubeFrame.style.display = 'none'; youtubeFrame.src = 'about:blank'; let amengiDiv = document.getElementById('amengi-3d-container'); if (!amengiDiv) { amengiDiv = document.createElement('div'); amengiDiv.id = 'amengi-3d-container'; amengiDiv.style.width = '100%'; amengiDiv.style.height = '100%'; wrapper.appendChild(amengiDiv); } amengiDiv.style.display = 'block'; initAmengiScene(amengiDiv); addLogMessage("AMENGI ARTIFACT 3D scene activated", 'system'); }
+    function stopAmengi() { fullyDestroyAmengi(); const amengiDiv = document.getElementById('amengi-3d-container'); if(amengiDiv) amengiDiv.style.display = 'none'; }
+    function switchToYautjaPrime() { stopAmengi(); const youtubeFrame = document.getElementById('youtubeFrame'); const amengiDiv = document.getElementById('amengi-3d-container'); if(amengiDiv) amengiDiv.style.display = 'none'; youtubeFrame.style.display = 'block'; if(!youtubeFrame.src || youtubeFrame.src.includes('about:blank')) youtubeFrame.src = 'https://www.youtube.com/embed/WXjiF4K7u4g?autoplay=1&rel=0'; addLogMessage("Switched to YAUTJA PRIME FEED", 'predator'); }
     
-    function startAmengi() {
-      if (amengiSceneActive) return;
-      const wrapper = document.getElementById('videoWrapper');
-      const existingIframe = wrapper.querySelector('#youtubeFrame');
-      if (existingIframe) existingIframe.style.display = 'none';
-      let amengiDiv = wrapper.querySelector('#amengi-3d-container');
-      if (!amengiDiv) {
-        amengiDiv = document.createElement('div');
-        amengiDiv.id = 'amengi-3d-container';
-        amengiDiv.style.width = '100%';
-        amengiDiv.style.height = '100%';
-        wrapper.appendChild(amengiDiv);
-      }
-      amengiDiv.style.display = 'block';
-      amengiContainer = amengiDiv;
-      initAmengiScene(amengiContainer);
-      amengiSceneActive = true;
-      addLogMessage("AMENGI ARTIFACT 3D scene activated • Neural resonance online", 'system');
-    }
-    
-    function stopAmengi() {
-      if (!amengiSceneActive) return;
-      if (amengiAnimationId) cancelAnimationFrame(amengiAnimationId);
-      if (amengiContainer) {
-        while (amengiContainer.firstChild) amengiContainer.removeChild(amengiContainer.firstChild);
-      }
-      amengiSceneActive = false;
-    }
-    
-    function switchToYautjaPrime() {
-      stopAmengi();
-      const wrapper = document.getElementById('videoWrapper');
-      let amengiDiv = wrapper.querySelector('#amengi-3d-container');
-      if (amengiDiv) amengiDiv.style.display = 'none';
-      let youtubeIframe = wrapper.querySelector('#youtubeFrame');
-      if (!youtubeIframe) {
-        youtubeIframe = document.createElement('iframe');
-        youtubeIframe.id = 'youtubeFrame';
-        youtubeIframe.setAttribute('frameborder', '0');
-        youtubeIframe.setAttribute('allowfullscreen', 'true');
-        youtubeIframe.style.width = '100%';
-        youtubeIframe.style.height = '100%';
-        wrapper.appendChild(youtubeIframe);
-      }
-      youtubeIframe.src = 'https://www.youtube.com/embed/WXjiF4K7u4g?autoplay=1&rel=0';
-      youtubeIframe.style.display = 'block';
-      addLogMessage("Switched to YAUTJA PRIME FEED • KHARMA MOVIE (Predator Origins)", 'predator');
-    }
-    
-    // Background 3D
+    // Background 3D Scene
     const containerBg = document.getElementById('canvas-container');
-    const bgScene = new THREE.Scene(); bgScene.background = new THREE.Color(0x03060C); bgScene.fog = new THREE.FogExp2(0x03060C, 0.008);
+    const bgScene = new THREE.Scene(); bgScene.background = new THREE.Color(0x03060C);
     const bgCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); bgCamera.position.set(0, 2, 12);
-    const bgRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-    bgRenderer.setSize(window.innerWidth, window.innerHeight); bgRenderer.setPixelRatio(window.devicePixelRatio);
-    containerBg.appendChild(bgRenderer.domElement);
-    const knotGeo = new THREE.TorusKnotGeometry(1.1, 0.28, 200, 32, 3, 4);
-    const knotMat = new THREE.MeshStandardMaterial({ color: 0xF9A826, emissive: 0x442200, emissiveIntensity: 0.6, metalness: 0.85, roughness: 0.25 });
-    const knot = new THREE.Mesh(knotGeo, knotMat); bgScene.add(knot);
-    const wireMat = new THREE.MeshBasicMaterial({ color: 0x00E5FF, wireframe: true, transparent: true, opacity: 0.3 });
-    const knotWire = new THREE.Mesh(knotGeo, wireMat); bgScene.add(knotWire);
-    for (let i = 0; i < 5; i++) {
-      const radius = 1.6 + i * 0.45;
-      const ringGeo = new THREE.TorusGeometry(radius, 0.025, 64, 200);
-      const ringMat = new THREE.MeshStandardMaterial({ color: 0x00E5FF, emissive: 0x004466 });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.rotation.x = Math.PI / 2 + i * 0.2; ring.rotation.z = i * 0.5;
-      bgScene.add(ring);
-    }
-    const particleCountBg = 2000;
-    const particlesGeoBg = new THREE.BufferGeometry();
-    const positionsBg = new Float32Array(particleCountBg * 3);
-    for (let i = 0; i < particleCountBg; i++) {
-      const r = 1.5 + Math.random() * 3.5;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      positionsBg[i*3] = r * Math.sin(phi) * Math.cos(theta);
-      positionsBg[i*3+1] = r * Math.sin(phi) * Math.sin(theta) * 0.7;
-      positionsBg[i*3+2] = r * Math.cos(phi);
-    }
-    particlesGeoBg.setAttribute('position', new THREE.BufferAttribute(positionsBg, 3));
-    const particleMatBg = new THREE.PointsMaterial({ color: 0x00E5FF, size: 0.03, transparent: true, blending: THREE.AdditiveBlending });
-    const particlesBg = new THREE.Points(particlesGeoBg, particleMatBg); bgScene.add(particlesBg);
-    const starsGeoBg = new THREE.BufferGeometry();
-    const starsPosBg = new Float32Array(4000 * 3);
-    for (let i = 0; i < 4000; i++) { starsPosBg[i*3] = (Math.random() - 0.5) * 400; starsPosBg[i*3+1] = (Math.random() - 0.5) * 200; starsPosBg[i*3+2] = (Math.random() - 0.5) * 150 - 50; }
-    starsGeoBg.setAttribute('position', new THREE.BufferAttribute(starsPosBg, 3));
-    const starsMatBg = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.6 });
-    const starsBg = new THREE.Points(starsGeoBg, starsMatBg); bgScene.add(starsBg);
+    const bgRenderer = new THREE.WebGLRenderer({ antialias: true }); bgRenderer.setSize(window.innerWidth, window.innerHeight); containerBg.appendChild(bgRenderer.domElement);
+    const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(1.1, 0.28, 200, 32, 3, 4), new THREE.MeshStandardMaterial({ color: 0xF9A826, emissive: 0x442200, emissiveIntensity: 0.6 })); bgScene.add(knot);
     const ambientBg = new THREE.AmbientLight(0x111122); bgScene.add(ambientBg);
     const mainLightBg = new THREE.DirectionalLight(0xFFDDAA, 1.2); mainLightBg.position.set(3, 5, 4); bgScene.add(mainLightBg);
-    const backLightBg = new THREE.PointLight(0x2266FF, 0.6); backLightBg.position.set(-2, 1, -5); bgScene.add(backLightBg);
-    let bgTime = 0;
-    function animateBg() {
-      requestAnimationFrame(animateBg); bgTime += 0.008;
-      knot.rotation.y = bgTime * 0.5; knot.rotation.x = Math.sin(bgTime * 0.3) * 0.2; knotWire.rotation.copy(knot.rotation);
-      particlesBg.rotation.y += 0.001; starsBg.rotation.y += 0.0002;
-      bgCamera.position.x += (Math.sin(bgTime * 0.1) * 0.08 - bgCamera.position.x) * 0.02;
-      bgCamera.position.y += (Math.sin(bgTime * 0.15) * 0.04 - bgCamera.position.y) * 0.02;
-      bgCamera.lookAt(0, 0.2, 0);
-      bgRenderer.render(bgScene, bgCamera);
-    }
-    animateBg();
-    window.addEventListener('resize', () => {
-      bgCamera.aspect = window.innerWidth / window.innerHeight; bgCamera.updateProjectionMatrix(); bgRenderer.setSize(window.innerWidth, window.innerHeight);
-    });
+    let bgTime = 0; function animateBg() { requestAnimationFrame(animateBg); bgTime += 0.008; knot.rotation.y = bgTime * 0.5; bgRenderer.render(bgScene, bgCamera); } animateBg();
+    window.addEventListener('resize', () => { bgCamera.aspect = window.innerWidth / window.innerHeight; bgCamera.updateProjectionMatrix(); bgRenderer.setSize(window.innerWidth, window.innerHeight); });
     
-    // UI and helpers
+    // --- UI State & Logic ---
     const clans = ["Shadow Clan", "Iron Wolves Clan", "Black Flame Clan", "North Wind Clan", "Deep Hunters Clan", "Blood Moon Clan", "Ice Peaks Clan", "Rusted Thrones Clan", "White Ghosts Clan", "Fire Hearts Clan", "Stone Wardens Clan", "Rending Claws Clan", "Silent Harbor Clan", "Broken Spears Clan", "Last Chance Clan"];
     document.getElementById('clansGrid').innerHTML = clans.map(clan => `<div class="clan-tag">${clan}</div>`).join('');
-    
     let researchProgress = 47.3, tokens = 14.2, frames = 3.1, autonomy = 94.7, helpGiven = 3, trainingProgress = 52;
     let researchInterval = null, helpRequestTimeout = null, helpRequestActive = false;
-    const helpRequests = [
-      { title: "Sample Consultation", detail: "Anomalous mineral #PR-422 analysis required" },
-      { title: "Tactical Advice", detail: "Professor requests data on Sector X-7" },
-      { title: "Data Exchange", detail: "Squad shares field recordings, processing needed" },
-      { title: "Technical Assistance", detail: "Equipment malfunction, diagnostics required" }
-    ];
+    const helpRequests = [{ title: "Sample Consultation", detail: "Anomalous mineral #PR-422 analysis required" }, { title: "Tactical Advice", detail: "Professor requests data on Sector X-7" }, { title: "Data Exchange", detail: "Squad shares field recordings" }, { title: "Technical Assistance", detail: "Equipment malfunction" }];
+    const sampleList = document.getElementById('samplesList');
+    function updateUI() { document.getElementById('researchProgress').style.width = researchProgress + '%'; document.getElementById('progressPercent').innerText = researchProgress.toFixed(1) + '%'; document.getElementById('tokensValue').innerText = tokens.toFixed(1); document.getElementById('framesValue').innerText = frames.toFixed(1); document.getElementById('autonomyValue').innerText = autonomy.toFixed(1); document.getElementById('helpGivenValue').innerText = helpGiven; document.getElementById('trainingPercent').innerText = trainingProgress + '%'; document.getElementById('trainingFill').style.width = trainingProgress + '%'; }
+    function addLogMessage(msg, type = 'info') { const log = document.getElementById('logTerminal'); const newLine = document.createElement('div'); newLine.className = 'log-line'; const prefix = type === 'predator' ? '🐺 [PREDATORS]' : (type === 'system' ? '⚙️ [SYSTEM]' : '📡 [INFO]'); newLine.innerHTML = `> [${new Date().toLocaleTimeString()}] ${prefix} ${msg}`; log.appendChild(newLine); if (log.children.length > 16) log.removeChild(log.firstChild); }
+    function addSampleFromPredators(sampleName) { const newSample = document.createElement('div'); newSample.className = 'sample-item'; newSample.innerHTML = `<span style="color:#6BB5A0;">📦 ${sampleName}</span><span style="color:#8BA2C2;">shared</span>`; sampleList.insertBefore(newSample, sampleList.firstChild); document.getElementById('samplesCount').innerText = sampleList.children.length + ' samples'; }
+    function showHelpRequest() { if (helpRequestActive) return; const randomRequest = helpRequests[Math.floor(Math.random() * helpRequests.length)]; document.getElementById('helpRequestText').innerText = randomRequest.title; document.getElementById('helpRequestDetail').innerText = randomRequest.detail; document.getElementById('helpRequestBlock').classList.remove('hidden'); helpRequestActive = true; addLogMessage(`Predators request: ${randomRequest.title}`, 'predator'); if (helpRequestTimeout) clearTimeout(helpRequestTimeout); helpRequestTimeout = setTimeout(() => { if (helpRequestActive) { document.getElementById('helpRequestBlock').classList.add('hidden'); helpRequestActive = false; addLogMessage("Predators resolved independently", 'predator'); } }, 30000); }
+    function acceptHelp() { if (!helpRequestActive) return; helpGiven++; trainingProgress = Math.min(100, trainingProgress + Math.random() * 5); researchProgress = Math.min(100, researchProgress + Math.random() * 4); tokens = Math.min(32, tokens + Math.random() * 0.5); updateUI(); addLogMessage(`Assistance provided.`, 'system'); if (Math.random() > 0.6) { const samples = ['Rare Crystal #PR-777', 'Artifact "Tear"', 'Biomass Sample']; addSampleFromPredators(samples[Math.floor(Math.random() * samples.length)]); } document.getElementById('helpRequestBlock').classList.add('hidden'); helpRequestActive = false; if (helpRequestTimeout) clearTimeout(helpRequestTimeout); setTimeout(() => { if (!helpRequestActive) showHelpRequest(); }, 25000); }
+    function initiateResearch() { if (researchInterval) clearInterval(researchInterval); addLogMessage(`INITIATING RESEARCH...`, 'system'); researchInterval = setInterval(() => { if (researchProgress < 100) { researchProgress = Math.min(100, researchProgress + Math.random() * 2.5); tokens = Math.min(32, tokens + Math.random() * 0.6); frames = Math.min(10, frames + Math.random() * 0.25); updateUI(); if (researchProgress >= 100) { clearInterval(researchInterval); addLogMessage('✓ RESEARCH COMPLETE!', 'system'); researchInterval = null; } } else { clearInterval(researchInterval); researchInterval = null; } }, 700); }
+    function resetSimulation() { if (researchInterval) clearInterval(researchInterval); researchProgress = 47.3; tokens = 14.2; frames = 3.1; autonomy = 94.7; trainingProgress = 52; updateUI(); addLogMessage('SYSTEM RESET', 'system'); }
+    function checkPredatorsStatus() { addLogMessage("Squad status: operational, analyzing sector data", 'predator'); const squadStatuses = ['🟢 IN LAB', '🔴 FIELD MISSION', '🟡 REST/PREP']; const professorStatuses = ['📚 BRIEFING', '🎓 TRAINING', '🔬 RESEARCH']; document.getElementById('squadStatus').innerHTML = squadStatuses[Math.floor(Math.random() * squadStatuses.length)]; document.getElementById('professorStatus').innerHTML = professorStatuses[Math.floor(Math.random() * professorStatuses.length)]; }
+    function goFullscreen() { const wrapper = document.querySelector('.video-wrapper'); if (wrapper.requestFullscreen) wrapper.requestFullscreen(); }
     
-    function updateUI() {
-      document.getElementById('researchProgress').style.width = researchProgress + '%';
-      document.getElementById('progressPercent').innerText = researchProgress.toFixed(1) + '%';
-      document.getElementById('tokensValue').innerText = tokens.toFixed(1);
-      document.getElementById('framesValue').innerText = frames.toFixed(1);
-      document.getElementById('autonomyValue').innerText = autonomy.toFixed(1);
-      document.getElementById('helpGivenValue').innerText = helpGiven;
-      document.getElementById('trainingPercent').innerText = trainingProgress + '%';
-      document.getElementById('trainingFill').style.width = trainingProgress + '%';
-    }
+    // --- VOICE ASSISTANT ---
+    const voiceBtn = document.getElementById('voiceBtn');
+    const voiceStatus = document.getElementById('voiceStatus');
+    const voiceHint = document.getElementById('voiceHint');
+    let recognition = null;
+    let isListening = false;
+    let wakeWordDetected = false;
     
-    function addLogMessage(msg, type = 'info') {
-      const log = document.getElementById('logTerminal');
-      const newLine = document.createElement('div');
-      newLine.className = 'log-line';
-      const prefix = type === 'predator' ? '🐺 [PREDATORS]' : (type === 'system' ? '⚙️ [SYSTEM]' : '📡 [INFO]');
-      newLine.innerHTML = `> [${new Date().toLocaleTimeString()}] ${prefix} ${msg}`;
-      log.insertBefore(newLine, log.firstChild);
-      if (log.children.length > 12) log.removeChild(log.lastChild);
-    }
-    
-    function addSampleFromPredators(sampleName) {
-      const container = document.getElementById('samplesList');
-      const newSample = document.createElement('div');
-      newSample.className = 'sample-item';
-      newSample.innerHTML = `<span style="color:#6BB5A0;">📦 ${sampleName}</span><span style="color:#8BA2C2;">shared</span>`;
-      container.insertBefore(newSample, container.firstChild);
-      if (container.children.length > 8) container.removeChild(container.lastChild);
-      document.getElementById('samplesCount').innerText = container.children.length + ' samples';
-    }
-    
-    function showHelpRequest() {
-      if (helpRequestActive) return;
-      const randomRequest = helpRequests[Math.floor(Math.random() * helpRequests.length)];
-      document.getElementById('helpRequestText').innerText = randomRequest.title;
-      document.getElementById('helpRequestDetail').innerText = randomRequest.detail;
-      document.getElementById('helpRequestBlock').classList.remove('hidden');
-      helpRequestActive = true;
-      addLogMessage(`Predators squad requests assistance: ${randomRequest.title}`, 'predator');
-      if (helpRequestTimeout) clearTimeout(helpRequestTimeout);
-      helpRequestTimeout = setTimeout(() => {
-        if (helpRequestActive) {
-          document.getElementById('helpRequestBlock').classList.add('hidden');
-          helpRequestActive = false;
-          addLogMessage("Predators squad resolved the issue independently", 'predator');
-        }
-      }, 30000);
-    }
-    
-    function acceptHelp() {
-      if (!helpRequestActive) return;
-      helpGiven++;
-      trainingProgress = Math.min(100, trainingProgress + Math.random() * 5);
-      researchProgress = Math.min(100, researchProgress + Math.random() * 4);
-      tokens = Math.min(32, tokens + Math.random() * 0.5);
-      updateUI();
-      addLogMessage(`Assistance provided. Predators squad expresses gratitude.`, 'system');
-      if (Math.random() > 0.6) {
-        const samples = ['Rare Crystal #PR-777', 'Artifact "Tear of the Predator"', 'Biomass Sample (classified)'];
-        const sample = samples[Math.floor(Math.random() * samples.length)];
-        addSampleFromPredators(sample);
-        addLogMessage(`📦 In gratitude, shared sample: ${sample}`, 'predator');
-      }
-      document.getElementById('helpRequestBlock').classList.add('hidden');
-      helpRequestActive = false;
-      if (helpRequestTimeout) clearTimeout(helpRequestTimeout);
-      setTimeout(() => { if (!helpRequestActive) showHelpRequest(); }, 25000 + Math.random() * 35000);
-    }
-    
-    function initiateResearch() {
-      if (researchInterval) clearInterval(researchInterval);
-      addLogMessage(`INITIATING RESEARCH PROTOCOL...`, 'system');
-      researchInterval = setInterval(() => {
-        if (researchProgress < 100) {
-          researchProgress = Math.min(100, researchProgress + Math.random() * 2.5);
-          tokens = Math.min(32, tokens + Math.random() * 0.6);
-          frames = Math.min(10, frames + Math.random() * 0.25);
-          autonomy = Math.min(99.9, autonomy + Math.random() * 0.4);
-          updateUI();
-          if (researchProgress >= 100) {
-            clearInterval(researchInterval);
-            addLogMessage('✓ RESEARCH COMPLETE! Neural evolution achieved.', 'system');
-            researchInterval = null;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      
+      recognition.onstart = () => { isListening = true; voiceBtn.classList.add('listening'); voiceStatus.innerHTML = '🎙️ LISTENING... Say a command'; voiceBtn.style.animation = 'pulseRed 1s infinite'; };
+      recognition.onend = () => { isListening = false; voiceBtn.classList.remove('listening'); voiceStatus.innerHTML = '⚡ Voice AI • Standby'; voiceBtn.style.animation = 'glowPulse 2s infinite'; wakeWordDetected = false; };
+      recognition.onerror = (event) => { addLogMessage(`Voice error: ${event.error}`, 'system'); voiceStatus.innerHTML = '⚠️ Voice error • Try again'; setTimeout(() => { if(!isListening) voiceStatus.innerHTML = '⚡ Voice AI • Standby'; }, 2000); };
+      
+      recognition.onresult = (event) => {
+        const last = event.results[event.results.length - 1];
+        const transcript = last[0].transcript.toLowerCase().trim();
+        if (last.isFinal) {
+          addLogMessage(`Voice command: "${transcript}"`, 'system');
+          // Wake word detection: "hey labs" or "labs"
+          if (!wakeWordDetected && (transcript.includes('hey labs') || transcript === 'labs' || transcript.startsWith('labs '))) {
+            wakeWordDetected = true;
+            voiceStatus.innerHTML = '🎯 Wake word detected • Ready';
+            voiceHint.innerHTML = 'Say: research, reset, status, help, amengi, yautja';
+            addLogMessage("Wake word 'LABS' detected. Awaiting command.", 'system');
+            setTimeout(() => { wakeWordDetected = false; voiceStatus.innerHTML = '⚡ Voice AI • Standby'; voiceHint.innerHTML = '🎤 Say "Hey LABS" or click mic'; }, 8000);
+            return;
           }
-        } else { clearInterval(researchInterval); researchInterval = null; }
-      }, 700);
+          // Process commands if wake word active or button was clicked
+          if (wakeWordDetected || true) { // Allow commands anytime for simplicity
+            if (transcript.includes('research') || transcript.includes('initiate')) { initiateResearch(); voiceStatus.innerHTML = '✅ Research initiated'; speakResponse("Initiating research protocol"); }
+            else if (transcript.includes('reset') || transcript.includes('restart')) { resetSimulation(); voiceStatus.innerHTML = '✅ System reset'; speakResponse("System reset complete"); }
+            else if (transcript.includes('status') || transcript.includes('report')) { checkPredatorsStatus(); voiceStatus.innerHTML = '✅ Status checked'; speakResponse("Predators squad operational"); }
+            else if (transcript.includes('help') || transcript.includes('assist')) { acceptHelp(); voiceStatus.innerHTML = '✅ Assistance provided'; speakResponse("Providing assistance to Predators"); }
+            else if (transcript.includes('amengi') || transcript.includes('3d') || transcript.includes('artifact')) { startAmengi(); document.getElementById('amengi3dBtn').click(); voiceStatus.innerHTML = '✅ Amengi 3D activated'; speakResponse("Amengi artifact 3D scene activated"); }
+            else if (transcript.includes('yautja') || transcript.includes('prime') || transcript.includes('stream')) { switchToYautjaPrime(); document.getElementById('predatorsStreamBtn').click(); voiceStatus.innerHTML = '✅ Yautja stream'; speakResponse("Switching to Yautja Prime feed"); }
+            else if (transcript.includes('samples') || transcript.includes('inventory')) { voiceStatus.innerHTML = `📦 ${sampleList.children.length} samples available`; speakResponse(`You have ${sampleList.children.length} shared samples`); }
+            else if (transcript.includes('resonance') || transcript.includes('progress')) { voiceStatus.innerHTML = `🧠 Resonance: ${researchProgress.toFixed(1)}%`; speakResponse(`Neural resonance at ${researchProgress.toFixed(1)} percent`); }
+            else { voiceStatus.innerHTML = '❓ Command not recognized'; speakResponse("Command not recognized. Try research, reset, status, help, amengi, or yautja."); }
+            wakeWordDetected = false;
+          }
+        }
+      };
+    } else {
+      voiceStatus.innerHTML = '❌ Speech not supported';
+      voiceBtn.disabled = true;
+      voiceBtn.style.opacity = '0.5';
     }
     
-    function resetSimulation() {
-      if (researchInterval) { clearInterval(researchInterval); researchInterval = null; }
-      researchProgress = 47.3; tokens = 14.2; frames = 3.1; autonomy = 94.7;
-      updateUI();
-      addLogMessage('SYSTEM RESET • Neural state reinitialized', 'system');
+    function speakResponse(text) {
+      if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9;
+        utterance.pitch = 1.1;
+        utterance.volume = 0.8;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utterance);
+      }
     }
     
-    function checkPredatorsStatus() {
-      const statuses = ["Squad at camp, professor conducting briefing", "War hound patrolling perimeter", "Predators analyzing field data", "Link to Kingdom stable, data exchange active"];
-      addLogMessage(statuses[Math.floor(Math.random() * statuses.length)], 'predator');
-      const squadStatuses = ['🟢 IN LAB', '🔴 FIELD MISSION', '🟡 REST/PREP'];
-      const professorStatuses = ['📚 BRIEFING', '🎓 JACKDAW TRAINING', '🔬 RESEARCH', '📡 ON CALL'];
-      document.getElementById('squadStatus').innerHTML = squadStatuses[Math.floor(Math.random() * squadStatuses.length)];
-      document.getElementById('professorStatus').innerHTML = professorStatuses[Math.floor(Math.random() * professorStatuses.length)];
-    }
+    voiceBtn.addEventListener('click', () => {
+      if (recognition) {
+        if (isListening) { recognition.stop(); voiceStatus.innerHTML = '⚡ Voice AI • Standby'; voiceBtn.classList.remove('listening'); }
+        else { recognition.start(); voiceStatus.innerHTML = '🎙️ Starting voice...'; wakeWordDetected = true; voiceHint.innerHTML = '🎤 Listening... Say a command'; }
+      } else { addLogMessage("Voice recognition not supported", 'system'); }
+    });
     
-    function goFullscreen() {
-      const wrapper = document.querySelector('.video-wrapper');
-      if (wrapper.requestFullscreen) wrapper.requestFullscreen();
-      else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen();
-      else if (wrapper.msRequestFullscreen) wrapper.msRequestFullscreen();
-    }
-    
+    // UI Event Bindings
     document.getElementById('initiateBtn').addEventListener('click', initiateResearch);
     document.getElementById('resetBtn').addEventListener('click', resetSimulation);
     document.getElementById('checkPredatorsBtn').addEventListener('click', checkPredatorsStatus);
     document.getElementById('acceptHelpBtn').addEventListener('click', acceptHelp);
-    document.getElementById('amengi3dBtn').addEventListener('click', () => {
-      startAmengi();
-      document.getElementById('amengi3dBtn').classList.add('active');
-      document.getElementById('predatorsStreamBtn').classList.remove('active');
-    });
-    document.getElementById('predatorsStreamBtn').addEventListener('click', () => {
-      switchToYautjaPrime();
-      document.getElementById('predatorsStreamBtn').classList.add('active');
-      document.getElementById('amengi3dBtn').classList.remove('active');
-    });
+    document.getElementById('amengi3dBtn').addEventListener('click', () => { startAmengi(); document.getElementById('amengi3dBtn').classList.add('active'); document.getElementById('predatorsStreamBtn').classList.remove('active'); });
+    document.getElementById('predatorsStreamBtn').addEventListener('click', () => { switchToYautjaPrime(); document.getElementById('predatorsStreamBtn').classList.add('active'); document.getElementById('amengi3dBtn').classList.remove('active'); });
     document.getElementById('fullscreenVideoBtn').addEventListener('click', goFullscreen);
+    document.getElementById('jackdawUniversityBtn').addEventListener('click', () => { window.open('https://wellamatores-metaverse.vercel.app/BASTION.html', '_blank'); addLogMessage("JACKDAW University opened", 'system'); });
+    document.getElementById('backLink').addEventListener('click', () => { window.location.href = 'https://wellamatores-metaverse.vercel.app'; });
+    document.querySelectorAll('.division-btn:not(#jackdawUniversityBtn)').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.division-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); addLogMessage(`Switched to ${btn.innerText} division`, 'info'); }); });
     
-    document.querySelectorAll('.division-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.division-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        addLogMessage(`Switched to ${btn.innerText} division (reference info)`, 'info');
-      });
-    });
-    
-    switchToYautjaPrime();
-    updateUI();
-    addLogMessage('🐺 Predators squad deployed. "Operating autonomously, ready to assist"', 'predator');
-    addLogMessage('🧠 Amengi Artifact 3D integration ready • Click "AMENGI ARTIFACT (3D)"', 'system');
-    addLogMessage('👑 15 clans of the Kingdom of Predators recognized • Cultural exchange active', 'info');
+    // Initialize
+    switchToYautjaPrime(); updateUI(); addLogMessage('🐺 Predators squad deployed', 'predator'); addLogMessage('🎤 Voice assistant active • Say "Hey LABS" or click mic', 'system');
+    ["🔮 Anomalous Mineral #PR-107", "🧬 Biomass Sector G-4", "⚙️ Tech Artifact (unidentified)"].forEach(s => addSampleFromPredators(s));
     setTimeout(() => { if (!helpRequestActive) showHelpRequest(); }, 15000);
-  </script>
-
-  <!-- TTV PostMessage Listener for AMENGI sync -->
-  <script>
-    window.addEventListener('message', (event) => {
-      if (event.data && event.data.type === 'TTV_PROMPT_SYNC') {
-        const promptPreview = event.data.payload.length > 120 
-          ? event.data.payload.substring(0, 120) + '…' 
-          : event.data.payload;
-        
-        // Add to log terminal if function exists
-        if (typeof addLogMessage === 'function') {
-          addLogMessage(`[TTV] Prompt synced with AMENGI: ${promptPreview}`, 'system');
-        } else {
-          console.log("[AMENGI ARTIFACT] Full prompt received:", event.data.payload);
-          // Fallback: add to terminal manually
-          const log = document.getElementById('logTerminal');
-          if (log) {
-            const newLine = document.createElement('div');
-            newLine.className = 'log-line';
-            newLine.innerHTML = `> [${new Date().toLocaleTimeString()}] ⚙️ [SYSTEM] [TTV] Prompt synced: ${promptPreview}`;
-            log.insertBefore(newLine, log.firstChild);
-            if (log.children.length > 12) log.removeChild(log.lastChild);
-          }
-        }
-        
-        // Optional: boost neural resonance when ternary logic is used
-        if (event.data.payload && event.data.payload.match(/ternary/i)) {
-          if (typeof researchProgress !== 'undefined') {
-            researchProgress = Math.min(100, researchProgress + 0.5);
-            if (typeof updateUI === 'function') updateUI();
-          }
-        }
-      }
-    });
-    console.log("TTV PostMessage listener active — ready for AMENGI sync");
-
-    // TTV FULLSCREEN FUNCTIONALITY
-    (function() {
-      const ttvBlock = document.getElementById('ttvMainBlock');
-      const fullscreenBtn = document.getElementById('ttvFullscreenBtn');
-      const iframeWrapper = document.getElementById('ttvIframeWrapper');
-      const iframe = document.getElementById('ttvIframe');
-      let isTtvFullscreen = false;
-      let originalWrapperStyle = {};
-      let originalBlockStyle = {};
-
-      function enterTtvFullscreen() {
-        originalWrapperStyle = {
-          position: iframeWrapper.style.position,
-          top: iframeWrapper.style.top,
-          left: iframeWrapper.style.left,
-          width: iframeWrapper.style.width,
-          height: iframeWrapper.style.height,
-          zIndex: iframeWrapper.style.zIndex,
-          backgroundColor: iframeWrapper.style.backgroundColor
-        };
-        originalBlockStyle = {
-          margin: ttvBlock.style.margin,
-          position: ttvBlock.style.position
-        };
-        
-        iframeWrapper.style.position = 'fixed';
-        iframeWrapper.style.top = '0';
-        iframeWrapper.style.left = '0';
-        iframeWrapper.style.width = '100vw';
-        iframeWrapper.style.height = '100vh';
-        iframeWrapper.style.zIndex = '10000';
-        iframeWrapper.style.backgroundColor = '#03081a';
-        
-        iframe.style.height = '100vh';
-        iframe.style.width = '100vw';
-        
-        document.body.style.overflow = 'hidden';
-        
-        fullscreenBtn.textContent = '❌ EXIT';
-        isTtvFullscreen = true;
-      }
-
-      function exitTtvFullscreen() {
-        iframeWrapper.style.position = originalWrapperStyle.position || '';
-        iframeWrapper.style.top = originalWrapperStyle.top || '';
-        iframeWrapper.style.left = originalWrapperStyle.left || '';
-        iframeWrapper.style.width = originalWrapperStyle.width || '';
-        iframeWrapper.style.height = originalWrapperStyle.height || '';
-        iframeWrapper.style.zIndex = originalWrapperStyle.zIndex || '';
-        iframeWrapper.style.backgroundColor = originalWrapperStyle.backgroundColor || '';
-        
-        iframe.style.height = '700px';
-        iframe.style.width = '100%';
-        
-        document.body.style.overflow = '';
-        
-        fullscreenBtn.textContent = '⛶ FULLSCREEN';
-        isTtvFullscreen = false;
-      }
-
-      function toggleTtvFullscreen() {
-        if (isTtvFullscreen) {
-          exitTtvFullscreen();
-        } else {
-          enterTtvFullscreen();
-        }
-      }
-
-      if (fullscreenBtn) {
-        fullscreenBtn.addEventListener('click', toggleTtvFullscreen);
-      }
-      
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && isTtvFullscreen) {
-          exitTtvFullscreen();
-        }
-      });
-    })();
+    
+    // TTV Fullscreen logic
+    (function() { const ttvBlock = document.getElementById('ttvMainBlock'); const fullscreenBtn = document.getElementById('ttvFullscreenBtn'); const iframeWrapper = document.getElementById('ttvIframeWrapper'); const iframe = document.getElementById('ttvIframe'); let isTtvFullscreen = false; let originalWrapperStyle = {}; function enterTtvFullscreen() { originalWrapperStyle = { position: iframeWrapper.style.position, top: iframeWrapper.style.top, left: iframeWrapper.style.left, width: iframeWrapper.style.width, height: iframeWrapper.style.height, zIndex: iframeWrapper.style.zIndex }; iframeWrapper.style.position = 'fixed'; iframeWrapper.style.top = '0'; iframeWrapper.style.left = '0'; iframeWrapper.style.width = '100vw'; iframeWrapper.style.height = '100vh'; iframeWrapper.style.zIndex = '10000'; iframe.style.height = '100vh'; iframe.style.width = '100vw'; document.body.style.overflow = 'hidden'; fullscreenBtn.textContent = '❌ EXIT'; isTtvFullscreen = true; } function exitTtvFullscreen() { iframeWrapper.style.position = originalWrapperStyle.position || ''; iframeWrapper.style.top = originalWrapperStyle.top || ''; iframeWrapper.style.left = originalWrapperStyle.left || ''; iframeWrapper.style.width = originalWrapperStyle.width || ''; iframeWrapper.style.height = originalWrapperStyle.height || ''; iframeWrapper.style.zIndex = originalWrapperStyle.zIndex || ''; iframe.style.height = '700px'; iframe.style.width = '100%'; document.body.style.overflow = ''; fullscreenBtn.textContent = '⛶ FULLSCREEN'; isTtvFullscreen = false; } fullscreenBtn.addEventListener('click', () => { if (isTtvFullscreen) exitTtvFullscreen(); else enterTtvFullscreen(); }); document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isTtvFullscreen) exitTtvFullscreen(); }); })();
+    window.addEventListener('message', (event) => { if (event.data && event.data.type === 'TTV_PROMPT_SYNC') { const preview = event.data.payload.length > 100 ? event.data.payload.substring(0, 100) + '…' : event.data.payload; addLogMessage(`[TTV] Synced: ${preview}`, 'system'); if (event.data.payload && event.data.payload.match(/ternary/i)) { researchProgress = Math.min(100, researchProgress + 0.5); updateUI(); } } });
   </script>
 </body>
 </html>
