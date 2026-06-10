@@ -1,13 +1,9 @@
-Спасибо за детальный анализ! Вы правы — в коде были опечатки, которые могли нарушать работу. Я исправил все найденные ошибки и подготовил **полностью рабочую версию** с аккуратным аватаром (крысёнок в шезлонге, зонт, мартини с трубочкой), которая будет стабильно работать в современных браузерах.
-
-Вот **итоговый, исправленный и готовый к использованию код**:
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Labby Relax — крысёнок на шезлонге | Assistant</title>
+  <title>Labby Relax — Baby Rat on Lounge Chair | Assistant</title>
   <style>
     * {
       margin: 0;
@@ -72,7 +68,6 @@
       margin-bottom: 25px;
       box-shadow: 0 20px 35px rgba(0, 0, 0, 0.4);
     }
-    /* АВАТАР — крысёнок в шезлонге + зонт + мартини с трубочкой (стабильный, без Canvas) */
     .avatar-luxury {
       background: linear-gradient(120deg, #ffdd99, #f7bc6c);
       padding: 25px 20px;
@@ -312,8 +307,8 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>🍹 LABBY • КРЫСЁНОК VIP</h1>
-    <p>шезлонг • мартини • твой стильный помощник</p>
+    <h1>🍹 LABBY • BABY RAT VIP</h1>
+    <p>lounge chair • martini • your stylish assistant</p>
   </div>
 
   <div class="lang-bar">
@@ -324,7 +319,6 @@
   </div>
 
   <div class="assistant-card">
-    <!-- АВАТАР: крысёнок + шезлонг + зонт + мартини с трубочкой — стабильно и наглядно -->
     <div class="avatar-luxury">
       <div class="avatar-emoji-set">
         <span>🐭</span>
@@ -336,13 +330,13 @@
         <span>✨</span>
       </div>
       <div style="font-size: 0.9rem; background: #00000066; padding: 5px 15px; border-radius: 40px; color: #FFD966">
-        🧉 "Отдых + интеллект"
+        🧉 "Relax + Intelligence"
       </div>
     </div>
 
     <div class="info-panel">
       <div class="title-badge">
-        <h2>🐭 Labby · шезлонг & мартини</h2>
+        <h2>🐭 Labby · lounge chair & martini</h2>
       </div>
       <div class="status">
         <span class="status-dot"></span>
@@ -353,52 +347,52 @@
 
     <div class="message-area">
       <div class="message-bubble" id="messageArea">
-        🍸 Привет! Я Labby — твой помощник. Лежу в шезлонге, пью мартини через трубочку, но всегда на связи.<br>
-        🧉 Готов искать статьи, шутить и помогать.
+        🍸 Hi! I'm Labby — your assistant. Lounging, sipping martini through a straw, but always available.<br>
+        🧉 Ready to search articles, crack jokes, and help out.
       </div>
     </div>
 
     <div class="controls">
-      <input type="text" class="text-input" id="textInput" placeholder="Напиши: статус, найди нейросети, шутка...">
-      <button class="btn btn-send" id="sendBtn">💬 ОТПРАВИТЬ</button>
-      <button class="btn btn-voice" id="voiceBtn">🎙️ ГОЛОС</button>
+      <input type="text" class="text-input" id="textInput" placeholder="Type: status, find neural networks, joke...">
+      <button class="btn btn-send" id="sendBtn">💬 SEND</button>
+      <button class="btn btn-voice" id="voiceBtn">🎙️ VOICE</button>
     </div>
 
     <div class="quick-commands">
-      <span class="cmd-chip" data-cmd="status">📊 Статус резонанса</span>
-      <span class="cmd-chip" data-cmd="search for нейросети">🧠 Нейросети</span>
-      <span class="cmd-chip" data-cmd="search for искусственный интеллект">🤖 AI</span>
-      <span class="cmd-chip" data-cmd="joke">😂 Шутка</span>
-      <span class="cmd-chip" data-cmd="help">🆘 Помощь</span>
-      <span class="cmd-chip" data-cmd="clear">🗑️ Очистить логи</span>
+      <span class="cmd-chip" data-cmd="status">📊 Resonance Status</span>
+      <span class="cmd-chip" data-cmd="search for neural networks">🧠 Neural Networks</span>
+      <span class="cmd-chip" data-cmd="search for artificial intelligence">🤖 AI</span>
+      <span class="cmd-chip" data-cmd="joke">😂 Joke</span>
+      <span class="cmd-chip" data-cmd="help">🆘 Help</span>
+      <span class="cmd-chip" data-cmd="clear">🗑️ Clear Logs</span>
     </div>
   </div>
 
   <div class="stats-grid">
-    <div class="stat-card"><div class="stat-value" id="progress">47%</div><div class="stat-label">Крысиный резонанс</div></div>
-    <div class="stat-card"><div class="stat-value" id="papersCount">0</div><div class="stat-label">Найдено статей</div></div>
-    <div class="stat-card"><div class="stat-value" id="queriesCount">0</div><div class="stat-label">Запросов</div></div>
+    <div class="stat-card"><div class="stat-value" id="progress">47%</div><div class="stat-label">Rat Resonance</div></div>
+    <div class="stat-card"><div class="stat-value" id="papersCount">0</div><div class="stat-label">Papers Found</div></div>
+    <div class="stat-card"><div class="stat-value" id="queriesCount">0</div><div class="stat-label">Queries</div></div>
   </div>
 
   <div class="results-panel hidden" id="resultsPanel">
     <div class="results-header">
-      <h3>📚 АКАДЕМИЧЕСКИЕ РЕЗУЛЬТАТЫ</h3>
+      <h3>📚 ACADEMIC RESULTS</h3>
       <button class="close-btn" id="closeResultsBtn">✕</button>
     </div>
     <div class="results-content" id="resultsContent"></div>
   </div>
 
   <div class="log-terminal" id="logTerminal"></div>
-  <div class="footer">🐭 Labby VIP — отдыхает, но всегда помогает. Попробуй голос: скажи «Лабби» и команду.</div>
+  <div class="footer">🐭 Labby VIP — relaxing but always helping. Try voice: say "Labby" followed by a command.</div>
 </div>
 
 <script>
-  // ========== ПЕРЕВОДЫ ==========
+  // ========== TRANSLATIONS ==========
   const translations = {
     en: {
       greeting: "Yo! Labby here — lounging with a martini, but sharp as ever. How can I help?",
-      status: "Research resonance: {progress}%. Papers found: {papers}. Queries: {queries}.",
-      searching: "Searching the archives for: {query}",
+      status: "Neural resonance: {progress}%. Papers found: {papers}. Queries: {queries}.",
+      searching: "Searching the knowledge archives for: {query}",
       found: "I found {count} paper(s) about {query}.",
       joke: "Why did the rat bring a tiny umbrella? Because forecast: 50% chance of martini shower! 🍸🧉",
       help: "Commands: 'status', 'search for [topic]', 'joke', 'clear logs'.",
@@ -430,9 +424,9 @@
     }
   };
 
-  // ========== СОСТОЯНИЕ ==========
+  // ========== STATE ==========
   let currentLang = 'auto';
-  let userLang = 'ru';
+  let userLang = 'en';
   let researchProgress = 47;
   let papersFound = 0;
   let queriesCount = 0;
@@ -440,7 +434,7 @@
   let wakeWordActive = false;
   let recognition = null;
 
-  // DOM элементы
+  // DOM elements
   const messageArea = document.getElementById('messageArea');
   const statusTextSpan = document.getElementById('statusText');
   const detectedLangSpan = document.getElementById('detectedLang');
@@ -455,19 +449,16 @@
   const closeResultsBtn = document.getElementById('closeResultsBtn');
   const logTerminal = document.getElementById('logTerminal');
 
-  // ДЕМО-БАЗА СТАТЕЙ
+  // DEMO PAPERS DATABASE
   const demoPapers = {
-    "нейросети": [
-      { title: "Глубокое обучение для грызунов", authors: "Labby & Hinton", summary: "Нейронные сети и коктейльные вечеринки — идеальное сочетание." }
-    ],
-    "искусственный интеллект": [
-      { title: "Transformer on the Beach", authors: "Vaswani, Labby", summary: "Механизм внимания под зонтиком от солнца." }
+    "neural networks": [
+      { title: "Deep Learning for Rodents", authors: "Labby & Hinton", summary: "Neural networks and cocktail parties — the perfect combination." }
     ],
     "artificial intelligence": [
-      { title: "AI & Relax: New Paradigm", authors: "Labby Institute", summary: "Как продуктивность растёт вместе с мартини." }
+      { title: "Transformer on the Beach", authors: "Vaswani, Labby", summary: "Attention mechanism under a beach umbrella." }
     ],
     "default": [
-      { title: "Коктейль знаний", authors: "Labby", summary: "Расслабься и спроси что-то конкретное: нейросети, AI, шутку." }
+      { title: "Knowledge Cocktail", authors: "Labby", summary: "Relax and ask something specific: neural networks, AI, joke." }
     ]
   };
 
@@ -497,7 +488,7 @@
   }
 
   function getTranslation(key, vars = {}) {
-    let text = translations[userLang]?.[key] || translations.ru[key] || key;
+    let text = translations[userLang]?.[key] || translations.en[key] || key;
     for (const [k, v] of Object.entries(vars)) {
       text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
     }
@@ -570,7 +561,7 @@
   function processCommand(input) {
     const normalized = input.toLowerCase().trim();
     if (!normalized) return;
-    addLog(`🐾 Команда: "${input}"`, 'info');
+    addLog(`🐾 Command: "${input}"`, 'info');
     let response = "";
 
     if (normalized === 'status' || normalized === 'статус' || normalized === 'стан') {
@@ -581,7 +572,7 @@
     else if (normalized.startsWith('search for ') || normalized.startsWith('search ') ||
              normalized.startsWith('найди ') || normalized.startsWith('знайди ')) {
       let query = normalized.replace(/search for |search |найди |знайди /, '');
-      if (query.length === 0) response = "What do you want to search for? / Что ищем?";
+      if (query.length === 0) response = "What do you want to search for?";
       else response = searchPapers(query);
     }
     else if (normalized === 'joke' || normalized === 'шутка' || normalized === 'жарт') {
@@ -603,39 +594,39 @@
     speak(response);
   }
 
-  // ========== ГОЛОСОВОЕ РАСПОЗНАВАНИЕ (исправлено transcript) ==========
+  // ========== VOICE RECOGNITION ==========
   function initVoice() {
     const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognitionAPI) {
-      addLog('Голос не поддерживается браузером', 'error');
+      addLog('Voice not supported by browser', 'error');
       voiceBtn.disabled = true;
       return null;
     }
     const recog = new SpeechRecognitionAPI();
     recog.continuous = true;
     recog.interimResults = false;
-    recog.lang = 'ru-RU,uk-UA,en-US';
+    recog.lang = 'en-US,ru-RU,uk-UA';
     
     recog.onstart = () => {
       isListening = true;
       voiceBtn.classList.add('listening');
-      statusTextSpan.textContent = '🎤 Слушаю... скажи "Лабби"';
+      statusTextSpan.textContent = '🎤 Listening... say "Labby"';
     };
     recog.onend = () => {
       isListening = false;
       voiceBtn.classList.remove('listening');
-      statusTextSpan.textContent = 'Активен';
+      statusTextSpan.textContent = 'Active';
       wakeWordActive = false;
     };
     recog.onerror = () => {
-      statusTextSpan.textContent = 'Активен';
+      statusTextSpan.textContent = 'Active';
       isListening = false;
       voiceBtn.classList.remove('listening');
     };
     recog.onresult = (event) => {
       const last = event.results.length - 1;
-      const text = event.results[last][0].transcript;   // ИСПРАВЛЕНО: было transcript
-      addLog(`🎙️ Голос: "${text}"`, 'info');
+      const text = event.results[last][0].transcript;
+      addLog(`🎙️ Voice: "${text}"`, 'info');
       
       if (currentLang === 'auto') {
         userLang = detectLanguage(text);
@@ -645,34 +636,35 @@
       if (lower.includes('лабби') || lower.includes('labby')) {
         wakeWordActive = true;
         speak(getTranslation('welcome'));
-        statusTextSpan.textContent = '🎤 Жду команду...';
-        setTimeout(() => { wakeWordActive = false; if (!isListening) statusTextSpan.textContent = 'Активен'; }, 10000);
+        statusTextSpan.textContent = '🎤 Waiting for command...';
+        setTimeout(() => { wakeWordActive = false; if (!isListening) statusTextSpan.textContent = 'Active'; }, 10000);
       } else if (wakeWordActive) {
         processCommand(text);
         wakeWordActive = false;
-        statusTextSpan.textContent = '🎤 Слушаю... скажи "Лабби"';
-      } else if (text.length > 3 && (lower.includes('статус') || lower.includes('найди') || lower.includes('шутка'))) {
+        statusTextSpan.textContent = '🎤 Listening... say "Labby"';
+      } else if (text.length > 3 && (lower.includes('status') || lower.includes('search') || lower.includes('joke') ||
+                                     lower.includes('статус') || lower.includes('найди') || lower.includes('шутка'))) {
         processCommand(text);
       }
     };
     return recog;
   }
 
-  // СОБЫТИЯ
+  // EVENTS
   sendBtn.onclick = () => {
     const val = textInput.value.trim();
     if (val) {
       if (currentLang === 'auto') { userLang = detectLanguage(val); updateUILanguage(); }
       processCommand(val);
       textInput.value = '';
-    } else speak(getTranslation('searching') || "Напиши что-нибудь");
+    } else speak(getTranslation('searching') || "Type something");
   };
   textInput.onkeypress = (e) => { if (e.key === 'Enter') sendBtn.click(); };
   voiceBtn.onclick = () => {
     if (recognition) {
       if (isListening) recognition.stop();
       else recognition.start();
-    } else alert("Голос не поддерживается. Попробуйте Chrome.");
+    } else alert("Voice not supported. Try Chrome.");
   };
   document.querySelectorAll('.cmd-chip').forEach(chip => {
     chip.onclick = () => {
@@ -688,22 +680,21 @@
       currentLang = btn.dataset.lang;
       if (currentLang !== 'auto') userLang = currentLang;
       updateUILanguage();
-      addLog(`🌐 Язык: ${currentLang.toUpperCase()}`, 'system');
+      addLog(`🌐 Language: ${currentLang.toUpperCase()}`, 'system');
       speak(getTranslation('welcome'));
     };
   });
   closeResultsBtn.onclick = () => resultsPanel.classList.add('hidden');
   document.querySelector('.lang-btn[data-lang="auto"]').classList.add('active');
 
-  // ЗАПУСК
+  // INITIALIZE
   recognition = initVoice();
   updateStats();
   updateUILanguage();
-  addLog('🐭 Labby VIP — крысёнок в шезлонге с мартини, трубочкой и зонтом. Помощник в отпуске, но всегда рядом!', 'system');
-  addLog('💡 Команды: статус, найди нейросети, шутка, помощь', 'system');
-  addLog('🎤 Скажи "Лабби" и потом команду для голоса', 'system');
+  addLog('🐭 Labby VIP — baby rat on lounge chair with martini, straw and umbrella. Assistant on vacation, but always nearby!', 'system');
+  addLog('💡 Commands: status, search for neural networks, joke, help', 'system');
+  addLog('🎤 Say "Labby" then a command for voice control', 'system');
 
-  // ИСПРАВЛЕНО: setInterval (было опечатка)
   setInterval(() => {
     if (researchProgress < 99.8) researchProgress = Math.min(100, researchProgress + 0.2);
     updateStats();
@@ -711,4 +702,3 @@
 </script>
 </body>
 </html>
-```
