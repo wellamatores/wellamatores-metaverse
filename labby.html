@@ -3,692 +3,737 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Labby AI | Multilingual Academic Assistant</title>
-  <!-- ИСПРАВЛЕНО: корректный URL шрифтов -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Wellamatores LABS | Amengi Artifact • Quantum Logic • AES Presets</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Стили (оставлены без изменений, они корректны) */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #0A0E17; font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif; color: #E1E9F0; overflow-x: hidden; }
-    .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: radial-gradient(ellipse at 30% 40%, #0a1020 0%, #05080f 100%); overflow: hidden; }
-    .bg-animation::before { content: ''; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%; background: radial-gradient(circle, rgba(0,229,255,0.05) 1px, transparent 1px); background-size: 40px 40px; animation: bgMove 60s linear infinite; }
-    @keyframes bgMove { 0% { transform: translate(0, 0); } 100% { transform: translate(40px, 40px); } }
-    .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,255,255,0.02) 1px, rgba(0,0,0,0) 2px); pointer-events: none; z-index: 20; }
+    body {
+      background: #0A0E17;
+      font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
+      color: #E1E9F0;
+      overflow-x: hidden;
+    }
+    #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+    .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,255,255,0.03) 1px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 4px); pointer-events: none; z-index: 20; }
     .vignette { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%); pointer-events: none; z-index: 19; }
-    .container { position: relative; z-index: 25; max-width: 1400px; margin: 0 auto; padding: 1.5rem; min-height: 100vh; }
-    .lang-bar { display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 1rem; }
-    .lang-btn { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 20px; padding: 0.3rem 1rem; font-size: 0.7rem; color: #8BA2C2; cursor: pointer; transition: all 0.2s; }
-    .lang-btn.active { background: rgba(0, 229, 255, 0.2); border-color: #00E5FF; color: #00E5FF; }
-    .lang-btn:hover { background: rgba(0, 229, 255, 0.3); transform: translateY(-1px); }
-    .header { text-align: center; margin-bottom: 2rem; }
-    .header h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: 2px; background: linear-gradient(135deg, #E1E9F0 0%, #00E5FF 50%, #F9A826 100%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 20px rgba(0,229,255,0.3); }
-    .header p { color: #8BA2C2; font-size: 0.85rem; margin-top: 0.5rem; }
-    .assistant-card { background: linear-gradient(135deg, rgba(20,25,45,0.95), rgba(10,14,28,0.95)); backdrop-filter: blur(20px); border: 2px solid rgba(0,229,255,0.3); border-radius: 32px; margin-bottom: 2rem; overflow: hidden; transition: all 0.3s ease; }
-    .assistant-card:hover { border-color: rgba(0,229,255,0.6); box-shadow: 0 0 40px rgba(0,229,255,0.1); }
-    .avatar-section { background: linear-gradient(90deg, #1a1f2e, #0d1120); padding: 1.5rem; border-bottom: 1px solid rgba(0,229,255,0.3); display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
-    .avatar { font-size: 5rem; filter: drop-shadow(0 0 15px #F9A826); cursor: pointer; transition: all 0.3s ease; animation: float 3s ease-in-out infinite; }
-    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-    .avatar:hover { transform: scale(1.1); filter: drop-shadow(0 0 25px #00E5FF); }
-    .avatar.listening { animation: pulseGlow 1s infinite; }
-    @keyframes pulseGlow { 0%, 100% { filter: drop-shadow(0 0 5px #F9A826); } 50% { filter: drop-shadow(0 0 25px #00E5FF); } }
-    .info h2 { font-size: 1.5rem; color: #F9A826; letter-spacing: 1px; }
-    .info p { font-size: 0.75rem; color: #8BA2C2; font-family: 'JetBrains Mono', monospace; }
-    .status-indicator { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
-    .pulse-dot { width: 12px; height: 12px; background: #00E5FF; border-radius: 50%; box-shadow: 0 0 10px #00E5FF; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
-    .detected-lang { font-size: 0.65rem; background: rgba(249, 168, 38, 0.2); padding: 0.2rem 0.6rem; border-radius: 12px; color: #F9A826; }
-    .message-area { padding: 1.5rem; min-height: 120px; background: rgba(0, 0, 0, 0.3); border-left: 4px solid #F9A826; margin: 1.5rem; border-radius: 16px; }
-    .message-bubble { font-size: 1rem; line-height: 1.5; color: #E1E9F0; }
-    .message-bubble::before { content: "🐭 "; font-size: 1.2rem; }
-    .controls { padding: 0 1.5rem 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; }
-    .text-input { flex: 1; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 229, 255, 0.4); border-radius: 40px; padding: 14px 24px; color: #E1E9F0; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; outline: none; transition: all 0.2s; }
-    .text-input:focus { border-color: #F9A826; box-shadow: 0 0 15px rgba(249, 168, 38, 0.3); }
-    .btn { background: linear-gradient(135deg, #00E5FF, #0099cc); border: none; border-radius: 40px; padding: 12px 28px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-    .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 229, 255, 0.3); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .voice-btn { background: linear-gradient(135deg, #F9A826, #cc7a00); }
-    .voice-btn.listening { animation: pulseRed 1s infinite; background: linear-gradient(135deg, #ff4466, #cc2244); }
-    @keyframes pulseRed { 0%, 100% { box-shadow: 0 0 5px #ff4466; } 50% { box-shadow: 0 0 25px #ff4466; } }
-    .quick-commands { padding: 0 1.5rem 1.5rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
-    .cmd-badge { background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 20px; padding: 6px 16px; font-size: 0.7rem; color: #00E5FF; cursor: pointer; transition: all 0.2s; }
-    .cmd-badge:hover { background: rgba(0, 229, 255, 0.3); transform: translateY(-2px); }
-    .footer { background: rgba(0, 0, 0, 0.3); padding: 0.75rem 1.5rem; font-size: 0.6rem; color: #5A6E8A; display: flex; justify-content: space-between; flex-wrap: wrap; }
-    .academic-panel { background: linear-gradient(135deg, rgba(20, 25, 45, 0.95), rgba(10, 14, 28, 0.95)); backdrop-filter: blur(20px); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 24px; margin-top: 1.5rem; overflow: hidden; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s; opacity: 0; transform: translateY(20px); visibility: hidden; }
-    .academic-panel.visible { opacity: 1; transform: translateY(0); visibility: visible; }
-    .academic-header { background: rgba(0, 0, 0, 0.4); padding: 1rem 1.5rem; border-bottom: 1px solid rgba(0, 229, 255, 0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    .academic-header h3 { color: #00E5FF; font-size: 1rem; }
-    .source-selector { background: rgba(0, 0, 0, 0.6); border: 1px solid #00E5FF; border-radius: 8px; padding: 6px 12px; color: #E1E9F0; font-size: 0.75rem; cursor: pointer; }
-    .academic-content { padding: 1.5rem; max-height: 400px; overflow-y: auto; }
-    .academic-entry { background: rgba(0, 0, 0, 0.3); border-left: 3px solid #00E5FF; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; transition: all 0.2s; }
-    .academic-entry:hover { background: rgba(0, 229, 255, 0.05); transform: translateX(5px); }
-    .academic-title { color: #F9A826; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
-    .academic-authors { font-size: 0.7rem; color: #8BA2C2; margin-bottom: 0.5rem; }
-    .academic-summary { font-size: 0.75rem; line-height: 1.4; margin-bottom: 0.5rem; }
-    .academic-link { color: #00E5FF; text-decoration: none; font-size: 0.7rem; margin-right: 0.5rem; }
-    .academic-link:hover { text-decoration: underline; }
-    .copy-btn { background: rgba(0,0,0,0.5); border: 1px solid #F9A826; border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.6rem; color: #F9A826; cursor: pointer; transition: all 0.2s; }
-    .copy-btn:hover { background: rgba(249,168,38,0.2); }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-    .stat-card { background: rgba(6, 10, 18, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 16px; padding: 1rem; text-align: center; }
-    .stat-value { font-size: 1.8rem; font-weight: 700; color: #00E5FF; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
-    .stat-label { font-size: 0.7rem; color: #8BA2C2; margin-top: 0.3rem; }
-    .log-terminal { background: rgba(0, 0, 0, 0.5); border-radius: 12px; padding: 1rem; margin-top: 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; height: 150px; overflow-y: auto; }
-    .log-line { padding: 0.2rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #8BA2C2; }
-    .loading-indicator { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(0, 229, 255, 0.3); border-top-color: #00E5FF; border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 8px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spinner-overlay { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); border-radius: 20px; padding: 1rem; display: flex; gap: 0.5rem; align-items: center; z-index: 1000; backdrop-filter: blur(8px); border: 1px solid #00E5FF; }
-    @media (max-width: 768px) { .container { padding: 1rem; } .header h1 { font-size: 1.5rem; } .avatar-section { flex-direction: column; text-align: center; } .status-indicator { margin-left: 0; } .controls { flex-direction: column; } .btn { justify-content: center; } }
+    .tactical-grid { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(0,229,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.05) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 15; }
+    .lab-container { position: relative; z-index: 25; max-width: 1600px; margin: 0 auto; padding: 1.2rem 1.5rem 2rem; }
+    .lab-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-bottom: 0.8rem; border-bottom: 1px solid rgba(0,229,255,0.3); margin-bottom: 1.5rem; }
+    .logo-area h1 { font-size: 1.3rem; font-weight: 600; letter-spacing: 2px; color: #E1E9F0; }
+    .logo-area h1 span { color: #00E5FF; text-shadow: 0 0 8px #00E5FF; }
+    .logo-area p { font-size: 0.6rem; color: #8BA2C2; letter-spacing: 2px; }
+    .logic-switch { display: flex; gap: 0.5rem; background: rgba(10,14,23,0.9); backdrop-filter: blur(8px); padding: 0.3rem; border-radius: 8px; border: 1px solid rgba(0,229,255,0.3); }
+    .logic-btn { background: transparent; border: none; padding: 0.4rem 1rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.65rem; letter-spacing: 1px; color: #8BA2C2; cursor: pointer; transition: all 0.2s; border-radius: 4px; }
+    .logic-btn.active { background: rgba(0,229,255,0.2); color: #00E5FF; box-shadow: inset 0 0 8px rgba(0,229,255,0.2); border: 1px solid rgba(0,229,255,0.5); }
+    .preset-buttons { display: flex; gap: 0.5rem; }
+    .preset-btn { background: rgba(249,168,38,0.15); border: 1px solid #F9A826; padding: 0.4rem 1rem; border-radius: 8px; color: #F9A826; font-family: monospace; font-size: 0.65rem; cursor: pointer; transition: all 0.2s; }
+    .preset-btn:hover { background: #F9A826; color: #000; }
+    .division-switch { display: flex; gap: 0.5rem; background: rgba(10,14,23,0.9); backdrop-filter: blur(8px); padding: 0.3rem; border-radius: 8px; border: 1px solid rgba(0,229,255,0.3); flex-wrap: wrap; }
+    .division-btn { background: transparent; border: none; padding: 0.4rem 1rem; font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.65rem; letter-spacing: 1px; color: #8BA2C2; cursor: pointer; transition: all 0.2s; border-radius: 4px; }
+    .division-btn.active { background: rgba(0,229,255,0.2); color: #00E5FF; box-shadow: inset 0 0 8px rgba(0,229,255,0.2); border: 1px solid rgba(0,229,255,0.5); }
+    .system-status { display: flex; gap: 1.2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; }
+    .status-led { display: flex; align-items: center; gap: 6px; }
+    .led { width: 8px; height: 8px; border-radius: 50%; background: #00E5FF; box-shadow: 0 0 4px #00E5FF; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.7rem; color: #F9A826; text-decoration: none; transition: 0.2s; margin-bottom: 1rem; cursor: pointer; }
+    .back-link:hover { background: rgba(249,168,38,0.2); color: #00E5FF; }
+    .lab-main-grid { display: grid; grid-template-columns: 1fr 1.8fr; gap: 1.2rem; margin-bottom: 1.5rem; }
+    @media (max-width: 1000px) { .lab-main-grid { grid-template-columns: 1fr; } }
+    .panel-left, .panel-right { background: rgba(6,10,18,0.7); backdrop-filter: blur(12px); border: 1px solid rgba(0,229,255,0.2); border-radius: 16px; overflow: hidden; }
+    .panel-header { background: rgba(0,0,0,0.5); padding: 0.7rem 1rem; border-bottom: 1px solid rgba(0,229,255,0.3); font-size: 0.7rem; letter-spacing: 2px; font-weight: 600; color: #00E5FF; }
+    .video-portal { margin: 1rem; border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,215,0,0.4); position: relative; background: #000; }
+    .video-wrapper { position: relative; width: 100%; aspect-ratio: 16/9; }
+    .video-wrapper iframe { width: 100%; height: 100%; border: none; }
+    .video-wrapper .amengi-3d { width: 100%; height: 100%; display: block; }
+    .video-controls { position: absolute; bottom: 10px; left: 10px; right: 10px; display: flex; gap: 8px; justify-content: flex-end; z-index: 30; flex-wrap: wrap; }
+    .video-btn { background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); border: 1px solid #F9A826; border-radius: 8px; padding: 5px 12px; font-size: 0.6rem; color: #F9A826; cursor: pointer; font-family: monospace; transition: 0.2s; }
+    .video-btn.active { background: #F9A826; color: #000; border-color: #00E5FF; }
+    .video-btn:hover { background: #F9A826; color: #000; }
+    .progress-section { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .progress-label { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 0.4rem; color: #8BA2C2; }
+    .progress-bar-container { background: #0A1420; height: 4px; border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #F9A826, #00E5FF); width: 0%; transition: width 0.3s ease; }
+    .holo-digits { display: flex; justify-content: space-between; gap: 0.8rem; padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .holo-card { text-align: center; flex: 1; }
+    .holo-value { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 700; color: #00E5FF; text-shadow: 0 0 5px #00E5FF; }
+    .holo-label { font-size: 0.55rem; color: #8BA2C2; }
+    .predators-panel { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(249,168,38,0.03); }
+    .predators-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .predators-header h3 { font-size: 0.85rem; color: #F9A826; }
+    .predator-status { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+    .status-badge { background: rgba(0,0,0,0.5); border-radius: 12px; padding: 6px 12px; flex: 1; text-align: center; }
+    .status-badge .label { font-size: 0.55rem; color: #8BA2C2; }
+    .status-badge .value { font-size: 0.8rem; font-weight: bold; color: #F9A826; }
+    .contact-status { display: flex; align-items: center; gap: 8px; margin: 10px 0; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 12px; }
+    .help-request { background: rgba(0,229,255,0.1); border: 1px solid #00E5FF; border-radius: 12px; padding: 10px; margin: 10px 0; }
+    .help-request.hidden { display: none; }
+    .response-btn { background: #F9A826; border: none; border-radius: 8px; padding: 6px 12px; font-size: 0.65rem; font-weight: bold; cursor: pointer; margin-top: 8px; font-family: monospace; transition: 0.2s; width: 100%; }
+    .response-btn:hover { background: #00E5FF; color: #000; transform: scale(1.02); }
+    .clans-info { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .clan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+    .clan-tag { font-size: 0.55rem; background: rgba(0,0,0,0.4); padding: 3px 6px; border-radius: 12px; text-align: center; color: #8BA2C2; }
+    .samples-list { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .sample-item { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .log-terminal { padding: 0.8rem; background: rgba(0,0,0,0.4); margin: 0.8rem 1rem; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; height: 120px; overflow-y: auto; display: flex; flex-direction: column-reverse; }
+    .log-line { color: #6BB5A0; padding: 3px 0; border-bottom: 1px solid rgba(0,229,255,0.08); font-family: monospace; }
+    .action-buttons { display: flex; gap: 1rem; padding: 0.8rem 1rem; flex-wrap: wrap; }
+    .btn-lab { background: transparent; border: 1px solid #F9A826; padding: 0.5rem 1rem; border-radius: 6px; color: #F9A826; font-family: monospace; font-size: 0.65rem; font-weight: 600; cursor: pointer; transition: all 0.2s; flex: 1; min-width: 100px; }
+    .btn-lab:hover { background: rgba(249,168,38,0.15); border-color: #00E5FF; color: #00E5FF; }
+    .research-nodes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1.2rem; }
+    .node-card { background: rgba(6,10,18,0.6); backdrop-filter: blur(8px); border: 1px solid rgba(0,229,255,0.15); border-radius: 12px; padding: 0.8rem; text-align: center; transition: all 0.2s; }
+    .node-card:hover { border-color: #F9A826; transform: translateY(-2px); }
+    .node-icon { font-size: 1.3rem; margin-bottom: 0.3rem; }
+    .node-title { font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; }
+    .node-desc { font-size: 0.55rem; color: #8BA2C2; }
+    .footer-holding { margin-top: 2rem; text-align: center; font-size: 0.55rem; font-family: monospace; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); color: #5A6E8A; }
+    .ttv-embed { margin: 1.5rem 0; border-radius: 24px; overflow: hidden; border: 1px solid rgba(0,229,255,0.4); background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); }
+    .ttv-embed-header { padding: 0.5rem 1rem; background: rgba(0,0,0,0.6); border-bottom: 1px solid rgba(0,229,255,0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .ttv-embed-header span:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 1px; color: #00E5FF; }
+    .ttv-fullscreen-btn { background: rgba(0,229,255,0.2); border: 1px solid #00E5FF; border-radius: 30px; padding: 4px 12px; color: #00E5FF; font-family: monospace; font-size: 0.6rem; cursor: pointer; transition: all 0.2s; }
+    .ttv-fullscreen-btn:hover { background: #00E5FF; color: #000; box-shadow: 0 0 8px #00E5FF; }
+    
+    /* Labby Assistant Button */
+    .labby-assistant {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .labby-btn {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00E5FF, #F9A826);
+      border: 2px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0,229,255,0.5);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .labby-btn::before {
+      content: '🐭';
+      font-size: 32px;
+      transition: transform 0.3s ease;
+    }
+    .labby-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(249,168,38,0.7);
+    }
+    .labby-btn:hover::before {
+      transform: rotate(15deg);
+    }
+    .labby-status {
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid #00E5FF;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 0.7rem;
+      font-family: monospace;
+      max-width: 280px;
+      text-align: center;
+      color: #00E5FF;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .labby-status:hover {
+      background: rgba(0,229,255,0.2);
+      border-color: #F9A826;
+    }
+    .labby-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #F9A826;
+      color: #000;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 700px) { .research-nodes { grid-template-columns: repeat(2, 1fr); } .holo-digits { flex-wrap: wrap; } .clan-grid { grid-template-columns: repeat(2, 1fr); } .action-buttons { flex-direction: column; } .preset-buttons { order: -1; } }
   </style>
 </head>
 <body>
-  <div class="bg-animation"></div>
+  <div id="canvas-container"></div>
+  <div class="tactical-grid"></div>
   <div class="vignette"></div>
   <div class="scanlines"></div>
 
-  <div class="container">
-    <div class="lang-bar">
-      <button class="lang-btn" data-lang="auto" aria-label="Auto detect language">🌐 AUTO</button>
-      <button class="lang-btn" data-lang="en" aria-label="English">🇬🇧 EN</button>
-      <button class="lang-btn" data-lang="ru" aria-label="Русский">🇷🇺 RU</button>
-      <button class="lang-btn" data-lang="uk" aria-label="Українська">🇺🇦 UA</button>
-    </div>
-
-    <div class="header">
-      <h1>🐭 LABBY AI • MULTILINGUAL RESEARCH ASSISTANT</h1>
-      <p>智能助手 • Голосовой ассистент • Голосовий помічник • Voice AI | real-time academic search</p>
-    </div>
-
-    <div class="assistant-card">
-      <div class="avatar-section">
-        <div class="avatar" id="labbyAvatar" role="img" aria-label="Labby the rat assistant">🐭✨</div>
-        <div class="info">
-          <h2>Labby · The Polyglot Researcher</h2>
-          <p>🎤 Voice & Text • Speaks EN 🇬🇧 | RU 🇷🇺 | UA 🇺🇦 • Auto-detects your language!</p>
+  <div class="lab-container">
+    <div class="lab-header">
+      <div class="logo-area">
+        <h1>WELLAMATORES<span>//</span>LABS</h1>
+        <p>AMENGI ARTIFACT • QUANTUM LOGIC • AES ENCRYPTED PRESETS</p>
+      </div>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <div class="logic-switch" id="logicSwitch">
+          <button class="logic-btn" data-logic="binary">01 BINARY</button>
+          <button class="logic-btn active" data-logic="ternary">☯ TERNARY</button>
+          <button class="logic-btn" data-logic="quaternary">🔷 QUATERNARY</button>
         </div>
-        <div class="status-indicator">
-          <span class="pulse-dot"></span>
-          <span id="statusText" style="font-size: 0.75rem; font-family: monospace;">active • listening for "Hey Labby"</span>
-          <span class="detected-lang" id="detectedLang">🌐 auto</span>
+        <div class="preset-buttons">
+          <button class="preset-btn" id="savePresetBtn">💾 SAVE ENCRYPTED</button>
+          <button class="preset-btn" id="loadPresetBtn">📂 LOAD PRESET</button>
         </div>
       </div>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem;">
+      <div class="back-link" id="backLink">← BACK TO MAIN PAGE</div>
+      <div class="system-status">
+        <div class="status-led"><span class="led"></span>PREDATORS • ACTIVE</div>
+        <div class="status-led"><span class="led"></span>AMENGI ARTIFACT • ONLINE</div>
+      </div>
+    </div>
 
-      <div class="message-area">
-        <div class="message-bubble" id="messageArea">
-          Hello! I'm Labby, your multilingual academic research assistant! 🐭<br>
-          Привет! Я Labby, твой многоязычный академический помощник!<br>
-          Привіт! Я Labby, твій багатомовний академічний помічник!<br>
-          Try: "search for quantum computing" / "найди статьи про ИИ" / "пошук нейромереж"
+    <div class="lab-main-grid">
+      <div class="panel-left">
+        <div class="panel-header">🐺 PREDATORS SQUAD • AUTONOMOUS UNIT</div>
+        <div class="predators-panel">
+          <div class="predators-header">
+            <span style="font-size: 1.5rem;">🐺⚔️</span>
+            <h3>ON AUTONOMOUS DUTY<br><span style="font-size: 0.55rem; color:#8BA2C2;">Kingdom of Predators • Invited by Lord Regent</span></h3>
+          </div>
+          <div class="predator-status">
+            <div class="status-badge"><div class="label">SQUAD STATUS</div><div class="value" id="squadStatus">🟢 IN LAB</div></div>
+            <div class="status-badge"><div class="label">PROFESSOR</div><div class="value" id="professorStatus">📚 BRIEFING</div></div>
+            <div class="status-badge"><div class="label">WAR HOUND</div><div class="value" id="dogStatus">🛡️ PATROL</div></div>
+          </div>
+          <div class="contact-status">
+            <span style="font-size: 0.7rem;">📡 LINK TO AMENGI ARTIFACT:</span>
+            <span style="color:#00E5FF; font-size: 0.7rem;" id="connectionStatus">ACTIVE • 3D SCENE READY</span>
+          </div>
         </div>
-      </div>
-
-      <div class="controls">
-        <input type="text" class="text-input" id="textInput" placeholder="Ask me anything... / Спроси меня о чём угодно... / Запитай мене про що завгодно..." aria-label="Command input">
-        <button class="btn" id="sendBtn" aria-label="Send command">📝 SEND</button>
-        <button class="btn voice-btn" id="voiceBtn" aria-label="Voice command">🎤 VOICE</button>
-      </div>
-
-      <div class="quick-commands">
-        <span style="font-size: 0.7rem; color: #8BA2C2;">⚡ commands / команды:</span>
-        <span class="cmd-badge" data-cmd="status" role="button" tabindex="0">📊 status</span>
-        <span class="cmd-badge" data-cmd="search for artificial intelligence" role="button" tabindex="0">🔍 search AI</span>
-        <span class="cmd-badge" data-cmd="search for нейросети" role="button" tabindex="0">🔍 найти нейросети</span>
-        <span class="cmd-badge" data-cmd="search for штучний інтелект" role="button" tabindex="0">🔍 знайти ШІ</span>
-        <span class="cmd-badge" data-cmd="joke" role="button" tabindex="0">😄 joke / шутка</span>
-        <span class="cmd-badge" data-cmd="clear logs" role="button" tabindex="0">🗑️ clear</span>
-      </div>
-
-      <div class="footer">
-        <span>🐭 Labby • speaks EN 🇬🇧 RU 🇷🇺 UA 🇺🇦 • auto language detection</span>
-        <span>⚡ "Hey Labby" / "Лабби" / "Лаббі" wake word</span>
-      </div>
-    </div>
-
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-value" id="researchProgress">47.3%</div>
-        <div class="stat-label" id="statResearchLabel">neural resonance</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="papersFound">0</div>
-        <div class="stat-label" id="statPapersLabel">academic papers</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="queriesProcessed">0</div>
-        <div class="stat-label" id="statQueriesLabel">queries processed</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="activeTime">0</div>
-        <div class="stat-label" id="statTimeLabel">active sessions</div>
-      </div>
-    </div>
-
-    <div class="academic-panel" id="academicPanel">
-      <div class="academic-header">
-        <h3 id="academicTitle">📚 ACADEMIC DATABASE RESULTS</h3>
-        <select class="source-selector" id="sourceSelector" aria-label="Select academic database">
-          <option value="arxiv">arXiv (Physics, CS, Math)</option>
-          <option value="crossref">CrossRef (General Academic)</option>
-        </select>
-      </div>
-      <div class="academic-content" id="academicContent">
-        <p style="text-align: center; color: #8BA2C2;">No results yet. Try searching for something!</p>
-      </div>
-    </div>
-
-    <div class="log-terminal" id="logTerminal" role="log" aria-live="polite"></div>
-  </div>
-
-  <div id="spinnerOverlay" style="display: none;" class="spinner-overlay" role="status" aria-label="Loading">
-    <span class="loading-indicator"></span>
-    <span>Processing...</span>
-  </div>
-
-  <script>
-    // ========== MULTILINGUAL SUPPORT ==========
-    const translations = {
-      en: {
-        status: "status", search: "search", define: "define", cite: "cite", joke: "joke", help: "help", clear: "clear logs",
-        greeting: "Hello! I'm Labby, your multilingual academic research assistant! 🐭",
-        noResults: "I couldn't find any academic papers about",
-        foundResults: "I found", papers: "academic papers about", mostRelevant: "The most relevant is",
-        researchProgress: "Research progress", papersFound: "Papers found", queriesProcessed: "Queries processed", activeSessions: "Active sessions",
-        neuralResonance: "neural resonance", academicPapers: "academic papers", queriesProcessedLabel: "queries processed", activeSessionsLabel: "active sessions",
-        wakeWord: "Hey Labby", listening: "listening... say", active: "active • listening for", wakeDetected: "wake word detected! say command",
-        error: "Sorry, I encountered an error processing your request. Please try again!",
-        serviceUnavailable: "Service temporarily unavailable. Please try again later.",
-        copying: "Copying...", copied: "Copied!", copyFailed: "Copy failed"
-      },
-      ru: {
-        status: "статус", search: "найди", define: "определи", cite: "процитируй", joke: "шутка", help: "помощь", clear: "очистить логи",
-        greeting: "Привет! Я Labby, твой многоязычный академический исследовательский ассистент! 🐭",
-        noResults: "Я не смог найти академических статей о",
-        foundResults: "Я нашёл", papers: "академических статей о", mostRelevant: "Наиболее релевантная",
-        researchProgress: "Прогресс исследования", papersFound: "Найдено статей", queriesProcessed: "Обработано запросов", activeSessions: "Активных сессий",
-        neuralResonance: "нейронный резонанс", academicPapers: "академических статей", queriesProcessedLabel: "обработано запросов", activeSessionsLabel: "активных сессий",
-        wakeWord: "Лабби", listening: "слушаю... скажите", active: "активен • слушаю", wakeDetected: "ключевое слово обнаружено! скажите команду",
-        error: "Извините, произошла ошибка при обработке запроса. Пожалуйста, попробуйте снова!",
-        serviceUnavailable: "Сервис временно недоступен. Пожалуйста, попробуйте позже.",
-        copying: "Копирование...", copied: "Скопировано!", copyFailed: "Ошибка копирования"
-      },
-      uk: {
-        status: "статус", search: "знайди", define: "визнач", cite: "процитуй", joke: "жарт", help: "допомога", clear: "очистити логи",
-        greeting: "Привіт! Я Labby, твій багатомовний академічний помічник! 🐭",
-        noResults: "Я не зміг знайти академічних статей про",
-        foundResults: "Я знайшов", papers: "академічних статей про", mostRelevant: "Найбільш релевантна",
-        researchProgress: "Прогрес дослідження", papersFound: "Знайдено статей", queriesProcessed: "Опрацьовано запитів", activeSessions: "Активних сесій",
-        neuralResonance: "нейронний резонанс", academicPapers: "академічних статей", queriesProcessedLabel: "опрацьовано запитів", activeSessionsLabel: "активних сесій",
-        wakeWord: "Лаббі", listening: "слухаю... скажіть", active: "активний • слухаю", wakeDetected: "ключове слово виявлено! скажіть команду",
-        error: "Вибачте, сталася помилка при обробці запиту. Будь ласка, спробуйте ще раз!",
-        serviceUnavailable: "Сервіс тимчасово недоступний. Будь ласка, спробуйте пізніше.",
-        copying: "Копіювання...", copied: "Скопійовано!", copyFailed: "Помилка копіювання"
-      }
-    };
-
-    let currentLang = 'auto';
-    let detectedUserLang = 'en';
-
-    function detectLanguage(text) {
-      if (currentLang !== 'auto') return currentLang;
-      const cyrillicPattern = /[а-яїєґі]/i;
-      const ukrainianPattern = /[їєґі]/i;
-      const cyrillicCount = (text.match(cyrillicPattern) || []).length;
-      const ukrainianCount = (text.match(ukrainianPattern) || []).length;
-      if (cyrillicCount === 0 && /[a-z]/i.test(text)) return 'en';
-      if (ukrainianCount > 2) return 'uk';
-      if (cyrillicCount > 0) return 'ru';
-      return 'en';
-    }
-
-    function getTranslation(key, lang = detectedUserLang) {
-      const langMap = translations[lang] || translations.en;
-      return langMap[key] || translations.en[key] || key;
-    }
-
-    function updateUILanguage(lang) {
-      document.getElementById('statResearchLabel').textContent = getTranslation('neuralResonance', lang);
-      document.getElementById('statPapersLabel').textContent = getTranslation('academicPapers', lang);
-      document.getElementById('statQueriesLabel').textContent = getTranslation('queriesProcessedLabel', lang);
-      document.getElementById('statTimeLabel').textContent = getTranslation('activeSessionsLabel', lang);
-      const title = document.getElementById('academicTitle');
-      if (title) title.textContent = lang === 'en' ? '📚 ACADEMIC DATABASE RESULTS' : (lang === 'ru' ? '📚 РЕЗУЛЬТАТЫ АКАДЕМИЧЕСКИХ БАЗ' : '📚 РЕЗУЛЬТАТИ АКАДЕМІЧНИХ БАЗ');
-      const placeholder = document.getElementById('textInput');
-      if (placeholder) {
-        if (lang === 'ru') placeholder.placeholder = 'Спроси меня о чём угодно...';
-        else if (lang === 'uk') placeholder.placeholder = 'Запитай мене про що завгодно...';
-        else placeholder.placeholder = 'Ask me anything...';
-      }
-    }
-
-    // ========== STATE MANAGEMENT ==========
-    const LabState = {
-      researchProgress: 47.3, papersFound: 0, queriesProcessed: 0, activeTime: 0, startTime: Date.now()
-    };
-
-    function updateStats() {
-      document.getElementById('researchProgress').textContent = LabState.researchProgress.toFixed(1) + '%';
-      document.getElementById('papersFound').textContent = LabState.papersFound;
-      document.getElementById('queriesProcessed').textContent = LabState.queriesProcessed;
-      const elapsed = Math.floor((Date.now() - LabState.startTime) / 60000);
-      document.getElementById('activeTime').textContent = elapsed;
-    }
-
-    function addLog(message, type = 'info') {
-      const logDiv = document.getElementById('logTerminal');
-      const entry = document.createElement('div');
-      entry.className = 'log-line';
-      const icons = { info: '📡', labby: '🐭', system: '⚙️', academic: '📚', error: '❌' };
-      const icon = icons[type] || '📡';
-      entry.textContent = `> [${new Date().toLocaleTimeString()}] ${icon} ${message}`;
-      logDiv.appendChild(entry);
-      if (logDiv.children.length > 20) logDiv.removeChild(logDiv.firstChild);
-      entry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    function clearLogs() {
-      const logDiv = document.getElementById('logTerminal');
-      while (logDiv.firstChild) logDiv.removeChild(logDiv.firstChild);
-      addLog('Logs cleared', 'system');
-    }
-
-    function showSpinner() {
-      const spinner = document.getElementById('spinnerOverlay');
-      if (spinner) spinner.style.display = 'flex';
-    }
-
-    function hideSpinner() {
-      const spinner = document.getElementById('spinnerOverlay');
-      if (spinner) spinner.style.display = 'none';
-    }
-
-    // ========== NLP ENGINE ==========
-    class NLPEngine {
-      constructor() {
-        this.intents = {
-          search: { patterns: [/search for (.+)/i, /find (.+)/i, /look up (.+)/i, /найди (.+)/i, /найти (.+)/i, /поиск (.+)/i, /знайди (.+)/i, /знайти (.+)/i, /пошук (.+)/i], weight: 0.9 },
-          define: { patterns: [/define (.+)/i, /what is (.+)/i, /explain (.+)/i, /определи (.+)/i, /что такое (.+)/i, /объясни (.+)/i, /визнач (.+)/i, /що таке (.+)/i, /поясни (.+)/i], weight: 0.85 },
-          status: { patterns: [/status/i, /progress/i, /how are you/i, /статус/i, /прогресс/i, /стан/i], weight: 0.95 },
-          joke: { patterns: [/joke/i, /funny/i, /tell me a joke/i, /шутка/i, /рассмеши/i, /жарт/i], weight: 0.9 },
-          clear: { patterns: [/clear logs/i, /clear/i, /очисти логи/i, /очисти/i, /очистити/i], weight: 0.9 }
-        };
-      }
-      process(input) {
-        const text = input.toLowerCase().trim();
-        let bestMatch = { intent: 'unknown', query: text, confidence: 0 };
-        for (const [intent, data] of Object.entries(this.intents)) {
-          for (const pattern of data.patterns) {
-            const match = pattern.exec(text);
-            if (match && data.weight > bestMatch.confidence) {
-              bestMatch = { intent, query: match[1] || text, confidence: data.weight };
-            }
-          }
-        }
-        return bestMatch;
-      }
-    }
-
-    // ========== ACADEMIC KNOWLEDGE BASE with CACHE & TIMEOUT ==========
-    class AcademicKnowledgeBase {
-      constructor() {
-        this.cache = new Map();
-        this.currentSource = 'arxiv';
-      }
-      setSource(source) { this.currentSource = source; addLog(`Switched to ${source} database`, 'system'); }
-
-      async searchWithTimeout(url, timeout = 10000) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), timeout);
-        try {
-          const response = await fetch(url, { signal: controller.signal });
-          clearTimeout(timeoutId);
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          return await response.text();
-        } catch (error) {
-          clearTimeout(timeoutId);
-          if (error.name === 'AbortError') throw new Error('Request timeout');
-          throw error;
-        }
-      }
-
-      async search(query) {
-        addLog(`🔍 Searching ${this.currentSource} for: "${query}"`, 'academic');
-        const cacheKey = `${this.currentSource}:${query.toLowerCase()}`;
-        const cached = this.cache.get(cacheKey);
-        if (cached && Date.now() - cached.timestamp < 3600000) {
-          addLog(`📦 Returning cached results for "${query}"`, 'academic');
-          return cached.data;
-        }
-        try {
-          let results = [];
-          if (this.currentSource === 'arxiv') results = await this.searchArxiv(query);
-          else if (this.currentSource === 'crossref') results = await this.searchCrossref(query);
-          if (results.length > 0) {
-            if (this.cache.size > 100) {
-              const firstKey = this.cache.keys().next().value;
-              this.cache.delete(firstKey);
-            }
-            this.cache.set(cacheKey, { data: results, timestamp: Date.now() });
-            LabState.papersFound += results.length;
-            updateStats();
-          }
-          return results;
-        } catch (error) {
-          addLog(`Search error: ${error.message}`, 'error');
-          return [];
-        }
-      }
-
-      async searchArxiv(query) {
-        try {
-          const url = `https://export.arxiv.org/api/query?search_query=all:${encodeURIComponent(query)}&start=0&max_results=5&sortBy=relevance`;
-          const text = await this.searchWithTimeout(url);
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(text, 'text/xml');
-          const entries = xmlDoc.getElementsByTagName('entry');
-          const results = [];
-          for (let i = 0; i < entries.length; i++) {
-            const entry = entries[i];
-            results.push({
-              title: entry.getElementsByTagName('title')[0]?.textContent?.trim() || 'No title',
-              authors: Array.from(entry.getElementsByTagName('author')).map(a => a.getElementsByTagName('name')[0]?.textContent || 'Unknown'),
-              summary: entry.getElementsByTagName('summary')[0]?.textContent?.trim() || 'No summary',
-              link: entry.getElementsByTagName('id')[0]?.textContent || '#',
-              source: 'arXiv'
-            });
-          }
-          return results;
-        } catch (error) {
-          addLog(`arXiv error: ${error.message}`, 'error');
-          return [];
-        }
-      }
-
-      async searchCrossref(query) {
-        try {
-          const url = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=5&mailto=demo@example.com`;
-          const text = await this.searchWithTimeout(url);
-          const data = JSON.parse(text);
-          if (!data.message?.items) return [];
-          return data.message.items.map(item => ({
-            title: item.title?.[0] || 'No title',
-            authors: item.author?.map(a => `${a.given || ''} ${a.family || ''}`.trim()) || ['Unknown'],
-            summary: item.abstract?.replace(/<[^>]*>/g, '').substring(0, 300) || 'No abstract available',
-            link: item.URL || '#',
-            source: 'CrossRef', doi: item.DOI, published: item.created?.dateTime?.substring(0, 10) || 'Unknown'
-          }));
-        } catch (error) {
-          addLog(`CrossRef error: ${error.message}`, 'error');
-          return [];
-        }
-      }
-
-      escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-
-      async searchAndRespond(query, intent, lang) {
-        const results = await this.search(query);
-        if (results.length === 0) return `${getTranslation('serviceUnavailable', lang)}`;
-        this.displayResults(results, query);
-        if (intent === 'define') return `${results[0].summary.substring(0, 300)}...`;
-        return `${getTranslation('foundResults', lang)} ${results.length} ${getTranslation('papers', lang)} "${query}". ${getTranslation('mostRelevant', lang)}: "${results[0].title}".`;
-      }
-
-      displayResults(results, query) {
-        const panel = document.getElementById('academicPanel');
-        const content = document.getElementById('academicContent');
-        content.innerHTML = '';
-        results.forEach(result => {
-          const entry = document.createElement('div');
-          entry.className = 'academic-entry';
-          const escapedTitle = this.escapeHtml(result.title);
-          const escapedAuthors = this.escapeHtml(result.authors.slice(0, 3).join(', '));
-          const escapedSummary = this.escapeHtml(result.summary.substring(0, 200));
-          entry.innerHTML = `
-            <div class="academic-title">📄 ${escapedTitle}${result.summary.length > 200 ? '...' : ''}</div>
-            <div class="academic-authors">✍️ ${escapedAuthors}${result.authors.length > 3 ? ' et al.' : ''}</div>
-            <div class="academic-summary">${escapedSummary}${result.summary.length > 200 ? '...' : ''}</div>
-            <div>
-              <a href="${result.link}" target="_blank" rel="noopener noreferrer" class="academic-link">🔗 View on ${result.source} →</a>
-              <button class="copy-btn" data-link="${result.link}" aria-label="Copy link">📋 Copy link</button>
+        <div id="helpRequestBlock" class="help-request hidden">
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span style="font-size: 1.2rem;">🐺</span>
+            <div style="flex: 1;">
+              <div style="font-size: 0.7rem; color:#F9A826; font-weight: bold;" id="helpRequestText">Predators request consultation</div>
+              <div style="font-size: 0.55rem; color:#8BA2C2;" id="helpRequestDetail">Sample #PR-422 analysis required</div>
             </div>
-          `;
-          content.appendChild(entry);
-        });
-        document.querySelectorAll('.copy-btn').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const link = btn.dataset.link;
-            const originalText = btn.textContent;
-            btn.textContent = getTranslation('copying', detectedUserLang);
-            try {
-              await navigator.clipboard.writeText(link);
-              btn.textContent = getTranslation('copied', detectedUserLang);
-              setTimeout(() => { if (btn) btn.textContent = originalText; }, 2000);
-            } catch (err) {
-              btn.textContent = getTranslation('copyFailed', detectedUserLang);
-              setTimeout(() => { if (btn) btn.textContent = originalText; }, 2000);
-            }
-          });
-        });
-        panel.classList.add('visible');
-        setTimeout(() => { if (panel) panel.classList.remove('visible'); }, 15000);
-      }
+          </div>
+          <button class="response-btn" id="acceptHelpBtn">ACCEPT REQUEST → PROVIDE ASSISTANCE</button>
+        </div>
+        <div class="clans-info">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 0.65rem; color:#F9A826;">👑 KINGDOM OF PREDATORS</span>
+            <span style="font-size: 0.5rem; color:#8BA2C2;">15 CLANS</span>
+          </div>
+          <div class="clan-grid" id="clansGrid"></div>
+          <div style="margin-top: 8px; font-size: 0.55rem; color:#6BB5A0; text-align: center;">▸ Tech Exchange • Cultural Alliance • Joint Research ▸</div>
+        </div>
+        <div class="samples-list">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.65rem; color:#F9A826;">📦 SHARED SAMPLES (from Predators)</span>
+            <span style="font-size: 0.55rem; color:#8BA2C2;" id="samplesCount">3 samples</span>
+          </div>
+          <div id="samplesList"></div>
+        </div>
+        <div class="progress-section">
+          <div class="progress-label">
+            <span>🎓 JACKDAW TRAINING (Predators methodology)</span>
+            <span id="trainingPercent">52%</span>
+          </div>
+          <div class="progress-bar-container"><div class="progress-fill" id="trainingFill" style="width: 52%"></div></div>
+        </div>
+      </div>
+      <div class="panel-right">
+        <div class="video-portal">
+          <div class="video-wrapper" id="videoWrapper">
+            <div id="amengi-3d-container" style="width:100%; height:100%; display:none;"></div>
+            <iframe id="youtubeFrame" src="about:blank" frameborder="0" allowfullscreen style="width:100%; height:100%; display:none;"></iframe>
+          </div>
+          <div class="video-controls">
+            <button class="video-btn" id="amengi3dBtn">🧠 AMENGI ARTIFACT (3D)</button>
+            <button class="video-btn active" id="predatorsStreamBtn">🐺 YAUTJA PRIME (KHARMA)</button>
+            <button class="video-btn" id="fullscreenVideoBtn">⛶ FULLSCREEN</button>
+          </div>
+        </div>
+        <div class="progress-section">
+          <div class="progress-label">
+            <span id="currentResearchLabel">AMENGI ARTIFACT • NEURAL RESONANCE</span>
+            <span id="progressPercent">47.3%</span>
+          </div>
+          <div class="progress-bar-container"><div class="progress-fill" id="researchProgress" style="width: 47.3%"></div></div>
+        </div>
+        <div class="holo-digits">
+          <div class="holo-card"><div class="holo-value" id="tokensValue">14.2</div><div class="holo-label" id="tokensLabel">INFERENCE TOKENS (M)</div></div>
+          <div class="holo-card"><div class="holo-value" id="framesValue">3.1</div><div class="holo-label" id="framesLabel">VIDEO FRAMES (M)</div></div>
+          <div class="holo-card"><div class="holo-value" id="autonomyValue">94.7</div><div class="holo-label">AUTONOMY INDEX (%)</div></div>
+          <div class="holo-card"><div class="holo-value" id="helpGivenValue">3</div><div class="holo-label">ASSISTANCE GIVEN</div></div>
+        </div>
+        <div class="log-terminal" id="logTerminal"></div>
+        <div class="action-buttons">
+          <button class="btn-lab" id="initiateBtn">⟁ INITIATE RESEARCH</button>
+          <button class="btn-lab" id="resetBtn">⟲ RESET</button>
+          <button class="btn-lab" id="checkPredatorsBtn">🐺 CHECK STATUS</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="research-nodes">
+      <div class="node-card"><div class="node-icon">🧪</div><div class="node-title">NEURAL LAB</div><div class="node-desc">Active 94%</div></div>
+      <div class="node-card"><div class="node-icon">📡</div><div class="node-title">JOG NODE</div><div class="node-desc">Orbital link</div></div>
+      <div class="node-card"><div class="node-icon">🔬</div><div class="node-title">PREDATORS POST</div><div class="node-desc">Autonomous sector</div></div>
+      <div class="node-card"><div class="node-icon">⚡</div><div class="node-title">JACKDAW HUB</div><div class="node-desc">Training active</div></div>
+    </div>
+
+    <div class="ttv-embed" id="ttvMainBlock">
+      <div class="ttv-embed-header">
+        <span>⚡ TTV LITHO PROPHET</span>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span>🔒 TerraTrampilleraVerse Holding • ternary/quaternary logic</span>
+          <button class="ttv-fullscreen-btn" id="ttvFullscreenBtn">⛶ FULLSCREEN</button>
+        </div>
+      </div>
+      <div id="ttvIframeWrapper" style="position: relative;">
+        <iframe id="ttvIframe" src="https://wellamatores-metaverse.vercel.app/TTV_Litho_Prophet.html" width="100%" height="700" frameborder="0" style="display: block; background: #03081a;"></iframe>
+      </div>
+      <div class="ttv-embed-footer">🧠 binary/ternary/quaternary logic • 3D I/O • AES-encrypted presets • sync with AMENGI</div>
+    </div>
+    <div class="footer-holding">TerratrampilleraVerse Holding — JOG Laboratory Network • Amengi Artifact • Quantum Logic</div>
+  </div>
+
+  <!-- Labby Assistant - теперь ведёт к отдельному файлу -->
+  <div class="labby-assistant">
+    <div class="labby-status" id="labbyStatus">
+      🐭 Labby • Say "Hey Labby" or click me!
+    </div>
+    <button class="labby-btn" id="labbyBtn"></button>
+  </div>
+
+  <script type="importmap">
+    { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/" } }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    
+    // --- 3D Amengi Management ---
+    let amengiActive = false;
+    let amengiScene, amengiCamera, amengiRenderer, amengiControls, amengiAnimationId, amengiContainer;
+    function destroyAmengi() {
+      if (amengiAnimationId) cancelAnimationFrame(amengiAnimationId);
+      if (amengiRenderer) { amengiRenderer.dispose(); if (amengiRenderer.domElement?.parentNode) amengiRenderer.domElement.parentNode.removeChild(amengiRenderer.domElement); }
+      if (amengiControls) amengiControls.dispose();
+      if (amengiContainer) while(amengiContainer.firstChild) amengiContainer.removeChild(amengiContainer.firstChild);
+      amengiActive = false;
     }
-
-    // ========== VOICE RECOGNITION with FIXED WAKE WORD ==========
-    let wakeWordActive = false;
-    let isListening = false;
-    let recognition = null;
-
-    function initVoiceRecognition() {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        addLog('Voice recognition not supported in this browser', 'error');
-        const voiceBtn = document.getElementById('voiceBtn');
-        if (voiceBtn) voiceBtn.disabled = true;
-        return null;
-      }
-      const recog = new SpeechRecognition();
-      recog.continuous = true;
-      recog.interimResults = false;
-      recog.lang = 'en-US,ru-RU,uk-UA';
-      recog.onstart = () => {
-        isListening = true;
-        const voiceBtn = document.getElementById('voiceBtn');
-        const avatar = document.getElementById('labbyAvatar');
-        if (voiceBtn) voiceBtn.classList.add('listening');
-        if (avatar) avatar.classList.add('listening');
-        document.getElementById('statusText').textContent = `${getTranslation('listening', detectedUserLang)} "${getTranslation('wakeWord', detectedUserLang)}"`;
-      };
-      recog.onend = () => {
-        isListening = false;
-        const voiceBtn = document.getElementById('voiceBtn');
-        const avatar = document.getElementById('labbyAvatar');
-        if (voiceBtn) voiceBtn.classList.remove('listening');
-        if (avatar) avatar.classList.remove('listening');
-        document.getElementById('statusText').textContent = `${getTranslation('active', detectedUserLang)} ${getTranslation('wakeWord', detectedUserLang)}`;
-      };
-      recog.onerror = (event) => {
-        addLog(`Voice error: ${event.error}`, 'error');
-        if (event.error === 'not-allowed') document.getElementById('statusText').textContent = 'Microphone access denied';
-      };
-      recog.onresult = (event) => {
-        const text = event.results[event.results.length - 1][0].transcript;
-        addLog(`Voice input: "${text}"`, 'info');
-        const detectedLang = detectLanguage(text);
-        if (currentLang === 'auto') {
-          detectedUserLang = detectedLang;
-          document.getElementById('detectedLang').textContent = detectedLang === 'en' ? '🇬🇧 EN' : (detectedLang === 'ru' ? '🇷🇺 RU' : '🇺🇦 UA');
-          updateUILanguage(detectedLang);
-        }
-        const wakeWord = getTranslation('wakeWord', detectedUserLang).toLowerCase();
-        const textLower = text.toLowerCase();
-        // ИСПРАВЛЕНО: регулярное выражение с границами слов для точного распознавания wake word
-        const wakeWordRegex = new RegExp(`\\b${wakeWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-        const hasWakeWord = wakeWordRegex.test(textLower) || textLower.includes('hey labby') || textLower === 'labby';
-        if (hasWakeWord) {
-          wakeWordActive = true;
-          let command = textLower;
-          if (textLower.startsWith(wakeWord)) command = textLower.substring(wakeWord.length).trim();
-          else if (textLower.includes('hey labby')) command = textLower.replace('hey labby', '').trim();
-          else if (textLower.includes('hi labby')) command = textLower.replace('hi labby', '').trim();
-          labbySpeak(getTranslation('greeting', detectedUserLang));
-          document.getElementById('statusText').textContent = getTranslation('wakeDetected', detectedUserLang);
-          setTimeout(() => {
-            if (command && command.length > 0) processCommand(command, detectedUserLang);
-            wakeWordActive = false;
-            if (!isListening) document.getElementById('statusText').textContent = `${getTranslation('active', detectedUserLang)} ${getTranslation('wakeWord', detectedUserLang)}`;
-          }, 500);
-        } else if (wakeWordActive) {
-          processCommand(text, detectedUserLang);
-          wakeWordActive = false;
-          document.getElementById('statusText').textContent = `${getTranslation('active', detectedUserLang)} ${getTranslation('wakeWord', detectedUserLang)}`;
-        } else if (text.length > 5) {
-          processCommand(text, detectedUserLang);
-        }
-      };
-      return recog;
+    function initAmengi(container) {
+      destroyAmengi();
+      const scene = new THREE.Scene(); scene.background = new THREE.Color(0x03080c);
+      const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+      camera.position.set(5, 3, 7);
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(renderer.domElement);
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      const ambient = new THREE.AmbientLight(0x111820); scene.add(ambient);
+      const light = new THREE.DirectionalLight(0xd4b87a, 1.2); light.position.set(3, 5, 2); scene.add(light);
+      const group = new THREE.Group();
+      const core = new THREE.Mesh(new THREE.IcosahedronGeometry(0.9, 0), new THREE.MeshStandardMaterial({ color: 0x4a2a1a, emissive: 0x882222, emissiveIntensity: 0.5 }));
+      group.add(core);
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.2, 0.08, 64, 200), new THREE.MeshStandardMaterial({ color: 0xb87c3a, emissive: 0x552200 }));
+      ring.rotation.x = Math.PI / 2; group.add(ring);
+      scene.add(group);
+      const pedestal = new THREE.Mesh(new THREE.CylinderGeometry(2.0, 2.3, 0.4, 8), new THREE.MeshStandardMaterial({ color: 0x2a2e3a }));
+      pedestal.position.y = -0.8; scene.add(pedestal);
+      let time = 0;
+      function animate() { amengiAnimationId = requestAnimationFrame(animate); time += 0.012; group.rotation.y = time * 0.15; ring.rotation.z += 0.01; controls.update(); renderer.render(scene, camera); }
+      animate();
+      amengiScene = scene; amengiCamera = camera; amengiRenderer = renderer; amengiControls = controls; amengiContainer = container; amengiActive = true;
     }
-
-    // ========== LABBY RESPONSES ==========
-    function labbySpeak(message, lang = detectedUserLang) {
-      const messageDiv = document.getElementById('messageArea');
-      if (messageDiv) messageDiv.innerHTML = `🐭 ${message}`;
-      addLog(message, 'labby');
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(message);
-        utterance.rate = 0.85;
-        utterance.pitch = 1.2;
-        utterance.volume = 0.8;
-        if (lang === 'ru') utterance.lang = 'ru-RU';
-        else if (lang === 'uk') utterance.lang = 'uk-UA';
-        else utterance.lang = 'en-US';
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utterance);
-      }
+    function startAmengi() { const container = document.getElementById('amengi-3d-container'); if(!container) return; container.style.display = 'block'; document.getElementById('youtubeFrame').style.display = 'none'; initAmengi(container); addLogMessage("Amengi 3D Artifact activated", 'system'); }
+    function stopAmengi() { destroyAmengi(); const container = document.getElementById('amengi-3d-container'); if(container) container.style.display = 'none'; }
+    function switchToYautja() { stopAmengi(); const yt = document.getElementById('youtubeFrame'); yt.style.display = 'block'; if(!yt.src || yt.src.includes('about:blank')) yt.src = 'https://www.youtube.com/embed/WXjiF4K7u4g?autoplay=1&rel=0'; addLogMessage("Yautja Prime feed active", 'predator'); }
+    
+    // Background 3D
+    const bgContainer = document.getElementById('canvas-container');
+    const bgScene = new THREE.Scene(); bgScene.background = new THREE.Color(0x03060C);
+    const bgCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); bgCamera.position.set(0, 2, 12);
+    const bgRenderer = new THREE.WebGLRenderer({ antialias: true }); bgRenderer.setSize(window.innerWidth, window.innerHeight); bgContainer.appendChild(bgRenderer.domElement);
+    const knot = new THREE.Mesh(new THREE.TorusKnotGeometry(1.1, 0.28, 200, 32, 3, 4), new THREE.MeshStandardMaterial({ color: 0xF9A826, emissive: 0x442200 }));
+    bgScene.add(knot);
+    bgScene.add(new THREE.AmbientLight(0x111122));
+    const bgLight = new THREE.DirectionalLight(0xFFDDAA, 1.2); bgLight.position.set(3, 5, 4); bgScene.add(bgLight);
+    let bgTime = 0;
+    function animateBg() { requestAnimationFrame(animateBg); bgTime += 0.008; knot.rotation.y = bgTime * 0.5; bgRenderer.render(bgScene, bgCamera); }
+    animateBg();
+    window.addEventListener('resize', () => { bgCamera.aspect = window.innerWidth / window.innerHeight; bgCamera.updateProjectionMatrix(); bgRenderer.setSize(window.innerWidth, window.innerHeight); });
+    
+    // --- UI State ---
+    let logicMode = 'ternary';
+    let researchProgress = 47.3, tokens = 14.2, frames = 3.1, autonomy = 94.7, helpGiven = 3, trainingProgress = 52;
+    let samples = ["🔮 Anomalous Mineral #PR-107", "🧬 Biomass Sector G-4", "⚙️ Tech Artifact (unidentified)"];
+    let squadStatus = "🟢 IN LAB", professorStatus = "📚 BRIEFING";
+    let researchInterval = null, helpInterval = null, helpActive = false;
+    
+    const clans = ["Shadow Clan", "Iron Wolves", "Black Flame", "North Wind", "Deep Hunters", "Blood Moon", "Ice Peaks", "Rusted Thrones", "White Ghosts", "Fire Hearts", "Stone Wardens", "Rending Claws", "Silent Harbor", "Broken Spears", "Last Chance"];
+    document.getElementById('clansGrid').innerHTML = clans.map(c => `<div class="clan-tag">${c}</div>`).join('');
+    
+    function updateUI() {
+      document.getElementById('researchProgress').style.width = researchProgress + '%';
+      document.getElementById('progressPercent').innerText = researchProgress.toFixed(1) + '%';
+      document.getElementById('helpGivenValue').innerText = helpGiven;
+      document.getElementById('trainingPercent').innerText = trainingProgress + '%';
+      document.getElementById('trainingFill').style.width = trainingProgress + '%';
+      document.getElementById('squadStatus').innerHTML = squadStatus;
+      document.getElementById('professorStatus').innerHTML = professorStatus;
+      let tokenDisplay = tokens, frameDisplay = frames;
+      let tokenUnit = "M", frameUnit = "M";
+      if (logicMode === 'ternary') { tokenDisplay = (tokens * 1.585).toFixed(1); frameDisplay = (frames * 1.585).toFixed(1); tokenUnit = "Trits (M)"; frameUnit = "Trits (M)"; }
+      else if (logicMode === 'quaternary') { tokenDisplay = (tokens * 2.0).toFixed(1); frameDisplay = (frames * 2.0).toFixed(1); tokenUnit = "Quads (M)"; frameUnit = "Quads (M)"; }
+      else { tokenUnit = "Bits (M)"; frameUnit = "Bits (M)"; }
+      document.getElementById('tokensValue').innerText = tokenDisplay;
+      document.getElementById('framesValue').innerText = frameDisplay;
+      document.getElementById('tokensLabel').innerHTML = `INFERENCE ${tokenUnit}`;
+      document.getElementById('framesLabel').innerHTML = `VIDEO ${frameUnit}`;
+      document.getElementById('autonomyValue').innerText = autonomy.toFixed(1);
     }
-
-    // ========== COMMAND PROCESSING with DEBOUNCE ==========
-    const nlp = new NLPEngine();
-    const academicDB = new AcademicKnowledgeBase();
-    let debounceTimeout = null;
-
-    function debounceProcess(command, lang) {
-      if (debounceTimeout) clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(() => {
-        executeCommand(command, lang);
-        debounceTimeout = null;
-      }, 300);
+    
+    function addLogMessage(msg, type = 'info') {
+      const log = document.getElementById('logTerminal');
+      const line = document.createElement('div'); line.className = 'log-line';
+      const prefix = type === 'predator' ? '🐺' : (type === 'system' ? '⚙️' : '📡');
+      line.innerHTML = `> [${new Date().toLocaleTimeString()}] ${prefix} ${msg}`;
+      log.appendChild(line); if(log.children.length > 16) log.removeChild(log.firstChild);
     }
-
-    async function executeCommand(input, lang = detectedUserLang) {
-      if (!input || !input.trim()) return;
-      LabState.queriesProcessed++;
-      updateStats();
-      showSpinner();
+    
+    function updateSamplesUI() {
+      const container = document.getElementById('samplesList');
+      container.innerHTML = samples.map(s => `<div class="sample-item"><span style="color:#6BB5A0;">📦 ${s}</span><span style="color:#8BA2C2;">shared</span></div>`).join('');
+      document.getElementById('samplesCount').innerText = samples.length + ' samples';
+    }
+    
+    function addSample(name) { samples.unshift(name); updateSamplesUI(); addLogMessage(`New sample received: ${name}`, 'system'); }
+    
+    function showHelpRequest() {
+      if(helpActive) return;
+      const requests = [
+        { title: "Sample Consultation", detail: "Anomalous mineral #PR-422 analysis required" },
+        { title: "Tactical Advice", detail: "Professor requests data on Sector X-7" },
+        { title: "Data Exchange", detail: "Squad shares field recordings" }
+      ];
+      const req = requests[Math.floor(Math.random() * requests.length)];
+      document.getElementById('helpRequestText').innerText = req.title;
+      document.getElementById('helpRequestDetail').innerText = req.detail;
+      document.getElementById('helpRequestBlock').classList.remove('hidden');
+      helpActive = true;
+      addLogMessage(`Predators request: ${req.title}`, 'predator');
+      if(helpInterval) clearTimeout(helpInterval);
+      helpInterval = setTimeout(() => { if(helpActive) { document.getElementById('helpRequestBlock').classList.add('hidden'); helpActive = false; addLogMessage("Predators resolved independently", 'predator'); } }, 30000);
+    }
+    
+    function acceptHelp() {
+      if(!helpActive) return;
+      helpGiven++; trainingProgress = Math.min(100, trainingProgress + Math.random() * 5);
+      researchProgress = Math.min(100, researchProgress + Math.random() * 4);
+      tokens = Math.min(32, tokens + Math.random() * 0.5);
+      frames = Math.min(10, frames + 0.1);
+      updateUI();
+      addLogMessage("Assistance provided to Predators squad", 'system');
+      if(Math.random() > 0.6) addSample(['Rare Crystal #PR-777', 'Artifact "Tear"', 'Biomass Sample'][Math.floor(Math.random()*3)]);
+      document.getElementById('helpRequestBlock').classList.add('hidden');
+      helpActive = false;
+      if(helpInterval) clearTimeout(helpInterval);
+      setTimeout(() => { if(!helpActive) showHelpRequest(); }, 25000);
+    }
+    
+    function initiateResearch() {
+      if(researchInterval) clearInterval(researchInterval);
+      addLogMessage("INITIATING RESEARCH PROTOCOL...", 'system');
+      researchInterval = setInterval(() => {
+        if(researchProgress < 100) {
+          researchProgress = Math.min(100, researchProgress + Math.random() * 2.5);
+          tokens = Math.min(32, tokens + Math.random() * 0.6);
+          frames = Math.min(10, frames + Math.random() * 0.25);
+          autonomy = Math.min(99.9, autonomy + Math.random() * 0.3);
+          updateUI();
+          if(researchProgress >= 100) { clearInterval(researchInterval); addLogMessage("✓ RESEARCH COMPLETE! Neural evolution achieved.", 'system'); researchInterval = null; }
+        } else { clearInterval(researchInterval); researchInterval = null; }
+      }, 800);
+    }
+    
+    function resetSystem() {
+      if(researchInterval) clearInterval(researchInterval);
+      researchProgress = 47.3; tokens = 14.2; frames = 3.1; autonomy = 94.7; trainingProgress = 52; helpGiven = 3;
+      samples = ["🔮 Anomalous Mineral #PR-107", "🧬 Biomass Sector G-4", "⚙️ Tech Artifact (unidentified)"];
+      squadStatus = "🟢 IN LAB"; professorStatus = "📚 BRIEFING";
+      updateSamplesUI(); updateUI();
+      addLogMessage("SYSTEM RESET • All parameters reinitialized", 'system');
+    }
+    
+    function checkStatus() { addLogMessage("Predators squad operational • Cultural exchange active", 'predator'); }
+    
+    // --- AES Encryption ---
+    async function encryptPreset(data, password = "wellamatores-key-2025") {
+      const encoder = new TextEncoder();
+      const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveKey"]);
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" }, keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt"]);
+      const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, encoder.encode(JSON.stringify(data)));
+      const result = { version: 1, salt: Array.from(salt), iv: Array.from(iv), data: Array.from(new Uint8Array(encrypted)) };
+      return btoa(JSON.stringify(result));
+    }
+    
+    async function decryptPreset(encryptedBase64, password = "wellamatores-key-2025") {
       try {
-        const analysis = nlp.process(input);
-        addLog(`NLP: intent=${analysis.intent}, confidence=${(analysis.confidence * 100).toFixed(0)}%`, 'system');
-        let response;
-        switch (analysis.intent) {
-          case 'search': case 'define':
-            response = await academicDB.searchAndRespond(analysis.query, analysis.intent, lang);
-            break;
-          case 'status':
-            response = `${getTranslation('researchProgress', lang)}: ${LabState.researchProgress.toFixed(1)}%. ${getTranslation('papersFound', lang)}: ${LabState.papersFound}. ${getTranslation('queriesProcessed', lang)}: ${LabState.queriesProcessed}.`;
-            LabState.researchProgress = Math.min(100, LabState.researchProgress + 0.3);
-            updateStats();
-            break;
-          case 'joke':
-            const jokes = { en: ["Why don't scientists trust atoms? Because they make up everything! 🧪", "What do you call a rat who loves science? A lab-rat! 🐭"], ru: ["Почему учёные не доверяют атомам? Потому что они всё выдумывают! 🧪", "Как называют крысу, которая любит науку? Лабораторная крыса! 🐭"], uk: ["Чому вчені не довіряють атомам? Тому що вони все вигадують! 🧪", "Як називають пацюка, який любить науку? Лабораторний пацюк! 🐭"] };
-            response = (jokes[lang] || jokes.en)[Math.floor(Math.random() * 2)];
-            break;
-          case 'clear':
-            clearLogs();
-            response = "Logs cleared!";
-            break;
-          default:
-            response = await academicDB.searchAndRespond(input, 'search', lang);
-        }
-        labbySpeak(response, lang);
-      } catch (error) {
-        console.error('Command error:', error);
-        labbySpeak(getTranslation('error', lang), lang);
-        addLog(`Error: ${error.message}`, 'error');
-      } finally {
-        hideSpinner();
-      }
+        const parsed = JSON.parse(atob(encryptedBase64));
+        const encoder = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveKey"]);
+        const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt: new Uint8Array(parsed.salt), iterations: 100000, hash: "SHA-256" }, keyMaterial, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+        const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: new Uint8Array(parsed.iv) }, key, new Uint8Array(parsed.data));
+        return JSON.parse(new TextDecoder().decode(decrypted));
+      } catch(e) { addLogMessage("Decryption failed: Invalid preset or key", 'system'); return null; }
     }
-
-    async function processCommand(input, lang = detectedUserLang) {
-      debounceProcess(input, lang);
+    
+    async function savePreset() {
+      const state = { version: 2, timestamp: Date.now(), logicMode, researchProgress, tokens, frames, autonomy, helpGiven, trainingProgress, samples, squadStatus, professorStatus };
+      const encrypted = await encryptPreset(state);
+      const blob = new Blob([encrypted], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `wellamatores_preset_${Date.now()}.wellpreset`;
+      a.click(); URL.revokeObjectURL(url);
+      addLogMessage(`Preset saved (AES-256 encrypted) • ${new Date().toLocaleTimeString()}`, 'system');
     }
-
-    // ========== EVENT BINDINGS with KEYBOARD SUPPORT ==========
-    document.getElementById('sendBtn').onclick = () => {
-      const input = document.getElementById('textInput').value;
-      if (input && input.trim()) {
-        const lang = detectLanguage(input);
-        if (currentLang === 'auto') {
-          detectedUserLang = lang;
-          document.getElementById('detectedLang').textContent = lang === 'en' ? '🇬🇧 EN' : (lang === 'ru' ? '🇷🇺 RU' : '🇺🇦 UA');
-          updateUILanguage(lang);
+    
+    async function loadPresetFromFile() {
+      const input = document.createElement('input'); input.type = 'file'; input.accept = '.wellpreset';
+      input.onchange = async (e) => {
+        const file = e.target.files[0];
+        const text = await file.text();
+        const state = await decryptPreset(text);
+        if(state) {
+          logicMode = state.logicMode || 'ternary';
+          researchProgress = state.researchProgress || 47.3;
+          tokens = state.tokens || 14.2;
+          frames = state.frames || 3.1;
+          autonomy = state.autonomy || 94.7;
+          helpGiven = state.helpGiven || 3;
+          trainingProgress = state.trainingProgress || 52;
+          samples = state.samples || ["🔮 Anomalous Mineral #PR-107"];
+          squadStatus = state.squadStatus || "🟢 IN LAB";
+          professorStatus = state.professorStatus || "📚 BRIEFING";
+          document.querySelectorAll('.logic-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.logic === logicMode);
+          });
+          updateSamplesUI(); updateUI();
+          addLogMessage(`Preset loaded • ${new Date(state.timestamp).toLocaleString()}`, 'system');
+          if(researchInterval) { clearInterval(researchInterval); researchInterval = null; }
         }
-        processCommand(input, detectedUserLang);
-        document.getElementById('textInput').value = '';
-      }
-    };
-    document.getElementById('textInput').onkeypress = (e) => { if (e.key === 'Enter') document.getElementById('sendBtn').click(); };
-    document.getElementById('voiceBtn').onclick = () => {
-      if (recognition) {
-        if (isListening) recognition.stop();
-        else try { recognition.start(); } catch (e) { addLog('Voice recognition already started', 'error'); }
-      } else alert("Voice recognition not supported. Try Chrome, Edge, or Safari!");
-    };
-    document.querySelectorAll('.cmd-badge').forEach(badge => {
-      badge.onclick = () => {
-        const cmd = badge.dataset.cmd;
-        const lang = detectLanguage(cmd);
-        if (currentLang === 'auto') {
-          detectedUserLang = lang;
-          document.getElementById('detectedLang').textContent = lang === 'en' ? '🇬🇧 EN' : (lang === 'ru' ? '🇷🇺 RU' : '🇺🇦 UA');
-          updateUILanguage(lang);
-        }
-        processCommand(cmd, detectedUserLang);
       };
-      badge.onkeypress = (e) => { if (e.key === 'Enter') badge.click(); };
-    });
-    document.querySelectorAll('.lang-btn').forEach(btn => {
+      input.click();
+    }
+    
+    // --- Event Binding ---
+    document.getElementById('initiateBtn').onclick = initiateResearch;
+    document.getElementById('resetBtn').onclick = resetSystem;
+    document.getElementById('checkPredatorsBtn').onclick = checkStatus;
+    document.getElementById('acceptHelpBtn').onclick = acceptHelp;
+    document.getElementById('savePresetBtn').onclick = savePreset;
+    document.getElementById('loadPresetBtn').onclick = loadPresetFromFile;
+    document.getElementById('amengi3dBtn').onclick = () => { startAmengi(); document.getElementById('amengi3dBtn').classList.add('active'); document.getElementById('predatorsStreamBtn').classList.remove('active'); };
+    document.getElementById('predatorsStreamBtn').onclick = () => { switchToYautja(); document.getElementById('predatorsStreamBtn').classList.add('active'); document.getElementById('amengi3dBtn').classList.remove('active'); };
+    document.getElementById('fullscreenVideoBtn').onclick = () => { document.querySelector('.video-wrapper').requestFullscreen?.(); };
+    document.getElementById('backLink').onclick = () => window.location.href = 'https://wellamatores-metaverse.vercel.app';
+    
+    document.querySelectorAll('.logic-btn').forEach(btn => {
       btn.onclick = () => {
-        currentLang = btn.dataset.lang;
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.logic-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        if (currentLang !== 'auto') {
-          detectedUserLang = currentLang;
-          document.getElementById('detectedLang').textContent = currentLang === 'en' ? '🇬🇧 EN' : (currentLang === 'ru' ? '🇷🇺 RU' : '🇺🇦 UA');
-          updateUILanguage(currentLang);
-          addLog(`Language set to ${currentLang.toUpperCase()}`, 'system');
-        } else {
-          document.getElementById('detectedLang').textContent = '🌐 auto';
-          addLog('Auto language detection enabled', 'system');
-        }
+        logicMode = btn.dataset.logic;
+        addLogMessage(`Logic mode switched to ${logicMode.toUpperCase()} • ${logicMode === 'binary' ? 'Classical bits' : logicMode === 'ternary' ? 'Ternary trits active' : 'Quaternary quads online'}`, 'system');
+        updateUI();
       };
     });
-    document.getElementById('sourceSelector').onchange = (e) => academicDB.setSource(e.target.value);
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        const panel = document.getElementById('academicPanel');
-        if (panel) panel.classList.remove('visible');
+    
+    // --- Labby Assistant: открытие внешнего файла labby.html ---
+    const labbyBtn = document.getElementById('labbyBtn');
+    const labbyStatus = document.getElementById('labbyStatus');
+    
+    // Функция открытия ассистента в отдельном окне или если файл не найден - открываем инлайн версию
+    function openLabbyAssistant() {
+      addLogMessage("🐭 Opening Labby Voice Assistant...", 'system');
+      
+      // Пытаемся открыть labby.html в новой вкладке
+      const labbyWindow = window.open('labby.html', 'LabbyAssistant', 'width=400,height=600,menubar=no,toolbar=no,location=no,status=no');
+      
+      if (!labbyWindow || labbyWindow.closed || typeof labbyWindow.closed === 'undefined') {
+        // Если не удалось открыть (блокировка попапов), показываем альтернативный вариант
+        addLogMessage("⚠️ Popup blocked! Click the button again or use voice commands directly", 'system');
+        
+        // Альтернатива: создаём модальное окно с инструкцией
+        showLabbyModal();
+      } else {
+        addLogMessage("✅ Labby Assistant opened in new window • Say 'Hey Labby' to activate", 'system');
+      }
+    }
+    
+    function showLabbyModal() {
+      // Создаём временное модальное окно с инструкцией
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: rgba(6,10,18,0.95); backdrop-filter: blur(20px);
+        border: 2px solid #00E5FF; border-radius: 24px; padding: 24px;
+        z-index: 10000; max-width: 400px; text-align: center;
+        box-shadow: 0 0 50px rgba(0,229,255,0.3); font-family: monospace;
+      `;
+      modal.innerHTML = `
+        <div style="font-size: 48px; margin-bottom: 12px;">🐭</div>
+        <h3 style="color: #00E5FF; margin-bottom: 12px;">Labby Assistant</h3>
+        <p style="color: #8BA2C2; margin-bottom: 16px; font-size: 14px;">
+          Voice commands are available directly in this window!<br><br>
+          <strong style="color: #F9A826;">Say "Hey Labby"</strong> followed by:<br>
+          • research • reset • status • help • amengi • yautja • save • load
+        </p>
+        <button id="closeLabbyModal" style="
+          background: #F9A826; border: none; padding: 10px 20px;
+          border-radius: 12px; font-weight: bold; cursor: pointer;
+          font-family: monospace; margin-top: 8px;
+        ">Got it! 🐭</button>
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('closeLabbyModal').onclick = () => modal.remove();
+      
+      // Автоматическое закрытие через 10 секунд
+      setTimeout(() => { if(modal.parentNode) modal.remove(); }, 10000);
+    }
+    
+    labbyBtn.onclick = openLabbyAssistant;
+    labbyStatus.onclick = openLabbyAssistant;
+    
+    // --- Голосовое распознавание прямо в этом окне (дублируем команды) ---
+    let recognition = null;
+    let isListening = false;
+    
+    if ('webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      
+      recognition.onstart = () => {
+        isListening = true;
+        labbyBtn.style.boxShadow = '0 0 30px rgba(249,168,38,0.9)';
+        labbyStatus.innerHTML = '🐭 Labby is listening... Say a command!';
+        addLogMessage("Labby voice recognition active • Say 'Hey Labby' + command", 'system');
+      };
+      
+      recognition.onend = () => {
+        isListening = false;
+        labbyBtn.style.boxShadow = '0 0 20px rgba(0,229,255,0.5)';
+        labbyStatus.innerHTML = '🐭 Labby • Say "Hey Labby" or click me!';
+      };
+      
+      recognition.onresult = (e) => {
+        const text = e.results[e.results.length - 1][0].transcript.toLowerCase();
+        addLogMessage(`🐭 Labby heard: "${text}"`, 'info');
+        
+        // Проверяем активационную фразу "hey labby"
+        if (text.includes('hey labby') || text.includes('hey labby')) {
+          addLogMessage("🐭 Activation phrase detected! Processing command...", 'system');
+          labbyStatus.innerHTML = '🐭 Labby activated! 🎤';
+          setTimeout(() => {
+            labbyStatus.innerHTML = '🐭 Labby • Say "Hey Labby" or click me!';
+          }, 2000);
+          
+          // Ищем команду после активационной фразы
+          let command = text.replace(/hey labby/g, '').trim();
+          
+          if (command.includes('research') || command.includes('initiate')) initiateResearch();
+          else if (command.includes('reset')) resetSystem();
+          else if (command.includes('status')) checkStatus();
+          else if (command.includes('help') || command.includes('assist')) acceptHelp();
+          else if (command.includes('amengi') || command.includes('3d')) { startAmengi(); document.getElementById('amengi3dBtn').click(); }
+          else if (command.includes('yautja') || command.includes('prime')) { switchToYautja(); document.getElementById('predatorsStreamBtn').click(); }
+          else if (command.includes('save')) savePreset();
+          else if (command.includes('load')) loadPresetFromFile();
+          else if (command !== '') addLogMessage(`Command "${command}" not recognized. Try: research, reset, status, help, amengi, yautja, save, load`, 'system');
+        }
+      };
+    } else {
+      labbyStatus.innerHTML = '🐭 Speech not supported • Click for assistant';
+    }
+    
+    // Функция для запуска/остановки прослушивания
+    function toggleListening() {
+      if (recognition) {
+        if (isListening) {
+          recognition.stop();
+        } else {
+          try {
+            recognition.start();
+          } catch(e) {
+            addLogMessage("Voice recognition already started or error: " + e.message, 'system');
+          }
+        }
+      } else {
+        showLabbyModal();
+      }
+    }
+    
+    // Альтернативная активация: долгое нажатие на кнопку
+    let pressTimer;
+    labbyBtn.addEventListener('mousedown', () => {
+      pressTimer = setTimeout(() => {
+        toggleListening();
+      }, 500);
+    });
+    labbyBtn.addEventListener('mouseup', () => {
+      clearTimeout(pressTimer);
+    });
+    labbyBtn.addEventListener('mouseleave', () => {
+      clearTimeout(pressTimer);
+    });
+    
+    // Клик для открытия внешнего ассистента (короткое нажатие)
+    labbyBtn.addEventListener('click', (e) => {
+      if (!isListening) {
+        openLabbyAssistant();
       }
     });
-
-    // ========== INITIALIZATION ==========
-    recognition = initVoiceRecognition();
-    updateStats();
-    addLog('🐭 Labby AI Assistant initialized! Multilingual voice commands active!', 'system');
-    addLog('🌐 Speaks: English 🇬🇧, Русский 🇷🇺, Українська 🇺🇦', 'system');
-    addLog('💡 Try: "search for quantum computing" / "найди нейросети" / "знайди штучний інтелект"', 'system');
-    let intervalId = setInterval(() => {
-      LabState.researchProgress = Math.min(100, LabState.researchProgress + 0.1);
-      updateStats();
-    }, 30000);
+    
+    // TTV Fullscreen
+    document.getElementById('ttvFullscreenBtn').onclick = () => {
+      const wrapper = document.getElementById('ttvIframeWrapper');
+      if (document.fullscreenElement) document.exitFullscreen();
+      else wrapper.requestFullscreen?.();
+    };
+    
+    window.addEventListener('message', (e) => {
+      if(e.data?.type === 'TTV_PROMPT_SYNC') {
+        const preview = e.data.payload?.substring(0, 100) + (e.data.payload?.length > 100 ? '…' : '');
+        addLogMessage(`[TTV] Synced: ${preview}`, 'system');
+        if(e.data.payload?.includes('ternary')) { logicMode = 'ternary'; document.querySelector('.logic-btn[data-logic="ternary"]').click(); }
+        else if(e.data.payload?.includes('quaternary')) { logicMode = 'quaternary'; document.querySelector('.logic-btn[data-logic="quaternary"]').click(); }
+      }
+    });
+    
+    // Initialization
+    switchToYautja();
+    updateSamplesUI(); updateUI();
+    addLogMessage("Wellamatores LABS ready • Quantum logic active • AES presets available", 'system');
+    addLogMessage("🐭 Labby is here! Say 'Hey Labby' + command (research, reset, status, help, amengi, yautja, save, load)", 'system');
+    setTimeout(() => showHelpRequest(), 10000);
   </script>
 </body>
 </html>
