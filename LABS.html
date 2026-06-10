@@ -111,8 +111,6 @@
       transform: scale(1.02);
       box-shadow: 0 0 12px rgba(0,229,255,0.5);
     }
-
-    /* BUTTON to open Amengi Integration (second file) in fullscreen */
     .amengi-integration-btn {
       background: linear-gradient(135deg, rgba(100,200,180,0.15), rgba(0,229,255,0.1));
       border: 1px solid #6ad4be;
@@ -137,6 +135,49 @@
       color: #F9A826;
       transform: scale(1.02);
       box-shadow: 0 0 12px rgba(100,200,180,0.5);
+    }
+
+    /* Amengi Overlay Styles */
+    .amengi-fullscreen-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #01040a;
+      z-index: 20000;
+      display: none;
+      flex-direction: column;
+    }
+    .amengi-fullscreen-overlay.active {
+      display: flex;
+    }
+    .close-amengi-overlay {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.85);
+      border: 2px solid #ff4444;
+      color: #ff4444;
+      padding: 10px 20px;
+      border-radius: 40px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 20001;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+    }
+    .close-amengi-overlay:hover {
+      background: #ff4444;
+      color: #000;
+    }
+    .amengi-content-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #01040a;
     }
   </style>
 </head>
@@ -287,11 +328,142 @@
     </div>
   </div>
 
-  <!-- EXISTING AI ASSISTANT BUTTON - NOT MODIFIED -->
   <button id="aiAssistantBtn" class="ai-assistant-btn" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000;">🤖 AI ASSISTANT • ASK ME</button>
-
-  <!-- BUTTON: AMENGI INTEGRATION - opens second file (Amengi Integration) in fullscreen -->
   <button id="amengiIntegrationBtn" class="amengi-integration-btn" style="position: fixed; bottom: 24px; left: 24px; z-index: 10000;">🧠 AMENGI INTEGRATION • BINARY/TERNARY/QUATERNARY ⛶</button>
+
+  <!-- Amengi Fullscreen Overlay (embedded content) -->
+  <div id="amengiOverlay" class="amengi-fullscreen-overlay">
+    <div id="closeAmengiOverlay" class="close-amengi-overlay">✖ CLOSE AMENGI INTEGRATION</div>
+    <iframe id="amengiEmbedFrame" class="amengi-content-frame" srcdoc="
+      <!DOCTYPE html>
+      <html lang='ru'>
+      <head>
+        <meta charset='UTF-8'>
+        <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>
+        <title>AMENGI INTEGRATION</title>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+          body { background: #01040a; font-family: 'Courier New', monospace; overflow-x: hidden; }
+          .launcher { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at center, #0a121f, #010207); display: flex; justify-content: center; align-items: center; z-index: 1000; transition: opacity 0.8s; backdrop-filter: blur(10px); }
+          .launcher-content { text-align: center; background: rgba(5,15,20,0.7); border: 2px solid #2c7a6e; border-radius: 48px; padding: 2rem 3rem; box-shadow: 0 0 60px rgba(44,122,110,0.3); animation: pulse 2s infinite; }
+          @keyframes pulse { 0% { border-color: #2c7a6e; } 100% { border-color: #6fe0c6; } }
+          .launcher-content h1 { font-size: 2.5rem; background: linear-gradient(135deg, #b3f0e0, #4ac7ad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+          .launch-btn { background: #0c2622; border: 2px solid #3dab90; color: #bef2e6; font-size: 1.3rem; font-family: monospace; padding: 12px 32px; margin-top: 30px; border-radius: 60px; cursor: pointer; font-weight: bold; }
+          .launch-btn:hover { background: #1f5e54; transform: scale(1.03); }
+          .main-interface { display: none; padding: 1.5rem; max-width: 1600px; margin: 0 auto; }
+          .glass-panel { background: rgba(2,8,14,0.85); backdrop-filter: blur(2px); border: 1px solid #2b564c; border-radius: 28px; padding: 1rem; margin-bottom: 1.5rem; }
+          .grid-3col { display: flex; gap: 1rem; flex-wrap: wrap; }
+          .logic-card { flex: 1; background: #07161e; border-radius: 24px; padding: 1rem; border-left: 6px solid; }
+          .binary-card { border-left-color: #3e8bc9; }
+          .ternary-card { border-left-color: #80c97e; }
+          .quaternary-card { border-left-color: #e5a45c; }
+          .format-badge { background: #0f2729; display: inline-block; padding: 4px 12px; border-radius: 40px; margin: 4px; font-size: 0.7rem; }
+          .resonance-bar { background: #142e2a; height: 24px; border-radius: 30px; overflow: hidden; width: 100%; }
+          .res-fill { width: 47.3%; background: linear-gradient(90deg, #48bba1, #98f0da); height: 100%; }
+          #canvas3d { width: 100%; height: 400px; border-radius: 24px; background: #03090f; border: 1px solid #2f785e; display: block; }
+          button { background: #112e2b; border: 1px solid #449d86; padding: 8px 18px; border-radius: 40px; color: #cfefe6; font-family: monospace; cursor: pointer; }
+          button:hover { background: #246b5e; }
+          .predator-line { background: #0a1f24; border-radius: 20px; padding: 0.8rem; margin-top: 12px; }
+          footer { text-align: center; font-size: 0.65rem; margin-top: 2rem; color: #558077; }
+          @media (max-width: 700px) { .main-interface { padding: 0.8rem; } }
+        </style>
+      </head>
+      <body>
+        <div id='launcher' class='launcher'>
+          <div class='launcher-content'>
+            <div style='font-size: 3rem;'>🧠🐺⚔️</div>
+            <h1>AMENGI INTEGRATION</h1>
+            <p style='margin-top: 12px; color: #aad6cd;'>binary/ternary/quaternary logic • 3D I/O • AES sync</p>
+            <p style='font-size: 0.7rem;'>Bastion des Corbeaux • Predators Unit • JOG Neural Division</p>
+            <button class='launch-btn' id='launchButton'>⟡ INITIALIZE NEURAL LINK ⟡</button>
+            <p style='margin-top: 15px; font-size: 0.6rem;'>🔄 Amengi Artifact ready • 3D scene (Three.js)</p>
+          </div>
+        </div>
+        <div id='mainInterface' class='main-interface'>
+          <div class='glass-panel'>
+            <div style='display: flex; justify-content: space-between; flex-wrap: wrap;'>
+              <span style='font-size: 1.5rem;'>🧠 AMENGI INTEGRATION LAYER</span>
+              <span style='background:#0a2d26; padding: 2px 12px; border-radius: 60px;'>🟢 SYNC ACTIVE</span>
+            </div>
+            <hr style='margin: 12px 0; border-color: #266556;'>
+            <div class='grid-3col'>
+              <div class='logic-card binary-card'><strong>🔹 BINARY</strong><br>0/1 • encryption • access gates</div>
+              <div class='logic-card ternary-card'><strong>🔸 TERNARY</strong><br>-1/0/+1 • resonance • inference</div>
+              <div class='logic-card quaternary-card'><strong>🔹 QUATERNARY</strong><br>0/1/2/3 • clans • artifact phases</div>
+            </div>
+          </div>
+          <div class='glass-panel'>
+            <div style='display: flex; justify-content: space-between;'><span><strong>🖨️ 3D VIEWER (Three.js)</strong> — OBJ / FBX / STEP ready</span><div><span class='format-badge'>📁 OBJ</span><span class='format-badge'>🎬 FBX</span><span class='format-badge'>⚙️ STEP</span></div></div>
+            <canvas id='canvas3d'></canvas>
+            <div style='margin-top: 10px; display: flex; gap: 12px;'><button id='loadObjDemo'>📁 DEMO: Load OBJ (cube)</button><button id='rotateCam'>🔄 Rotate Camera</button><button id='resetView'>⟲ Reset View</button></div>
+            <p style='font-size: 0.7rem; margin-top: 8px;'>📍 Amengi Artifact 3D scan • Neural geometry stream • 47.3% resonance</p>
+          </div>
+          <div class='glass-panel'>
+            <span><strong>🔐 AES-ENCRYPTED PRESETS</strong></span>
+            <div style='display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px;'>
+              <div style='background:#06141b; padding: 6px 12px; border-radius: 20px;'>⚙️ Tech Artifact (AES-256)</div>
+              <div style='background:#06141b; padding: 6px 12px; border-radius: 20px;'>🧬 Biomass G-4 (AES-256)</div>
+              <div style='background:#06141b; padding: 6px 12px; border-radius: 20px;'>🔮 Mineral #PR-107 (AES-256)</div>
+              <div style='background:#06141b; padding: 6px 12px; border-radius: 20px;'>👑 15 Clans (AES-192)</div>
+              <div style='background:#26161c; padding: 6px 12px; border-radius: 20px;'>🔒 TTV Litho Prophet • HOLDING</div>
+            </div>
+          </div>
+          <div class='glass-panel'>
+            <span><strong>🔄 SYNC WITH AMENGI • NEURAL RESONANCE</strong></span>
+            <div class='resonance-bar' style='margin: 12px 0;'><div class='res-fill'></div></div>
+            <div style='display: flex; gap: 20px; flex-wrap: wrap;'><span>📡 Inference: 14.2M tokens ▲</span><span>🎬 Video frames: 3.1M</span><span>🤖 Autonomy index: 94.7%</span><span>🆘 Assistance given: 3</span></div>
+          </div>
+          <div class='glass-panel predator-line'>
+            <div><strong>🐺 PREDATORS SQUAD • AUTONOMOUS</strong> <span style='background:#1a594b; padding: 2px 10px; border-radius: 60px;'>🟢 IN LAB</span></div>
+            <div style='margin-top: 8px;'>👑 Professor T'Karr Vael (Yautja) — Kingdom Military Academy</div>
+            <div>🐕 Kaiser • Combat K9 clone • Silent hunter</div>
+            <div>⚔️ Joint ops with PMC Chopin • high-risk zones</div>
+            <div>🎓 Jackdaw training: 52% (tactics ✓, samples in progress)</div>
+            <div style='margin-top: 6px; font-size: 0.75rem;'>🏛️ BASTION DES CORBEAUX — Strategy • Ethics • Survival</div>
+          </div>
+          <div style='display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;'><button id='researchBtn'>⟁ INITIATE RESEARCH</button><button id='statusBtn'>🐺 CHECK STATUS</button><button id='fullscreenBtn'>⛶ FULLSCREEN 3D</button></div>
+          <footer>🧠 binary/ternary/quaternary logic • 3D I/O (OBJ/FBX/STEP) • AES presets • sync with AMENGI • Bastion des Corbeaux • JOG</footer>
+        </div>
+        <script type='importmap'>{ 'imports': { 'three': 'https://unpkg.com/three@0.128.0/build/three.module.js' } }</script>
+        <script type='module'>
+          import * as THREE from 'three';
+          import { OrbitControls } from 'https://unpkg.com/three@0.128.0/examples/jsm/controls/OrbitControls.js';
+          const launcher = document.getElementById('launcher');
+          const mainInterface = document.getElementById('mainInterface');
+          document.getElementById('launchButton').addEventListener('click', () => { launcher.style.opacity = '0'; launcher.style.visibility = 'hidden'; mainInterface.style.display = 'block'; initThreeJS(); });
+          let scene, camera, renderer, controls, currentModel;
+          const canvas = document.getElementById('canvas3d');
+          function initThreeJS() {
+            const width = canvas.clientWidth, height = 400;
+            scene = new THREE.Scene(); scene.background = new THREE.Color(0x03090f); scene.fog = new THREE.FogExp2(0x03090f, 0.008);
+            camera = new THREE.PerspectiveCamera(45, width/height, 0.1, 1000); camera.position.set(3, 2, 5);
+            renderer = new THREE.WebGLRenderer({ canvas, alpha: false }); renderer.setSize(width, height); renderer.shadowMap.enabled = true;
+            controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.enableZoom = true;
+            const ambientLight = new THREE.AmbientLight(0x223344); scene.add(ambientLight);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1); dirLight.position.set(2, 5, 3); scene.add(dirLight);
+            const backLight = new THREE.PointLight(0x336655, 0.4); backLight.position.set(-1, 1, -2); scene.add(backLight);
+            const gridHelper = new THREE.GridHelper(8, 20, 0x339977, 0x226655); gridHelper.position.y = -0.8; scene.add(gridHelper);
+            const coreGeo = new THREE.IcosahedronGeometry(0.8, 0); const coreMat = new THREE.MeshStandardMaterial({ color: 0x2dab8f, emissive: 0x0d4a3a, emissiveIntensity: 0.7 });
+            const core = new THREE.Mesh(coreGeo, coreMat); scene.add(core);
+            const particleCount = 800; const particlesGeo = new THREE.BufferGeometry(); const positions = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount; i++) { positions[i*3] = (Math.random() - 0.5) * 12; positions[i*3+1] = (Math.random() - 0.5) * 6; positions[i*3+2] = (Math.random() - 0.5) * 10 - 3; }
+            particlesGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3)); const particles = new THREE.Points(particlesGeo, new THREE.PointsMaterial({ color: 0x6ad4be, size: 0.05 })); scene.add(particles);
+            currentModel = core;
+            function animate() { requestAnimationFrame(animate); controls.update(); particles.rotation.y += 0.002; core.rotation.y += 0.005; core.rotation.x += 0.003; renderer.render(scene, camera); }
+            animate();
+            window.addEventListener('resize', () => { const w = canvas.clientWidth; camera.aspect = w / 400; camera.updateProjectionMatrix(); renderer.setSize(w, 400); });
+            document.getElementById('loadObjDemo').onclick = () => { if (currentModel && currentModel !== core) scene.remove(currentModel); const box = new THREE.Mesh(new THREE.BoxGeometry(1.2,1.2,1.2), new THREE.MeshStandardMaterial({ color: 0xc97e5a, metalness: 0.7 })); box.position.y = 0; scene.add(box); currentModel = box; if(core) core.visible = false; };
+            document.getElementById('rotateCam').onclick = () => { controls.autoRotate = !controls.autoRotate; document.getElementById('rotateCam').innerText = controls.autoRotate ? '⏸ Stop Rotate' : '🔄 Rotate Camera'; };
+            document.getElementById('resetView').onclick = () => { camera.position.set(3, 2, 5); controls.target.set(0,0,0); controls.update(); if(core) core.visible = true; if(currentModel && currentModel !== core) scene.remove(currentModel); currentModel = core; controls.autoRotate = false; };
+          }
+          document.getElementById('researchBtn')?.addEventListener('click', () => alert('Research initiated: Amengi ternary analysis'));
+          document.getElementById('statusBtn')?.addEventListener('click', () => alert('Predators squad active • Professor Vael active • 15 clans stable'));
+          document.getElementById('fullscreenBtn')?.addEventListener('click', () => { if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); });
+        </script>
+      </body>
+      </html>
+    "></iframe>
+  </div>
 
   <script type="importmap">
     {
@@ -309,7 +481,6 @@
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 
-    // --- ENHANCED 3D RESOURCE MANAGEMENT with RICHER ANIMATION ---
     let activeAmengi = { scene: null, camera: null, renderer: null, controls: null, composer: null, animationId: null, resizeObserver: null, container: null, mixers: [] };
     
     function fullyDestroyAmengi() {
@@ -363,7 +534,6 @@
       controls.enablePan = true;
       controls.target.set(0, 0.4, 0);
       
-      // Atmospheric lighting
       const ambientLight = new THREE.AmbientLight(0x0a1020);
       scene.add(ambientLight);
       const mainLight = new THREE.DirectionalLight(0xffcc88, 1.0);
@@ -376,27 +546,21 @@
       rimLight.position.set(-2, 1.5, -3);
       scene.add(rimLight);
       
-      // Dynamic pulsating light
       const pulseLight = new THREE.PointLight(0xff5533, 1.2);
       pulseLight.position.set(0.8, 0.6, 0.8);
       scene.add(pulseLight);
       
-      // === MAIN ARTIFACT GROUP with enhanced animations ===
       const artifactGroup = new THREE.Group();
-      
-      // Core - intricate geometry
       const coreGeo = new THREE.IcosahedronGeometry(0.85, 0);
       const coreMat = new THREE.MeshStandardMaterial({ color: 0x5a3a2a, emissive: 0xaa4422, emissiveIntensity: 0.5, metalness: 0.9, roughness: 0.25 });
       const core = new THREE.Mesh(coreGeo, coreMat);
       artifactGroup.add(core);
       
-      // Inner energy sphere
       const innerGlowGeo = new THREE.SphereGeometry(0.72, 32, 32);
       const glowMat = new THREE.MeshStandardMaterial({ color: 0xff6644, emissive: 0xff3311, emissiveIntensity: 0.8, transparent: true, opacity: 0.35 });
       const innerGlow = new THREE.Mesh(innerGlowGeo, glowMat);
       artifactGroup.add(innerGlow);
       
-      // Floating rune rings
       const ring1Geo = new THREE.TorusGeometry(1.15, 0.065, 96, 200);
       const ringMat1 = new THREE.MeshStandardMaterial({ color: 0xdaa55a, emissive: 0x884422, emissiveIntensity: 0.3, metalness: 0.95 });
       const ring1 = new THREE.Mesh(ring1Geo, ringMat1);
@@ -419,7 +583,6 @@
       
       scene.add(artifactGroup);
       
-      // Ornamental particles around artifact
       const particleCount = 800;
       const particleGeo = new THREE.BufferGeometry();
       const particlePositions = new Float32Array(particleCount * 3);
@@ -436,7 +599,6 @@
       const particles = new THREE.Points(particleGeo, particleMat);
       scene.add(particles);
       
-      // Floating spark particles (spiral)
       const sparkCount = 300;
       const sparkGeo = new THREE.BufferGeometry();
       const sparkPositions = new Float32Array(sparkCount * 3);
@@ -453,7 +615,6 @@
       const sparks = new THREE.Points(sparkGeo, sparkMat);
       scene.add(sparks);
       
-      // Ancient pedestal
       const pedestalGroup = new THREE.Group();
       const baseGeo = new THREE.CylinderGeometry(2.0, 2.3, 0.35, 8);
       const stoneMat = new THREE.MeshStandardMaterial({ color: 0x2a2e3a, roughness: 0.8, metalness: 0.05 });
@@ -466,7 +627,6 @@
       pedestalGroup.add(column);
       scene.add(pedestalGroup);
       
-      // Stars background
       const starCount = 2500;
       const starGeoBg = new THREE.BufferGeometry();
       const starPosBg = [];
@@ -480,7 +640,6 @@
       const starsField = new THREE.Points(starGeoBg, starMatBg);
       scene.add(starsField);
       
-      // === ENHANCED ANIMATION LOOP ===
       let time = 0;
       let sparkTime = 0;
       
@@ -489,33 +648,27 @@
         time += 0.014;
         sparkTime += 0.02;
         
-        // Complex artifact floating motion
         artifactGroup.position.y = Math.sin(time * 0.8) * 0.035;
         artifactGroup.rotation.y = time * 0.12;
         artifactGroup.rotation.x = Math.sin(time * 0.25) * 0.04;
         artifactGroup.rotation.z = Math.cos(time * 0.3) * 0.02;
         
-        // Ring rotations with different speeds
         ring1.rotation.z += 0.012;
         ring2.rotation.x += 0.008;
         ring2.rotation.y += 0.006;
         ring3.rotation.y += 0.005;
         ring3.rotation.z += 0.004;
         
-        // Pulsing inner glow
         const pulseIntensity = 0.65 + Math.sin(time * 3.5) * 0.25;
         glowMat.emissiveIntensity = pulseIntensity;
         glowMat.opacity = 0.3 + Math.sin(time * 4) * 0.12;
         coreMat.emissiveIntensity = 0.45 + Math.sin(time * 2.8) * 0.15;
         
-        // Pulsing light
         pulseLight.intensity = 0.9 + Math.sin(time * 5) * 0.5;
         
-        // Particle animation - rotate around
         particles.rotation.y = time * 0.08;
         particles.rotation.x = Math.sin(time * 0.4) * 0.1;
         
-        // Sparks - dynamic repositioning
         const positions = sparks.geometry.attributes.position.array;
         for (let i = 0; i < sparkCount; i++) {
           const angle = sparkTime * 1.5 + i * 0.05;
@@ -527,7 +680,6 @@
         }
         sparks.geometry.attributes.position.needsUpdate = true;
         
-        // Star field slow drift
         starsField.rotation.y += 0.0005;
         
         controls.update();
@@ -574,7 +726,6 @@
       addLogMessage("Switched to YAUTJA PRIME FEED • KHARMA MOVIE (Predator Origins)", 'predator');
     }
     
-    // --- Background 3D Scene (persistent) ---
     const containerBg = document.getElementById('canvas-container');
     const bgScene = new THREE.Scene(); bgScene.background = new THREE.Color(0x03060C); bgScene.fog = new THREE.FogExp2(0x03060C, 0.008);
     const bgCamera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000); bgCamera.position.set(0, 2, 12);
@@ -606,7 +757,6 @@
     animateBg();
     window.addEventListener('resize', () => { bgCamera.aspect = window.innerWidth / window.innerHeight; bgCamera.updateProjectionMatrix(); bgRenderer.setSize(window.innerWidth, window.innerHeight); });
     
-    // --- UI State & Logic ---
     const clans = ["Shadow Clan", "Iron Wolves Clan", "Black Flame Clan", "North Wind Clan", "Deep Hunters Clan", "Blood Moon Clan", "Ice Peaks Clan", "Rusted Thrones Clan", "White Ghosts Clan", "Fire Hearts Clan", "Stone Wardens Clan", "Rending Claws Clan", "Silent Harbor Clan", "Broken Spears Clan", "Last Chance Clan"];
     document.getElementById('clansGrid').innerHTML = clans.map(clan => `<div class="clan-tag">${clan}</div>`).join('');
     let researchProgress = 47.3, tokens = 14.2, frames = 3.1, autonomy = 94.7, helpGiven = 3, trainingProgress = 52;
@@ -623,124 +773,53 @@
     function checkPredatorsStatus() { const statuses = ["Squad at camp, professor conducting briefing", "War hound patrolling perimeter", "Predators analyzing field data", "Link to Kingdom stable, data exchange active"]; addLogMessage(statuses[Math.floor(Math.random() * statuses.length)], 'predator'); const squadStatuses = ['🟢 IN LAB', '🔴 FIELD MISSION', '🟡 REST/PREP']; const professorStatuses = ['📚 BRIEFING', '🎓 JACKDAW TRAINING', '🔬 RESEARCH', '📡 ON CALL']; document.getElementById('squadStatus').innerHTML = squadStatuses[Math.floor(Math.random() * squadStatuses.length)]; document.getElementById('professorStatus').innerHTML = professorStatuses[Math.floor(Math.random() * professorStatuses.length)]; }
     function goFullscreen() { const wrapper = document.querySelector('.video-wrapper'); if (wrapper.requestFullscreen) wrapper.requestFullscreen(); else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen(); }
     
-    // EXISTING AI ASSISTANT BUTTON HANDLER - NOT MODIFIED
     document.getElementById('aiAssistantBtn').addEventListener('click', () => {
       addLogMessage("🤖 AI ASSISTANT activated • Predictive algorithms online. How can I assist the Predators Division?", 'system');
       window.open('labby.html', '_blank');
       alert("🤖 AI ASSISTANT (Predators Division)\n\nI analyze Amengi resonance, coordinate with Kingdom of Predators, and optimize neural research. Request assistance via terminal commands or accept help requests from the squad.\n\n\"In the hunt, knowledge is the ultimate weapon.\"");
     });
     
-    // BUTTON: AMENGI INTEGRATION - opens second file (Amengi Integration) in fullscreen mode
+    // Amengi Integration Overlay Logic
+    const amengiOverlay = document.getElementById('amengiOverlay');
+    const closeAmengiOverlayBtn = document.getElementById('closeAmengiOverlay');
     const amengiIntegrationBtn = document.getElementById('amengiIntegrationBtn');
-    let isAmengiFullscreen = false;
-    let amengiIframe = null;
     
-    amengiIntegrationBtn.addEventListener('click', () => {
-      if (!isAmengiFullscreen) {
-        isAmengiFullscreen = true;
-        
-        // Create fullscreen container
-        const fullscreenContainer = document.createElement('div');
-        fullscreenContainer.id = 'amengiIntegrationFullscreen';
-        fullscreenContainer.style.cssText = `
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: #01040a;
-          z-index: 20000;
-          display: flex;
-          flex-direction: column;
-        `;
-        
-        // Create close button for this fullscreen
-        const closeFullscreenBtn = document.createElement('div');
-        closeFullscreenBtn.className = 'close-fullscreen-btn';
-        closeFullscreenBtn.innerHTML = '✖ CLOSE AMENGI INTEGRATION';
-        closeFullscreenBtn.style.cssText = `
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          background: rgba(0,0,0,0.85);
-          border: 2px solid #ff4444;
-          color: #ff4444;
-          padding: 10px 20px;
-          border-radius: 40px;
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 0.75rem;
-          font-weight: bold;
-          cursor: pointer;
-          z-index: 20001;
-          backdrop-filter: blur(10px);
-          transition: all 0.2s ease;
-        `;
-        closeFullscreenBtn.onmouseover = () => {
-          closeFullscreenBtn.style.background = '#ff4444';
-          closeFullscreenBtn.style.color = '#000';
-        };
-        closeFullscreenBtn.onmouseout = () => {
-          closeFullscreenBtn.style.background = 'rgba(0,0,0,0.85)';
-          closeFullscreenBtn.style.color = '#ff4444';
-        };
-        closeFullscreenBtn.onclick = () => {
-          if (amengiIframe) {
-            amengiIframe.src = 'about:blank';
-            amengiIframe.remove();
-          }
-          fullscreenContainer.remove();
-          isAmengiFullscreen = false;
-          document.body.style.overflow = '';
-          addLogMessage("AMENGI INTEGRATION closed • Returned to main laboratory", 'system');
-        };
-        
-        // Create iframe to load the second file (Amengi Integration)
-        amengiIframe = document.createElement('iframe');
-        amengiIframe.style.cssText = `
-          width: 100%;
-          height: 100%;
-          border: none;
-          background: #01040a;
-        `;
-        // Load the second HTML file (Amengi Integration - Bastion des Corbeaux)
-        amengiIframe.src = 'deepseek_html_20260610_27e844 (1).html';
-        
-        fullscreenContainer.appendChild(amengiIframe);
-        fullscreenContainer.appendChild(closeFullscreenBtn);
-        document.body.appendChild(fullscreenContainer);
-        document.body.style.overflow = 'hidden';
-        
-        addLogMessage("🧠 AMENGI INTEGRATION launched • Binary/Ternary/Quaternary logic active", 'system');
-        
-        // Request fullscreen on the container if possible
-        if (fullscreenContainer.requestFullscreen) {
-          fullscreenContainer.requestFullscreen().catch(e => console.log('Fullscreen request:', e));
-        }
+    function openAmengiOverlay() {
+      amengiOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      addLogMessage("🧠 AMENGI INTEGRATION launched • Binary/Ternary/Quaternary logic active", 'system');
+      if (amengiOverlay.requestFullscreen) {
+        amengiOverlay.requestFullscreen().catch(e => console.log('Fullscreen request:', e));
       }
-    });
+    }
     
-    // Handle escape key to close Amengi Integration fullscreen
+    function closeAmengiOverlay() {
+      amengiOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+      addLogMessage("AMENGI INTEGRATION closed • Returned to main laboratory", 'system');
+    }
+    
+    amengiIntegrationBtn.addEventListener('click', openAmengiOverlay);
+    closeAmengiOverlayBtn.addEventListener('click', closeAmengiOverlay);
+    
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && isAmengiFullscreen) {
-        const container = document.getElementById('amengiIntegrationFullscreen');
-        if (container) {
-          if (amengiIframe) {
-            amengiIframe.src = 'about:blank';
-            amengiIframe.remove();
-          }
-          container.remove();
-          isAmengiFullscreen = false;
-          document.body.style.overflow = '';
-          addLogMessage("AMENGI INTEGRATION closed via ESC", 'system');
-        }
+      if (e.key === 'Escape' && amengiOverlay.classList.contains('active')) {
+        closeAmengiOverlay();
       }
     });
     
-    document.getElementById('initiateBtn').addEventListener('click', initiateResearch); document.getElementById('resetBtn').addEventListener('click', resetSimulation); document.getElementById('checkPredatorsBtn').addEventListener('click', checkPredatorsStatus); document.getElementById('acceptHelpBtn').addEventListener('click', acceptHelp); document.getElementById('amengi3dBtn').addEventListener('click', () => { startAmengi(); document.getElementById('amengi3dBtn').classList.add('active'); document.getElementById('predatorsStreamBtn').classList.remove('active'); }); document.getElementById('predatorsStreamBtn').addEventListener('click', () => { switchToYautjaPrime(); document.getElementById('predatorsStreamBtn').classList.add('active'); document.getElementById('amengi3dBtn').classList.remove('active'); }); document.getElementById('fullscreenVideoBtn').addEventListener('click', goFullscreen); document.getElementById('jackdawUniversityBtn').addEventListener('click', () => { window.open('https://wellamatores-metaverse.vercel.app/BASTION.html', '_blank'); addLogMessage("JACKDAW University portal opened", 'system'); }); document.getElementById('backLink').addEventListener('click', () => { window.location.href = 'https://wellamatores-metaverse.vercel.app'; });
+    document.getElementById('initiateBtn').addEventListener('click', initiateResearch);
+    document.getElementById('resetBtn').addEventListener('click', resetSimulation);
+    document.getElementById('checkPredatorsBtn').addEventListener('click', checkPredatorsStatus);
+    document.getElementById('acceptHelpBtn').addEventListener('click', acceptHelp);
+    document.getElementById('amengi3dBtn').addEventListener('click', () => { startAmengi(); document.getElementById('amengi3dBtn').classList.add('active'); document.getElementById('predatorsStreamBtn').classList.remove('active'); });
+    document.getElementById('predatorsStreamBtn').addEventListener('click', () => { switchToYautjaPrime(); document.getElementById('predatorsStreamBtn').classList.add('active'); document.getElementById('amengi3dBtn').classList.remove('active'); });
+    document.getElementById('fullscreenVideoBtn').addEventListener('click', goFullscreen);
+    document.getElementById('jackdawUniversityBtn').addEventListener('click', () => { window.open('https://wellamatores-metaverse.vercel.app/BASTION.html', '_blank'); addLogMessage("JACKDAW University portal opened", 'system'); });
+    document.getElementById('backLink').addEventListener('click', () => { window.location.href = 'https://wellamatores-metaverse.vercel.app'; });
     document.querySelectorAll('.division-btn:not(#jackdawUniversityBtn)').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.division-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); addLogMessage(`Switched to ${btn.innerText} division (reference info)`, 'info'); }); });
     switchToYautjaPrime(); updateUI(); addLogMessage('🐺 Predators squad deployed. "Operating autonomously, ready to assist"', 'predator'); addLogMessage('🧠 Amengi Artifact 3D integration ready • Enhanced animation engine online', 'system'); addLogMessage('👑 15 clans of the Kingdom of Predators recognized • Cultural exchange active', 'info'); setTimeout(() => { if (!helpRequestActive) showHelpRequest(); }, 15000);
     
-    // TTV Fullscreen logic
     (function() { const fullscreenBtn = document.getElementById('ttvFullscreenBtn'); const iframeWrapper = document.getElementById('ttvIframeWrapper'); const iframe = document.getElementById('ttvIframe'); let isTtvFullscreen = false; let originalWrapperStyle = {}; function enterTtvFullscreen() { originalWrapperStyle = { position: iframeWrapper.style.position, top: iframeWrapper.style.top, left: iframeWrapper.style.left, width: iframeWrapper.style.width, height: iframeWrapper.style.height, zIndex: iframeWrapper.style.zIndex, backgroundColor: iframeWrapper.style.backgroundColor }; iframeWrapper.style.position = 'fixed'; iframeWrapper.style.top = '0'; iframeWrapper.style.left = '0'; iframeWrapper.style.width = '100vw'; iframeWrapper.style.height = '100vh'; iframeWrapper.style.zIndex = '10000'; iframeWrapper.style.backgroundColor = '#03081a'; iframe.style.height = '100vh'; iframe.style.width = '100vw'; document.body.style.overflow = 'hidden'; fullscreenBtn.textContent = '❌ EXIT'; isTtvFullscreen = true; } function exitTtvFullscreen() { iframeWrapper.style.position = originalWrapperStyle.position || ''; iframeWrapper.style.top = originalWrapperStyle.top || ''; iframeWrapper.style.left = originalWrapperStyle.left || ''; iframeWrapper.style.width = originalWrapperStyle.width || ''; iframeWrapper.style.height = originalWrapperStyle.height || ''; iframeWrapper.style.zIndex = originalWrapperStyle.zIndex || ''; iframeWrapper.style.backgroundColor = originalWrapperStyle.backgroundColor || ''; iframe.style.height = '700px'; iframe.style.width = '100%'; document.body.style.overflow = ''; fullscreenBtn.textContent = '⛶ FULLSCREEN'; isTtvFullscreen = false; } fullscreenBtn.addEventListener('click', () => { if (isTtvFullscreen) exitTtvFullscreen(); else enterTtvFullscreen(); }); document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isTtvFullscreen) exitTtvFullscreen(); }); })();
     window.addEventListener('message', (event) => { if (event.data && event.data.type === 'TTV_PROMPT_SYNC') { const promptPreview = event.data.payload.length > 120 ? event.data.payload.substring(0, 120) + '…' : event.data.payload; addLogMessage(`[TTV] Prompt synced with AMENGI: ${promptPreview}`, 'system'); if (event.data.payload && event.data.payload.match(/ternary/i)) { researchProgress = Math.min(100, researchProgress + 0.5); updateUI(); } } });
     ["🔮 Anomalous Mineral #PR-107", "🧬 Biomass Sector G-4", "⚙️ Tech Artifact (unidentified)"].forEach(s => addSampleFromPredators(s));
