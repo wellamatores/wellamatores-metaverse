@@ -469,11 +469,15 @@
     function checkPredatorsStatus() { const statuses = ["Squad at camp, professor conducting briefing", "War hound patrolling perimeter", "Predators analyzing field data", "Link to Kingdom stable, data exchange active"]; addLogMessage(statuses[Math.floor(Math.random() * statuses.length)], 'predator'); const squadStatuses = ['🟢 IN LAB', '🔴 FIELD MISSION', '🟡 REST/PREP']; const professorStatuses = ['📚 BRIEFING', '🎓 JACKDAW TRAINING', '🔬 RESEARCH', '📡 ON CALL']; document.getElementById('squadStatus').innerHTML = squadStatuses[Math.floor(Math.random() * squadStatuses.length)]; document.getElementById('professorStatus').innerHTML = professorStatuses[Math.floor(Math.random() * professorStatuses.length)]; }
     function goFullscreen() { const wrapper = document.querySelector('.video-wrapper'); if (wrapper.requestFullscreen) wrapper.requestFullscreen(); else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen(); }
     
-    // AI Assistant Button Handler (только это добавлено — обработчик для кнопки)
-    document.getElementById('aiAssistantBtn').addEventListener('click', () => {
-      addLogMessage("🤖 AI ASSISTANT activated • Predictive algorithms online. How can I assist the Predators Division?", 'system');
-      alert("🤖 AI ASSISTANT (Predators Division)\n\nI analyze Amengi resonance, coordinate with Kingdom of Predators, and optimize neural research. Request assistance via terminal commands or accept help requests from the squad.\n\n\"In the hunt, knowledge is the ultimate weapon.\"");
-    });
+   // AI Assistant Button Handler (только это добавлено — обработчик для кнопки)
+document.getElementById('aiAssistantBtn').addEventListener('click', () => {
+  addLogMessage("🤖 AI ASSISTANT activated • Predictive algorithms online. How can I assist the Predators Division?", 'system');
+  
+  // Открываем labby.html в новом окне/вкладке
+  window.open('labby.html', '_blank');
+  
+  alert("🤖 AI ASSISTANT (Predators Division)\n\nI analyze Amengi resonance, coordinate with Kingdom of Predators, and optimize neural research. Request assistance via terminal commands or accept help requests from the squad.\n\n\"In the hunt, knowledge is the ultimate weapon.\"");
+});
     
     document.getElementById('initiateBtn').addEventListener('click', initiateResearch); document.getElementById('resetBtn').addEventListener('click', resetSimulation); document.getElementById('checkPredatorsBtn').addEventListener('click', checkPredatorsStatus); document.getElementById('acceptHelpBtn').addEventListener('click', acceptHelp); document.getElementById('amengi3dBtn').addEventListener('click', () => { startAmengi(); document.getElementById('amengi3dBtn').classList.add('active'); document.getElementById('predatorsStreamBtn').classList.remove('active'); }); document.getElementById('predatorsStreamBtn').addEventListener('click', () => { switchToYautjaPrime(); document.getElementById('predatorsStreamBtn').classList.add('active'); document.getElementById('amengi3dBtn').classList.remove('active'); }); document.getElementById('fullscreenVideoBtn').addEventListener('click', goFullscreen); document.getElementById('jackdawUniversityBtn').addEventListener('click', () => { window.open('https://wellamatores-metaverse.vercel.app/BASTION.html', '_blank'); addLogMessage("JACKDAW University portal opened", 'system'); }); document.getElementById('backLink').addEventListener('click', () => { window.location.href = 'https://wellamatores-metaverse.vercel.app'; });
     document.querySelectorAll('.division-btn:not(#jackdawUniversityBtn)').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.division-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); addLogMessage(`Switched to ${btn.innerText} division (reference info)`, 'info'); }); });
