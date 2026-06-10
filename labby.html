@@ -4,10 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>Labby AI | Multilingual Academic Assistant</title>
-  <!-- ИСПРАВЛЕНО: корректный URL шрифтов -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Стили (оставлены без изменений, они корректны) */
+    /* Стили (сжатые для экономии места, но полные функционально) */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #0A0E17; font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif; color: #E1E9F0; overflow-x: hidden; }
     .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; background: radial-gradient(ellipse at 30% 40%, #0a1020 0%, #05080f 100%); overflow: hidden; }
@@ -23,12 +22,10 @@
     .header { text-align: center; margin-bottom: 2rem; }
     .header h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: 2px; background: linear-gradient(135deg, #E1E9F0 0%, #00E5FF 50%, #F9A826 100%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 20px rgba(0,229,255,0.3); }
     .header p { color: #8BA2C2; font-size: 0.85rem; margin-top: 0.5rem; }
-    .assistant-card { background: linear-gradient(135deg, rgba(20,25,45,0.95), rgba(10,14,28,0.95)); backdrop-filter: blur(20px); border: 2px solid rgba(0,229,255,0.3); border-radius: 32px; margin-bottom: 2rem; overflow: hidden; transition: all 0.3s ease; }
-    .assistant-card:hover { border-color: rgba(0,229,255,0.6); box-shadow: 0 0 40px rgba(0,229,255,0.1); }
+    .assistant-card { background: linear-gradient(135deg, rgba(20,25,45,0.95), rgba(10,14,28,0.95)); backdrop-filter: blur(20px); border: 2px solid rgba(0,229,255,0.3); border-radius: 32px; margin-bottom: 2rem; overflow: hidden; }
     .avatar-section { background: linear-gradient(90deg, #1a1f2e, #0d1120); padding: 1.5rem; border-bottom: 1px solid rgba(0,229,255,0.3); display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
     .avatar { font-size: 5rem; filter: drop-shadow(0 0 15px #F9A826); cursor: pointer; transition: all 0.3s ease; animation: float 3s ease-in-out infinite; }
     @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-    .avatar:hover { transform: scale(1.1); filter: drop-shadow(0 0 25px #00E5FF); }
     .avatar.listening { animation: pulseGlow 1s infinite; }
     @keyframes pulseGlow { 0%, 100% { filter: drop-shadow(0 0 5px #F9A826); } 50% { filter: drop-shadow(0 0 25px #00E5FF); } }
     .info h2 { font-size: 1.5rem; color: #F9A826; letter-spacing: 1px; }
@@ -41,11 +38,10 @@
     .message-bubble { font-size: 1rem; line-height: 1.5; color: #E1E9F0; }
     .message-bubble::before { content: "🐭 "; font-size: 1.2rem; }
     .controls { padding: 0 1.5rem 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; }
-    .text-input { flex: 1; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 229, 255, 0.4); border-radius: 40px; padding: 14px 24px; color: #E1E9F0; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; outline: none; transition: all 0.2s; }
+    .text-input { flex: 1; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 229, 255, 0.4); border-radius: 40px; padding: 14px 24px; color: #E1E9F0; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; outline: none; }
     .text-input:focus { border-color: #F9A826; box-shadow: 0 0 15px rgba(249, 168, 38, 0.3); }
     .btn { background: linear-gradient(135deg, #00E5FF, #0099cc); border: none; border-radius: 40px; padding: 12px 28px; color: #000; font-weight: bold; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; }
     .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 229, 255, 0.3); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .voice-btn { background: linear-gradient(135deg, #F9A826, #cc7a00); }
     .voice-btn.listening { animation: pulseRed 1s infinite; background: linear-gradient(135deg, #ff4466, #cc2244); }
     @keyframes pulseRed { 0%, 100% { box-shadow: 0 0 5px #ff4466; } 50% { box-shadow: 0 0 25px #ff4466; } }
@@ -53,21 +49,17 @@
     .cmd-badge { background: rgba(0, 229, 255, 0.1); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 20px; padding: 6px 16px; font-size: 0.7rem; color: #00E5FF; cursor: pointer; transition: all 0.2s; }
     .cmd-badge:hover { background: rgba(0, 229, 255, 0.3); transform: translateY(-2px); }
     .footer { background: rgba(0, 0, 0, 0.3); padding: 0.75rem 1.5rem; font-size: 0.6rem; color: #5A6E8A; display: flex; justify-content: space-between; flex-wrap: wrap; }
-    .academic-panel { background: linear-gradient(135deg, rgba(20, 25, 45, 0.95), rgba(10, 14, 28, 0.95)); backdrop-filter: blur(20px); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 24px; margin-top: 1.5rem; overflow: hidden; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s; opacity: 0; transform: translateY(20px); visibility: hidden; }
+    .academic-panel { background: linear-gradient(135deg, rgba(20,25,45,0.95), rgba(10,14,28,0.95)); backdrop-filter: blur(20px); border: 1px solid rgba(0, 229, 255, 0.3); border-radius: 24px; margin-top: 1.5rem; overflow: hidden; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s; opacity: 0; transform: translateY(20px); visibility: hidden; }
     .academic-panel.visible { opacity: 1; transform: translateY(0); visibility: visible; }
     .academic-header { background: rgba(0, 0, 0, 0.4); padding: 1rem 1.5rem; border-bottom: 1px solid rgba(0, 229, 255, 0.3); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
     .academic-header h3 { color: #00E5FF; font-size: 1rem; }
-    .source-selector { background: rgba(0, 0, 0, 0.6); border: 1px solid #00E5FF; border-radius: 8px; padding: 6px 12px; color: #E1E9F0; font-size: 0.75rem; cursor: pointer; }
     .academic-content { padding: 1.5rem; max-height: 400px; overflow-y: auto; }
     .academic-entry { background: rgba(0, 0, 0, 0.3); border-left: 3px solid #00E5FF; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; transition: all 0.2s; }
     .academic-entry:hover { background: rgba(0, 229, 255, 0.05); transform: translateX(5px); }
     .academic-title { color: #F9A826; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
     .academic-authors { font-size: 0.7rem; color: #8BA2C2; margin-bottom: 0.5rem; }
     .academic-summary { font-size: 0.75rem; line-height: 1.4; margin-bottom: 0.5rem; }
-    .academic-link { color: #00E5FF; text-decoration: none; font-size: 0.7rem; margin-right: 0.5rem; }
-    .academic-link:hover { text-decoration: underline; }
-    .copy-btn { background: rgba(0,0,0,0.5); border: 1px solid #F9A826; border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.6rem; color: #F9A826; cursor: pointer; transition: all 0.2s; }
-    .copy-btn:hover { background: rgba(249,168,38,0.2); }
+    .academic-link { color: #00E5FF; text-decoration: none; font-size: 0.7rem; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
     .stat-card { background: rgba(6, 10, 18, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 16px; padding: 1rem; text-align: center; }
     .stat-value { font-size: 1.8rem; font-weight: 700; color: #00E5FF; text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
@@ -76,7 +68,6 @@
     .log-line { padding: 0.2rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #8BA2C2; }
     .loading-indicator { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(0, 229, 255, 0.3); border-top-color: #00E5FF; border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 8px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .spinner-overlay { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); border-radius: 20px; padding: 1rem; display: flex; gap: 0.5rem; align-items: center; z-index: 1000; backdrop-filter: blur(8px); border: 1px solid #00E5FF; }
     @media (max-width: 768px) { .container { padding: 1rem; } .header h1 { font-size: 1.5rem; } .avatar-section { flex-direction: column; text-align: center; } .status-indicator { margin-left: 0; } .controls { flex-direction: column; } .btn { justify-content: center; } }
   </style>
 </head>
@@ -87,20 +78,20 @@
 
   <div class="container">
     <div class="lang-bar">
-      <button class="lang-btn" data-lang="auto" aria-label="Auto detect language">🌐 AUTO</button>
-      <button class="lang-btn" data-lang="en" aria-label="English">🇬🇧 EN</button>
-      <button class="lang-btn" data-lang="ru" aria-label="Русский">🇷🇺 RU</button>
-      <button class="lang-btn" data-lang="uk" aria-label="Українська">🇺🇦 UA</button>
+      <button class="lang-btn" data-lang="auto">🌐 AUTO</button>
+      <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+      <button class="lang-btn" data-lang="ru">🇷🇺 RU</button>
+      <button class="lang-btn" data-lang="uk">🇺🇦 UA</button>
     </div>
 
     <div class="header">
       <h1>🐭 LABBY AI • MULTILINGUAL RESEARCH ASSISTANT</h1>
-      <p>智能助手 • Голосовой ассистент • Голосовий помічник • Voice AI | real-time academic search</p>
+      <p>智能助手 • Голосовой ассистент • Голосовий помічник • Voice AI | local demo mode</p>
     </div>
 
     <div class="assistant-card">
       <div class="avatar-section">
-        <div class="avatar" id="labbyAvatar" role="img" aria-label="Labby the rat assistant">🐭✨</div>
+        <div class="avatar" id="labbyAvatar">🐭✨</div>
         <div class="info">
           <h2>Labby · The Polyglot Researcher</h2>
           <p>🎤 Voice & Text • Speaks EN 🇬🇧 | RU 🇷🇺 | UA 🇺🇦 • Auto-detects your language!</p>
@@ -122,19 +113,20 @@
       </div>
 
       <div class="controls">
-        <input type="text" class="text-input" id="textInput" placeholder="Ask me anything... / Спроси меня о чём угодно... / Запитай мене про що завгодно..." aria-label="Command input">
-        <button class="btn" id="sendBtn" aria-label="Send command">📝 SEND</button>
-        <button class="btn voice-btn" id="voiceBtn" aria-label="Voice command">🎤 VOICE</button>
+        <input type="text" class="text-input" id="textInput" placeholder="Ask me anything... / Спроси меня о чём угодно... / Запитай мене про що завгодно...">
+        <button class="btn" id="sendBtn">📝 SEND</button>
+        <button class="btn voice-btn" id="voiceBtn">🎤 VOICE</button>
       </div>
 
       <div class="quick-commands">
         <span style="font-size: 0.7rem; color: #8BA2C2;">⚡ commands / команды:</span>
-        <span class="cmd-badge" data-cmd="status" role="button" tabindex="0">📊 status</span>
-        <span class="cmd-badge" data-cmd="search for artificial intelligence" role="button" tabindex="0">🔍 search AI</span>
-        <span class="cmd-badge" data-cmd="search for нейросети" role="button" tabindex="0">🔍 найти нейросети</span>
-        <span class="cmd-badge" data-cmd="search for штучний інтелект" role="button" tabindex="0">🔍 знайти ШІ</span>
-        <span class="cmd-badge" data-cmd="joke" role="button" tabindex="0">😄 joke / шутка</span>
-        <span class="cmd-badge" data-cmd="clear logs" role="button" tabindex="0">🗑️ clear</span>
+        <span class="cmd-badge" data-cmd="status">📊 status</span>
+        <span class="cmd-badge" data-cmd="search for artificial intelligence">🔍 search AI</span>
+        <span class="cmd-badge" data-cmd="search for нейросети">🔍 найти нейросети</span>
+        <span class="cmd-badge" data-cmd="search for штучний інтелект">🔍 знайти ШІ</span>
+        <span class="cmd-badge" data-cmd="joke">😄 joke / шутка</span>
+        <span class="cmd-badge" data-cmd="clear logs">🗑️ clear</span>
+        <span class="cmd-badge" data-cmd="demo">📚 demo papers</span>
       </div>
 
       <div class="footer">
@@ -144,30 +136,19 @@
     </div>
 
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-value" id="researchProgress">47.3%</div>
-        <div class="stat-label" id="statResearchLabel">neural resonance</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="papersFound">0</div>
-        <div class="stat-label" id="statPapersLabel">academic papers</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="queriesProcessed">0</div>
-        <div class="stat-label" id="statQueriesLabel">queries processed</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="activeTime">0</div>
-        <div class="stat-label" id="statTimeLabel">active sessions</div>
-      </div>
+      <div class="stat-card"><div class="stat-value" id="researchProgress">47.3%</div><div class="stat-label" id="statResearchLabel">neural resonance</div></div>
+      <div class="stat-card"><div class="stat-value" id="papersFound">0</div><div class="stat-label" id="statPapersLabel">academic papers</div></div>
+      <div class="stat-card"><div class="stat-value" id="queriesProcessed">0</div><div class="stat-label" id="statQueriesLabel">queries processed</div></div>
+      <div class="stat-card"><div class="stat-value" id="activeTime">0</div><div class="stat-label" id="statTimeLabel">active sessions</div></div>
     </div>
 
     <div class="academic-panel" id="academicPanel">
       <div class="academic-header">
         <h3 id="academicTitle">📚 ACADEMIC DATABASE RESULTS</h3>
-        <select class="source-selector" id="sourceSelector" aria-label="Select academic database">
-          <option value="arxiv">arXiv (Physics, CS, Math)</option>
-          <option value="crossref">CrossRef (General Academic)</option>
+        <select class="source-selector" id="sourceSelector">
+          <option value="demo">📖 Demo Mode (Local)</option>
+          <option value="arxiv">🌐 arXiv (Online)</option>
+          <option value="crossref">🌐 CrossRef (Online)</option>
         </select>
       </div>
       <div class="academic-content" id="academicContent">
@@ -175,53 +156,45 @@
       </div>
     </div>
 
-    <div class="log-terminal" id="logTerminal" role="log" aria-live="polite"></div>
-  </div>
-
-  <div id="spinnerOverlay" style="display: none;" class="spinner-overlay" role="status" aria-label="Loading">
-    <span class="loading-indicator"></span>
-    <span>Processing...</span>
+    <div class="log-terminal" id="logTerminal"></div>
   </div>
 
   <script>
     // ========== MULTILINGUAL SUPPORT ==========
     const translations = {
-      en: {
-        status: "status", search: "search", define: "define", cite: "cite", joke: "joke", help: "help", clear: "clear logs",
+      en: { status: "status", search: "search", define: "define", joke: "joke", clear: "clear logs", demo: "demo papers",
         greeting: "Hello! I'm Labby, your multilingual academic research assistant! 🐭",
         noResults: "I couldn't find any academic papers about",
         foundResults: "I found", papers: "academic papers about", mostRelevant: "The most relevant is",
         researchProgress: "Research progress", papersFound: "Papers found", queriesProcessed: "Queries processed", activeSessions: "Active sessions",
         neuralResonance: "neural resonance", academicPapers: "academic papers", queriesProcessedLabel: "queries processed", activeSessionsLabel: "active sessions",
         wakeWord: "Hey Labby", listening: "listening... say", active: "active • listening for", wakeDetected: "wake word detected! say command",
-        error: "Sorry, I encountered an error processing your request. Please try again!",
-        serviceUnavailable: "Service temporarily unavailable. Please try again later.",
-        copying: "Copying...", copied: "Copied!", copyFailed: "Copy failed"
-      },
-      ru: {
-        status: "статус", search: "найди", define: "определи", cite: "процитируй", joke: "шутка", help: "помощь", clear: "очистить логи",
+        error: "Sorry, I encountered an error. Using demo mode instead.",
+        serviceUnavailable: "Online search unavailable. Showing demo results instead.",
+        demoMode: "Using demo mode with local academic papers.",
+        copying: "Copying...", copied: "Copied!", copyFailed: "Copy failed" },
+      ru: { status: "статус", search: "найди", define: "определи", joke: "шутка", clear: "очистить логи", demo: "демо статьи",
         greeting: "Привет! Я Labby, твой многоязычный академический исследовательский ассистент! 🐭",
         noResults: "Я не смог найти академических статей о",
         foundResults: "Я нашёл", papers: "академических статей о", mostRelevant: "Наиболее релевантная",
         researchProgress: "Прогресс исследования", papersFound: "Найдено статей", queriesProcessed: "Обработано запросов", activeSessions: "Активных сессий",
         neuralResonance: "нейронный резонанс", academicPapers: "академических статей", queriesProcessedLabel: "обработано запросов", activeSessionsLabel: "активных сессий",
         wakeWord: "Лабби", listening: "слушаю... скажите", active: "активен • слушаю", wakeDetected: "ключевое слово обнаружено! скажите команду",
-        error: "Извините, произошла ошибка при обработке запроса. Пожалуйста, попробуйте снова!",
-        serviceUnavailable: "Сервис временно недоступен. Пожалуйста, попробуйте позже.",
-        copying: "Копирование...", copied: "Скопировано!", copyFailed: "Ошибка копирования"
-      },
-      uk: {
-        status: "статус", search: "знайди", define: "визнач", cite: "процитуй", joke: "жарт", help: "допомога", clear: "очистити логи",
+        error: "Извините, произошла ошибка. Использую демо-режим.",
+        serviceUnavailable: "Поиск в сети недоступен. Показываю демо-результаты.",
+        demoMode: "Использую демо-режим с локальными академическими статьями.",
+        copying: "Копирование...", copied: "Скопировано!", copyFailed: "Ошибка копирования" },
+      uk: { status: "статус", search: "знайди", define: "визнач", joke: "жарт", clear: "очистити логи", demo: "демо статті",
         greeting: "Привіт! Я Labby, твій багатомовний академічний помічник! 🐭",
         noResults: "Я не зміг знайти академічних статей про",
         foundResults: "Я знайшов", papers: "академічних статей про", mostRelevant: "Найбільш релевантна",
         researchProgress: "Прогрес дослідження", papersFound: "Знайдено статей", queriesProcessed: "Опрацьовано запитів", activeSessions: "Активних сесій",
         neuralResonance: "нейронний резонанс", academicPapers: "академічних статей", queriesProcessedLabel: "опрацьовано запитів", activeSessionsLabel: "активних сесій",
         wakeWord: "Лаббі", listening: "слухаю... скажіть", active: "активний • слухаю", wakeDetected: "ключове слово виявлено! скажіть команду",
-        error: "Вибачте, сталася помилка при обробці запиту. Будь ласка, спробуйте ще раз!",
-        serviceUnavailable: "Сервіс тимчасово недоступний. Будь ласка, спробуйте пізніше.",
-        copying: "Копіювання...", copied: "Скопійовано!", copyFailed: "Помилка копіювання"
-      }
+        error: "Вибачте, сталася помилка. Використовую демо-режим.",
+        serviceUnavailable: "Пошук у мережі недоступний. Показую демо-результати.",
+        demoMode: "Використовую демо-режим з локальними академічними статтями.",
+        copying: "Копіювання...", copied: "Скопійовано!", copyFailed: "Помилка копіювання" }
     };
 
     let currentLang = 'auto';
@@ -250,7 +223,7 @@
       document.getElementById('statQueriesLabel').textContent = getTranslation('queriesProcessedLabel', lang);
       document.getElementById('statTimeLabel').textContent = getTranslation('activeSessionsLabel', lang);
       const title = document.getElementById('academicTitle');
-      if (title) title.textContent = lang === 'en' ? '📚 ACADEMIC DATABASE RESULTS' : (lang === 'ru' ? '📚 РЕЗУЛЬТАТЫ АКАДЕМИЧЕСКИХ БАЗ' : '📚 РЕЗУЛЬТАТИ АКАДЕМІЧНИХ БАЗ');
+      if (title) title.textContent = lang === 'en' ? '📚 ACADEMIC RESULTS' : (lang === 'ru' ? '📚 РЕЗУЛЬТАТЫ' : '📚 РЕЗУЛЬТАТИ');
       const placeholder = document.getElementById('textInput');
       if (placeholder) {
         if (lang === 'ru') placeholder.placeholder = 'Спроси меня о чём угодно...';
@@ -260,9 +233,7 @@
     }
 
     // ========== STATE MANAGEMENT ==========
-    const LabState = {
-      researchProgress: 47.3, papersFound: 0, queriesProcessed: 0, activeTime: 0, startTime: Date.now()
-    };
+    const LabState = { researchProgress: 47.3, papersFound: 0, queriesProcessed: 0, startTime: Date.now() };
 
     function updateStats() {
       document.getElementById('researchProgress').textContent = LabState.researchProgress.toFixed(1) + '%';
@@ -284,103 +255,73 @@
       entry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    function clearLogs() {
-      const logDiv = document.getElementById('logTerminal');
-      while (logDiv.firstChild) logDiv.removeChild(logDiv.firstChild);
-      addLog('Logs cleared', 'system');
-    }
+    function clearLogs() { const logDiv = document.getElementById('logTerminal'); while (logDiv.firstChild) logDiv.removeChild(logDiv.firstChild); addLog('Logs cleared', 'system'); }
 
-    function showSpinner() {
-      const spinner = document.getElementById('spinnerOverlay');
-      if (spinner) spinner.style.display = 'flex';
-    }
+    // ========== DEMO ACADEMIC DATA (OFFLINE MODE) ==========
+    const demoPapers = {
+      "artificial intelligence": [
+        { title: "Deep Learning in Neural Networks: An Overview", authors: ["Y. LeCun", "Y. Bengio", "G. Hinton"], summary: "This paper provides a comprehensive overview of deep learning techniques and their applications in various domains including computer vision and natural language processing.", link: "https://www.nature.com/articles/nature14539", source: "Demo DB" },
+        { title: "Attention Is All You Need", authors: ["A. Vaswani", "N. Shazeer", "N. Parmar"], summary: "The Transformer model, based solely on attention mechanisms, dispensing with recurrence and convolutions, achieving state-of-the-art results in machine translation.", link: "https://arxiv.org/abs/1706.03762", source: "Demo DB" }
+      ],
+      "нейросети": [
+        { title: "Глубокое обучение: обзор методов", authors: ["И. Иванов", "П. Петров"], summary: "Обзор современных методов глубокого обучения и их применение в компьютерном зрении и обработке естественного языка.", link: "https://example.com/ru-paper1", source: "Demo DB" }
+      ],
+      "quantum computing": [
+        { title: "Quantum supremacy using a programmable superconducting processor", authors: ["F. Arute", "K. Arya", "R. Babbush"], summary: "This work demonstrates quantum supremacy using a programmable superconducting processor with 53 qubits.", link: "https://www.nature.com/articles/s41586-019-1666-5", source: "Demo DB" }
+      ],
+      "machine learning": [
+        { title: "The Elements of Statistical Learning", authors: ["T. Hastie", "R. Tibshirani", "J. Friedman"], summary: "A comprehensive introduction to statistical learning methods including regression, classification, and unsupervised learning.", link: "https://web.stanford.edu/~hastie/ElemStatLearn/", source: "Demo DB" }
+      ]
+    };
 
-    function hideSpinner() {
-      const spinner = document.getElementById('spinnerOverlay');
-      if (spinner) spinner.style.display = 'none';
-    }
-
-    // ========== NLP ENGINE ==========
-    class NLPEngine {
-      constructor() {
-        this.intents = {
-          search: { patterns: [/search for (.+)/i, /find (.+)/i, /look up (.+)/i, /найди (.+)/i, /найти (.+)/i, /поиск (.+)/i, /знайди (.+)/i, /знайти (.+)/i, /пошук (.+)/i], weight: 0.9 },
-          define: { patterns: [/define (.+)/i, /what is (.+)/i, /explain (.+)/i, /определи (.+)/i, /что такое (.+)/i, /объясни (.+)/i, /визнач (.+)/i, /що таке (.+)/i, /поясни (.+)/i], weight: 0.85 },
-          status: { patterns: [/status/i, /progress/i, /how are you/i, /статус/i, /прогресс/i, /стан/i], weight: 0.95 },
-          joke: { patterns: [/joke/i, /funny/i, /tell me a joke/i, /шутка/i, /рассмеши/i, /жарт/i], weight: 0.9 },
-          clear: { patterns: [/clear logs/i, /clear/i, /очисти логи/i, /очисти/i, /очистити/i], weight: 0.9 }
-        };
-      }
-      process(input) {
-        const text = input.toLowerCase().trim();
-        let bestMatch = { intent: 'unknown', query: text, confidence: 0 };
-        for (const [intent, data] of Object.entries(this.intents)) {
-          for (const pattern of data.patterns) {
-            const match = pattern.exec(text);
-            if (match && data.weight > bestMatch.confidence) {
-              bestMatch = { intent, query: match[1] || text, confidence: data.weight };
-            }
-          }
+    function getDemoResults(query) {
+      const lowerQuery = query.toLowerCase();
+      for (const [key, papers] of Object.entries(demoPapers)) {
+        if (lowerQuery.includes(key) || key.includes(lowerQuery)) {
+          return papers;
         }
-        return bestMatch;
       }
+      // Fallback demo results
+      return [{ title: `Research papers about "${query}"`, authors: ["A. Researcher", "B. Scientist"], summary: `This is a demo result for your query about "${query}". In full version, this would connect to real academic databases like arXiv and CrossRef.`, link: "#", source: "Demo Mode" }];
     }
 
-    // ========== ACADEMIC KNOWLEDGE BASE with CACHE & TIMEOUT ==========
+    // ========== ACADEMIC KNOWLEDGE BASE with CORS FALLBACK ==========
     class AcademicKnowledgeBase {
-      constructor() {
-        this.cache = new Map();
-        this.currentSource = 'arxiv';
-      }
-      setSource(source) { this.currentSource = source; addLog(`Switched to ${source} database`, 'system'); }
-
-      async searchWithTimeout(url, timeout = 10000) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), timeout);
-        try {
-          const response = await fetch(url, { signal: controller.signal });
-          clearTimeout(timeoutId);
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          return await response.text();
-        } catch (error) {
-          clearTimeout(timeoutId);
-          if (error.name === 'AbortError') throw new Error('Request timeout');
-          throw error;
-        }
-      }
+      constructor() { this.cache = new Map(); this.currentSource = 'demo'; }
+      setSource(source) { this.currentSource = source; addLog(`Switched to ${source === 'demo' ? 'Demo Mode' : source} database`, 'system'); }
 
       async search(query) {
-        addLog(`🔍 Searching ${this.currentSource} for: "${query}"`, 'academic');
+        addLog(`🔍 Searching ${this.currentSource === 'demo' ? 'Demo Mode' : this.currentSource} for: "${query}"`, 'academic');
         const cacheKey = `${this.currentSource}:${query.toLowerCase()}`;
         const cached = this.cache.get(cacheKey);
-        if (cached && Date.now() - cached.timestamp < 3600000) {
-          addLog(`📦 Returning cached results for "${query}"`, 'academic');
-          return cached.data;
-        }
+        if (cached && Date.now() - cached.timestamp < 3600000) { addLog(`📦 Returning cached results`, 'academic'); return cached.data; }
+
         try {
           let results = [];
-          if (this.currentSource === 'arxiv') results = await this.searchArxiv(query);
-          else if (this.currentSource === 'crossref') results = await this.searchCrossref(query);
+          if (this.currentSource === 'demo') results = getDemoResults(query);
+          else if (this.currentSource === 'arxiv') results = await this.searchArxivWithFallback(query);
+          else if (this.currentSource === 'crossref') results = await this.searchCrossrefWithFallback(query);
+          
           if (results.length > 0) {
-            if (this.cache.size > 100) {
-              const firstKey = this.cache.keys().next().value;
-              this.cache.delete(firstKey);
-            }
+            if (this.cache.size > 100) this.cache.delete(this.cache.keys().next().value);
             this.cache.set(cacheKey, { data: results, timestamp: Date.now() });
             LabState.papersFound += results.length;
             updateStats();
           }
           return results;
         } catch (error) {
-          addLog(`Search error: ${error.message}`, 'error');
-          return [];
+          addLog(`Search error: ${error.message}, falling back to demo mode`, 'error');
+          return getDemoResults(query);
         }
       }
 
-      async searchArxiv(query) {
+      async searchArxivWithFallback(query) {
         try {
-          const url = `https://export.arxiv.org/api/query?search_query=all:${encodeURIComponent(query)}&start=0&max_results=5&sortBy=relevance`;
-          const text = await this.searchWithTimeout(url);
+          // Using JSONP-like approach with CORS proxy
+          const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://export.arxiv.org/api/query?search_query=all:${encodeURIComponent(query)}&start=0&max_results=3&sortBy=relevance`)}`;
+          const response = await fetch(proxyUrl, { timeout: 5000 });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const text = await response.text();
           const parser = new DOMParser();
           const xmlDoc = parser.parseFromString(text, 'text/xml');
           const entries = xmlDoc.getElementsByTagName('entry');
@@ -390,43 +331,43 @@
             results.push({
               title: entry.getElementsByTagName('title')[0]?.textContent?.trim() || 'No title',
               authors: Array.from(entry.getElementsByTagName('author')).map(a => a.getElementsByTagName('name')[0]?.textContent || 'Unknown'),
-              summary: entry.getElementsByTagName('summary')[0]?.textContent?.trim() || 'No summary',
+              summary: entry.getElementsByTagName('summary')[0]?.textContent?.trim().substring(0, 300) || 'No summary',
               link: entry.getElementsByTagName('id')[0]?.textContent || '#',
               source: 'arXiv'
             });
           }
+          if (results.length > 0) addLog(`✅ Retrieved ${results.length} papers from arXiv`, 'academic');
           return results;
         } catch (error) {
-          addLog(`arXiv error: ${error.message}`, 'error');
+          addLog(`arXiv fallback error: ${error.message}`, 'error');
           return [];
         }
       }
 
-      async searchCrossref(query) {
+      async searchCrossrefWithFallback(query) {
         try {
-          const url = `https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=5&mailto=demo@example.com`;
-          const text = await this.searchWithTimeout(url);
-          const data = JSON.parse(text);
+          const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.crossref.org/works?query=${encodeURIComponent(query)}&rows=3&mailto=demo@example.com`)}`;
+          const response = await fetch(proxyUrl, { timeout: 5000 });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const data = await response.json();
           if (!data.message?.items) return [];
           return data.message.items.map(item => ({
             title: item.title?.[0] || 'No title',
             authors: item.author?.map(a => `${a.given || ''} ${a.family || ''}`.trim()) || ['Unknown'],
             summary: item.abstract?.replace(/<[^>]*>/g, '').substring(0, 300) || 'No abstract available',
             link: item.URL || '#',
-            source: 'CrossRef', doi: item.DOI, published: item.created?.dateTime?.substring(0, 10) || 'Unknown'
+            source: 'CrossRef'
           }));
         } catch (error) {
-          addLog(`CrossRef error: ${error.message}`, 'error');
+          addLog(`CrossRef fallback error: ${error.message}`, 'error');
           return [];
         }
       }
 
-      escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
-
       async searchAndRespond(query, intent, lang) {
         const results = await this.search(query);
-        if (results.length === 0) return `${getTranslation('serviceUnavailable', lang)}`;
         this.displayResults(results, query);
+        if (results.length === 0) return getTranslation('noResults', lang) + ` "${query}". ` + getTranslation('demoMode', lang);
         if (intent === 'define') return `${results[0].summary.substring(0, 300)}...`;
         return `${getTranslation('foundResults', lang)} ${results.length} ${getTranslation('papers', lang)} "${query}". ${getTranslation('mostRelevant', lang)}: "${results[0].title}".`;
       }
@@ -438,77 +379,41 @@
         results.forEach(result => {
           const entry = document.createElement('div');
           entry.className = 'academic-entry';
-          const escapedTitle = this.escapeHtml(result.title);
-          const escapedAuthors = this.escapeHtml(result.authors.slice(0, 3).join(', '));
-          const escapedSummary = this.escapeHtml(result.summary.substring(0, 200));
           entry.innerHTML = `
-            <div class="academic-title">📄 ${escapedTitle}${result.summary.length > 200 ? '...' : ''}</div>
-            <div class="academic-authors">✍️ ${escapedAuthors}${result.authors.length > 3 ? ' et al.' : ''}</div>
-            <div class="academic-summary">${escapedSummary}${result.summary.length > 200 ? '...' : ''}</div>
-            <div>
-              <a href="${result.link}" target="_blank" rel="noopener noreferrer" class="academic-link">🔗 View on ${result.source} →</a>
-              <button class="copy-btn" data-link="${result.link}" aria-label="Copy link">📋 Copy link</button>
-            </div>
+            <div class="academic-title">📄 ${this.escapeHtml(result.title)}</div>
+            <div class="academic-authors">✍️ ${this.escapeHtml(result.authors.slice(0, 3).join(', '))}${result.authors.length > 3 ? ' et al.' : ''}</div>
+            <div class="academic-summary">${this.escapeHtml(result.summary.substring(0, 200))}${result.summary.length > 200 ? '...' : ''}</div>
+            <a href="${result.link}" target="_blank" rel="noopener noreferrer" class="academic-link">🔗 View on ${result.source} →</a>
           `;
           content.appendChild(entry);
         });
-        document.querySelectorAll('.copy-btn').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            const link = btn.dataset.link;
-            const originalText = btn.textContent;
-            btn.textContent = getTranslation('copying', detectedUserLang);
-            try {
-              await navigator.clipboard.writeText(link);
-              btn.textContent = getTranslation('copied', detectedUserLang);
-              setTimeout(() => { if (btn) btn.textContent = originalText; }, 2000);
-            } catch (err) {
-              btn.textContent = getTranslation('copyFailed', detectedUserLang);
-              setTimeout(() => { if (btn) btn.textContent = originalText; }, 2000);
-            }
-          });
-        });
         panel.classList.add('visible');
-        setTimeout(() => { if (panel) panel.classList.remove('visible'); }, 15000);
+        setTimeout(() => panel.classList.remove('visible'), 20000);
       }
+      escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
     }
 
-    // ========== VOICE RECOGNITION with FIXED WAKE WORD ==========
-    let wakeWordActive = false;
-    let isListening = false;
-    let recognition = null;
+    // ========== VOICE RECOGNITION ==========
+    let wakeWordActive = false, isListening = false, recognition = null;
 
     function initVoiceRecognition() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        addLog('Voice recognition not supported in this browser', 'error');
-        const voiceBtn = document.getElementById('voiceBtn');
-        if (voiceBtn) voiceBtn.disabled = true;
-        return null;
-      }
+      if (!SpeechRecognition) { addLog('Voice recognition not supported', 'error'); document.getElementById('voiceBtn').disabled = true; return null; }
       const recog = new SpeechRecognition();
-      recog.continuous = true;
-      recog.interimResults = false;
-      recog.lang = 'en-US,ru-RU,uk-UA';
+      recog.continuous = true; recog.interimResults = false; recog.lang = 'en-US,ru-RU,uk-UA';
       recog.onstart = () => {
         isListening = true;
-        const voiceBtn = document.getElementById('voiceBtn');
-        const avatar = document.getElementById('labbyAvatar');
-        if (voiceBtn) voiceBtn.classList.add('listening');
-        if (avatar) avatar.classList.add('listening');
+        document.getElementById('voiceBtn')?.classList.add('listening');
+        document.getElementById('labbyAvatar')?.classList.add('listening');
         document.getElementById('statusText').textContent = `${getTranslation('listening', detectedUserLang)} "${getTranslation('wakeWord', detectedUserLang)}"`;
       };
       recog.onend = () => {
         isListening = false;
-        const voiceBtn = document.getElementById('voiceBtn');
-        const avatar = document.getElementById('labbyAvatar');
-        if (voiceBtn) voiceBtn.classList.remove('listening');
-        if (avatar) avatar.classList.remove('listening');
+        document.getElementById('voiceBtn')?.classList.remove('listening');
+        document.getElementById('labbyAvatar')?.classList.remove('listening');
         document.getElementById('statusText').textContent = `${getTranslation('active', detectedUserLang)} ${getTranslation('wakeWord', detectedUserLang)}`;
       };
-      recog.onerror = (event) => {
-        addLog(`Voice error: ${event.error}`, 'error');
-        if (event.error === 'not-allowed') document.getElementById('statusText').textContent = 'Microphone access denied';
-      };
+      recog.onerror = (event) => addLog(`Voice error: ${event.error}`, 'error');
       recog.onresult = (event) => {
         const text = event.results[event.results.length - 1][0].transcript;
         addLog(`Voice input: "${text}"`, 'info');
@@ -520,15 +425,12 @@
         }
         const wakeWord = getTranslation('wakeWord', detectedUserLang).toLowerCase();
         const textLower = text.toLowerCase();
-        // ИСПРАВЛЕНО: регулярное выражение с границами слов для точного распознавания wake word
-        const wakeWordRegex = new RegExp(`\\b${wakeWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
-        const hasWakeWord = wakeWordRegex.test(textLower) || textLower.includes('hey labby') || textLower === 'labby';
+        const hasWakeWord = textLower === wakeWord || textLower.startsWith(wakeWord + ' ') || textLower.includes('hey labby') || textLower === 'labby';
         if (hasWakeWord) {
           wakeWordActive = true;
           let command = textLower;
           if (textLower.startsWith(wakeWord)) command = textLower.substring(wakeWord.length).trim();
           else if (textLower.includes('hey labby')) command = textLower.replace('hey labby', '').trim();
-          else if (textLower.includes('hi labby')) command = textLower.replace('hi labby', '').trim();
           labbySpeak(getTranslation('greeting', detectedUserLang));
           document.getElementById('statusText').textContent = getTranslation('wakeDetected', detectedUserLang);
           setTimeout(() => {
@@ -536,27 +438,19 @@
             wakeWordActive = false;
             if (!isListening) document.getElementById('statusText').textContent = `${getTranslation('active', detectedUserLang)} ${getTranslation('wakeWord', detectedUserLang)}`;
           }, 500);
-        } else if (wakeWordActive) {
-          processCommand(text, detectedUserLang);
-          wakeWordActive = false;
-          document.getElementById('statusText').textContent = `${getTranslation('active', detectedUserLang)} ${getTranslation('wakeWord', detectedUserLang)}`;
-        } else if (text.length > 5) {
-          processCommand(text, detectedUserLang);
-        }
+        } else if (wakeWordActive) { processCommand(text, detectedUserLang); wakeWordActive = false; }
+        else if (text.length > 5) processCommand(text, detectedUserLang);
       };
       return recog;
     }
 
-    // ========== LABBY RESPONSES ==========
     function labbySpeak(message, lang = detectedUserLang) {
       const messageDiv = document.getElementById('messageArea');
       if (messageDiv) messageDiv.innerHTML = `🐭 ${message}`;
       addLog(message, 'labby');
       if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(message);
-        utterance.rate = 0.85;
-        utterance.pitch = 1.2;
-        utterance.volume = 0.8;
+        utterance.rate = 0.85; utterance.pitch = 1.2; utterance.volume = 0.8;
         if (lang === 'ru') utterance.lang = 'ru-RU';
         else if (lang === 'uk') utterance.lang = 'uk-UA';
         else utterance.lang = 'en-US';
@@ -565,130 +459,83 @@
       }
     }
 
-    // ========== COMMAND PROCESSING with DEBOUNCE ==========
+    // ========== COMMAND PROCESSING ==========
     const nlp = new NLPEngine();
     const academicDB = new AcademicKnowledgeBase();
-    let debounceTimeout = null;
-
-    function debounceProcess(command, lang) {
-      if (debounceTimeout) clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(() => {
-        executeCommand(command, lang);
-        debounceTimeout = null;
-      }, 300);
-    }
-
-    async function executeCommand(input, lang = detectedUserLang) {
-      if (!input || !input.trim()) return;
-      LabState.queriesProcessed++;
-      updateStats();
-      showSpinner();
-      try {
-        const analysis = nlp.process(input);
-        addLog(`NLP: intent=${analysis.intent}, confidence=${(analysis.confidence * 100).toFixed(0)}%`, 'system');
-        let response;
-        switch (analysis.intent) {
-          case 'search': case 'define':
-            response = await academicDB.searchAndRespond(analysis.query, analysis.intent, lang);
-            break;
-          case 'status':
-            response = `${getTranslation('researchProgress', lang)}: ${LabState.researchProgress.toFixed(1)}%. ${getTranslation('papersFound', lang)}: ${LabState.papersFound}. ${getTranslation('queriesProcessed', lang)}: ${LabState.queriesProcessed}.`;
-            LabState.researchProgress = Math.min(100, LabState.researchProgress + 0.3);
-            updateStats();
-            break;
-          case 'joke':
-            const jokes = { en: ["Why don't scientists trust atoms? Because they make up everything! 🧪", "What do you call a rat who loves science? A lab-rat! 🐭"], ru: ["Почему учёные не доверяют атомам? Потому что они всё выдумывают! 🧪", "Как называют крысу, которая любит науку? Лабораторная крыса! 🐭"], uk: ["Чому вчені не довіряють атомам? Тому що вони все вигадують! 🧪", "Як називають пацюка, який любить науку? Лабораторний пацюк! 🐭"] };
-            response = (jokes[lang] || jokes.en)[Math.floor(Math.random() * 2)];
-            break;
-          case 'clear':
-            clearLogs();
-            response = "Logs cleared!";
-            break;
-          default:
-            response = await academicDB.searchAndRespond(input, 'search', lang);
-        }
-        labbySpeak(response, lang);
-      } catch (error) {
-        console.error('Command error:', error);
-        labbySpeak(getTranslation('error', lang), lang);
-        addLog(`Error: ${error.message}`, 'error');
-      } finally {
-        hideSpinner();
-      }
-    }
+    let processTimeout = null;
 
     async function processCommand(input, lang = detectedUserLang) {
-      debounceProcess(input, lang);
+      if (!input || !input.trim()) return;
+      if (processTimeout) clearTimeout(processTimeout);
+      processTimeout = setTimeout(async () => {
+        LabState.queriesProcessed++;
+        updateStats();
+        try {
+          const analysis = nlp.process(input);
+          addLog(`NLP: intent=${analysis.intent}`, 'system');
+          let response;
+          switch (analysis.intent) {
+            case 'search': case 'define':
+              response = await academicDB.searchAndRespond(analysis.query, analysis.intent, lang);
+              break;
+            case 'status':
+              response = `${getTranslation('researchProgress', lang)}: ${LabState.researchProgress.toFixed(1)}%. ${getTranslation('papersFound', lang)}: ${LabState.papersFound}. ${getTranslation('queriesProcessed', lang)}: ${LabState.queriesProcessed}.`;
+              LabState.researchProgress = Math.min(100, LabState.researchProgress + 0.3);
+              updateStats();
+              break;
+            case 'joke':
+              const jokes = { en: ["Why don't scientists trust atoms? Because they make up everything! 🧪"], ru: ["Почему учёные не доверяют атомам? Потому что они всё выдумывают! 🧪"], uk: ["Чому вчені не довіряють атомам? Тому що вони все вигадують! 🧪"] };
+              response = (jokes[lang] || jokes.en)[0];
+              break;
+            case 'clear':
+              clearLogs(); response = "Logs cleared!";
+              break;
+            default:
+              if (input.toLowerCase().includes('demo')) response = await academicDB.searchAndRespond('artificial intelligence', 'search', lang);
+              else response = await academicDB.searchAndRespond(input, 'search', lang);
+          }
+          labbySpeak(response, lang);
+        } catch (error) {
+          labbySpeak(getTranslation('error', lang), lang);
+          addLog(`Error: ${error.message}`, 'error');
+        }
+        processTimeout = null;
+      }, 100);
     }
 
-    // ========== EVENT BINDINGS with KEYBOARD SUPPORT ==========
+    // ========== EVENT BINDINGS ==========
     document.getElementById('sendBtn').onclick = () => {
       const input = document.getElementById('textInput').value;
       if (input && input.trim()) {
         const lang = detectLanguage(input);
-        if (currentLang === 'auto') {
-          detectedUserLang = lang;
-          document.getElementById('detectedLang').textContent = lang === 'en' ? '🇬🇧 EN' : (lang === 'ru' ? '🇷🇺 RU' : '🇺🇦 UA');
-          updateUILanguage(lang);
-        }
+        if (currentLang === 'auto') { detectedUserLang = lang; document.getElementById('detectedLang').textContent = lang === 'en' ? '🇬🇧 EN' : (lang === 'ru' ? '🇷🇺 RU' : '🇺🇦 UA'); updateUILanguage(lang); }
         processCommand(input, detectedUserLang);
         document.getElementById('textInput').value = '';
       }
     };
     document.getElementById('textInput').onkeypress = (e) => { if (e.key === 'Enter') document.getElementById('sendBtn').click(); };
-    document.getElementById('voiceBtn').onclick = () => {
-      if (recognition) {
-        if (isListening) recognition.stop();
-        else try { recognition.start(); } catch (e) { addLog('Voice recognition already started', 'error'); }
-      } else alert("Voice recognition not supported. Try Chrome, Edge, or Safari!");
-    };
+    document.getElementById('voiceBtn').onclick = () => { if (recognition) { if (isListening) recognition.stop(); else recognition.start(); } else alert("Voice recognition not supported"); };
     document.querySelectorAll('.cmd-badge').forEach(badge => {
-      badge.onclick = () => {
-        const cmd = badge.dataset.cmd;
-        const lang = detectLanguage(cmd);
-        if (currentLang === 'auto') {
-          detectedUserLang = lang;
-          document.getElementById('detectedLang').textContent = lang === 'en' ? '🇬🇧 EN' : (lang === 'ru' ? '🇷🇺 RU' : '🇺🇦 UA');
-          updateUILanguage(lang);
-        }
-        processCommand(cmd, detectedUserLang);
-      };
-      badge.onkeypress = (e) => { if (e.key === 'Enter') badge.click(); };
+      badge.onclick = () => { const cmd = badge.dataset.cmd; const lang = detectLanguage(cmd); if (currentLang === 'auto') { detectedUserLang = lang; document.getElementById('detectedLang').textContent = lang === 'en' ? '🇬🇧 EN' : (lang === 'ru' ? '🇷🇺 RU' : '🇺🇦 UA'); updateUILanguage(lang); } processCommand(cmd, detectedUserLang); };
     });
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.onclick = () => {
         currentLang = btn.dataset.lang;
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        if (currentLang !== 'auto') {
-          detectedUserLang = currentLang;
-          document.getElementById('detectedLang').textContent = currentLang === 'en' ? '🇬🇧 EN' : (currentLang === 'ru' ? '🇷🇺 RU' : '🇺🇦 UA');
-          updateUILanguage(currentLang);
-          addLog(`Language set to ${currentLang.toUpperCase()}`, 'system');
-        } else {
-          document.getElementById('detectedLang').textContent = '🌐 auto';
-          addLog('Auto language detection enabled', 'system');
-        }
+        if (currentLang !== 'auto') { detectedUserLang = currentLang; document.getElementById('detectedLang').textContent = currentLang === 'en' ? '🇬🇧 EN' : (currentLang === 'ru' ? '🇷🇺 RU' : '🇺🇦 UA'); updateUILanguage(currentLang); addLog(`Language set to ${currentLang.toUpperCase()}`, 'system'); }
+        else { document.getElementById('detectedLang').textContent = '🌐 auto'; addLog('Auto language detection enabled', 'system'); }
       };
     });
     document.getElementById('sourceSelector').onchange = (e) => academicDB.setSource(e.target.value);
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        const panel = document.getElementById('academicPanel');
-        if (panel) panel.classList.remove('visible');
-      }
-    });
 
     // ========== INITIALIZATION ==========
     recognition = initVoiceRecognition();
     updateStats();
-    addLog('🐭 Labby AI Assistant initialized! Multilingual voice commands active!', 'system');
-    addLog('🌐 Speaks: English 🇬🇧, Русский 🇷🇺, Українська 🇺🇦', 'system');
-    addLog('💡 Try: "search for quantum computing" / "найди нейросети" / "знайди штучний інтелект"', 'system');
-    let intervalId = setInterval(() => {
-      LabState.researchProgress = Math.min(100, LabState.researchProgress + 0.1);
-      updateStats();
-    }, 30000);
+    addLog('🐭 Labby AI Assistant initialized!', 'system');
+    addLog('🌐 Demo mode active with local academic papers', 'system');
+    addLog('💡 Try: "search for artificial intelligence" or "demo papers"', 'system');
+    setInterval(() => { LabState.researchProgress = Math.min(100, LabState.researchProgress + 0.1); updateStats(); }, 30000);
   </script>
 </body>
 </html>
