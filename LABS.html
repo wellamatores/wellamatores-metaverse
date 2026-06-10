@@ -91,11 +91,80 @@
     .ttv-embed-header span:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 1px; color: #00E5FF; }
     .ttv-fullscreen-btn { background: rgba(0,229,255,0.2); border: 1px solid #00E5FF; border-radius: 30px; padding: 4px 12px; color: #00E5FF; font-family: monospace; font-size: 0.6rem; cursor: pointer; transition: all 0.2s; }
     .ttv-fullscreen-btn:hover { background: #00E5FF; color: #000; box-shadow: 0 0 8px #00E5FF; }
-    .voice-assistant { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-    .voice-btn { width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, #00E5FF, #F9A826); border: none; cursor: pointer; box-shadow: 0 0 20px rgba(0,229,255,0.5); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; font-size: 24px; }
-    .voice-btn.listening { animation: pulseRed 1s infinite; background: linear-gradient(135deg, #ff3366, #ff6633); }
-    @keyframes pulseRed { 0%,100% { box-shadow: 0 0 20px rgba(255,51,102,0.5); } 50% { box-shadow: 0 0 40px rgba(255,51,102,0.9); } }
-    .voice-status { background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); border: 1px solid #00E5FF; border-radius: 20px; padding: 6px 12px; font-size: 0.65rem; font-family: monospace; max-width: 250px; text-align: center; color: #00E5FF; }
+    
+    /* Labby Assistant Button */
+    .labby-assistant {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .labby-btn {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #00E5FF, #F9A826);
+      border: 2px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0,229,255,0.5);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .labby-btn::before {
+      content: '🐭';
+      font-size: 32px;
+      transition: transform 0.3s ease;
+    }
+    .labby-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(249,168,38,0.7);
+    }
+    .labby-btn:hover::before {
+      transform: rotate(15deg);
+    }
+    .labby-status {
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid #00E5FF;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 0.7rem;
+      font-family: monospace;
+      max-width: 280px;
+      text-align: center;
+      color: #00E5FF;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .labby-status:hover {
+      background: rgba(0,229,255,0.2);
+      border-color: #F9A826;
+    }
+    .labby-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #F9A826;
+      color: #000;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
     @media (max-width: 700px) { .research-nodes { grid-template-columns: repeat(2, 1fr); } .holo-digits { flex-wrap: wrap; } .clan-grid { grid-template-columns: repeat(2, 1fr); } .action-buttons { flex-direction: column; } .preset-buttons { order: -1; } }
   </style>
 </head>
@@ -239,9 +308,12 @@
     <div class="footer-holding">TerratrampilleraVerse Holding — JOG Laboratory Network • Amengi Artifact • Quantum Logic</div>
   </div>
 
-  <div class="voice-assistant">
-    <div class="voice-status" id="voiceStatus">🎤 Voice AI • Say "Hey LABS"</div>
-    <button class="voice-btn" id="voiceBtn">🎙️</button>
+  <!-- Labby Assistant - теперь ведёт к отдельному файлу -->
+  <div class="labby-assistant">
+    <div class="labby-status" id="labbyStatus">
+      🐭 Labby • Say "Hey Labby" or click me!
+    </div>
+    <button class="labby-btn" id="labbyBtn"></button>
   </div>
 
   <script type="importmap">
@@ -306,7 +378,7 @@
     window.addEventListener('resize', () => { bgCamera.aspect = window.innerWidth / window.innerHeight; bgCamera.updateProjectionMatrix(); bgRenderer.setSize(window.innerWidth, window.innerHeight); });
     
     // --- UI State ---
-    let logicMode = 'ternary'; // binary, ternary, quaternary
+    let logicMode = 'ternary';
     let researchProgress = 47.3, tokens = 14.2, frames = 3.1, autonomy = 94.7, helpGiven = 3, trainingProgress = 52;
     let samples = ["🔮 Anomalous Mineral #PR-107", "🧬 Biomass Sector G-4", "⚙️ Tech Artifact (unidentified)"];
     let squadStatus = "🟢 IN LAB", professorStatus = "📚 BRIEFING";
@@ -323,7 +395,6 @@
       document.getElementById('trainingFill').style.width = trainingProgress + '%';
       document.getElementById('squadStatus').innerHTML = squadStatus;
       document.getElementById('professorStatus').innerHTML = professorStatus;
-      // Apply logic conversion for display
       let tokenDisplay = tokens, frameDisplay = frames;
       let tokenUnit = "M", frameUnit = "M";
       if (logicMode === 'ternary') { tokenDisplay = (tokens * 1.585).toFixed(1); frameDisplay = (frames * 1.585).toFixed(1); tokenUnit = "Trits (M)"; frameUnit = "Trits (M)"; }
@@ -410,7 +481,7 @@
     
     function checkStatus() { addLogMessage("Predators squad operational • Cultural exchange active", 'predator'); }
     
-    // --- AES Encryption (Web Crypto API) ---
+    // --- AES Encryption ---
     async function encryptPreset(data, password = "wellamatores-key-2025") {
       const encoder = new TextEncoder();
       const keyMaterial = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveKey"]);
@@ -471,7 +542,7 @@
       input.click();
     }
     
-    // --- Event Binding & Voice ---
+    // --- Event Binding ---
     document.getElementById('initiateBtn').onclick = initiateResearch;
     document.getElementById('resetBtn').onclick = resetSystem;
     document.getElementById('checkPredatorsBtn').onclick = checkStatus;
@@ -493,33 +564,158 @@
       };
     });
     
-    // Voice Assistant
-    let recognition = null, isListening = false;
-    if('webkitSpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition(); recognition.continuous = true; recognition.interimResults = false; recognition.lang = 'en-US';
-      recognition.onstart = () => { isListening = true; document.getElementById('voiceBtn').classList.add('listening'); document.getElementById('voiceStatus').innerHTML = '🎙️ Listening... Say command'; };
-      recognition.onend = () => { isListening = false; document.getElementById('voiceBtn').classList.remove('listening'); document.getElementById('voiceStatus').innerHTML = '🎤 Voice AI • Say "Hey LABS"'; };
-      recognition.onresult = (e) => {
-        const text = e.results[e.results.length-1][0].transcript.toLowerCase();
-        addLogMessage(`Voice: "${text}"`, 'info');
-        if(text.includes('research') || text.includes('initiate')) initiateResearch();
-        else if(text.includes('reset')) resetSystem();
-        else if(text.includes('status')) checkStatus();
-        else if(text.includes('help') || text.includes('assist')) acceptHelp();
-        else if(text.includes('amengi') || text.includes('3d')) { startAmengi(); document.getElementById('amengi3dBtn').click(); }
-        else if(text.includes('yautja') || text.includes('prime')) { switchToYautja(); document.getElementById('predatorsStreamBtn').click(); }
-        else if(text.includes('save')) savePreset();
-        else if(text.includes('load')) loadPresetFromFile();
-        else addLogMessage("Command not recognized", 'system');
-      };
+    // --- Labby Assistant: открытие внешнего файла labby.html ---
+    const labbyBtn = document.getElementById('labbyBtn');
+    const labbyStatus = document.getElementById('labbyStatus');
+    
+    // Функция открытия ассистента в отдельном окне или если файл не найден - открываем инлайн версию
+    function openLabbyAssistant() {
+      addLogMessage("🐭 Opening Labby Voice Assistant...", 'system');
+      
+      // Пытаемся открыть labby.html в новой вкладке
+      const labbyWindow = window.open('labby.html', 'LabbyAssistant', 'width=400,height=600,menubar=no,toolbar=no,location=no,status=no');
+      
+      if (!labbyWindow || labbyWindow.closed || typeof labbyWindow.closed === 'undefined') {
+        // Если не удалось открыть (блокировка попапов), показываем альтернативный вариант
+        addLogMessage("⚠️ Popup blocked! Click the button again or use voice commands directly", 'system');
+        
+        // Альтернатива: создаём модальное окно с инструкцией
+        showLabbyModal();
+      } else {
+        addLogMessage("✅ Labby Assistant opened in new window • Say 'Hey Labby' to activate", 'system');
+      }
     }
-    document.getElementById('voiceBtn').onclick = () => { if(recognition) { if(isListening) recognition.stop(); else recognition.start(); } else alert("Speech recognition not supported"); };
+    
+    function showLabbyModal() {
+      // Создаём временное модальное окно с инструкцией
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background: rgba(6,10,18,0.95); backdrop-filter: blur(20px);
+        border: 2px solid #00E5FF; border-radius: 24px; padding: 24px;
+        z-index: 10000; max-width: 400px; text-align: center;
+        box-shadow: 0 0 50px rgba(0,229,255,0.3); font-family: monospace;
+      `;
+      modal.innerHTML = `
+        <div style="font-size: 48px; margin-bottom: 12px;">🐭</div>
+        <h3 style="color: #00E5FF; margin-bottom: 12px;">Labby Assistant</h3>
+        <p style="color: #8BA2C2; margin-bottom: 16px; font-size: 14px;">
+          Voice commands are available directly in this window!<br><br>
+          <strong style="color: #F9A826;">Say "Hey Labby"</strong> followed by:<br>
+          • research • reset • status • help • amengi • yautja • save • load
+        </p>
+        <button id="closeLabbyModal" style="
+          background: #F9A826; border: none; padding: 10px 20px;
+          border-radius: 12px; font-weight: bold; cursor: pointer;
+          font-family: monospace; margin-top: 8px;
+        ">Got it! 🐭</button>
+      `;
+      document.body.appendChild(modal);
+      document.getElementById('closeLabbyModal').onclick = () => modal.remove();
+      
+      // Автоматическое закрытие через 10 секунд
+      setTimeout(() => { if(modal.parentNode) modal.remove(); }, 10000);
+    }
+    
+    labbyBtn.onclick = openLabbyAssistant;
+    labbyStatus.onclick = openLabbyAssistant;
+    
+    // --- Голосовое распознавание прямо в этом окне (дублируем команды) ---
+    let recognition = null;
+    let isListening = false;
+    
+    if ('webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      
+      recognition.onstart = () => {
+        isListening = true;
+        labbyBtn.style.boxShadow = '0 0 30px rgba(249,168,38,0.9)';
+        labbyStatus.innerHTML = '🐭 Labby is listening... Say a command!';
+        addLogMessage("Labby voice recognition active • Say 'Hey Labby' + command", 'system');
+      };
+      
+      recognition.onend = () => {
+        isListening = false;
+        labbyBtn.style.boxShadow = '0 0 20px rgba(0,229,255,0.5)';
+        labbyStatus.innerHTML = '🐭 Labby • Say "Hey Labby" or click me!';
+      };
+      
+      recognition.onresult = (e) => {
+        const text = e.results[e.results.length - 1][0].transcript.toLowerCase();
+        addLogMessage(`🐭 Labby heard: "${text}"`, 'info');
+        
+        // Проверяем активационную фразу "hey labby"
+        if (text.includes('hey labby') || text.includes('hey labby')) {
+          addLogMessage("🐭 Activation phrase detected! Processing command...", 'system');
+          labbyStatus.innerHTML = '🐭 Labby activated! 🎤';
+          setTimeout(() => {
+            labbyStatus.innerHTML = '🐭 Labby • Say "Hey Labby" or click me!';
+          }, 2000);
+          
+          // Ищем команду после активационной фразы
+          let command = text.replace(/hey labby/g, '').trim();
+          
+          if (command.includes('research') || command.includes('initiate')) initiateResearch();
+          else if (command.includes('reset')) resetSystem();
+          else if (command.includes('status')) checkStatus();
+          else if (command.includes('help') || command.includes('assist')) acceptHelp();
+          else if (command.includes('amengi') || command.includes('3d')) { startAmengi(); document.getElementById('amengi3dBtn').click(); }
+          else if (command.includes('yautja') || command.includes('prime')) { switchToYautja(); document.getElementById('predatorsStreamBtn').click(); }
+          else if (command.includes('save')) savePreset();
+          else if (command.includes('load')) loadPresetFromFile();
+          else if (command !== '') addLogMessage(`Command "${command}" not recognized. Try: research, reset, status, help, amengi, yautja, save, load`, 'system');
+        }
+      };
+    } else {
+      labbyStatus.innerHTML = '🐭 Speech not supported • Click for assistant';
+    }
+    
+    // Функция для запуска/остановки прослушивания
+    function toggleListening() {
+      if (recognition) {
+        if (isListening) {
+          recognition.stop();
+        } else {
+          try {
+            recognition.start();
+          } catch(e) {
+            addLogMessage("Voice recognition already started or error: " + e.message, 'system');
+          }
+        }
+      } else {
+        showLabbyModal();
+      }
+    }
+    
+    // Альтернативная активация: долгое нажатие на кнопку
+    let pressTimer;
+    labbyBtn.addEventListener('mousedown', () => {
+      pressTimer = setTimeout(() => {
+        toggleListening();
+      }, 500);
+    });
+    labbyBtn.addEventListener('mouseup', () => {
+      clearTimeout(pressTimer);
+    });
+    labbyBtn.addEventListener('mouseleave', () => {
+      clearTimeout(pressTimer);
+    });
+    
+    // Клик для открытия внешнего ассистента (короткое нажатие)
+    labbyBtn.addEventListener('click', (e) => {
+      if (!isListening) {
+        openLabbyAssistant();
+      }
+    });
     
     // TTV Fullscreen
     document.getElementById('ttvFullscreenBtn').onclick = () => {
       const wrapper = document.getElementById('ttvIframeWrapper');
-      if(document.fullscreenElement) document.exitFullscreen();
+      if (document.fullscreenElement) document.exitFullscreen();
       else wrapper.requestFullscreen?.();
     };
     
@@ -536,8 +732,8 @@
     switchToYautja();
     updateSamplesUI(); updateUI();
     addLogMessage("Wellamatores LABS ready • Quantum logic active • AES presets available", 'system');
+    addLogMessage("🐭 Labby is here! Say 'Hey Labby' + command (research, reset, status, help, amengi, yautja, save, load)", 'system');
     setTimeout(() => showHelpRequest(), 10000);
   </script>
 </body>
 </html>
-```
