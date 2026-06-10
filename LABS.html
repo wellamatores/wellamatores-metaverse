@@ -111,6 +111,33 @@
       transform: scale(1.02);
       box-shadow: 0 0 12px rgba(0,229,255,0.5);
     }
+
+    /* BUTTON to open Amengi Integration (second file) in fullscreen */
+    .amengi-integration-btn {
+      background: linear-gradient(135deg, rgba(100,200,180,0.15), rgba(0,229,255,0.1));
+      border: 1px solid #6ad4be;
+      border-radius: 40px;
+      padding: 0.5rem 1.2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #6ad4be;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(8px);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 6px rgba(100,200,180,0.3);
+    }
+    .amengi-integration-btn:hover {
+      background: rgba(100,200,180,0.25);
+      border-color: #F9A826;
+      color: #F9A826;
+      transform: scale(1.02);
+      box-shadow: 0 0 12px rgba(100,200,180,0.5);
+    }
   </style>
 </head>
 <body>
@@ -260,7 +287,11 @@
     </div>
   </div>
 
+  <!-- EXISTING AI ASSISTANT BUTTON - NOT MODIFIED -->
   <button id="aiAssistantBtn" class="ai-assistant-btn" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000;">🤖 AI ASSISTANT • ASK ME</button>
+
+  <!-- BUTTON: AMENGI INTEGRATION - opens second file (Amengi Integration) in fullscreen -->
+  <button id="amengiIntegrationBtn" class="amengi-integration-btn" style="position: fixed; bottom: 24px; left: 24px; z-index: 10000;">🧠 AMENGI INTEGRATION • BINARY/TERNARY/QUATERNARY ⛶</button>
 
   <script type="importmap">
     {
@@ -592,10 +623,117 @@
     function checkPredatorsStatus() { const statuses = ["Squad at camp, professor conducting briefing", "War hound patrolling perimeter", "Predators analyzing field data", "Link to Kingdom stable, data exchange active"]; addLogMessage(statuses[Math.floor(Math.random() * statuses.length)], 'predator'); const squadStatuses = ['🟢 IN LAB', '🔴 FIELD MISSION', '🟡 REST/PREP']; const professorStatuses = ['📚 BRIEFING', '🎓 JACKDAW TRAINING', '🔬 RESEARCH', '📡 ON CALL']; document.getElementById('squadStatus').innerHTML = squadStatuses[Math.floor(Math.random() * squadStatuses.length)]; document.getElementById('professorStatus').innerHTML = professorStatuses[Math.floor(Math.random() * professorStatuses.length)]; }
     function goFullscreen() { const wrapper = document.querySelector('.video-wrapper'); if (wrapper.requestFullscreen) wrapper.requestFullscreen(); else if (wrapper.webkitRequestFullscreen) wrapper.webkitRequestFullscreen(); }
     
+    // EXISTING AI ASSISTANT BUTTON HANDLER - NOT MODIFIED
     document.getElementById('aiAssistantBtn').addEventListener('click', () => {
       addLogMessage("🤖 AI ASSISTANT activated • Predictive algorithms online. How can I assist the Predators Division?", 'system');
       window.open('labby.html', '_blank');
       alert("🤖 AI ASSISTANT (Predators Division)\n\nI analyze Amengi resonance, coordinate with Kingdom of Predators, and optimize neural research. Request assistance via terminal commands or accept help requests from the squad.\n\n\"In the hunt, knowledge is the ultimate weapon.\"");
+    });
+    
+    // BUTTON: AMENGI INTEGRATION - opens second file (Amengi Integration) in fullscreen mode
+    const amengiIntegrationBtn = document.getElementById('amengiIntegrationBtn');
+    let isAmengiFullscreen = false;
+    let amengiIframe = null;
+    
+    amengiIntegrationBtn.addEventListener('click', () => {
+      if (!isAmengiFullscreen) {
+        isAmengiFullscreen = true;
+        
+        // Create fullscreen container
+        const fullscreenContainer = document.createElement('div');
+        fullscreenContainer.id = 'amengiIntegrationFullscreen';
+        fullscreenContainer.style.cssText = `
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: #01040a;
+          z-index: 20000;
+          display: flex;
+          flex-direction: column;
+        `;
+        
+        // Create close button for this fullscreen
+        const closeFullscreenBtn = document.createElement('div');
+        closeFullscreenBtn.className = 'close-fullscreen-btn';
+        closeFullscreenBtn.innerHTML = '✖ CLOSE AMENGI INTEGRATION';
+        closeFullscreenBtn.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: rgba(0,0,0,0.85);
+          border: 2px solid #ff4444;
+          color: #ff4444;
+          padding: 10px 20px;
+          border-radius: 40px;
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 0.75rem;
+          font-weight: bold;
+          cursor: pointer;
+          z-index: 20001;
+          backdrop-filter: blur(10px);
+          transition: all 0.2s ease;
+        `;
+        closeFullscreenBtn.onmouseover = () => {
+          closeFullscreenBtn.style.background = '#ff4444';
+          closeFullscreenBtn.style.color = '#000';
+        };
+        closeFullscreenBtn.onmouseout = () => {
+          closeFullscreenBtn.style.background = 'rgba(0,0,0,0.85)';
+          closeFullscreenBtn.style.color = '#ff4444';
+        };
+        closeFullscreenBtn.onclick = () => {
+          if (amengiIframe) {
+            amengiIframe.src = 'about:blank';
+            amengiIframe.remove();
+          }
+          fullscreenContainer.remove();
+          isAmengiFullscreen = false;
+          document.body.style.overflow = '';
+          addLogMessage("AMENGI INTEGRATION closed • Returned to main laboratory", 'system');
+        };
+        
+        // Create iframe to load the second file (Amengi Integration)
+        amengiIframe = document.createElement('iframe');
+        amengiIframe.style.cssText = `
+          width: 100%;
+          height: 100%;
+          border: none;
+          background: #01040a;
+        `;
+        // Load the second HTML file (Amengi Integration - Bastion des Corbeaux)
+        amengiIframe.src = 'deepseek_html_20260610_27e844 (1).html';
+        
+        fullscreenContainer.appendChild(amengiIframe);
+        fullscreenContainer.appendChild(closeFullscreenBtn);
+        document.body.appendChild(fullscreenContainer);
+        document.body.style.overflow = 'hidden';
+        
+        addLogMessage("🧠 AMENGI INTEGRATION launched • Binary/Ternary/Quaternary logic active", 'system');
+        
+        // Request fullscreen on the container if possible
+        if (fullscreenContainer.requestFullscreen) {
+          fullscreenContainer.requestFullscreen().catch(e => console.log('Fullscreen request:', e));
+        }
+      }
+    });
+    
+    // Handle escape key to close Amengi Integration fullscreen
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isAmengiFullscreen) {
+        const container = document.getElementById('amengiIntegrationFullscreen');
+        if (container) {
+          if (amengiIframe) {
+            amengiIframe.src = 'about:blank';
+            amengiIframe.remove();
+          }
+          container.remove();
+          isAmengiFullscreen = false;
+          document.body.style.overflow = '';
+          addLogMessage("AMENGI INTEGRATION closed via ESC", 'system');
+        }
+      }
     });
     
     document.getElementById('initiateBtn').addEventListener('click', initiateResearch); document.getElementById('resetBtn').addEventListener('click', resetSimulation); document.getElementById('checkPredatorsBtn').addEventListener('click', checkPredatorsStatus); document.getElementById('acceptHelpBtn').addEventListener('click', acceptHelp); document.getElementById('amengi3dBtn').addEventListener('click', () => { startAmengi(); document.getElementById('amengi3dBtn').classList.add('active'); document.getElementById('predatorsStreamBtn').classList.remove('active'); }); document.getElementById('predatorsStreamBtn').addEventListener('click', () => { switchToYautjaPrime(); document.getElementById('predatorsStreamBtn').classList.add('active'); document.getElementById('amengi3dBtn').classList.remove('active'); }); document.getElementById('fullscreenVideoBtn').addEventListener('click', goFullscreen); document.getElementById('jackdawUniversityBtn').addEventListener('click', () => { window.open('https://wellamatores-metaverse.vercel.app/BASTION.html', '_blank'); addLogMessage("JACKDAW University portal opened", 'system'); }); document.getElementById('backLink').addEventListener('click', () => { window.location.href = 'https://wellamatores-metaverse.vercel.app'; });
